@@ -13,7 +13,7 @@ public class Player : Mover
     // Start is called before the first frame update
     void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
-        playerSprite = SpritesResourcesLoader.getPlayerSprite();
+        playerSprite = SpritesResourcesLoader.GetPlayerSprite();
 		spriteRenderer.sprite = playerSprite;
     }
 	
@@ -24,18 +24,15 @@ public class Player : Mover
 	}
 
     // Update is called once per frame
-    void Update()
-    {
-		int h = 0;
-		int v = 0;
+    void Update() {
 		if (Input.GetKeyDown("left")) 	AttemptMove<Component>(-1,  0);
 		if (Input.GetKeyDown("right")) 	AttemptMove<Component>( 1,  0);
 		if (Input.GetKeyDown("up")) 	AttemptMove<Component>( 0,  1);
 		if (Input.GetKeyDown("down")) 	AttemptMove<Component>( 0, -1);
     }
 	
-	public void resetPosition() {
-		transform.position = new Vector2(1, 1);
+	public void ResetPosition() {
+		transform.position = worldGrid.Tile2RealPos(new Vector3Int(1, 1, 0));
 		Debug.Log("Player position is " + transform.position);
 	}
 	

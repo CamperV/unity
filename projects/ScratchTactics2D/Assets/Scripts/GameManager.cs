@@ -26,8 +26,12 @@ public class GameManager : MonoBehaviour
 	}
 	
 	void init() {
-		worldGrid.generateWorld();
-		player.resetPosition();
+		worldGrid.GenerateWorld();
+		
+		player.SetWorld(worldGrid);
+		player.ResetPosition();
+		
+		Debug.Log("Found " + SortingLayer.layers + " sorting layers");
 	}
 
     // Update is called once per frame
