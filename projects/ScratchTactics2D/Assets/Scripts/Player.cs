@@ -16,22 +16,20 @@ public class Player : Mover
 	protected override void Start() {
 		//animator = GetComponent<Animator>();
 		base.Start();
-		Debug.Log("Started");
 	}
 
     // Update is called once per frame
     void Update() {
 		if (!GameManager.inst.playerPhase) return;
 		
-		if (Input.GetKeyDown("left")) 	AttemptMove<Component>(-1,  0);
-		if (Input.GetKeyDown("right")) 	AttemptMove<Component>( 1,  0);
-		if (Input.GetKeyDown("up")) 	AttemptMove<Component>( 0,  1);
-		if (Input.GetKeyDown("down")) 	AttemptMove<Component>( 0, -1);
+		if (Input.GetKeyDown("left")) 	AttemptMove<Enemy>(-1,  0);
+		if (Input.GetKeyDown("right")) 	AttemptMove<Enemy>( 1,  0);
+		if (Input.GetKeyDown("up")) 	AttemptMove<Enemy>( 0,  1);
+		if (Input.GetKeyDown("down")) 	AttemptMove<Enemy>( 0, -1);
     }
 	
 	public void ResetPosition() {
 		transform.position = GameManager.inst.worldGrid.Tile2RealPos(new Vector3Int(1, 1, 0));
-		Debug.Log("Player position is " + transform.position);
 	}
 	
 	protected override void AttemptMove<T>(int xdir, int ydir) {
@@ -40,14 +38,14 @@ public class Player : Mover
 	}
 	
 	protected override void OnBlocked<T>(T component) {
-		//Enemy hitEnemy = component as Enemy;
+		Enemy hitEnemy = component as Enemy;
 		//hitEnemy.Blink();
 		//animator.SetTrigger("wut");
-		Debug.Log("Collided with " + component);
+		Debug.Log("BLOCKED with " + hitEnemy);
 	}
 	
 	// collision with any other Collider2D
 	private void OnTriggerEnter2D(Collider2D other) {
-		Debug.Log("Collided with " + other);
+		//Debug.Log("Collided with " + other);
 	}
 }

@@ -21,7 +21,6 @@ public abstract class Mover : MonoBehaviour {
 		Vector3 startpoint = transform.position; // implicitly casts
 		Vector3 endpoint   = GameManager.inst.worldGrid.GetTileInDirection(startpoint, new Vector3Int(xdir, ydir, 0));
 		
-		Debug.Log("Moving from "+ startpoint + " to " + endpoint + ", move vector " + xdir + ", " + ydir);
 		// casts a ray and sees if the boxCollider hits anything along the vector startpoint->endpoint
 		boxCollider.enabled = false;
 		block = Physics2D.Linecast(startpoint, endpoint, blockingLayer);
@@ -30,17 +29,15 @@ public abstract class Mover : MonoBehaviour {
 		if (block.transform == null) {
 			
 			// to get that sweet smoothness
-			if (crtMovingFlag) {
-				Debug.Log("stopped");
-				StopCoroutine(crtMovement);
-			}
+			// always interrupt a moving crt to change the destination of the SmoothMovement slide
+			if (crtMovingFlag) StopCoroutine(crtMovement);
 			crtMovement = StartCoroutine(SmoothMovement(endpoint));
 			
 			// for rigid, snappy movement
 			//rigidbody2D.MovePosition(endpoint); 
 			return true;
 		}
-		
+
 		// only if you can't move properly
 		return false;
 	}
@@ -53,7 +50,7 @@ public abstract class Mover : MonoBehaviour {
 		
 		crtMovingFlag = true;
 		while (sqrRemainingDistance > snapFactor) {
-			speedFactor = (150.0f * (1.0f/(sqrRemainingDistance*sqrRemainingDistance)) * Time.deltaTime) + 0.10f;
+			speedFactor = (15.0f * (1.0f/(sqrRemainingDistance*sqrRemainingDistance)) * Time.deltaTime) + 0.10f;
 
 			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, endpoint, speedFactor);
 			rigidbody2D.MovePosition(newPos);
@@ -63,7 +60,6 @@ public abstract class Mover : MonoBehaviour {
 		}
 		
 		// after the while loop is broken:
-		Debug.Log("snapped " + transform.position + ", " + endpoint);
 		rigidbody2D.MovePosition(endpoint);
 		crtMovingFlag = false;
 	}
@@ -73,9 +69,7 @@ public abstract class Mover : MonoBehaviour {
 		bool canMove = GridMove(xdir, ydir, out hit);
 		
 		// ie. made no collision
-		if (hit.transform == null) {
-			return;
-		}
+		if (hit.transform == null) return;
 		
 		// but if you did...
 		T hitComponent = hit.transform.GetComponent<T>(); // this gets the thing that hit it?!

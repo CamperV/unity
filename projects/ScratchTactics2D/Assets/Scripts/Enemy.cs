@@ -14,7 +14,6 @@ public class Enemy : Mover
     // Start is called before the first frame update
     void Start() {
         base.Start();
-		Debug.Log(">>> I LIVE! @" + transform.position);
     }
 
     // Update is called once per frame

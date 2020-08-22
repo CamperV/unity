@@ -10,7 +10,8 @@ public class GameManager : MonoBehaviour
 
 	// accessed by children via singleton
 	[HideInInspector] public bool playerPhase = true;
-	public int maxEnemies = 10;
+	public int maxEnemies;
+	public int minEnemies;
 	
 	// prefabs to be instantiated
 	public WorldGrid worldGridPrefab;
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviour
 		
 		// now, spawn the enemies
 		enemies.Clear();
-		for (int i = 0; i < Random.Range(0, maxEnemies); i++) {
+		for (int i = 0; i < Random.Range(minEnemies, maxEnemies); i++) {
 			Enemy newEnemy = Instantiate(enemyPrefab, worldGrid.RandomTileReal(), Quaternion.identity);
 			enemies.Add(newEnemy);
 		}
