@@ -4,7 +4,6 @@ using UnityEngine;
 
 public abstract class Mover : MonoBehaviour {
 	
-	public WorldGrid worldGrid; // i hate this
 	public LayerMask blockingLayer;
 	
 	private BoxCollider2D boxCollider;
@@ -17,14 +16,10 @@ public abstract class Mover : MonoBehaviour {
 		rigidbody2D = GetComponent<Rigidbody2D>();
     }
 	
-	public void SetWorld(WorldGrid wg) {
-		worldGrid = wg;
-	}
-	
 	protected bool GridMove(int xdir, int ydir, out RaycastHit2D block) {
 		// need to always be a cell/Tile coordinate
 		Vector3 startpoint = transform.position; // implicitly casts
-		Vector3 endpoint   = worldGrid.GetTileInDirection(startpoint, new Vector3Int(xdir, ydir, 0));
+		Vector3 endpoint   = GameManager.inst.worldGrid.GetTileInDirection(startpoint, new Vector3Int(xdir, ydir, 0));
 		
 		Debug.Log("Moving from "+ startpoint + " to " + endpoint + ", move vector " + xdir + ", " + ydir);
 		// casts a ray and sees if the boxCollider hits anything along the vector startpoint->endpoint

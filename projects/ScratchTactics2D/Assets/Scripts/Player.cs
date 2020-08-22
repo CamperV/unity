@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class Player : Mover
 {
-	private Sprite playerSprite;
 	private SpriteRenderer spriteRenderer;
-	
 	private Animator animator;
 
-	
     // Start is called before the first frame update
     void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
-        playerSprite = SpritesResourcesLoader.GetPlayerSprite();
-		spriteRenderer.sprite = playerSprite;
+		spriteRenderer.sprite = SpritesResourcesLoader.GetPlayerSprite();;
     }
 	
 	protected override void Start() {
@@ -25,6 +21,8 @@ public class Player : Mover
 
     // Update is called once per frame
     void Update() {
+		if (!GameManager.inst.playerPhase) return;
+		
 		if (Input.GetKeyDown("left")) 	AttemptMove<Component>(-1,  0);
 		if (Input.GetKeyDown("right")) 	AttemptMove<Component>( 1,  0);
 		if (Input.GetKeyDown("up")) 	AttemptMove<Component>( 0,  1);
@@ -32,7 +30,7 @@ public class Player : Mover
     }
 	
 	public void ResetPosition() {
-		transform.position = worldGrid.Tile2RealPos(new Vector3Int(1, 1, 0));
+		transform.position = GameManager.inst.worldGrid.Tile2RealPos(new Vector3Int(1, 1, 0));
 		Debug.Log("Player position is " + transform.position);
 	}
 	

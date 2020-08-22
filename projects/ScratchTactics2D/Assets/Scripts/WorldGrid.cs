@@ -6,12 +6,10 @@ using Random = UnityEngine.Random;
 
 public class WorldGrid : MonoBehaviour
 {
-	private const int mapDimensionX = 5;
-	private const int mapDimensionY = 5;
-	private const int totalMapSize = mapDimensionX * mapDimensionY;
-	private const int pixelsPerUnit = 32;	// in the future, get this from TileBase(?)
+	public int mapDimensionX = 14;
+	public int mapDimensionY = 14;
 	
-	private Tilemap baseTilemap;
+	public Tilemap baseTilemap;
 	
 	// invoke these dynamically to get the correct tile type. 0:grass, 1:dirt, etc. Simply add a new delegate when adding tiles
 	private delegate Tile GetTileOption();
@@ -20,6 +18,12 @@ public class WorldGrid : MonoBehaviour
 		TilesResourcesLoader.getDirtTile,
 		TilesResourcesLoader.getWaterTile
 	};
+	
+	public void Awake() {
+		// we have a Grid object which is actually attached
+		// the Tilemap is a child of the Grid object
+		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
+	}
 	
 	public Vector3 Tile2RealPos(Vector3Int tilePos) {
 		return baseTilemap.GetCellCenterWorld(tilePos);
@@ -35,11 +39,17 @@ public class WorldGrid : MonoBehaviour
 		return Tile2RealPos(tileEnd);		
 	}
 	
-	public void GenerateWorld() {
-		// we have a Grid object which is actually attached
-		// the Tilemap is a child of the Grid object
-		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
-		
+	public Vector3Int RandomTile() {
+		int x = Random.Range(0, mapDimensionX);
+		int y = Random.Range(0, mapDimensionY);
+		return new Vector3Int(x, y, 0);
+	}
+	
+	public Vector3 RandomTileReal() {
+		return Tile2RealPos(RandomTile());
+	}
+	
+	public void GenerateWorld() {	
 		baseTilemap.ClearAllTiles();
 		int[,] mapMatrix = GenerateMapMatrix();
 		
