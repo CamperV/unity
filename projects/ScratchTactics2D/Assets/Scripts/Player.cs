@@ -10,7 +10,7 @@ public class Player : Mover
     // Start is called before the first frame update
     void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
-		spriteRenderer.sprite = SpritesResourcesLoader.GetPlayerSprite();;
+		spriteRenderer.sprite = SpritesResourcesLoader.GetPlayerSprite();
     }
 	
 	protected override void Start() {
@@ -22,10 +22,10 @@ public class Player : Mover
     void Update() {
 		if (!GameManager.inst.playerPhase) return;
 		
-		if (Input.GetKeyDown("left")) 	AttemptMove<Enemy>(-1,  0);
-		if (Input.GetKeyDown("right")) 	AttemptMove<Enemy>( 1,  0);
-		if (Input.GetKeyDown("up")) 	AttemptMove<Enemy>( 0,  1);
-		if (Input.GetKeyDown("down")) 	AttemptMove<Enemy>( 0, -1);
+		if (Input.GetKeyDown("left"))  AttemptMove<Enemy>(-1,  0);
+		if (Input.GetKeyDown("right")) AttemptMove<Enemy>( 1,  0);
+		if (Input.GetKeyDown("up"))    AttemptMove<Enemy>( 0,  1);
+		if (Input.GetKeyDown("down"))  AttemptMove<Enemy>( 0, -1);
     }
 	
 	public void ResetPosition() {
@@ -39,9 +39,7 @@ public class Player : Mover
 	
 	protected override void OnBlocked<T>(T component) {
 		Enemy hitEnemy = component as Enemy;
-		//hitEnemy.Blink();
-		//animator.SetTrigger("wut");
-		Debug.Log("BLOCKED with " + hitEnemy);
+		hitEnemy.OnHit();
 	}
 	
 	// collision with any other Collider2D

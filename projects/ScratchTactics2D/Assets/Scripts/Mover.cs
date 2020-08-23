@@ -39,6 +39,10 @@ public abstract class Mover : MonoBehaviour {
 		}
 
 		// only if you can't move properly
+		
+		// always interrupt a moving crt to change the destination of the SmoothMovement slide
+		if (crtMovingFlag) StopCoroutine(crtMovement);
+		crtMovement = StartCoroutine(SmoothBump(endpoint));
 		return false;
 	}
 	
@@ -50,7 +54,8 @@ public abstract class Mover : MonoBehaviour {
 		
 		crtMovingFlag = true;
 		while (sqrRemainingDistance > snapFactor) {
-			speedFactor = (15.0f * (1.0f/(sqrRemainingDistance*sqrRemainingDistance)) * Time.deltaTime) + 0.10f;
+			//speedFactor = (15.0f * (1.0f/(sqrRemainingDistance*sqrRemainingDistance)) * Time.deltaTime) + 0.10f;
+			speedFactor = (15.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime) + 0.10f;
 
 			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, endpoint, speedFactor);
 			rigidbody2D.MovePosition(newPos);
@@ -61,6 +66,39 @@ public abstract class Mover : MonoBehaviour {
 		
 		// after the while loop is broken:
 		rigidbody2D.MovePosition(endpoint);
+		crtMovingFlag = false;
+	}
+	
+	// this coroutine performs a little 'bump' when you can't move
+	protected IEnumerator SmoothBump(Vector3 endpoint) {
+		
+		float speedFactor = 0.10f;
+		
+		Vector3 origPosition = transform.position;
+		Vector3 peak = transform.position + (endpoint - transform.position)/5.0f;
+		
+		// while these are the same now, they only need to be initialized the same
+		float sqrRemainingDistance = (transform.position - peak).sqrMagnitude;
+		float sqrReturnDistance    = (peak - transform.position).sqrMagnitude;
+		
+		crtMovingFlag = true;
+		while (sqrRemainingDistance > float.Epsilon) {
+			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, peak, speedFactor);
+			rigidbody2D.MovePosition(newPos);
+			sqrRemainingDistance = (transform.position - peak).sqrMagnitude;
+			
+			yield return null; // waits for a new frame
+		}
+		while (sqrReturnDistance > float.Epsilon) {
+			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, origPosition, speedFactor);
+			rigidbody2D.MovePosition(newPos);
+			sqrReturnDistance = (origPosition - transform.position).sqrMagnitude;
+
+			yield return null; // waits for a new frame
+		}
+		
+		// after the while loop is broken:
+		//rigidbody2D.MovePosition(origPosition);
 		crtMovingFlag = false;
 	}
 	

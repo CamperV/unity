@@ -57,8 +57,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4cb4edd8b0cc0141b42a837ec4aba87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapDimensionX: 15
-  mapDimensionY: 15
+  mapDimensionX: 6
+  mapDimensionY: 6
   baseTilemap: {fileID: 7063212377371890480, guid: bcef5c42344c89047ada2bb200c8b4cc, type: 3}
 --- !u!1001 &4103227061508251195
 PrefabInstance:

@@ -5,10 +5,13 @@ using UnityEngine;
 public class Enemy : Mover
 {
 	private SpriteRenderer spriteRenderer;
+	private Animator animator;
 	
     void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = SpritesResourcesLoader.GetEnemySprite();
+		
+		animator = GetComponent<Animator>();
     }
 	
     // Start is called before the first frame update
@@ -27,9 +30,11 @@ public class Enemy : Mover
 	}
 	
 	protected override void OnBlocked<T>(T component) {
-		//Enemy hitEnemy = component as Enemy;
-		//hitEnemy.Blink();
-		//animator.SetTrigger("wut");
 		Debug.Log("Enemy collided with " + component);
 	}
+	
+	public void OnHit() {
+		animator.SetTrigger("EnemyFlash");
+	}
+
 }
