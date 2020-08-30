@@ -11,6 +11,14 @@ public class Enemy : Mover, IPhasedObject
 	[HideInInspector] public bool phaseActionTaken { get; set; }
 	public int moveSpeed = 1;
 	
+	public static Enemy Spawn(Enemy prefab) {
+		Vector3 spawnLoc = GameManager.inst.worldGrid.RandomTileReal();
+		Enemy enemy = Instantiate(prefab, spawnLoc, Quaternion.identity);
+		enemy.ResetPosition(GameManager.inst.worldGrid.Real2GridPos(spawnLoc));
+		GameManager.inst.worldGrid.UpdateOccupantAt(enemy.gridPosition, enemy);
+		return enemy;
+	}
+	
     void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = SpritesResourcesLoader.GetSprite("yellow_skull_red_eyes");
@@ -32,27 +40,29 @@ public class Enemy : Mover, IPhasedObject
 	
 	public bool TakePhaseAction() {
 		// chase player given the coordinates
-		Vector3Int chaseVec = ClampVec(GameManager.inst.player.GetGridPosition() - GetGridPosition(), moveSpeed);
+		Vector3Int chaseVec = SpeedVec(GameManager.inst.player.gridPosition - gridPosition, moveSpeed);
 												 
 		// randomly decide b/w axes if its a tie
 		if (Mathf.Abs(chaseVec.x) == Mathf.Abs(chaseVec.y)) {
-			int randInt = Random.Range(0, 2);
+			int randInt = Random.Range(0, 3);
 			if (randInt == 0) chaseVec.x = 0;
-			else chaseVec.y = 0;
+			else if (randInt == 1) chaseVec.y = 0;
+			else { chaseVec.x = 0; chaseVec.y = 0; }	// sometimes, just don't move
 		}
 		
-		AttemptMove<Player>(chaseVec.x, chaseVec.y);
+		AttemptGridMove(chaseVec.x, chaseVec.y);
 		
 		phaseActionTaken = true;
 		return phaseActionTaken;
 	}
 	
-	public Vector3Int GetGridPosition() {
-		return GameManager.inst.worldGrid.Real2GridPos(transform.position);
+	public void ResetPosition(Vector3Int v) {
+		gridPosition = v;
+		transform.position = GameManager.inst.worldGrid.Grid2RealPos(gridPosition);
 	}
 	
-	protected override void AttemptMove<T>(int xdir, int ydir) {
-		base.AttemptMove<T>(xdir, ydir);
+	protected override void AttemptGridMove(int xdir, int ydir) {
+		base.AttemptGridMove(xdir, ydir);
 	}
 	
 	protected override void OnBlocked<T>(T component) {

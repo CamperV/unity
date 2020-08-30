@@ -48,14 +48,13 @@ public class GameManager : MonoBehaviour
 		worldGrid = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 		worldGrid.GenerateWorld();
 		
-		player = Instantiate(playerPrefab, worldGrid.RandomTileReal(), Quaternion.identity);
-		player.ResetPosition();
+		player = Player.Spawn(playerPrefab);
 		
 		enemyController = Instantiate(enemyControllerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 		
 		// now, spawn the enemies
 		for (int i = 0; i < Random.Range(minEnemies, maxEnemies); i++) {
-			Enemy newEnemy = Instantiate(enemyPrefab, worldGrid.RandomTileReal(), Quaternion.identity);
+			Enemy newEnemy = Enemy.Spawn(enemyPrefab);
 			enemyController.AddSubject(newEnemy);
 		}
 		

@@ -6,8 +6,8 @@ using Random = UnityEngine.Random;
 
 public class WorldGrid : MonoBehaviour
 {
-	public int mapDimensionX = 14;
-	public int mapDimensionY = 14;
+	public int mapDimensionX;
+	public int mapDimensionY;
 	
 	public Tilemap baseTilemap;
 	
@@ -18,11 +18,13 @@ public class WorldGrid : MonoBehaviour
 		TilesResourcesLoader.getDirtTile,
 		TilesResourcesLoader.getWaterTile
 	};
+	private Dictionary<Vector3Int, Component> occupancyGrid;
 	
 	public void Awake() {
 		// we have a Grid object which is actually attached
 		// the Tilemap is a child of the Grid object
 		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
+		occupancyGrid = new Dictionary<Vector3Int, Component>();
 	}
 	
 	public Vector3 Grid2RealPos(Vector3Int tilePos) {
@@ -47,6 +49,21 @@ public class WorldGrid : MonoBehaviour
 	
 	public Vector3 RandomTileReal() {
 		return Grid2RealPos(RandomTile());
+	}
+	
+	public Component OccupantAt(Vector3Int tilePos) {
+		if (occupancyGrid.ContainsKey(tilePos)) {
+			return occupancyGrid[tilePos];
+		}
+		return null;
+	}
+	
+	public void UpdateOccupantAt(Vector3Int tilePos, Component newOccupant) {
+		if (occupancyGrid.ContainsKey(tilePos)) {
+			occupancyGrid[tilePos] = newOccupant;
+		} else {
+			occupancyGrid.Add(tilePos, newOccupant);
+		}
 	}
 	
 	public void GenerateWorld() {	

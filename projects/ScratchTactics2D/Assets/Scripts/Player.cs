@@ -7,7 +7,14 @@ public class Player : Mover, IPhasedObject
 	private SpriteRenderer spriteRenderer;
 	private Animator animator;
 	
-	public bool phaseActionTaken { get; set; }
+	[HideInInspector] public bool phaseActionTaken { get; set; }
+	
+	public static Player Spawn(Player prefab) {
+		Player player = Instantiate(prefab, GameManager.inst.worldGrid.RandomTileReal(), Quaternion.identity);
+		player.ResetPosition(new Vector3Int(1, 1, 0));
+		GameManager.inst.worldGrid.UpdateOccupantAt(player.gridPosition, player);
+		return player;
+	}
 
     void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -33,10 +40,10 @@ public class Player : Mover, IPhasedObject
 	
 	public bool TakePhaseAction() {
 		// phaseAction possibilities
-		if 		(Input.GetKeyDown("left"))  { AttemptMove<Enemy>(-1,  0); }
-		else if (Input.GetKeyDown("right")) { AttemptMove<Enemy>( 1,  0); }
-		else if (Input.GetKeyDown("up"))    { AttemptMove<Enemy>( 0,  1); }
-		else if (Input.GetKeyDown("down"))  { AttemptMove<Enemy>( 0, -1); }
+		if 		(Input.GetKeyDown("left"))  { AttemptGridMove(-1,  0); }
+		else if (Input.GetKeyDown("right")) { AttemptGridMove( 1,  0); }
+		else if (Input.GetKeyDown("up"))    { AttemptGridMove( 0,  1); }
+		else if (Input.GetKeyDown("down"))  { AttemptGridMove( 0, -1); }
 		else 								{ return false; } // no input taken
 		// other possibilities
 		//
@@ -47,25 +54,17 @@ public class Player : Mover, IPhasedObject
 		return true;
 	}
 		
-	public void ResetPosition() {
-		transform.position = GameManager.inst.worldGrid.Grid2RealPos(new Vector3Int(1, 1, 0));
+	public void ResetPosition(Vector3Int v) {
+		gridPosition = v;
+		transform.position = GameManager.inst.worldGrid.Grid2RealPos(gridPosition);
 	}
 	
-	public Vector3Int GetGridPosition() {
-		return GameManager.inst.worldGrid.Real2GridPos(transform.position);
-	}
-	
-	protected override void AttemptMove<T>(int xdir, int ydir) {
-		base.AttemptMove<T>(xdir, ydir);
+	protected override void AttemptGridMove(int xdir, int ydir) {
+		base.AttemptGridMove(xdir, ydir);
 	}
 	
 	protected override void OnBlocked<T>(T component) {
 		Enemy hitEnemy = component as Enemy;
 		hitEnemy.OnHit();
-	}
-	
-	// collision with any other Collider2D
-	private void OnTriggerEnter2D(Collider2D other) {
-		//Debug.Log("Collided with " + other);
 	}
 }
