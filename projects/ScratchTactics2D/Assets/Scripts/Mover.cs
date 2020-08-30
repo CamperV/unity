@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Mover : MonoBehaviour {
-	
+public abstract class Mover : MonoBehaviour
+{	
 	public LayerMask blockingLayer;
 	
 	private BoxCollider2D boxCollider;
@@ -15,6 +15,12 @@ public abstract class Mover : MonoBehaviour {
 		boxCollider = GetComponent<BoxCollider2D>();
 		rigidbody2D = GetComponent<Rigidbody2D>();
     }
+	
+	protected Vector3Int ClampVec(Vector3Int vec, int speed) {
+		return new Vector3Int(Mathf.Clamp(vec.x,  -speed, speed),
+							  Mathf.Clamp(vec.y,  -speed, speed),
+							  Mathf.Clamp(vec.z,  -speed, speed));
+	}
 	
 	protected bool GridMove(int xdir, int ydir, out RaycastHit2D block) {
 		// need to always be a cell/Tile coordinate
@@ -116,5 +122,6 @@ public abstract class Mover : MonoBehaviour {
 		}
 	}
 	
+	// abstract methods are inherently virtual
 	protected abstract void OnBlocked<T>(T component) where T : Component;
 }

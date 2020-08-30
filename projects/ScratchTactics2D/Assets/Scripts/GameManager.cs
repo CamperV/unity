@@ -9,7 +9,13 @@ public class GameManager : MonoBehaviour
 	public static GameManager inst = null; // enforces singleton behavior
 
 	// accessed by children via singleton
-	[HideInInspector] public bool playerPhase = true;
+	public enum Phase {player, enemy};
+	private Phase phase;
+	
+	[HideInInspector] public Phase currentPhase {
+		get { return phase; }
+		set { phase = value; }
+	}
 	public int maxEnemies;
 	public int minEnemies;
 	
@@ -17,9 +23,12 @@ public class GameManager : MonoBehaviour
 	public WorldGrid worldGridPrefab;
 	public Player playerPrefab;
 	public Enemy enemyPrefab;
+	public EnemyController enemyControllerPrefab;
 	
+	// these are public so the EnemyController can access Player locations
 	[HideInInspector] public WorldGrid worldGrid;
-	private List<Enemy> enemies;
+	[HideInInspector] public Player player;
+	[HideInInspector] public EnemyController enemyController;
 	
 	void Awake() {
 		// only allow one GameManager to exist at any time
@@ -32,8 +41,6 @@ public class GameManager : MonoBehaviour
 		DontDestroyOnLoad(gameObject);
 		
 		//
-		worldGrid = null;
-		enemies = new List<Enemy>();
 		Init();
 	}
 	
@@ -41,19 +48,42 @@ public class GameManager : MonoBehaviour
 		worldGrid = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 		worldGrid.GenerateWorld();
 		
-		Player player = Instantiate(playerPrefab, worldGrid.RandomTileReal(), Quaternion.identity);
+		player = Instantiate(playerPrefab, worldGrid.RandomTileReal(), Quaternion.identity);
 		player.ResetPosition();
 		
+		enemyController = Instantiate(enemyControllerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		
 		// now, spawn the enemies
-		enemies.Clear();
 		for (int i = 0; i < Random.Range(minEnemies, maxEnemies); i++) {
 			Enemy newEnemy = Instantiate(enemyPrefab, worldGrid.RandomTileReal(), Quaternion.identity);
-			enemies.Add(newEnemy);
+			enemyController.AddSubject(newEnemy);
 		}
+		
+		// first phase goes to the player
+		currentPhase = Phase.player;
 	}
 
-    // Update is called once per frame
     void Update() {
-        
-    }
+		// wait for phase objects to signal, and change phase for them
+		if (currentPhase == Phase.player) {
+			//
+			// code spins here until player takes its phaseAction
+			//
+			
+			if (player.phaseActionTaken) {
+				currentPhase = Phase.enemy;
+				enemyController.phaseActionTaken = false;
+			}
+		}
+		else if (currentPhase == Phase.enemy) {
+			//
+			// code spins here until all enemies takes their phaseAction
+			//
+			
+			if (enemyController.phaseActionTaken) {
+				currentPhase = Phase.player;
+				player.phaseActionTaken = false;
+			}
+		}
+	}
 }

@@ -25,18 +25,18 @@ public class WorldGrid : MonoBehaviour
 		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
 	}
 	
-	public Vector3 Tile2RealPos(Vector3Int tilePos) {
+	public Vector3 Grid2RealPos(Vector3Int tilePos) {
 		return baseTilemap.GetCellCenterWorld(tilePos);
 	}
 	
-	public Vector3Int Real2TilePos(Vector3 realPos) {
+	public Vector3Int Real2GridPos(Vector3 realPos) {
 		return baseTilemap.WorldToCell(realPos);
 	}
 	
 	public Vector3 GetTileInDirection(Vector3 start, Vector3Int dirVector) {
-		Vector3Int tileStart = Real2TilePos(start);
+		Vector3Int tileStart = Real2GridPos(start);
 		Vector3Int tileEnd   = tileStart + dirVector;
-		return Tile2RealPos(tileEnd);		
+		return Grid2RealPos(tileEnd);		
 	}
 	
 	public Vector3Int RandomTile() {
@@ -46,7 +46,7 @@ public class WorldGrid : MonoBehaviour
 	}
 	
 	public Vector3 RandomTileReal() {
-		return Tile2RealPos(RandomTile());
+		return Grid2RealPos(RandomTile());
 	}
 	
 	public void GenerateWorld() {	

@@ -101,6 +101,7 @@ MonoBehaviour:
   blockingLayer:
     serializedVersion: 2
     m_Bits: 512
+  moveSpeed: 1
 --- !u!61 &2239003336567494942
 BoxCollider2D:
   m_ObjectHideFlags: 0
