@@ -14,9 +14,9 @@ public class WorldGrid : MonoBehaviour
 	// invoke these dynamically to get the correct tile type. 0:grass, 1:dirt, etc. Simply add a new delegate when adding tiles
 	private delegate Tile GetTileOption();
 	private static List<GetTileOption> tileOptions = new List<GetTileOption>{
-		TilesResourcesLoader.getGrassTile,
-		TilesResourcesLoader.getDirtTile,
-		TilesResourcesLoader.getWaterTile
+		TilesResourcesLoader.GetGrassTile,
+		TilesResourcesLoader.GetDirtTile,
+		TilesResourcesLoader.GetWaterTile
 	};
 	private Dictionary<Vector3Int, Component> occupancyGrid;
 	
@@ -51,6 +51,10 @@ public class WorldGrid : MonoBehaviour
 		return Grid2RealPos(RandomTile());
 	}
 	
+	public TileBase GetTileAt(Vector3Int tilePos) {
+		return baseTilemap.GetTile(tilePos);
+	}
+	
 	public Component OccupantAt(Vector3Int tilePos) {
 		if (occupancyGrid.ContainsKey(tilePos)) {
 			return occupancyGrid[tilePos];
@@ -75,6 +79,30 @@ public class WorldGrid : MonoBehaviour
 			gridPosition + new Vector3Int( 1,  0, 0)  // W
 		};
 		return cardinal;
+	}
+	
+	public void HighlightTiles(HashSet<Vector3Int> tilePosSet) {
+		foreach (var tilePos in tilePosSet) {
+			TintTile(tilePos);
+		}
+	}
+	
+	public void ResetHighlightTiles(HashSet<Vector3Int> tilePosSet) {
+		foreach (var tilePos in tilePosSet) {
+			ResetTintTile(tilePos);
+		}
+	}
+	
+	public void TintTile(Vector3Int tilePos) {
+		Color color = baseTilemap.GetColor(tilePos);
+		
+		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
+		baseTilemap.SetColor(tilePos, Color.red);
+	}
+	
+	public void ResetTintTile(Vector3Int tilePos) {
+		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
+		baseTilemap.SetColor(tilePos, new Color(1, 1, 1, 1));
 	}
 	
 	public void GenerateWorld() {	
@@ -105,6 +133,8 @@ public class WorldGrid : MonoBehaviour
 		for (int x = 0; x < mapMatrix.GetLength(0); x++) {
 			for (int y = 0; y < mapMatrix.GetLength(1); y++) {
 				baseTilemap.SetTile(currentPos, tileOptions[mapMatrix[x, y]]());
+				baseTilemap.SetTileFlags(currentPos, TileFlags.None);
+				
 				currentPos = new Vector3Int(currentPos.x,
 											(int)(currentPos.y+baseTilemap.cellSize.y),
 											currentPos.z);

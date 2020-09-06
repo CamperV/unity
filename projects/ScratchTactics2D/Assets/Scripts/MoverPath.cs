@@ -30,6 +30,23 @@ public class MoverPath
 		return path[position];
 	}
 	
+	public Vector3Int PopNext(Vector3Int position) {
+		// hate that we have to double-search here, but hey, its the API
+		// no available Remove(key, out val) override in Unity
+		Vector3Int retval = path[position];
+		path.Remove(position);
+		return retval;
+	}
+	
+	public bool IsEmpty() {
+		return path.Count == 0 || path == null;
+	}
+	
+	public bool IsValid() {
+		// check the endpoints to ensure path is still valid
+		return !IsEmpty() && GameManager.inst.worldGrid.OccupantAt(end) == null;
+	}
+	
 	public void CalcStartEnd() {		
 		HashSet<Vector3Int> keys = new HashSet<Vector3Int>(path.Keys);
 		HashSet<Vector3Int> vals = new HashSet<Vector3Int>(path.Values);

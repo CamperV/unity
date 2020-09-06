@@ -5,13 +5,18 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour, IPhasedObject
 {
 	private List<Enemy> enemyList;
+	private HashSet<Vector3Int> _pathTiles;
 	
 	public bool phaseActionTaken { get; set; }
 	public Vector3Int lastKnownPlayerPos;
+	public Vector3Int playerPosLastTurn;
 	
 	void Awake() {
 		phaseActionTaken = false;
+		//lastKnownPlayerPos = new Vector3Int(-1, -1, -1);
+		
 		enemyList = new List<Enemy>();
+		_pathTiles = new HashSet<Vector3Int>();
     }
 
     void Update() {
@@ -26,12 +31,24 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 	
 	public bool TakePhaseAction() {
 		// update player position
+		playerPosLastTurn = lastKnownPlayerPos;
 		lastKnownPlayerPos = GameManager.inst.player.gridPosition;
 		
 		bool pAT = true;
 		foreach (Enemy enemy in enemyList) {
 			pAT &= enemy.TakePhaseAction();
 		}
+
+		// find a way to make this persist
+		GameManager.inst.worldGrid.ResetHighlightTiles(_pathTiles);
+		_pathTiles.Clear();
+		
+		foreach (Enemy enemy in enemyList) {
+			foreach (Vector3Int tile in enemy.pathToPlayer.path.Keys) {
+				_pathTiles.Add(tile);
+			}
+		}
+		GameManager.inst.worldGrid.HighlightTiles(_pathTiles);
 		
 		return pAT;
 	}
@@ -41,7 +58,7 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 	}
 	
 	public bool HasPlayerMoved() {
-		return lastKnownPlayerPos == GameManager.inst.player.gridPosition;
+		return playerPosLastTurn != GameManager.inst.player.gridPosition;
 	}
 	
 	public List<Vector3Int> GetMovementOptions(Vector3Int fromPosition) {
@@ -56,8 +73,8 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 		// also, the conversion to HashSet, and the conversion back, is not worth it to remove from a list of spaces max
 		List<Vector3Int> moveOptions = new List<Vector3Int>();
 		foreach (Vector3Int pos in GameManager.inst.worldGrid.GetNeighbors(fromPosition)) {
-			if (!currentEnemyPositions.Contains(pos))
-				moveOptions.Add(pos);
+			if (!currentEnemyPositions.Contains(pos)) moveOptions.Add(pos);
+			//if (GameManager.inst.worldGrid.OccupantAt(pos) == null) moveOptions.Add(pos); CRASH?
 		}
 		return moveOptions;	
 		

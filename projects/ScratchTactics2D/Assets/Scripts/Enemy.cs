@@ -29,7 +29,6 @@ public class Enemy : Mover, IPhasedObject
 		
 		phaseActionTaken = false;
 		pathToPlayer = new MoverPath();
-		Debug.Log("init new moverpath " + pathToPlayer);
     }
 	
     protected override void Start() {
@@ -45,12 +44,12 @@ public class Enemy : Mover, IPhasedObject
 	public bool TakePhaseAction() {
 		// chase player given the coordinates
 		// GetIterablePath also sets the List version of the path
-		if (GameManager.inst.enemyController.HasPlayerMoved()) {
+		if (GameManager.inst.enemyController.HasPlayerMoved() || !pathToPlayer.IsValid()) {
 			pathToPlayer.Clear();
 			pathToPlayer = GetPathTo(GameManager.inst.player.gridPosition);
 		}
 
-		Vector3Int nextStep = ToPosition(pathToPlayer.Next(gridPosition), moveSpeed);		
+		Vector3Int nextStep = ToPosition(pathToPlayer.PopNext(gridPosition), moveSpeed);		
 		AttemptGridMove(nextStep.x, nextStep.y);
 		
 		phaseActionTaken = true;

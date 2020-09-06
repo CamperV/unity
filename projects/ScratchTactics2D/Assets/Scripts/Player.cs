@@ -11,7 +11,7 @@ public class Player : Mover, IPhasedObject
 	
 	public static Player Spawn(Player prefab) {
 		Player player = Instantiate(prefab, GameManager.inst.worldGrid.RandomTileReal(), Quaternion.identity);
-		player.ResetPosition(new Vector3Int(1, 1, 0));
+		player.ResetPosition(new Vector3Int(4, 4, 0));
 		GameManager.inst.worldGrid.UpdateOccupantAt(player.gridPosition, player);
 		return player;
 	}
@@ -44,6 +44,7 @@ public class Player : Mover, IPhasedObject
 		else if (Input.GetKeyDown("right")) { AttemptGridMove( 1,  0); }
 		else if (Input.GetKeyDown("up"))    { AttemptGridMove( 0,  1); }
 		else if (Input.GetKeyDown("down"))  { AttemptGridMove( 0, -1); }
+		else if (Input.GetKeyDown("space")) { /* pass turn */ }
 		else 								{ return false; } // no input taken
 		// other possibilities
 		//

@@ -5,19 +5,19 @@ using UnityEngine.Tilemaps;
 
 public class TilesResourcesLoader : MonoBehaviour
 {
-	public static Tile getGrassTile() {
-		return getTile("grass_tile");
+	public static Tile GetGrassTile() {
+		return GetTile("grass_tile");
 	}
 	
-	public static Tile getDirtTile() {
-		return getTile("dirt_tile");
+	public static Tile GetDirtTile() {
+		return GetTile("dirt_tile");
 	}
 	
-	public static Tile getWaterTile() {
-		return getTile("water_tile");
+	public static Tile GetWaterTile() {
+		return GetTile("water_tile");
 	}
 	
-	private static Tile getTile(string name) {
+	private static Tile GetTile(string name) {
 		return (Tile)Resources.Load(name, typeof(Tile));
 	}
 }
