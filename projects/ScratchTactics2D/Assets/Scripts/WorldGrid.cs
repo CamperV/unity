@@ -66,6 +66,17 @@ public class WorldGrid : MonoBehaviour
 		}
 	}
 	
+	// neighbors are defined as adjacent squares in cardinal directions
+	public List<Vector3Int> GetNeighbors(Vector3Int gridPosition) {
+		List<Vector3Int> cardinal = new List<Vector3Int> {
+			gridPosition + new Vector3Int( 0,  1, 0), // N
+			gridPosition + new Vector3Int( 0, -1, 0), // S
+			gridPosition + new Vector3Int(-1,  0, 0), // E
+			gridPosition + new Vector3Int( 1,  0, 0)  // W
+		};
+		return cardinal;
+	}
+	
 	public void GenerateWorld() {	
 		baseTilemap.ClearAllTiles();
 		int[,] mapMatrix = GenerateMapMatrix();

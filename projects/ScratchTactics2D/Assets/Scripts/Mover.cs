@@ -6,14 +6,12 @@ public abstract class Mover : MonoBehaviour
 {	
 	public LayerMask blockingLayer;
 	public Vector3Int gridPosition { get; protected set; }
-	
-	private BoxCollider2D boxCollider;
+
 	private Rigidbody2D rigidbody2D;
 	private bool crtMovingFlag = false;
 	private Coroutine crtMovement;
 	
     protected virtual void Start() {
-		boxCollider = GetComponent<BoxCollider2D>();
 		rigidbody2D = GetComponent<Rigidbody2D>();
     }
 	
@@ -21,6 +19,12 @@ public abstract class Mover : MonoBehaviour
 		return new Vector3Int(Mathf.Clamp(vec.x,  -speed, speed),
 							  Mathf.Clamp(vec.y,  -speed, speed),
 							  Mathf.Clamp(vec.z,  -speed, speed));
+	}
+	
+	protected Vector3Int ToPosition(Vector3Int pos, int speed) {
+		return new Vector3Int(Mathf.Clamp(pos.x - gridPosition.x,  -speed, speed),
+							  Mathf.Clamp(pos.y - gridPosition.y,  -speed, speed),
+							  Mathf.Clamp(pos.z - gridPosition.z,  -speed, speed));
 	}
 	
 	protected bool GridMove(int xdir, int ydir, out Component occupant) {
@@ -62,45 +66,6 @@ public abstract class Mover : MonoBehaviour
 		if(!canMove && hitComponent != null) {
 			OnBlocked(hitComponent);
 		}*/
-	}
-	
-	protected bool Move(int xdir, int ydir, out RaycastHit2D block) {
-		// need to always be a cell/Tile coordinate
-		Vector3 startpoint = transform.position; // implicitly casts
-		Vector3 endpoint   = GameManager.inst.worldGrid.GetTileInDirection(startpoint, new Vector3Int(xdir, ydir, 0));
-		
-		// casts a ray and sees if the boxCollider hits anything along the vector startpoint->endpoint
-		boxCollider.enabled = false;
-		block = Physics2D.Linecast(startpoint, endpoint, blockingLayer);
-		boxCollider.enabled = true;
-		
-		// no collisions
-		if (block.transform == null) {
-			// always interrupt a moving crt to change the destination of the SmoothMovement slide
-			if (crtMovingFlag) StopCoroutine(crtMovement);
-			crtMovement = StartCoroutine(SmoothMovement(endpoint));
-			return true;
-		}
-
-		// Can't move?
-		// always interrupt a moving crt to change the destination of the SmoothMovement slide
-		if (crtMovingFlag) StopCoroutine(crtMovement);
-		crtMovement = StartCoroutine(SmoothBump(endpoint));
-		return false;
-	}
-	
-	protected void AttemptMove<T>(int xdir, int ydir) where T : Component {
-		RaycastHit2D hit;
-		bool canMove = Move(xdir, ydir, out hit);
-		
-		// ie. made no collision
-		if (hit.transform == null) return;
-		
-		// but if you did...
-		T hitComponent = hit.transform.GetComponent<T>(); // this gets the thing that hit it?!
-		if(!canMove && hitComponent != null) {
-			OnBlocked(hitComponent);
-		}
 	}
 	
 	// this is like a Python-generator: Coroutine
@@ -159,4 +124,17 @@ public abstract class Mover : MonoBehaviour
 	
 	// abstract methods are inherently virtual
 	protected abstract void OnBlocked<T>(T component) where T : Component;
+	
+	// neighbors are defined as adjacent squares in cardinal directions
+	/*public List<Vector3Int> GetNeighbors() {
+		List<Vector3Int> cardinal = new List<Vector3Int> {
+			gridPosition + new Vector3Int( 0,  1, 0), // N
+			gridPosition + new Vector3Int( 0, -1, 0), // S
+			gridPosition + new Vector3Int(-1,  0, 0), // E
+			gridPosition + new Vector3Int( 1,  0, 0)  // W
+		};
+		// here, we'd loop through and determine which, if any, are valid
+		
+		return cardinal;
+	}*/
 }
