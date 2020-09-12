@@ -44,7 +44,7 @@ public class MoverPath
 	
 	public bool IsValid() {
 		// check the endpoints to ensure path is still valid
-		return !IsEmpty() && GameManager.inst.worldGrid.OccupantAt(end) == null;
+		return !IsEmpty() && GameManager.inst.worldGrid.VacantAt(end);
 	}
 	
 	public void CalcStartEnd() {		

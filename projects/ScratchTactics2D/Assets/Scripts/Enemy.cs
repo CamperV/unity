@@ -21,10 +21,7 @@ public class Enemy : Mover, IPhasedObject
 		return enemy;
 	}
 	
-    void Awake() {
-		spriteRenderer = GetComponent<SpriteRenderer>();
-		spriteRenderer.sprite = SpritesResourcesLoader.GetSprite("yellow_skull_red_eyes");
-		
+    void Awake() {	
 		animator = GetComponent<Animator>();
 		
 		phaseActionTaken = false;
@@ -70,7 +67,7 @@ public class Enemy : Mover, IPhasedObject
 	}
 	
 	protected override void OnBlocked<T>(T component) {
-		Debug.Log("Enemy collided with " + component);
+		
 	}
 	
 	// AI pathfinding
@@ -109,7 +106,13 @@ public class Enemy : Mover, IPhasedObject
 			foreach (Vector3Int adjacent in GameManager.inst.enemyController.GetMovementOptions(currentPos)) {
 				if (usedInSearch.Contains(adjacent)) continue;
 				cameFrom[adjacent] = currentPos;
-				pathQueue.Enqueue(CalcPriority(adjacent, targetPosition), adjacent);
+				
+				// enqueueing based on EdgeCost between two nodes will search correctly
+				// but we need to modify such that the prioirty is the total path cost so far
+				var totalPathCostSoFar = TotalPathCost(gridPosition, adjacent, cameFrom);
+				if (totalPathCostSoFar == -1) continue;
+				
+				pathQueue.Enqueue(CalcPriority(adjacent, targetPosition) + totalPathCostSoFar, adjacent);
 			}
 		}
 		
@@ -135,6 +138,28 @@ public class Enemy : Mover, IPhasedObject
 	
 	private int CalcPriority(Vector3Int src, Vector3Int dest) {
 		return (int)Vector3Int.Distance(src, dest);
+	}
+	
+	private int EdgeCost(Vector3Int dest) {
+		var destTile = GameManager.inst.worldGrid.GetWorldTileAt(dest);
+		if (destTile == null) return -1;
+		return destTile.cost;
+	}
+	
+	private int TotalPathCost(Vector3Int src, Vector3Int dest, Dictionary<Vector3Int, Vector3Int> cameFrom) {
+		// for now, assume all keys are present
+		Vector3Int progenitor = dest;
+		int totalCost = 0;
+		
+		// build the path in reverse, aka next steps (including target)
+		while (progenitor != src) {
+			var progTile = GameManager.inst.worldGrid.GetWorldTileAt(progenitor);
+			if (progTile == null) return -1;
+			
+			totalCost += progTile.cost;
+			progenitor = cameFrom[progenitor];
+		}
+		return totalCost;
 	}
 
 }

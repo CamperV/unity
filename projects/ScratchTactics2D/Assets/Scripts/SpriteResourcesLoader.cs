@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpritesResourcesLoader : MonoBehaviour
+public class SpriteResourcesLoader : MonoBehaviour
 {
 	public static Sprite GetPlayerSprite() {
 		return GetSprite("yellow_skull");

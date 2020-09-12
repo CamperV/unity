@@ -48,7 +48,7 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 				_pathTiles.Add(tile);
 			}
 		}
-		GameManager.inst.worldGrid.HighlightTiles(_pathTiles);
+		GameManager.inst.worldGrid.HighlightTiles(_pathTiles, Color.red);
 		
 		return pAT;
 	}
@@ -64,17 +64,23 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 	public List<Vector3Int> GetMovementOptions(Vector3Int fromPosition) {
 		// since we call TakePhaseAction serially...
 		// we don't need to know if an Enemy WILL move into a spot.
-		// if they had higher priority, they will have already moved into it
-		List<Vector3Int> currentEnemyPositions = new List<Vector3Int>();
-		foreach (Enemy enemy in enemyList) {
-			currentEnemyPositions.Add(enemy.gridPosition);
-		}
-		
+		// if they had higher priority, they will have already moved into it	
 		// also, the conversion to HashSet, and the conversion back, is not worth it to remove from a list of spaces max
 		List<Vector3Int> moveOptions = new List<Vector3Int>();
+		
 		foreach (Vector3Int pos in GameManager.inst.worldGrid.GetNeighbors(fromPosition)) {
-			if (!currentEnemyPositions.Contains(pos)) moveOptions.Add(pos);
-			//if (GameManager.inst.worldGrid.OccupantAt(pos) == null) moveOptions.Add(pos); CRASH?
+			if (!GameManager.inst.worldGrid.IsInBounds(pos)) {
+				continue;
+			}
+			var occupant = GameManager.inst.worldGrid.OccupantAt(pos);
+			
+			// either check the tag or type of occupant
+			// if occupant is null, short-circuit and add moveOption
+			// if it is occupied, but is a Player, still works
+			if (occupant != null && occupant.GetType() != typeof(Player)) {
+				continue;
+			}
+			moveOptions.Add(pos);
 		}
 		return moveOptions;	
 		

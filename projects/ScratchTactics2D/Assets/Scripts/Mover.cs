@@ -32,20 +32,24 @@ public abstract class Mover : MonoBehaviour
 		Vector3Int endTile   = gridPosition + new Vector3Int(xdir, ydir, 0);
 		Vector3 endpoint = GameManager.inst.worldGrid.Grid2RealPos(endTile);
 
-		occupant = GameManager.inst.worldGrid.OccupantAt(endTile);
-		
-		// no collisions
-		if (occupant == null) {
-			// we can move: instantly update the worldGrid w/ this info to block further inquiry
-			// also, remove the ref to yourself and set occupancy to null. No two things can ever coexist, so this should be fine
-			GameManager.inst.worldGrid.UpdateOccupantAt(gridPosition, null);
-			GameManager.inst.worldGrid.UpdateOccupantAt(endTile, this);
-			gridPosition = endTile;
+		// first check if you're even in bounds, THEN get the occupant
+		occupant = null;
+		if (GameManager.inst.worldGrid.IsInBounds(endTile)) {
+			occupant = GameManager.inst.worldGrid.OccupantAt(endTile);
 			
-			// always interrupt a moving crt to change the destination of the SmoothMovement slide
-			if (crtMovingFlag) StopCoroutine(crtMovement);
-			crtMovement = StartCoroutine(SmoothMovement(endpoint));
-			return true;
+			// no collisions
+			if (occupant == null) {
+				// we can move: instantly update the worldGrid w/ this info to block further inquiry
+				// also, remove the ref to yourself and set occupancy to null. No two things can ever coexist, so this should be fine
+				GameManager.inst.worldGrid.UpdateOccupantAt(gridPosition, null);
+				GameManager.inst.worldGrid.UpdateOccupantAt(endTile, this);
+				gridPosition = endTile;
+				
+				// always interrupt a moving crt to change the destination of the SmoothMovement slide
+				if (crtMovingFlag) StopCoroutine(crtMovement);
+				crtMovement = StartCoroutine(SmoothMovement(endpoint));
+				return true;
+			}
 		}
 
 		// Can't move?
@@ -58,14 +62,11 @@ public abstract class Mover : MonoBehaviour
 	protected virtual void AttemptGridMove(int xdir, int ydir) {
 		Component hitComponent;
 		bool canMove = GridMove(xdir, ydir, out hitComponent);
-		/*
-		// ie. made no collision
-		if (hit.transform == null) return;
 		
 		// but if you did...
 		if(!canMove && hitComponent != null) {
 			OnBlocked(hitComponent);
-		}*/
+		}
 	}
 	
 	// this is like a Python-generator: Coroutine

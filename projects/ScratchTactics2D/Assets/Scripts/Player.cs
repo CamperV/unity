@@ -17,9 +17,6 @@ public class Player : Mover, IPhasedObject
 	}
 
     void Awake() {
-		spriteRenderer = GetComponent<SpriteRenderer>();
-		spriteRenderer.sprite = SpritesResourcesLoader.GetSprite("yellow_skull");
-		
 		phaseActionTaken = false;
     }
 	

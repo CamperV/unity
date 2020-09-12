@@ -7,10 +7,12 @@ using Random = UnityEngine.Random;
 public class WorldGrid : MonoBehaviour
 {
 	public int mapDimensionX;
-	public int mapDimensionY;
-	
+	public int mapDimensionY;	
 	public Tilemap baseTilemap;
+
+	private List<WorldTile> tileOptions;
 	
+	/*
 	// invoke these dynamically to get the correct tile type. 0:grass, 1:dirt, etc. Simply add a new delegate when adding tiles
 	private delegate Tile GetTileOption();
 	private static List<GetTileOption> tileOptions = new List<GetTileOption>{
@@ -18,13 +20,24 @@ public class WorldGrid : MonoBehaviour
 		TilesResourcesLoader.GetDirtTile,
 		TilesResourcesLoader.GetWaterTile
 	};
+	*/
+
 	private Dictionary<Vector3Int, Component> occupancyGrid;
+	private Dictionary<Vector3Int, WorldTile> worldTileGrid;
 	
 	public void Awake() {
 		// we have a Grid object which is actually attached
 		// the Tilemap is a child of the Grid object
 		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
+		
+		tileOptions = new List<WorldTile>{
+			//ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
+			ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile,
+			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile
+		};
+		
 		occupancyGrid = new Dictionary<Vector3Int, Component>();
+		worldTileGrid = new Dictionary<Vector3Int, WorldTile>();
 	}
 	
 	public Vector3 Grid2RealPos(Vector3Int tilePos) {
@@ -55,6 +68,13 @@ public class WorldGrid : MonoBehaviour
 		return baseTilemap.GetTile(tilePos);
 	}
 	
+	public WorldTile GetWorldTileAt(Vector3Int tilePos) {
+		if (worldTileGrid.ContainsKey(tilePos)) {
+			return worldTileGrid[tilePos];
+		}
+		return null;
+	}
+	
 	public Component OccupantAt(Vector3Int tilePos) {
 		if (occupancyGrid.ContainsKey(tilePos)) {
 			return occupancyGrid[tilePos];
@@ -69,6 +89,25 @@ public class WorldGrid : MonoBehaviour
 			occupancyGrid.Add(tilePos, newOccupant);
 		}
 	}
+		
+	public bool VacantAt(Vector3Int tilePos) {
+		if (occupancyGrid.ContainsKey(tilePos)) {
+			return occupancyGrid[tilePos] == null;
+		} else {
+			return true;
+		}
+	}
+
+	public List<Component> CurrentOccupants() {
+		List<Component> allOccupants = new List<Component>();
+		foreach (Vector3Int k in occupancyGrid.Keys) {
+			var occupantAt = OccupantAt(k);
+			if (occupantAt != null) {
+				allOccupants.Add(occupantAt);
+			}
+		}
+		return allOccupants;
+	}
 	
 	// neighbors are defined as adjacent squares in cardinal directions
 	public List<Vector3Int> GetNeighbors(Vector3Int gridPosition) {
@@ -81,9 +120,13 @@ public class WorldGrid : MonoBehaviour
 		return cardinal;
 	}
 	
-	public void HighlightTiles(HashSet<Vector3Int> tilePosSet) {
+	public bool IsInBounds(Vector3Int tilePos) {
+		return worldTileGrid.ContainsKey(tilePos);
+	}
+	
+	public void HighlightTiles(HashSet<Vector3Int> tilePosSet, Color color) {
 		foreach (var tilePos in tilePosSet) {
-			TintTile(tilePos);
+			TintTile(tilePos, color);
 		}
 	}
 	
@@ -93,11 +136,11 @@ public class WorldGrid : MonoBehaviour
 		}
 	}
 	
-	public void TintTile(Vector3Int tilePos) {
-		Color color = baseTilemap.GetColor(tilePos);
+	public void TintTile(Vector3Int tilePos, Color color) {
+		//Color color = baseTilemap.GetColor(tilePos);
 		
 		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
-		baseTilemap.SetColor(tilePos, Color.red);
+		baseTilemap.SetColor(tilePos, color);
 	}
 	
 	public void ResetTintTile(Vector3Int tilePos) {
@@ -132,8 +175,11 @@ public class WorldGrid : MonoBehaviour
 
 		for (int x = 0; x < mapMatrix.GetLength(0); x++) {
 			for (int y = 0; y < mapMatrix.GetLength(1); y++) {
-				baseTilemap.SetTile(currentPos, tileOptions[mapMatrix[x, y]]());
-				baseTilemap.SetTileFlags(currentPos, TileFlags.None);
+				// set the WorldTile in the actual tilemap		
+				baseTilemap.SetTile(currentPos, tileOptions[mapMatrix[x, y]]);
+				
+				// set in the WorldTile dictionary for easy path cost lookup
+				worldTileGrid[new Vector3Int(x, y, 0)] = tileOptions[mapMatrix[x, y]];
 				
 				currentPos = new Vector3Int(currentPos.x,
 											(int)(currentPos.y+baseTilemap.cellSize.y),
