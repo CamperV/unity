@@ -7,11 +7,11 @@ public class Player : Mover, IPhasedObject
 	private SpriteRenderer spriteRenderer;
 	private Animator animator;
 	
-	[HideInInspector] public bool phaseActionTaken { get; set; }
+	[HideInInspector] public bool phaseActionTaken { get; private set; }
 	
 	public static Player Spawn(Player prefab) {
 		Player player = Instantiate(prefab, GameManager.inst.worldGrid.RandomTileReal(), Quaternion.identity);
-		player.ResetPosition(new Vector3Int(4, 4, 0));
+		player.ResetPosition(new Vector3Int(1, 1, 0));
 		GameManager.inst.worldGrid.UpdateOccupantAt(player.gridPosition, player);
 		return player;
 	}
@@ -27,12 +27,15 @@ public class Player : Mover, IPhasedObject
     // Update is called once per frame
     void Update() {
 		if (!MyPhase()) return;
-		
 		phaseActionTaken = TakePhaseAction();
     }
 	
 	public bool MyPhase() {
-		return GameManager.inst.currentPhase == GameManager.Phase.player && phaseActionTaken == false;
+		return GameManager.inst.phaseManager.currentPhase == PhaseManager.Phase.player && phaseActionTaken == false;
+	}
+	
+	public void TriggerPhase() {
+		phaseActionTaken = false;
 	}
 	
 	public bool TakePhaseAction() {

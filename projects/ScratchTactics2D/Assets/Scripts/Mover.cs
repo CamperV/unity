@@ -6,6 +6,7 @@ public abstract class Mover : MonoBehaviour
 {	
 	public LayerMask blockingLayer;
 	public Vector3Int gridPosition { get; protected set; }
+	public float moveDelayTime = .005f;	// in units of WaitForSeconds();
 
 	private Rigidbody2D rigidbody2D;
 	private bool crtMovingFlag = false;
@@ -79,6 +80,7 @@ public abstract class Mover : MonoBehaviour
 		while (sqrRemainingDistance > snapFactor) {
 			speedFactor = (15.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime) + 0.10f;
 
+			//Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, endpoint, 1f/moveDelayTime * (Time.deltaTime*100));
 			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, endpoint, speedFactor);
 			rigidbody2D.MovePosition(newPos);
 			sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;

@@ -4,7 +4,8 @@ using UnityEngine;
 
 interface IPhasedObject
 {
-	bool phaseActionTaken { get; set; }
+	bool phaseActionTaken { get; }
 	bool MyPhase();
+	void TriggerPhase();
 	bool TakePhaseAction();
 }

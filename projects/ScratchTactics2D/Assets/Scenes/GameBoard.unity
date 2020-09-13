@@ -262,12 +262,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b824d2c15c78d845ab1cf15109c0ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxEnemies: 1
-  minEnemies: 1
+  maxEnemies: 4
+  minEnemies: 4
   worldGridPrefab: {fileID: 6553869377840780433, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
   playerPrefab: {fileID: 5140243916379933852, guid: eb354dab14992314a92d8c6598838917, type: 3}
   enemyPrefab: {fileID: 2239003336567494943, guid: ec9a4e7a1dbe72348ad921ce61cc3648, type: 3}
   enemyControllerPrefab: {fileID: 3033003337155828433, guid: 6611adfec92e8b74ca66b42288512725, type: 3}
+  phaseManagerPrefab: {fileID: 6692847297558468328, guid: cb3de7f3f55db0444885d3b028c80c10, type: 3}
   worldGrid: {fileID: 0}
   player: {fileID: 0}
   enemyController: {fileID: 0}
+  phaseManager: {fileID: 0}

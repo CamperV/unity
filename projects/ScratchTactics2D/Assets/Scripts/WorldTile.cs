@@ -17,18 +17,18 @@ public class DirtWorldTile : WorldTile
 	}
 	
 	public void OnEnable() {
-		sprite = SpriteResourcesLoader.GetSprite("dirt_tile");
+		sprite = ResourceLoader.GetSprite("dirt_tile");
 	}
 }
 
 public class GrassWorldTile : WorldTile
 {
 	public override int GetCost() {
-		return 0;
+		return 1;
 	}
 	
 	public void OnEnable() {
-		sprite = SpriteResourcesLoader.GetSprite("grass_tile");
+		sprite = ResourceLoader.GetSprite("grass_tile");
 	}
 }
 
@@ -39,7 +39,7 @@ public class WaterWorldTile : WorldTile
 	}
 	
 	public void OnEnable() {
-		sprite = SpriteResourcesLoader.GetSprite("water_tile");
+		sprite = ResourceLoader.GetSprite("water_tile");
 	}
 }
 
@@ -50,7 +50,7 @@ public class MountainWorldTile : WorldTile
 	}
 	
 	public void OnEnable() {
-		sprite = SpriteResourcesLoader.GetSprite("mountain_tile");
+		sprite = ResourceLoader.GetSprite("mountain_tile");
 	}
 }
 

@@ -7,13 +7,19 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 	private List<Enemy> enemyList;
 	private HashSet<Vector3Int> _pathTiles;
 	
-	public bool phaseActionTaken { get; set; }
+	private bool subjectsActingTrigger;
+	private bool allSubjectsPhaseActionTaken;
+	
+	[HideInInspector] public bool phaseActionTaken { get; private set; }
+
 	public Vector3Int lastKnownPlayerPos;
 	public Vector3Int playerPosLastTurn;
+
 	
 	void Awake() {
 		phaseActionTaken = false;
-		//lastKnownPlayerPos = new Vector3Int(-1, -1, -1);
+		subjectsActingTrigger = false;
+		allSubjectsPhaseActionTaken = false;
 		
 		enemyList = new List<Enemy>();
 		_pathTiles = new HashSet<Vector3Int>();
@@ -21,24 +27,32 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 
     void Update() {
         if (!MyPhase()) return;
-		
 		phaseActionTaken = TakePhaseAction();
     }
 	
 	public bool MyPhase() {
-		return GameManager.inst.currentPhase == GameManager.Phase.enemy && phaseActionTaken == false;
+		return GameManager.inst.phaseManager.currentPhase == PhaseManager.Phase.enemy && phaseActionTaken == false;
+	}
+	
+	public void TriggerPhase() {
+		phaseActionTaken = false;
+		subjectsActingTrigger = true;
 	}
 	
 	public bool TakePhaseAction() {
-		// update player position
-		playerPosLastTurn = lastKnownPlayerPos;
-		lastKnownPlayerPos = GameManager.inst.player.gridPosition;
-		
-		bool pAT = true;
-		foreach (Enemy enemy in enemyList) {
-			pAT &= enemy.TakePhaseAction();
-		}
+		// start action coroutine if not currently running
+		// reset trigger immediately
+		if (subjectsActingTrigger) {
+			subjectsActingTrigger = false;
+			
+			// update player position
+			playerPosLastTurn = lastKnownPlayerPos;
+			lastKnownPlayerPos = GameManager.inst.player.gridPosition;
 
+			allSubjectsPhaseActionTaken = false;
+			StartCoroutine(SubjectTakePhaseActions());
+		}
+		
 		// find a way to make this persist
 		GameManager.inst.worldGrid.ResetHighlightTiles(_pathTiles);
 		_pathTiles.Clear();
@@ -50,11 +64,31 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 		}
 		GameManager.inst.worldGrid.HighlightTiles(_pathTiles, Color.red);
 		
-		return pAT;
+		return allSubjectsPhaseActionTaken;
 	}
 	
 	public void AddSubject(Enemy enemy) {
 		enemyList.Add(enemy);
+	}
+	
+	public IEnumerator SubjectTakePhaseActions() {
+		bool pAT = true;
+		
+		for (int i = 0; i < enemyList.Count; i++) {
+			if (i == enemyList.Count) {
+				yield return null;
+			} else {
+				//yield return new WaitForSeconds(enemyList[i].moveDelayTime);
+				yield return new WaitForSeconds(0.05f);
+			}
+			
+			pAT &= enemyList[i].TakePhaseAction();
+		}
+		
+		// pAT isn't necessary, but may be in the future
+		if (pAT) {
+			allSubjectsPhaseActionTaken = true;
+		}
 	}
 	
 	public bool HasPlayerMoved() {
@@ -65,7 +99,7 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 		// since we call TakePhaseAction serially...
 		// we don't need to know if an Enemy WILL move into a spot.
 		// if they had higher priority, they will have already moved into it	
-		// also, the conversion to HashSet, and the conversion back, is not worth it to remove from a list of spaces max
+		// also, the conversion to HashSet, and the conversion back, is not worth it to remove from a list of 4 spaces max
 		List<Vector3Int> moveOptions = new List<Vector3Int>();
 		
 		foreach (Vector3Int pos in GameManager.inst.worldGrid.GetNeighbors(fromPosition)) {

@@ -31,7 +31,7 @@ public class WorldGrid : MonoBehaviour
 		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
 		
 		tileOptions = new List<WorldTile>{
-			//ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
+			ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
 			ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile,
 			ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile,
 			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile

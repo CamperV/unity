@@ -8,7 +8,7 @@ public class Enemy : Mover, IPhasedObject
 	private SpriteRenderer spriteRenderer;
 	private Animator animator;
 	
-	[HideInInspector] public bool phaseActionTaken { get; set; }
+	[HideInInspector] public bool phaseActionTaken { get; private set; }
 	public int moveSpeed = 1;
 	public int pathRange = 50;
 	
@@ -36,12 +36,15 @@ public class Enemy : Mover, IPhasedObject
     void Update() {}
 	
 	public bool MyPhase() {
-		return GameManager.inst.currentPhase == GameManager.Phase.enemy && phaseActionTaken == false;
+		return GameManager.inst.phaseManager.currentPhase == PhaseManager.Phase.enemy && phaseActionTaken == false;
+	}
+	
+	public void TriggerPhase() {
+		phaseActionTaken = false;
 	}
 	
 	public bool TakePhaseAction() {
 		// chase player given the coordinates
-		// GetIterablePath also sets the List version of the path
 		if (GameManager.inst.enemyController.HasPlayerMoved() || !pathToPlayer.IsValid()) {
 			pathToPlayer.Clear();
 			pathToPlayer = GetPathTo(GameManager.inst.player.gridPosition);
