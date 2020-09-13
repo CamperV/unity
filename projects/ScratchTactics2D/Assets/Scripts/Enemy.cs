@@ -10,6 +10,7 @@ public class Enemy : Mover, IPhasedObject
 	
 	[HideInInspector] public bool phaseActionTaken { get; set; }
 	public int moveSpeed = 1;
+	public int pathRange = 50;
 	
 	public MoverPath pathToPlayer; // use to cache and not recalculate every frame	
 	
@@ -86,6 +87,7 @@ public class Enemy : Mover, IPhasedObject
 		bool foundTarget = false;
 		
 		HashSet<Vector3Int> usedInSearch = new HashSet<Vector3Int>();
+		HashSet<Vector3Int> targetPositions = GameManager.inst.worldGrid.GetNeighbors(targetPosition);
 		
 		PriorityQueue<Vector3Int> pathQueue = new PriorityQueue<Vector3Int>();
 		pathQueue.Enqueue(0, currentPos);
@@ -96,7 +98,8 @@ public class Enemy : Mover, IPhasedObject
 			usedInSearch.Add(currentPos);
 			
 			// found the target, now recount the path
-			if (currentPos == targetPosition) {
+			if (targetPositions.Contains(currentPos)) {
+				cameFrom[targetPosition] = currentPos;
 				foundTarget = true;
 				break;
 			}
@@ -111,6 +114,7 @@ public class Enemy : Mover, IPhasedObject
 				// but we need to modify such that the prioirty is the total path cost so far
 				var totalPathCostSoFar = TotalPathCost(gridPosition, adjacent, cameFrom);
 				if (totalPathCostSoFar == -1) continue;
+				if (totalPathCostSoFar > pathRange) continue;
 				
 				pathQueue.Enqueue(CalcPriority(adjacent, targetPosition) + totalPathCostSoFar, adjacent);
 			}
@@ -131,7 +135,13 @@ public class Enemy : Mover, IPhasedObject
 				newPathToPlayer.path[newProgenitor] = progenitor;
 				progenitor = newProgenitor;
 			}
+		} else {
+			// we didn't find a valid target/cost was too high. Stay put
+			newPathToPlayer.start = gridPosition;
+			newPathToPlayer.end   = gridPosition;
+			newPathToPlayer.path[gridPosition] = gridPosition;
 		}
+			
 		
 		return newPathToPlayer;
 	}

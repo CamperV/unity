@@ -32,6 +32,7 @@ public class WorldGrid : MonoBehaviour
 		
 		tileOptions = new List<WorldTile>{
 			//ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
+			ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile,
 			ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile,
 			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile
 		};
@@ -110,14 +111,19 @@ public class WorldGrid : MonoBehaviour
 	}
 	
 	// neighbors are defined as adjacent squares in cardinal directions
-	public List<Vector3Int> GetNeighbors(Vector3Int gridPosition) {
+	public HashSet<Vector3Int> GetNeighbors(Vector3Int gridPosition) {
 		List<Vector3Int> cardinal = new List<Vector3Int> {
 			gridPosition + new Vector3Int( 0,  1, 0), // N
 			gridPosition + new Vector3Int( 0, -1, 0), // S
 			gridPosition + new Vector3Int(-1,  0, 0), // E
 			gridPosition + new Vector3Int( 1,  0, 0)  // W
 		};
-		return cardinal;
+		
+		HashSet<Vector3Int> retHash = new HashSet<Vector3Int>();
+		foreach (Vector3Int pos in cardinal) {
+			if (IsInBounds(pos)) retHash.Add(pos);
+		}
+		return retHash;
 	}
 	
 	public bool IsInBounds(Vector3Int tilePos) {

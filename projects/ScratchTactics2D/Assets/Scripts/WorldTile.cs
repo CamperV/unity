@@ -43,3 +43,14 @@ public class WaterWorldTile : WorldTile
 	}
 }
 
+public class MountainWorldTile : WorldTile
+{
+	public override int GetCost() {
+		return 100;
+	}
+	
+	public void OnEnable() {
+		sprite = SpriteResourcesLoader.GetSprite("mountain_tile");
+	}
+}
+
