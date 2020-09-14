@@ -5,7 +5,7 @@ using UnityEngine;
 public class PhaseManager : MonoBehaviour
 {
 	private Player playerInst;
-	private EnemyController enemyControllerInst;
+	private EnemyManager enemyManagerInst;
 	
 	public enum Phase {player, enemy};
 	[HideInInspector] public Phase currentPhase { get; private set;	}
@@ -15,7 +15,7 @@ public class PhaseManager : MonoBehaviour
 		// first phase goes to the player
 		currentPhase = Phase.player;
 		playerInst = GameManager.inst.player;
-		enemyControllerInst = GameManager.inst.enemyController;
+		enemyManagerInst = GameManager.inst.enemyManager;
     }
 
     void Update() {
@@ -27,7 +27,7 @@ public class PhaseManager : MonoBehaviour
 			
 			if (playerInst.phaseActionTaken) {
 				currentPhase = Phase.enemy;
-				enemyControllerInst.TriggerPhase();
+				enemyManagerInst.TriggerPhase();
 			}
 		}
 		else if (currentPhase == Phase.enemy) {
@@ -35,7 +35,7 @@ public class PhaseManager : MonoBehaviour
 			// code spins here until all enemies takes their phaseAction
 			//
 			
-			if (enemyControllerInst.phaseActionTaken) {
+			if (enemyManagerInst.phaseActionTaken) {
 				currentPhase = Phase.player;
 				playerInst.TriggerPhase();
 			}

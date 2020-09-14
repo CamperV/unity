@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour, IPhasedObject
+public class EnemyManager : MonoBehaviour, IPhasedObject
 {
 	private List<Enemy> enemyList;
 	private HashSet<Vector3Int> _pathTiles;
@@ -78,8 +78,7 @@ public class EnemyController : MonoBehaviour, IPhasedObject
 			if (i == enemyList.Count) {
 				yield return null;
 			} else {
-				//yield return new WaitForSeconds(enemyList[i].moveDelayTime);
-				yield return new WaitForSeconds(0.05f);
+				yield return new WaitForSeconds(enemyList[i].moveDelayTime);
 			}
 			
 			pAT &= enemyList[i].TakePhaseAction();

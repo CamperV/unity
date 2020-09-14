@@ -43,3 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5412d6e660647a146badbbe0ab5f34b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lastKnownPlayerPos: {x: 0, y: 0, z: 0}
+  playerPosLastTurn: {x: 0, y: 0, z: 0}

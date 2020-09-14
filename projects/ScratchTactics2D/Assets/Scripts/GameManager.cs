@@ -16,13 +16,13 @@ public class GameManager : MonoBehaviour
 	public WorldGrid worldGridPrefab;
 	public Player playerPrefab;
 	public Enemy enemyPrefab;
-	public EnemyController enemyControllerPrefab;
+	public EnemyManager enemyManagerPrefab;
 	public PhaseManager phaseManagerPrefab;
 	
-	// these are public so the EnemyController can access Player locations
+	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public WorldGrid worldGrid;
 	[HideInInspector] public Player player;
-	[HideInInspector] public EnemyController enemyController;
+	[HideInInspector] public EnemyManager enemyManager;
 	[HideInInspector] public PhaseManager phaseManager;
 	
 	void Awake() {
@@ -40,10 +40,9 @@ public class GameManager : MonoBehaviour
 	}
 	
 	void Init() {
-		//worldGrid = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-		worldGrid = Instantiate(worldGridPrefab);
+		worldGrid = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 		phaseManager = Instantiate(phaseManagerPrefab);
-		enemyController = Instantiate(enemyControllerPrefab);
+		enemyManager = Instantiate(enemyManagerPrefab);
 		
 		// generate the world and spawn the player into it
 		worldGrid.GenerateWorld();
@@ -52,7 +51,7 @@ public class GameManager : MonoBehaviour
 		// now, spawn the enemies
 		for (int i = 0; i < Random.Range(minEnemies, maxEnemies); i++) {
 			Enemy newEnemy = Enemy.Spawn(enemyPrefab);
-			enemyController.AddSubject(newEnemy);
+			enemyManager.AddSubject(newEnemy);
 		}
 	}
 }

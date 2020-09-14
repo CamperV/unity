@@ -45,7 +45,7 @@ public class Enemy : Mover, IPhasedObject
 	
 	public bool TakePhaseAction() {
 		// chase player given the coordinates
-		if (GameManager.inst.enemyController.HasPlayerMoved() || !pathToPlayer.IsValid()) {
+		if (GameManager.inst.enemyManager.HasPlayerMoved() || !pathToPlayer.IsValid()) {
 			pathToPlayer.Clear();
 			pathToPlayer = GetPathTo(GameManager.inst.player.gridPosition);
 		}
@@ -109,7 +109,7 @@ public class Enemy : Mover, IPhasedObject
 			
 			// available positions are: your neighbors that are "moveable",
 			// minus any endpoints other pathers have scoped out
-			foreach (Vector3Int adjacent in GameManager.inst.enemyController.GetMovementOptions(currentPos)) {
+			foreach (Vector3Int adjacent in GameManager.inst.enemyManager.GetMovementOptions(currentPos)) {
 				if (usedInSearch.Contains(adjacent)) continue;
 				cameFrom[adjacent] = currentPos;
 				

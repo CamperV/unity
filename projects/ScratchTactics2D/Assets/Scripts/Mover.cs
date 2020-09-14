@@ -6,7 +6,7 @@ public abstract class Mover : MonoBehaviour
 {	
 	public LayerMask blockingLayer;
 	public Vector3Int gridPosition { get; protected set; }
-	public float moveDelayTime = .005f;	// in units of WaitForSeconds();
+	public float moveDelayTime;	// in units of WaitForSeconds();
 
 	private Rigidbody2D rigidbody2D;
 	private bool crtMovingFlag = false;
@@ -14,6 +14,9 @@ public abstract class Mover : MonoBehaviour
 	
     protected virtual void Start() {
 		rigidbody2D = GetComponent<Rigidbody2D>();
+		
+		// this needs to be set outside of class init for MonoBehaviour, I guess? Otherwise, always 0.1f
+		moveDelayTime = 0.05f;
     }
 	
 	protected Vector3Int SpeedVec(Vector3Int vec, int speed) {
@@ -74,13 +77,13 @@ public abstract class Mover : MonoBehaviour
 	protected IEnumerator SmoothMovement(Vector3 endpoint) {
 		float sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
 		float snapFactor = 0.01f;
+		
 		float speedFactor;
 		
 		crtMovingFlag = true;
-		while (sqrRemainingDistance > snapFactor) {
+		while (sqrRemainingDistance > snapFactor) {	
 			speedFactor = (15.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime) + 0.10f;
 
-			//Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, endpoint, 1f/moveDelayTime * (Time.deltaTime*100));
 			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, endpoint, speedFactor);
 			rigidbody2D.MovePosition(newPos);
 			sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
