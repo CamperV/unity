@@ -40,10 +40,10 @@ public class Player : Mover, IPhasedObject
 	
 	public bool TakePhaseAction() {
 		// phaseAction possibilities
-		if 		(Input.GetKeyDown("left"))  { AttemptGridMove(-1,  0); }
-		else if (Input.GetKeyDown("right")) { AttemptGridMove( 1,  0); }
-		else if (Input.GetKeyDown("up"))    { AttemptGridMove( 0,  1); }
-		else if (Input.GetKeyDown("down"))  { AttemptGridMove( 0, -1); }
+		if 		(Input.GetKeyDown("left")  || Input.GetKeyDown(KeyCode.A)) { AttemptGridMove(-1,  0); }
+		else if (Input.GetKeyDown("right") || Input.GetKeyDown(KeyCode.D)) { AttemptGridMove( 1,  0); }
+		else if (Input.GetKeyDown("up")    || Input.GetKeyDown(KeyCode.W)) { AttemptGridMove( 0,  1); }
+		else if (Input.GetKeyDown("down")  || Input.GetKeyDown(KeyCode.S)) { AttemptGridMove( 0, -1); }
 		else if (Input.GetKeyDown("space")) { /* pass turn */ }
 		else 								{ return false; } // no input taken
 		// other possibilities

@@ -18,12 +18,14 @@ public class GameManager : MonoBehaviour
 	public Enemy enemyPrefab;
 	public EnemyManager enemyManagerPrefab;
 	public PhaseManager phaseManagerPrefab;
+	public MouseManager mouseManagerPrefab;
 	
 	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public WorldGrid worldGrid;
 	[HideInInspector] public Player player;
 	[HideInInspector] public EnemyManager enemyManager;
 	[HideInInspector] public PhaseManager phaseManager;
+	[HideInInspector] public MouseManager mouseManager;
 	
 	void Awake() {
 		// only allow one GameManager to exist at any time
@@ -40,7 +42,8 @@ public class GameManager : MonoBehaviour
 	}
 	
 	void Init() {
-		worldGrid = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		worldGrid    = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		mouseManager = Instantiate(mouseManagerPrefab);
 		phaseManager = Instantiate(phaseManagerPrefab);
 		enemyManager = Instantiate(enemyManagerPrefab);
 		

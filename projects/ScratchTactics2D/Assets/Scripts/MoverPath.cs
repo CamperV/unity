@@ -6,9 +6,9 @@ public class MoverPath
 {
 	private Vector3Int _start;
 	private Vector3Int _end;
+	private PathOverlayTile pathOverlayTile;
 	
 	public Dictionary<Vector3Int, Vector3Int> path = new Dictionary<Vector3Int, Vector3Int>();
-	
 	public Vector3Int start {
 		get { return _start; }
 		set { _start = value; }
@@ -18,9 +18,12 @@ public class MoverPath
 		set { _end = value; }
 	}
 	
-	public MoverPath() {}
+	public MoverPath() {
+		pathOverlayTile = ScriptableObject.CreateInstance<PathOverlayTile>() as PathOverlayTile;
+	}	 
 	
 	public void Clear() {
+		ResetDrawPath();
 		path.Clear();
 		start = new Vector3Int(-1, -1, -1);
 		end   = new Vector3Int(-1, -1, -1);
@@ -35,6 +38,7 @@ public class MoverPath
 		// no available Remove(key, out val) override in Unity
 		Vector3Int retval = path[position];
 		path.Remove(position);
+		GameManager.inst.worldGrid.ResetOverlayAt(position, pathOverlayTile.level);
 		return retval;
 	}
 	
@@ -47,7 +51,19 @@ public class MoverPath
 		return !IsEmpty() && GameManager.inst.worldGrid.VacantAt(end);
 	}
 	
-	public void CalcStartEnd() {		
+	public void DrawPath() {
+		foreach (Vector3Int tile in path.Keys) {
+			GameManager.inst.worldGrid.OverlayAt(tile, pathOverlayTile);
+		}
+	}
+	
+	public void ResetDrawPath() {
+		foreach (Vector3Int tile in path.Keys) {
+			GameManager.inst.worldGrid.ResetOverlayAt(tile, pathOverlayTile.level);
+		}
+	}
+		
+	private void CalcStartEnd() {		
 		HashSet<Vector3Int> keys = new HashSet<Vector3Int>(path.Keys);
 		HashSet<Vector3Int> vals = new HashSet<Vector3Int>(path.Values);
 		keys.SymmetricExceptWith(vals);
@@ -57,5 +73,4 @@ public class MoverPath
 			if (vals.Contains(either)) _end = either;
 		}
 	}
-	
 }

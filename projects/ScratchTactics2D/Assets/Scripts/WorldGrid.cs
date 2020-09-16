@@ -143,8 +143,6 @@ public class WorldGrid : MonoBehaviour
 	}
 	
 	public void TintTile(Vector3Int tilePos, Color color) {
-		//Color color = baseTilemap.GetColor(tilePos);
-		
 		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
 		baseTilemap.SetColor(tilePos, color);
 	}
@@ -154,12 +152,25 @@ public class WorldGrid : MonoBehaviour
 		baseTilemap.SetColor(tilePos, new Color(1, 1, 1, 1));
 	}
 	
+	public void OverlayAt(Vector3Int tilePos, OverlayTile tile) {
+		Debug.Assert(tilePos.z == 0);
+		Vector3Int overlayPos = new Vector3Int(tilePos.x, tilePos.y, (int)tile.level);
+		baseTilemap.SetTile(overlayPos, tile);
+	}
+	
+	public void ResetOverlayAt(Vector3Int tilePos, OverlayTile.Level level) {
+		Debug.Assert(tilePos.z == 0);
+		Debug.Assert(level != OverlayTile.Level.world);
+		Vector3Int overlayPos = new Vector3Int(tilePos.x, tilePos.y, (int)level);
+		baseTilemap.SetTile(overlayPos, null);
+	}
+	
 	public void GenerateWorld() {	
 		baseTilemap.ClearAllTiles();
 		int[,] mapMatrix = GenerateMapMatrix();
 		
 		ApplyMap(mapMatrix);
-		CameraResizer.RefitCamera(new Vector3(baseTilemap.cellBounds.center.x,
+		CameraManager.RefitCamera(new Vector3(baseTilemap.cellBounds.center.x,
 											  baseTilemap.cellBounds.center.y,
 											  -10),
 								  mapDimensionY);

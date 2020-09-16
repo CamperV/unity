@@ -40,6 +40,10 @@ public class EnemyManager : MonoBehaviour, IPhasedObject
 	}
 	
 	public bool TakePhaseAction() {
+		//foreach (Enemy enemy in enemyList) {
+		//	enemy.pathToPlayer.ResetDrawPath();
+		//}
+		
 		// start action coroutine if not currently running
 		// reset trigger immediately
 		if (subjectsActingTrigger) {
@@ -53,16 +57,9 @@ public class EnemyManager : MonoBehaviour, IPhasedObject
 			StartCoroutine(SubjectTakePhaseActions());
 		}
 		
-		// find a way to make this persist
-		GameManager.inst.worldGrid.ResetHighlightTiles(_pathTiles);
-		_pathTiles.Clear();
-		
 		foreach (Enemy enemy in enemyList) {
-			foreach (Vector3Int tile in enemy.pathToPlayer.path.Keys) {
-				_pathTiles.Add(tile);
-			}
+			enemy.pathToPlayer.DrawPath();
 		}
-		GameManager.inst.worldGrid.HighlightTiles(_pathTiles, Color.red);
 		
 		return allSubjectsPhaseActionTaken;
 	}

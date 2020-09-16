@@ -16,7 +16,8 @@ public abstract class Mover : MonoBehaviour
 		rigidbody2D = GetComponent<Rigidbody2D>();
 		
 		// this needs to be set outside of class init for MonoBehaviour, I guess? Otherwise, always 0.1f
-		moveDelayTime = 0.05f;
+		//moveDelayTime = 0.05f;
+		moveDelayTime = 0;
     }
 	
 	protected Vector3Int SpeedVec(Vector3Int vec, int speed) {

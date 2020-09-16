@@ -229,6 +229,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1950037452}
   - component: {fileID: 1950037454}
+  - component: {fileID: 1950037453}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -250,6 +251,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1950037453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950037451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7924b0bb52d30d147809242114a18f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1950037454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,14 +275,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b824d2c15c78d845ab1cf15109c0ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxEnemies: 4
-  minEnemies: 4
+  maxEnemies: 5
+  minEnemies: 1
   worldGridPrefab: {fileID: 6553869377840780433, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
   playerPrefab: {fileID: 5140243916379933852, guid: eb354dab14992314a92d8c6598838917, type: 3}
   enemyPrefab: {fileID: 2239003336567494943, guid: ec9a4e7a1dbe72348ad921ce61cc3648, type: 3}
   enemyManagerPrefab: {fileID: 3033003337155828433, guid: 6611adfec92e8b74ca66b42288512725, type: 3}
   phaseManagerPrefab: {fileID: 6692847297558468328, guid: cb3de7f3f55db0444885d3b028c80c10, type: 3}
+  mouseManagerPrefab: {fileID: 1876840539373920246, guid: 915bc20ac23c4eb409abcc2528584b50, type: 3}
   worldGrid: {fileID: 0}
   player: {fileID: 0}
   enemyManager: {fileID: 0}
   phaseManager: {fileID: 0}
+  mouseManager: {fileID: 0}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraResizer : MonoBehaviour
+public class CameraManager : MonoBehaviour
 {
 	public static void RefitCamera(Vector3 pos, int height) {
 		Camera.main.transform.position = pos;
