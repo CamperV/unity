@@ -86,3 +86,14 @@ public class PathOverlayTile : OverlayTile
 		sprite = ResourceLoader.GetSprite("path_dot");
 	}
 }
+
+public class EndpointOverlayTile : OverlayTile
+{
+	public override Level GetLevel() {
+		return Level.overlay;
+	}
+	
+	public void OnEnable() {
+		sprite = ResourceLoader.GetSprite("path_end");
+	}
+}

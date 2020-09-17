@@ -16,8 +16,8 @@ public abstract class Mover : MonoBehaviour
 		rigidbody2D = GetComponent<Rigidbody2D>();
 		
 		// this needs to be set outside of class init for MonoBehaviour, I guess? Otherwise, always 0.1f
-		//moveDelayTime = 0.05f;
-		moveDelayTime = 0;
+		moveDelayTime = 0.05f;
+		//moveDelayTime = 0;
     }
 	
 	protected Vector3Int SpeedVec(Vector3Int vec, int speed) {
@@ -30,6 +30,12 @@ public abstract class Mover : MonoBehaviour
 		return new Vector3Int(Mathf.Clamp(pos.x - gridPosition.x,  -speed, speed),
 							  Mathf.Clamp(pos.y - gridPosition.y,  -speed, speed),
 							  Mathf.Clamp(pos.z - gridPosition.z,  -speed, speed));
+	}
+	
+	protected static Vector3Int ToPositionStatic(Vector3Int src, Vector3Int dest, int speed) {
+		return new Vector3Int(Mathf.Clamp(dest.x - src.x,  -speed, speed),
+							  Mathf.Clamp(dest.y - src.y,  -speed, speed),
+							  Mathf.Clamp(dest.z - src.z,  -speed, speed));
 	}
 	
 	protected bool GridMove(int xdir, int ydir, out Component occupant) {
@@ -131,17 +137,4 @@ public abstract class Mover : MonoBehaviour
 	
 	// abstract methods are inherently virtual
 	protected abstract void OnBlocked<T>(T component) where T : Component;
-	
-	// neighbors are defined as adjacent squares in cardinal directions
-	/*public List<Vector3Int> GetNeighbors() {
-		List<Vector3Int> cardinal = new List<Vector3Int> {
-			gridPosition + new Vector3Int( 0,  1, 0), // N
-			gridPosition + new Vector3Int( 0, -1, 0), // S
-			gridPosition + new Vector3Int(-1,  0, 0), // E
-			gridPosition + new Vector3Int( 1,  0, 0)  // W
-		};
-		// here, we'd loop through and determine which, if any, are valid
-		
-		return cardinal;
-	}*/
 }

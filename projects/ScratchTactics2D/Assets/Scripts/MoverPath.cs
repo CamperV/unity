@@ -7,6 +7,7 @@ public class MoverPath
 	private Vector3Int _start;
 	private Vector3Int _end;
 	private PathOverlayTile pathOverlayTile;
+	private EndpointOverlayTile endpointOverlayTile;
 	
 	public Dictionary<Vector3Int, Vector3Int> path = new Dictionary<Vector3Int, Vector3Int>();
 	public Vector3Int start {
@@ -18,9 +19,13 @@ public class MoverPath
 		set { _end = value; }
 	}
 	
-	public MoverPath() {
+	public MoverPath(Vector3Int startPosition) {
+		start = startPosition;
+		
+		// load overlay scriptable
 		pathOverlayTile = ScriptableObject.CreateInstance<PathOverlayTile>() as PathOverlayTile;
-	}	 
+		endpointOverlayTile = ScriptableObject.CreateInstance<EndpointOverlayTile>() as EndpointOverlayTile;
+	}
 	
 	public void Clear() {
 		ResetDrawPath();
@@ -30,6 +35,7 @@ public class MoverPath
 	}
 	
 	public Vector3Int Next(Vector3Int position) {
+		if (position == end) return end;
 		return path[position];
 	}
 	
@@ -55,14 +61,145 @@ public class MoverPath
 		foreach (Vector3Int tile in path.Keys) {
 			GameManager.inst.worldGrid.OverlayAt(tile, pathOverlayTile);
 		}
+		GameManager.inst.worldGrid.OverlayAt(end, endpointOverlayTile);
 	}
 	
 	public void ResetDrawPath() {
 		foreach (Vector3Int tile in path.Keys) {
 			GameManager.inst.worldGrid.ResetOverlayAt(tile, pathOverlayTile.level);
 		}
+		GameManager.inst.worldGrid.ResetOverlayAt(end, endpointOverlayTile.level);
 	}
+	
 		
+	// AI pathfinding
+	// storing this is a hashmap also helps for quickly assessing what squares are available
+	// T is the type you expect to path towards, and don't mind a collision against
+	public static MoverPath GetPathTo<T>(Vector3Int startPosition, Vector3Int targetPosition, int costHeuristic) where T : Component {
+		MoverPath newPath = new MoverPath(startPosition);
+		
+		// this is a simple BFS graph-search system
+		// Grid Positions are the Nodes, and are connected to their neighbors
+		
+		// init position
+		Vector3Int currentPos = startPosition;
+		
+		// track path creation
+		Dictionary<Vector3Int, Vector3Int> cameFrom = new Dictionary<Vector3Int, Vector3Int>();
+		bool foundTarget = false;
+		
+		HashSet<Vector3Int> usedInSearch = new HashSet<Vector3Int>();
+		HashSet<Vector3Int> targetPositions = GameManager.inst.worldGrid.GetNeighbors(targetPosition);
+		
+		PriorityQueue<Vector3Int> pathQueue = new PriorityQueue<Vector3Int>();
+		pathQueue.Enqueue(0, currentPos);
+		
+		// BFS search here
+		while (pathQueue.size != 0) {
+			currentPos = pathQueue.Dequeue();
+			usedInSearch.Add(currentPos);
+			
+			// found the target, now recount the path
+			if (targetPositions.Contains(currentPos)) {
+				cameFrom[targetPosition] = currentPos;
+				foundTarget = true;
+				break;
+			}
+			
+			// available positions are: your neighbors that are "moveable",
+			// minus any endpoints other pathers have scoped out
+			foreach (Vector3Int adjacent in GetMovementOptions<T>(currentPos)) {
+				if (usedInSearch.Contains(adjacent)) continue;
+				cameFrom[adjacent] = currentPos;
+				
+				// enqueueing based on EdgeCost between two nodes will search correctly
+				// but we need to modify such that the prioirty is the total path cost so far
+				var totalPathCostSoFar = TotalPathCost(startPosition, adjacent, cameFrom);
+				if (totalPathCostSoFar == -1) continue;
+				if (totalPathCostSoFar > costHeuristic) continue;
+				
+				pathQueue.Enqueue(CalcPriority(adjacent, targetPosition) + totalPathCostSoFar, adjacent);
+			}
+		}
+		
+		// if we found the target, recount the path to get there
+		if (foundTarget) {
+			//newPath.end = cameFrom[targetPosition]; // space just outside of the target
+			newPath.end = targetPosition; // space just outside of the target
+			
+			// init value only
+			Vector3Int progenitor = targetPosition;
+			
+			while (progenitor != newPath.start) {
+				var newProgenitor = cameFrom[progenitor];
+				
+				// build the path in reverse, aka next steps (including target)
+				newPath.path[newProgenitor] = progenitor;
+				progenitor = newProgenitor;
+			}
+		} else {
+			// we didn't find a valid target/cost was too high. Stay put
+			newPath.start = startPosition;
+			newPath.end   = startPosition;
+			newPath.path[startPosition] = startPosition;
+		}
+		
+		return newPath;
+	}
+	
+	private static int CalcPriority(Vector3Int src, Vector3Int dest) {
+		return (int)Vector3Int.Distance(src, dest);
+	}
+	
+	private static int EdgeCost(Vector3Int dest) {
+		var destTile = GameManager.inst.worldGrid.GetWorldTileAt(dest);
+		if (destTile == null) return -1;
+		return destTile.cost;
+	}
+	
+	private static int TotalPathCost(Vector3Int src, Vector3Int dest, Dictionary<Vector3Int, Vector3Int> cameFrom) {
+		// for now, assume all keys are present
+		Vector3Int progenitor = dest;
+		int totalCost = 0;
+		
+		// build the path in reverse, aka next steps (including target)
+		while (progenitor != src) {
+			var progTile = GameManager.inst.worldGrid.GetWorldTileAt(progenitor);
+			if (progTile == null) return -1;
+			
+			totalCost += progTile.cost;
+			progenitor = cameFrom[progenitor];
+		}
+		return totalCost;
+	}
+	
+	// this will disallow all movement through occupants, other than a specified template <T>
+	private static List<Vector3Int> GetMovementOptions<T>(Vector3Int fromPosition) where T : Component {
+		// since we call TakePhaseAction serially...
+		// we don't need to know if an Enemy WILL move into a spot.
+		// if they had higher priority, they will have already moved into it	
+		// also, the conversion to HashSet, and the conversion back, is not worth it to remove from a list of 4 spaces max
+		List<Vector3Int> moveOptions = new List<Vector3Int>();
+		
+		foreach (Vector3Int pos in GameManager.inst.worldGrid.GetNeighbors(fromPosition)) {
+			if (!GameManager.inst.worldGrid.IsInBounds(pos)) {
+				continue;
+			}
+			var occupant = GameManager.inst.worldGrid.OccupantAt(pos);
+			
+			// either check the tag or type of occupant
+			// if occupant is null, short-circuit and add moveOption
+			// if it is occupied, but is a Player, still works
+			if (occupant != null && occupant.GetType() != typeof(T)) {
+				continue;
+			}
+			moveOptions.Add(pos);
+		}
+		return moveOptions;
+	}
+	
+	//
+	//
 	private void CalcStartEnd() {		
 		HashSet<Vector3Int> keys = new HashSet<Vector3Int>(path.Keys);
 		HashSet<Vector3Int> vals = new HashSet<Vector3Int>(path.Values);

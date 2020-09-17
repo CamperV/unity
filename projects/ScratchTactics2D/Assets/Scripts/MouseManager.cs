@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class MouseManager : MonoBehaviour
 {
-	private Vector3Int currentMouseGridPos;
 	private WorldGrid worldGridInst;
 	private SelectOverlayTile selectOverlayTile;
+	
+	public Vector3Int prevMouseGridPos;
+	public Vector3Int currentMouseGridPos;
 	
 	// dont' use Awake here, to avoid bootstrapping issues
     void Start() {
@@ -16,13 +18,22 @@ public class MouseManager : MonoBehaviour
     }
 
     void Update() {
-		// remove previous highlighting
-		worldGridInst.ResetOverlayAt(currentMouseGridPos, selectOverlayTile.level);
-		
-		// get new position
+		// store old position and get new position
+		prevMouseGridPos = currentMouseGridPos;
 		Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		currentMouseGridPos = worldGridInst.Real2GridPos(mouseWorldPos);
 		
-		worldGridInst.OverlayAt(currentMouseGridPos, selectOverlayTile);
+		//
+		// overlay selection tile
+		//
+		// remove previous highlighting
+		if (HasMouseMoved()) {
+			worldGridInst.ResetOverlayAt(prevMouseGridPos, selectOverlayTile.level);
+			worldGridInst.OverlayAt(currentMouseGridPos, selectOverlayTile);
+		}
     }
+	
+	public bool HasMouseMoved() {
+		return prevMouseGridPos != currentMouseGridPos;
+	}
 }

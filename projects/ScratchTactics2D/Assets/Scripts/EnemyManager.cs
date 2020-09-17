@@ -39,11 +39,7 @@ public class EnemyManager : MonoBehaviour, IPhasedObject
 		subjectsActingTrigger = true;
 	}
 	
-	public bool TakePhaseAction() {
-		//foreach (Enemy enemy in enemyList) {
-		//	enemy.pathToPlayer.ResetDrawPath();
-		//}
-		
+	public bool TakePhaseAction() {	
 		// start action coroutine if not currently running
 		// reset trigger immediately
 		if (subjectsActingTrigger) {
@@ -55,10 +51,6 @@ public class EnemyManager : MonoBehaviour, IPhasedObject
 
 			allSubjectsPhaseActionTaken = false;
 			StartCoroutine(SubjectTakePhaseActions());
-		}
-		
-		foreach (Enemy enemy in enemyList) {
-			enemy.pathToPlayer.DrawPath();
 		}
 		
 		return allSubjectsPhaseActionTaken;
@@ -89,30 +81,5 @@ public class EnemyManager : MonoBehaviour, IPhasedObject
 	
 	public bool HasPlayerMoved() {
 		return playerPosLastTurn != GameManager.inst.player.gridPosition;
-	}
-	
-	public List<Vector3Int> GetMovementOptions(Vector3Int fromPosition) {
-		// since we call TakePhaseAction serially...
-		// we don't need to know if an Enemy WILL move into a spot.
-		// if they had higher priority, they will have already moved into it	
-		// also, the conversion to HashSet, and the conversion back, is not worth it to remove from a list of 4 spaces max
-		List<Vector3Int> moveOptions = new List<Vector3Int>();
-		
-		foreach (Vector3Int pos in GameManager.inst.worldGrid.GetNeighbors(fromPosition)) {
-			if (!GameManager.inst.worldGrid.IsInBounds(pos)) {
-				continue;
-			}
-			var occupant = GameManager.inst.worldGrid.OccupantAt(pos);
-			
-			// either check the tag or type of occupant
-			// if occupant is null, short-circuit and add moveOption
-			// if it is occupied, but is a Player, still works
-			if (occupant != null && occupant.GetType() != typeof(Player)) {
-				continue;
-			}
-			moveOptions.Add(pos);
-		}
-		return moveOptions;	
-		
 	}
 }
