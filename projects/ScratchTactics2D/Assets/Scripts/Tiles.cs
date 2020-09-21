@@ -12,9 +12,8 @@ public abstract class WorldTile : Tile
 
 public abstract class OverlayTile : Tile
 {
-	public enum Level {world, overlay, super};
-	public abstract Level GetLevel();
-	public Level level { get { return GetLevel(); } }
+	public abstract Enum.TileLevel GetLevel();
+	public Enum.TileLevel level { get { return GetLevel(); } }
 }
 
 //
@@ -67,8 +66,8 @@ public class MountainWorldTile : WorldTile
 // --------------
 public class SelectOverlayTile : OverlayTile
 {
-	public override Level GetLevel() {
-		return Level.super;
+	public override Enum.TileLevel GetLevel() {
+		return Enum.TileLevel.super;
 	}
 	
 	public void OnEnable() {
@@ -78,8 +77,8 @@ public class SelectOverlayTile : OverlayTile
 
 public class PathOverlayTile : OverlayTile
 {
-	public override Level GetLevel() {
-		return Level.overlay;
+	public override Enum.TileLevel GetLevel() {
+		return Enum.TileLevel.overlay;
 	}
 	
 	public void OnEnable() {
@@ -89,8 +88,8 @@ public class PathOverlayTile : OverlayTile
 
 public class EndpointOverlayTile : OverlayTile
 {
-	public override Level GetLevel() {
-		return Level.overlay;
+	public override Enum.TileLevel GetLevel() {
+		return Enum.TileLevel.overlay;
 	}
 	
 	public void OnEnable() {

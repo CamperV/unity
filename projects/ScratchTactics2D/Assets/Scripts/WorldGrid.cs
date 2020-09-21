@@ -11,19 +11,9 @@ public class WorldGrid : MonoBehaviour
 	public Tilemap baseTilemap;
 
 	private List<WorldTile> tileOptions;
-	
-	/*
-	// invoke these dynamically to get the correct tile type. 0:grass, 1:dirt, etc. Simply add a new delegate when adding tiles
-	private delegate Tile GetTileOption();
-	private static List<GetTileOption> tileOptions = new List<GetTileOption>{
-		TilesResourcesLoader.GetGrassTile,
-		TilesResourcesLoader.GetDirtTile,
-		TilesResourcesLoader.GetWaterTile
-	};
-	*/
-
 	private Dictionary<Vector3Int, Component> occupancyGrid;
 	private Dictionary<Vector3Int, WorldTile> worldTileGrid;
+	private Dictionary<Enum.TileLevel, HashSet<Vector3Int>> currentSetTiles;	// @ level (int)
 	
 	public void Awake() {
 		// we have a Grid object which is actually attached
@@ -31,14 +21,19 @@ public class WorldGrid : MonoBehaviour
 		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
 		
 		tileOptions = new List<WorldTile>{
-			ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
-			ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile,
+			//ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
+			//ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile,
 			ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile,
 			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile
 		};
 		
-		occupancyGrid = new Dictionary<Vector3Int, Component>();
-		worldTileGrid = new Dictionary<Vector3Int, WorldTile>();
+		occupancyGrid   = new Dictionary<Vector3Int, Component>();
+		worldTileGrid   = new Dictionary<Vector3Int, WorldTile>();
+		currentSetTiles = new Dictionary<Enum.TileLevel, HashSet<Vector3Int>>() {
+			[Enum.TileLevel.world] 	= new HashSet<Vector3Int>(),
+			[Enum.TileLevel.overlay] = new HashSet<Vector3Int>(),
+			[Enum.TileLevel.super] 	= new HashSet<Vector3Int>()
+		};
 	}
 	
 	public Vector3 Grid2RealPos(Vector3Int tilePos) {
@@ -74,6 +69,15 @@ public class WorldGrid : MonoBehaviour
 			return worldTileGrid[tilePos];
 		}
 		return null;
+	}
+	
+	public void SetTile(Vector3Int tilePos, TileBase tile) {
+		if (tile == null) {
+			currentSetTiles[(Enum.TileLevel)tilePos.z].Remove(tilePos);
+		} else {
+			currentSetTiles[(Enum.TileLevel)tilePos.z].Add(tilePos);
+		}
+		baseTilemap.SetTile(tilePos, tile);
 	}
 	
 	public Component OccupantAt(Vector3Int tilePos) {
@@ -155,14 +159,22 @@ public class WorldGrid : MonoBehaviour
 	public void OverlayAt(Vector3Int tilePos, OverlayTile tile) {
 		Debug.Assert(tilePos.z == 0);
 		Vector3Int overlayPos = new Vector3Int(tilePos.x, tilePos.y, (int)tile.level);
-		baseTilemap.SetTile(overlayPos, tile);
+		SetTile(overlayPos, tile);
 	}
 	
-	public void ResetOverlayAt(Vector3Int tilePos, OverlayTile.Level level) {
+	public void ResetOverlayAt(Vector3Int tilePos, Enum.TileLevel level) {
 		Debug.Assert(tilePos.z == 0);
-		Debug.Assert(level != OverlayTile.Level.world);
+		Debug.Assert(level != Enum.TileLevel.world);
 		Vector3Int overlayPos = new Vector3Int(tilePos.x, tilePos.y, (int)level);
-		baseTilemap.SetTile(overlayPos, null);
+		SetTile(overlayPos, null);
+	}
+	
+	public void ClearTilesOnLevel(Enum.TileLevel level) {
+		// can't use this to modify currentSetTiles during iteration
+		foreach (Vector3Int tilePos in currentSetTiles[level]) {
+			baseTilemap.SetTile(tilePos, null);
+		}
+		currentSetTiles[level].Clear();
 	}
 	
 	public void GenerateWorld() {	
@@ -193,7 +205,7 @@ public class WorldGrid : MonoBehaviour
 		for (int x = 0; x < mapMatrix.GetLength(0); x++) {
 			for (int y = 0; y < mapMatrix.GetLength(1); y++) {
 				// set the WorldTile in the actual tilemap		
-				baseTilemap.SetTile(currentPos, tileOptions[mapMatrix[x, y]]);
+				SetTile(currentPos, tileOptions[mapMatrix[x, y]]);
 				
 				// set in the WorldTile dictionary for easy path cost lookup
 				worldTileGrid[new Vector3Int(x, y, 0)] = tileOptions[mapMatrix[x, y]];

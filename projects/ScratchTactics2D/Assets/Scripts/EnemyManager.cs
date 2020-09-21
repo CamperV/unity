@@ -2,84 +2,86 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour, IPhasedObject
+public class EnemyManager : PhasedObject, IPhasedObject
 {
 	private List<Enemy> enemyList;
 	private HashSet<Vector3Int> _pathTiles;
 	
 	private bool subjectsActingTrigger;
-	private bool allSubjectsPhaseActionTaken;
-	
-	[HideInInspector] public bool phaseActionTaken { get; private set; }
 
 	public Vector3Int lastKnownPlayerPos;
 	public Vector3Int playerPosLastTurn;
 
-	
 	void Awake() {
-		phaseActionTaken = false;
+		myPhase = Enum.Phase.enemy;
 		subjectsActingTrigger = false;
-		allSubjectsPhaseActionTaken = false;
 		
 		enemyList = new List<Enemy>();
 		_pathTiles = new HashSet<Vector3Int>();
     }
 
     void Update() {
-        if (!MyPhase()) return;
-		phaseActionTaken = TakePhaseAction();
+        if (!MyPhaseActive()) return;
+		//
+		switch(phaseActionState) {
+			case Enum.PhaseActionState.waitingForInput:
+				TakePhaseAction();
+				break;
+			case Enum.PhaseActionState.acting:
+				// do nothing until finished acting
+				break;
+			case Enum.PhaseActionState.complete:
+				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
+				EndPhase();
+				break;
+			case Enum.PhaseActionState.postPhaseDelay:
+				// delay for phaseDelayTime, until you go into postPhase
+			case Enum.PhaseActionState.postPhase:
+				break;
+		}
     }
 	
-	public bool MyPhase() {
-		return GameManager.inst.phaseManager.currentPhase == PhaseManager.Phase.enemy && phaseActionTaken == false;
-	}
-	
+	// overrides base
 	public void TriggerPhase() {
-		phaseActionTaken = false;
+		base.TriggerPhase();
 		subjectsActingTrigger = true;
 	}
 	
-	public bool TakePhaseAction() {	
+	public override void TakePhaseAction() {	
 		// start action coroutine if not currently running
 		// reset trigger immediately
 		if (subjectsActingTrigger) {
 			subjectsActingTrigger = false;
+			phaseActionState = Enum.PhaseActionState.acting;
 			
 			// update player position
 			playerPosLastTurn = lastKnownPlayerPos;
 			lastKnownPlayerPos = GameManager.inst.player.gridPosition;
 
-			allSubjectsPhaseActionTaken = false;
 			StartCoroutine(SubjectTakePhaseActions());
 		}
-		
-		return allSubjectsPhaseActionTaken;
-	}
-	
-	public void AddSubject(Enemy enemy) {
-		enemyList.Add(enemy);
 	}
 	
 	public IEnumerator SubjectTakePhaseActions() {
-		bool pAT = true;
-		
 		for (int i = 0; i < enemyList.Count; i++) {
-			if (i == enemyList.Count) {
+			enemyList[i].MoveTowardsPlayer();
+			
+			// don't delay if you're the last
+			if (i == enemyList.Count-1) {
 				yield return null;
 			} else {
-				yield return new WaitForSeconds(enemyList[i].moveDelayTime);
+				yield return new WaitForSeconds(phaseDelayTime);
 			}
-			
-			pAT &= enemyList[i].TakePhaseAction();
 		}
 		
-		// pAT isn't necessary, but may be in the future
-		if (pAT) {
-			allSubjectsPhaseActionTaken = true;
-		}
+		phaseActionState = Enum.PhaseActionState.complete;
 	}
-	
+		
 	public bool HasPlayerMoved() {
 		return playerPosLastTurn != GameManager.inst.player.gridPosition;
+	}
+		
+	public void AddSubject(Enemy enemy) {
+		enemyList.Add(enemy);
 	}
 }

@@ -2,40 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Mover : MonoBehaviour
+public abstract class MovingObject : PhasedObject
 {	
-	public LayerMask blockingLayer;
-	public Vector3Int gridPosition { get; protected set; }
-	public float moveDelayTime;	// in units of WaitForSeconds();
-
+	[HideInInspector] public Vector3Int gridPosition { get; protected set; }
+	
 	private Rigidbody2D rigidbody2D;
 	private bool crtMovingFlag = false;
 	private Coroutine crtMovement;
 	
     protected virtual void Start() {
 		rigidbody2D = GetComponent<Rigidbody2D>();
-		
-		// this needs to be set outside of class init for MonoBehaviour, I guess? Otherwise, always 0.1f
-		moveDelayTime = 0.05f;
-		//moveDelayTime = 0;
     }
-	
-	protected Vector3Int SpeedVec(Vector3Int vec, int speed) {
-		return new Vector3Int(Mathf.Clamp(vec.x,  -speed, speed),
-							  Mathf.Clamp(vec.y,  -speed, speed),
-							  Mathf.Clamp(vec.z,  -speed, speed));
-	}
 	
 	protected Vector3Int ToPosition(Vector3Int pos, int speed) {
 		return new Vector3Int(Mathf.Clamp(pos.x - gridPosition.x,  -speed, speed),
 							  Mathf.Clamp(pos.y - gridPosition.y,  -speed, speed),
 							  Mathf.Clamp(pos.z - gridPosition.z,  -speed, speed));
-	}
-	
-	protected static Vector3Int ToPositionStatic(Vector3Int src, Vector3Int dest, int speed) {
-		return new Vector3Int(Mathf.Clamp(dest.x - src.x,  -speed, speed),
-							  Mathf.Clamp(dest.y - src.y,  -speed, speed),
-							  Mathf.Clamp(dest.z - src.z,  -speed, speed));
 	}
 	
 	protected bool GridMove(int xdir, int ydir, out Component occupant) {
@@ -70,7 +52,7 @@ public abstract class Mover : MonoBehaviour
 		return false;
 	}
 	
-	protected virtual void AttemptGridMove(int xdir, int ydir) {
+	protected virtual bool AttemptGridMove(int xdir, int ydir) {
 		Component hitComponent;
 		bool canMove = GridMove(xdir, ydir, out hitComponent);
 		
@@ -78,6 +60,7 @@ public abstract class Mover : MonoBehaviour
 		if(!canMove && hitComponent != null) {
 			OnBlocked(hitComponent);
 		}
+		return canMove;
 	}
 	
 	// this is like a Python-generator: Coroutine

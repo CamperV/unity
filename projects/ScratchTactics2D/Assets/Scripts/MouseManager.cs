@@ -7,8 +7,8 @@ public class MouseManager : MonoBehaviour
 	private WorldGrid worldGridInst;
 	private SelectOverlayTile selectOverlayTile;
 	
-	public Vector3Int prevMouseGridPos;
-	public Vector3Int currentMouseGridPos;
+	[HideInInspector] public Vector3Int prevMouseGridPos;
+	[HideInInspector] public Vector3Int currentMouseGridPos;
 	
 	// dont' use Awake here, to avoid bootstrapping issues
     void Start() {
@@ -34,6 +34,6 @@ public class MouseManager : MonoBehaviour
     }
 	
 	public bool HasMouseMoved() {
-		return prevMouseGridPos != currentMouseGridPos;
+		return worldGridInst.IsInBounds(currentMouseGridPos) && prevMouseGridPos != currentMouseGridPos;
 	}
 }

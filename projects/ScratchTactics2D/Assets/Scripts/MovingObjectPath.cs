@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoverPath
+public class MovingObjectPath
 {
 	private Vector3Int _start;
 	private Vector3Int _end;
@@ -19,7 +19,7 @@ public class MoverPath
 		set { _end = value; }
 	}
 	
-	public MoverPath(Vector3Int startPosition) {
+	public MovingObjectPath(Vector3Int startPosition) {
 		start = startPosition;
 		
 		// load overlay scriptable
@@ -28,10 +28,12 @@ public class MoverPath
 	}
 	
 	public void Clear() {
-		ResetDrawPath();
-		path.Clear();
-		start = new Vector3Int(-1, -1, -1);
-		end   = new Vector3Int(-1, -1, -1);
+		if (path.Count != 0) {
+			//ResetDrawPath();
+			path.Clear();
+			start = new Vector3Int(-1, -1, -1);
+			end   = new Vector3Int(-1, -1, -1);
+		}
 	}
 	
 	public Vector3Int Next(Vector3Int position) {
@@ -46,6 +48,25 @@ public class MoverPath
 		path.Remove(position);
 		GameManager.inst.worldGrid.ResetOverlayAt(position, pathOverlayTile.level);
 		return retval;
+	}
+	
+	public void Consume(Vector3Int position) {
+		path.Remove(position);
+		//GameManager.inst.worldGrid.ResetOverlayAt(position, pathOverlayTile.level);
+		GameManager.inst.worldGrid.ClearTilesOnLevel(pathOverlayTile.level);
+	}
+	
+	public List<Vector3Int> GetPathEdges() {
+		List<Vector3Int> edges = new List<Vector3Int>();
+		Vector3Int currPos = start;
+		Vector3Int nextPos = currPos;
+		
+		while(nextPos != end) {
+			nextPos = path[currPos];
+			edges.Add(nextPos - currPos);
+			currPos = nextPos;
+		}
+		return edges;
 	}
 	
 	public bool IsEmpty() {
@@ -75,8 +96,8 @@ public class MoverPath
 	// AI pathfinding
 	// storing this is a hashmap also helps for quickly assessing what squares are available
 	// T is the type you expect to path towards, and don't mind a collision against
-	public static MoverPath GetPathTo<T>(Vector3Int startPosition, Vector3Int targetPosition, int costHeuristic) where T : Component {
-		MoverPath newPath = new MoverPath(startPosition);
+	public static MovingObjectPath GetPathTo(Vector3Int startPosition, Vector3Int targetPosition, int costHeuristic) {
+		MovingObjectPath newPath = new MovingObjectPath(startPosition);
 		
 		// this is a simple BFS graph-search system
 		// Grid Positions are the Nodes, and are connected to their neighbors
@@ -108,7 +129,7 @@ public class MoverPath
 			
 			// available positions are: your neighbors that are "moveable",
 			// minus any endpoints other pathers have scoped out
-			foreach (Vector3Int adjacent in GetMovementOptions<T>(currentPos)) {
+			foreach (Vector3Int adjacent in GetMovementOptions(currentPos)) {
 				if (usedInSearch.Contains(adjacent)) continue;
 				cameFrom[adjacent] = currentPos;
 				
@@ -174,7 +195,7 @@ public class MoverPath
 	}
 	
 	// this will disallow all movement through occupants, other than a specified template <T>
-	private static List<Vector3Int> GetMovementOptions<T>(Vector3Int fromPosition) where T : Component {
+	private static List<Vector3Int> GetMovementOptions(Vector3Int fromPosition) {
 		// since we call TakePhaseAction serially...
 		// we don't need to know if an Enemy WILL move into a spot.
 		// if they had higher priority, they will have already moved into it	
@@ -190,7 +211,7 @@ public class MoverPath
 			// either check the tag or type of occupant
 			// if occupant is null, short-circuit and add moveOption
 			// if it is occupied, but is a Player, still works
-			if (occupant != null && occupant.GetType() != typeof(T)) {
+			if (occupant != null) {
 				continue;
 			}
 			moveOptions.Add(pos);

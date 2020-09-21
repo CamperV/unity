@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviour
 	public WorldGrid worldGridPrefab;
 	public Player playerPrefab;
 	public Enemy enemyPrefab;
+	public UIManager UIManagerPrefab;
 	public EnemyManager enemyManagerPrefab;
 	public PhaseManager phaseManagerPrefab;
 	public MouseManager mouseManagerPrefab;
@@ -23,6 +25,7 @@ public class GameManager : MonoBehaviour
 	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public WorldGrid worldGrid;
 	[HideInInspector] public Player player;
+	[HideInInspector] public UIManager UIManager;
 	[HideInInspector] public EnemyManager enemyManager;
 	[HideInInspector] public PhaseManager phaseManager;
 	[HideInInspector] public MouseManager mouseManager;
@@ -41,8 +44,14 @@ public class GameManager : MonoBehaviour
 		Init();
 	}
 	
+	void Start() {
+		// initial phase
+		phaseManager.StartPhase(Enum.Phase.player);
+	}
+	
 	void Init() {
 		worldGrid    = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		UIManager    = Instantiate(UIManagerPrefab);
 		mouseManager = Instantiate(mouseManagerPrefab);
 		phaseManager = Instantiate(phaseManagerPrefab);
 		enemyManager = Instantiate(enemyManagerPrefab);
