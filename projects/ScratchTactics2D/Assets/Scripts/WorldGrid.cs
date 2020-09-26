@@ -20,11 +20,14 @@ public class WorldGrid : MonoBehaviour
 		// the Tilemap is a child of the Grid object
 		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
 		
+		// tileOptions determine probability order as well
+		// so when WorldGrid is generated, it will check if the tile is:
+		//  grass first, then dirt, then water, then mountain
 		tileOptions = new List<WorldTile>{
-			//ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
-			//ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile,
 			ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile,
-			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile
+			ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
+			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile,
+			ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile
 		};
 		
 		occupancyGrid   = new Dictionary<Vector3Int, Component>();
@@ -119,8 +122,12 @@ public class WorldGrid : MonoBehaviour
 		List<Vector3Int> cardinal = new List<Vector3Int> {
 			gridPosition + new Vector3Int( 0,  1, 0), // N
 			gridPosition + new Vector3Int( 0, -1, 0), // S
-			gridPosition + new Vector3Int(-1,  0, 0), // E
-			gridPosition + new Vector3Int( 1,  0, 0)  // W
+			gridPosition + new Vector3Int(-1,  0, 0), // W
+			gridPosition + new Vector3Int( 1,  0, 0), // E
+			gridPosition + new Vector3Int(-1,  1, 0), // NW
+			gridPosition + new Vector3Int(-1, -1, 0), // SW
+			gridPosition + new Vector3Int( 1,  1, 0), // NE
+			gridPosition + new Vector3Int( 1, -1, 0)  // SE
 		};
 		
 		HashSet<Vector3Int> retHash = new HashSet<Vector3Int>();
@@ -182,10 +189,14 @@ public class WorldGrid : MonoBehaviour
 		int[,] mapMatrix = GenerateMapMatrix();
 		
 		ApplyMap(mapMatrix);
-		CameraManager.RefitCamera(new Vector3(baseTilemap.cellBounds.center.x,
-											  baseTilemap.cellBounds.center.y,
-											  -10),
-								  mapDimensionY);
+		
+		// how many tiles do we want shown vertically?
+		int yTiles = mapDimensionY;
+		CameraManager.RefitCamera(yTiles);
+		
+		Vector2 minBounds = new Vector2(11, (float)yTiles/2);
+		Vector2 maxBounds = new Vector2(mapDimensionX-11, (float)yTiles/2);
+		CameraManager.SetBounds(minBounds, maxBounds);
     }
 	
 	private int[,] GenerateMapMatrix() {
@@ -193,7 +204,17 @@ public class WorldGrid : MonoBehaviour
 		
 		for (int i = 0; i < mapMatrix.GetLength(0); i++) {
 			for (int j = 0; j < mapMatrix.GetLength(1); j++) {
-				mapMatrix[i, j] = Random.Range(0, tileOptions.Count);
+				// this determines which tile is chosen
+				var rng = Random.Range(1, 100); // inclusive
+				
+				int selection;
+				int probCounter = 0;
+				for(selection = 0; selection < tileOptions.Count; selection++) {
+					probCounter += tileOptions[selection].probability;
+					if (rng <= probCounter) break;
+				}
+				Debug.Assert(probCounter <= 100);
+				mapMatrix[i, j] = selection;
 			}
 		}
 		return mapMatrix;

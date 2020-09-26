@@ -6,8 +6,14 @@ using UnityEngine.Tilemaps;
 
 public abstract class WorldTile : Tile
 {
+	// returns an integer that signifies the cost of entering this tile
 	public abstract int GetCost();
 	public int cost { get { return GetCost(); } }
+	
+	// returns a probability from 0-99 that this tile is generated
+	public abstract int GetProbability();
+	public int probability { get { return GetProbability(); } }
+	public List<Sprite> sprites;
 }
 
 public abstract class OverlayTile : Tile
@@ -18,36 +24,57 @@ public abstract class OverlayTile : Tile
 
 //
 // --------------
-public class DirtWorldTile : WorldTile
-{
-	public override int GetCost() {
-		return 1;
-	}
-	
-	public void OnEnable() {
-		sprite = ResourceLoader.GetSprite("dirt_tile");
-	}
-}
-
 public class GrassWorldTile : WorldTile
 {
 	public override int GetCost() {
 		return 1;
 	}
 	
+	public override int GetProbability() {
+		return 75;	// x/100
+	}
+	
 	public void OnEnable() {
-		sprite = ResourceLoader.GetSprite("grass_tile");
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("grass_tile")
+		};
+		sprite = sprites[0];
+	}
+}
+
+public class DirtWorldTile : WorldTile
+{
+	public override int GetCost() {
+		return 1;
+	}
+	
+	public override int GetProbability() {
+		return 10;	// x/100
+	}
+	
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("dirt_tile")
+		};
+		sprite = sprites[0];
 	}
 }
 
 public class WaterWorldTile : WorldTile
 {
 	public override int GetCost() {
-		return 5;
+		return 2;
+	}
+	
+	public override int GetProbability() {
+		return 10;	// x/100
 	}
 	
 	public void OnEnable() {
-		sprite = ResourceLoader.GetSprite("water_tile");
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("water_tile")
+		};
+		sprite = sprites[0];
 	}
 }
 
@@ -57,8 +84,15 @@ public class MountainWorldTile : WorldTile
 		return 100;
 	}
 	
+	public override int GetProbability() {
+		return 5;	// x/100
+	}
+	
 	public void OnEnable() {
-		sprite = ResourceLoader.GetSprite("mountain_tile");
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("mountain_tile")
+		};
+		sprite = sprites[0];
 	}
 }
 

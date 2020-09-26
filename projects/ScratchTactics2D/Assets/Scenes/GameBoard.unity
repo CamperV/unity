@@ -387,7 +387,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1950037452}
   - component: {fileID: 1950037454}
-  - component: {fileID: 1950037453}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -409,20 +408,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1950037453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950037451}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7924b0bb52d30d147809242114a18f1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prevMouseGridPos: {x: 0, y: 0, z: 0}
-  currentMouseGridPos: {x: 0, y: 0, z: 0}
 --- !u!114 &1950037454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,8 +420,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b824d2c15c78d845ab1cf15109c0ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxEnemies: 5
-  minEnemies: 2
+  maxEnemies: 2
+  minEnemies: 1
   worldGridPrefab: {fileID: 6553869377840780433, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
   playerPrefab: {fileID: 5140243916379933852, guid: eb354dab14992314a92d8c6598838917, type: 3}
   enemyPrefab: {fileID: 2239003336567494943, guid: ec9a4e7a1dbe72348ad921ce61cc3648, type: 3}

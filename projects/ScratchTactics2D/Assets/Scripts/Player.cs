@@ -16,7 +16,11 @@ public class Player : MovingObject, IPhasedObject
 	
 	public static Player Spawn(Player prefab) {
 		Player player = Instantiate(prefab, GameManager.inst.worldGrid.RandomTileReal(), Quaternion.identity);
-		player.ResetPosition(new Vector3Int(1, 1, 0));
+		
+		Vector3Int pos = new Vector3Int(1,
+										(int)Mathf.Floor(GameManager.inst.worldGrid.mapDimensionY/2),
+										0);
+		player.ResetPosition(pos);
 		GameManager.inst.worldGrid.UpdateOccupantAt(player.gridPosition, player);
 		return player;
 	}

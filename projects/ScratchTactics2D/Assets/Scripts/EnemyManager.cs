@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyManager : PhasedObject, IPhasedObject
 {
 	private List<Enemy> enemyList;
-	private HashSet<Vector3Int> _pathTiles;
 	
 	private bool subjectsActingTrigger;
 
@@ -17,7 +16,6 @@ public class EnemyManager : PhasedObject, IPhasedObject
 		subjectsActingTrigger = false;
 		
 		enemyList = new List<Enemy>();
-		_pathTiles = new HashSet<Vector3Int>();
     }
 
     void Update() {
@@ -63,8 +61,19 @@ public class EnemyManager : PhasedObject, IPhasedObject
 	}
 	
 	public IEnumerator SubjectTakePhaseActions() {
-		for (int i = 0; i < enemyList.Count; i++) {
-			enemyList[i].MoveTowardsPlayer();
+		for (int i = 0; i < enemyList.Count; i++) {		
+			switch(enemyList[i].state) {
+				case Enum.EnemyState.idle:
+					if (enemyList[i].InLineOfSight(lastKnownPlayerPos)) {
+						enemyList[i].state = Enum.EnemyState.tracking;
+					} else {
+						enemyList[i].TakeIdleAction();
+					}
+					break;
+				case Enum.EnemyState.tracking:
+					enemyList[i].MoveTowardsPosition(lastKnownPlayerPos);
+					break;
+			}
 			
 			// don't delay if you're the last
 			if (i == enemyList.Count-1) {

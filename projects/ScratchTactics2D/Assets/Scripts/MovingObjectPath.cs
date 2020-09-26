@@ -92,6 +92,67 @@ public class MovingObjectPath
 		GameManager.inst.worldGrid.ResetOverlayAt(end, endpointOverlayTile.level);
 	}
 	
+	
+	public static MovingObjectPath GetRayTo(Vector3Int startPosition, Vector3Int targetPosition) {
+		MovingObjectPath newRay = new MovingObjectPath(startPosition);
+		
+		Vector3Int currentPos = startPosition;
+		Dictionary<Vector3Int, Vector3Int> cameFrom = new Dictionary<Vector3Int, Vector3Int>();
+		bool foundTarget = false;
+		
+		PriorityQueue<Vector3Int> rayQueue = new PriorityQueue<Vector3Int>();
+		rayQueue.Enqueue(0, currentPos);
+		
+		while (rayQueue.size != 0) {
+			currentPos = rayQueue.Dequeue();
+			
+			// found the target, now recount the path
+			if (currentPos == targetPosition) {
+				foundTarget = true;
+				break;
+			}
+			
+			foreach (Vector3Int adjacent in GameManager.inst.worldGrid.GetNeighbors(currentPos)) {
+				cameFrom[adjacent] = currentPos;
+				rayQueue.Enqueue(CalcPriority(adjacent, targetPosition), adjacent);
+			}
+		}
+		
+		// if we found the target, recount the path to get there
+		if (foundTarget) {
+			Debug.Log("Found the target! " + targetPosition);
+			newRay.end = targetPosition;
+			
+			Debug.Log("newRay.start: " + newRay.start);
+			Debug.Log("newRay.end: " + newRay.end);
+			
+			foreach (var k in cameFrom.Keys) {
+				Debug.Log("key: " + k);
+			}
+			
+			// init value only
+			Vector3Int progenitor = targetPosition;
+			
+			int cnt = 0;
+			while (progenitor != newRay.start) {
+				cnt++;
+				if (cnt > 100) break;
+				var newProgenitor = cameFrom[progenitor];
+								
+				// build the path in reverse, aka next steps (including target)
+				newRay.path[newProgenitor] = progenitor;
+				progenitor = newProgenitor;
+			}
+		} else {
+			// we didn't find a valid target/cost was too high. Stay put
+			newRay.start = startPosition;
+			newRay.end   = startPosition;
+			newRay.path[startPosition] = startPosition;
+		}
+		
+		return newRay;
+	}
+	
 		
 	// AI pathfinding
 	// storing this is a hashmap also helps for quickly assessing what squares are available

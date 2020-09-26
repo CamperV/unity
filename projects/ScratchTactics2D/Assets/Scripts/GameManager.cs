@@ -65,5 +65,8 @@ public class GameManager : MonoBehaviour
 			Enemy newEnemy = Enemy.Spawn(enemyPrefab);
 			enemyManager.AddSubject(newEnemy);
 		}
+		
+		// refit/retrack camera
+		CameraManager.SetTracking(player.transform);
 	}
 }
