@@ -9,17 +9,20 @@ public class Enemy : MovingObject
 	private SpriteRenderer spriteRenderer;
 	private Animator animator;
 	
-	public int moveSpeed = 1;
-	public int pathRange = 50;
-	public int sightRange = 10;	// in WorldTiles?
-	public HashSet<Type> sightBlockers = new HashSet<Type>() { typeof(MountainWorldTile) };
+	public readonly int moveSpeed = 1;
+	public readonly int pathRange = 50;
+	public readonly int detectionRange = 5;
 	public Enum.EnemyState state;
 	
 	public MovingObjectPath pathToPlayer; // use to cache and not recalculate every frame	
 	
-	public static Enemy Spawn(Enemy prefab) {
-		Vector3 spawnLoc = GameManager.inst.worldGrid.RandomTileReal();
+	// this class of Enemy cannot walk upon mountain tiles
+	public static HashSet<Type> untraversable = new HashSet<Type>() { typeof(MountainWorldTile) };
+	
+	public static Enemy Spawn(Enemy prefab, HashSet<Type> untraversable) {
+		Vector3 spawnLoc = GameManager.inst.worldGrid.RandomTileExceptTypeReal(untraversable);
 		Enemy enemy = Instantiate(prefab, spawnLoc, Quaternion.identity);
+		//
 		enemy.ResetPosition(GameManager.inst.worldGrid.Real2GridPos(spawnLoc));
 		GameManager.inst.worldGrid.UpdateOccupantAt(enemy.gridPosition, enemy);
 		return enemy;
@@ -51,37 +54,59 @@ public class Enemy : MovingObject
 		return moveSuccess;
 	}
 	
-	public bool InLineOfSight(Vector3Int target) {
-		if ((int)Vector3Int.Distance(gridPosition, target) > sightRange) return false;
-		
-		Debug.Log("target in range, calculating");
-		// else, in detection range:
-		// draw a ray from pos to target
-		MovingObjectPath sightRay = MovingObjectPath.GetRayTo(gridPosition, target);
-		HashSet<Vector3Int> mySet = new HashSet<Vector3Int>();
-		foreach (var k in sightRay.path.Keys) {
-			mySet.Add(k);
-		}
-		mySet.Add(sightRay.end);
-		GameManager.inst.worldGrid.HighlightTiles(mySet, Color.red);
-		
-		// check the ray for sight-blockers
-		bool blocked = false;
-		//Vector3Int currPos = sightRay.start;
-		/*while (currPos != sightRay.end) {
-			if (sightBlockers.Contains(GameManager.inst.worldGrid.GetWorldTileAt(currPos).GetType())) {
-				Debug.Log("Sight is blocked by object @ " + currPos);
-				blocked = true;
-				break;
-			}
-			currPos = sightRay.Next(currPos);
-		}*/
-		
-		return !blocked;
-	}
-	
 	public void TakeIdleAction() {
 		return;
+	}
+	
+	public bool InDetectionRange(FlowField flowField) {
+		if (flowField.field.ContainsKey(gridPosition)) {
+			return flowField.field[gridPosition] <= detectionRange;
+		} else {
+			return false;
+		}
+	}
+	
+	public bool FollowField(FlowField flowField) {		
+		List<Vector3Int> potentialMoves = new List<Vector3Int>() {
+			gridPosition + Vector3Int.up,		// N
+			gridPosition + Vector3Int.right,	// E
+			gridPosition + Vector3Int.down,		// S
+			gridPosition + Vector3Int.left		// W
+		};
+		
+		// don't move until within detection range
+		int minCost = flowField.field[gridPosition];
+		Vector3Int selectedMove = gridPosition + Vector3Int.zero;
+		
+		// select your next move
+		// if move remains unselected, remain still (.zero)
+		foreach(Vector3Int move in potentialMoves) {
+			// either check the tag or type of occupant
+			// this check allows enemies to "move" into untraversables
+			// only if they have a Player in them
+			var occupant = GameManager.inst.worldGrid.OccupantAt(move);
+			if (occupant != null) {
+				if(occupant.GetType() == typeof(Player)) {
+					selectedMove = move;
+					break; // early
+				} else continue;
+			}
+			
+			// otherwise, we must
+			// a) make sure the move is in the flowfield
+			if (flowField.field.ContainsKey(move)) {			
+				//
+				if(flowField.field[move] < minCost) {
+					minCost = flowField.field[move];
+					selectedMove = move;
+				}
+			}
+		}
+		
+		Vector3Int nextStep = ToPosition(selectedMove, moveSpeed);
+		var moveSuccess = AttemptGridMove(nextStep.x, nextStep.y);
+		
+		return moveSuccess;
 	}
 	
 	public void ResetPosition(Vector3Int v) {
@@ -90,6 +115,10 @@ public class Enemy : MovingObject
 	}
 		
 	public void OnHit() {
+		animator.SetTrigger("EnemyFlash");
+	}
+	
+	public void Alert() {
 		animator.SetTrigger("EnemyFlash");
 	}
 	

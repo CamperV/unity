@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -25,7 +26,7 @@ public class WorldGrid : MonoBehaviour
 		//  grass first, then dirt, then water, then mountain
 		tileOptions = new List<WorldTile>{
 			ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile,
-			ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
+			//ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
 			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile,
 			ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile
 		};
@@ -63,6 +64,38 @@ public class WorldGrid : MonoBehaviour
 		return Grid2RealPos(RandomTile());
 	}
 	
+	public Vector3Int RandomTileWithin(HashSet<Vector3Int> within) {
+		int x;
+		int y;
+		Vector3Int retVal;
+		do {
+			x = Random.Range(0, mapDimensionX);
+			y = Random.Range(0, mapDimensionY);
+			retVal = new Vector3Int(x, y, 0);
+		} while (!within.Contains(retVal));
+		return retVal;
+	}
+	
+	public Vector3 RandomTileWithinReal(HashSet<Vector3Int> within) {
+		return Grid2RealPos(RandomTileWithin(within));
+	}
+	
+	public Vector3Int RandomTileExceptType(HashSet<Type> except) {
+		int x;
+		int y;
+		Vector3Int retVal;
+		do {
+			x = Random.Range(0, mapDimensionX);
+			y = Random.Range(0, mapDimensionY);
+			retVal = new Vector3Int(x, y, 0);
+		} while (except.Contains(GetWorldTileAt(retVal).GetType()));
+		return retVal;
+	}
+	
+	public Vector3 RandomTileExceptTypeReal(HashSet<Type> except) {
+		return Grid2RealPos(RandomTileExceptType(except));
+	}
+	
 	public TileBase GetTileAt(Vector3Int tilePos) {
 		return baseTilemap.GetTile(tilePos);
 	}
@@ -72,6 +105,10 @@ public class WorldGrid : MonoBehaviour
 			return worldTileGrid[tilePos];
 		}
 		return null;
+	}
+	
+	public HashSet<Vector3Int> GetWorldTilePositions() {
+		return new HashSet<Vector3Int>(worldTileGrid.Keys);
 	}
 	
 	public void SetTile(Vector3Int tilePos, TileBase tile) {
@@ -117,17 +154,24 @@ public class WorldGrid : MonoBehaviour
 		return allOccupants;
 	}
 	
+	public HashSet<Vector3Int> CurrentOccupantPositions<T>() {
+		HashSet<Vector3Int> allPositions = new HashSet<Vector3Int>();
+		foreach (Vector3Int k in occupancyGrid.Keys) {
+			var occupantAt = OccupantAt(k);
+			if (occupantAt != null && occupantAt.GetType() == typeof(T)) {
+				allPositions.Add(k);
+			}
+		}
+		return allPositions;
+	}
+	
 	// neighbors are defined as adjacent squares in cardinal directions
-	public HashSet<Vector3Int> GetNeighbors(Vector3Int gridPosition) {
+	public HashSet<Vector3Int> GetNeighbors(Vector3Int tilePos) {
 		List<Vector3Int> cardinal = new List<Vector3Int> {
-			gridPosition + new Vector3Int( 0,  1, 0), // N
-			gridPosition + new Vector3Int( 0, -1, 0), // S
-			gridPosition + new Vector3Int(-1,  0, 0), // W
-			gridPosition + new Vector3Int( 1,  0, 0), // E
-			gridPosition + new Vector3Int(-1,  1, 0), // NW
-			gridPosition + new Vector3Int(-1, -1, 0), // SW
-			gridPosition + new Vector3Int( 1,  1, 0), // NE
-			gridPosition + new Vector3Int( 1, -1, 0)  // SE
+			tilePos + Vector3Int.up, 	// N
+			tilePos + Vector3Int.right, // E
+			tilePos + Vector3Int.down, 	// S
+			tilePos + Vector3Int.left  	// W
 		};
 		
 		HashSet<Vector3Int> retHash = new HashSet<Vector3Int>();
@@ -194,8 +238,8 @@ public class WorldGrid : MonoBehaviour
 		int yTiles = mapDimensionY;
 		CameraManager.RefitCamera(yTiles);
 		
-		Vector2 minBounds = new Vector2(11, (float)yTiles/2);
-		Vector2 maxBounds = new Vector2(mapDimensionX-11, (float)yTiles/2);
+		Vector2 minBounds = new Vector2(Mathf.Min(mapDimensionY+1, 10), (float)yTiles/2);
+		Vector2 maxBounds = new Vector2(Mathf.Min(mapDimensionX-mapDimensionY-1, mapDimensionX-10), (float)yTiles/2);
 		CameraManager.SetBounds(minBounds, maxBounds);
     }
 	
@@ -205,7 +249,7 @@ public class WorldGrid : MonoBehaviour
 		for (int i = 0; i < mapMatrix.GetLength(0); i++) {
 			for (int j = 0; j < mapMatrix.GetLength(1); j++) {
 				// this determines which tile is chosen
-				var rng = Random.Range(1, 100); // inclusive
+				var rng = Random.Range(1, 7); // exclusive
 				
 				int selection;
 				int probCounter = 0;
@@ -213,7 +257,7 @@ public class WorldGrid : MonoBehaviour
 					probCounter += tileOptions[selection].probability;
 					if (rng <= probCounter) break;
 				}
-				Debug.Assert(probCounter <= 100);
+				Debug.Assert(probCounter <= 6);
 				mapMatrix[i, j] = selection;
 			}
 		}

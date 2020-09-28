@@ -23,9 +23,8 @@ public class PriorityQueue<T> : IPriorityQueue<T>
 {	
 	PriorityHeap<T> queue = new PriorityHeap<T>();
 	
-	public int size {
-		get { return queue.size; }
-		private set { size = value; }
+	public int Count {
+		get { return queue.Count; }
 	}
 	
 	public void Enqueue(int priority, T item) {
@@ -44,9 +43,8 @@ public class PriorityHeap<T>
 	List<PriorityNode<T>> heapArray = new List<PriorityNode<T>>();
 	int heapSize = -1;
 	
-	public int size {
+	public int Count {
 		get { return heapArray.Count; }
-		private set { size = value; }
 	}
 	
 	public void Insert(PriorityNode<T> node) {

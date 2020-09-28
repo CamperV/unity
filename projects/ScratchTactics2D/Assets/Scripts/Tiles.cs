@@ -31,7 +31,7 @@ public class GrassWorldTile : WorldTile
 	}
 	
 	public override int GetProbability() {
-		return 75;	// x/100
+		return 4;	// x/6
 	}
 	
 	public void OnEnable() {
@@ -49,7 +49,7 @@ public class DirtWorldTile : WorldTile
 	}
 	
 	public override int GetProbability() {
-		return 10;	// x/100
+		return 3;	// x/6
 	}
 	
 	public void OnEnable() {
@@ -67,7 +67,7 @@ public class WaterWorldTile : WorldTile
 	}
 	
 	public override int GetProbability() {
-		return 10;	// x/100
+		return 0;	// x/6
 	}
 	
 	public void OnEnable() {
@@ -81,11 +81,11 @@ public class WaterWorldTile : WorldTile
 public class MountainWorldTile : WorldTile
 {
 	public override int GetCost() {
-		return 100;
+		return 5; // read: impassable
 	}
 	
 	public override int GetProbability() {
-		return 5;	// x/100
+		return 2;	// x/6
 	}
 	
 	public void OnEnable() {

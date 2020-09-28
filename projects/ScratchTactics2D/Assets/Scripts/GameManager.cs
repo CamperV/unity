@@ -62,9 +62,12 @@ public class GameManager : MonoBehaviour
 		
 		// now, spawn the enemies
 		for (int i = 0; i < Random.Range(minEnemies, maxEnemies); i++) {
-			Enemy newEnemy = Enemy.Spawn(enemyPrefab);
+			Enemy newEnemy = Enemy.Spawn(enemyPrefab, Enemy.untraversable);
 			enemyManager.AddSubject(newEnemy);
 		}
+		
+		enemyManager.SetTraversableTiles();
+		enemyManager.InitFlowField(player.gridPosition);
 		
 		// refit/retrack camera
 		CameraManager.SetTracking(player.transform);

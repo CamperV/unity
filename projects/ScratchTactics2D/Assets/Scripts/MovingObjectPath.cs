@@ -10,6 +10,7 @@ public class MovingObjectPath
 	private EndpointOverlayTile endpointOverlayTile;
 	
 	public Dictionary<Vector3Int, Vector3Int> path = new Dictionary<Vector3Int, Vector3Int>();
+	public List<Vector3Int> pathList = new List<Vector3Int>();
 	public Vector3Int start {
 		get { return _start; }
 		set { _start = value; }
@@ -31,6 +32,7 @@ public class MovingObjectPath
 		if (path.Count != 0) {
 			//ResetDrawPath();
 			path.Clear();
+			pathList.Clear();
 			start = new Vector3Int(-1, -1, -1);
 			end   = new Vector3Int(-1, -1, -1);
 		}
@@ -39,6 +41,9 @@ public class MovingObjectPath
 	public Vector3Int Next(Vector3Int position) {
 		if (position == end) return end;
 		return path[position];
+		//int ind = path.IndexOf(position);
+		//if (ind == path.Count-1) return end;
+		//return path[ind+1];
 	}
 	
 	public Vector3Int PopNext(Vector3Int position) {
@@ -90,69 +95,7 @@ public class MovingObjectPath
 			GameManager.inst.worldGrid.ResetOverlayAt(tile, pathOverlayTile.level);
 		}
 		GameManager.inst.worldGrid.ResetOverlayAt(end, endpointOverlayTile.level);
-	}
-	
-	
-	public static MovingObjectPath GetRayTo(Vector3Int startPosition, Vector3Int targetPosition) {
-		MovingObjectPath newRay = new MovingObjectPath(startPosition);
-		
-		Vector3Int currentPos = startPosition;
-		Dictionary<Vector3Int, Vector3Int> cameFrom = new Dictionary<Vector3Int, Vector3Int>();
-		bool foundTarget = false;
-		
-		PriorityQueue<Vector3Int> rayQueue = new PriorityQueue<Vector3Int>();
-		rayQueue.Enqueue(0, currentPos);
-		
-		while (rayQueue.size != 0) {
-			currentPos = rayQueue.Dequeue();
-			
-			// found the target, now recount the path
-			if (currentPos == targetPosition) {
-				foundTarget = true;
-				break;
-			}
-			
-			foreach (Vector3Int adjacent in GameManager.inst.worldGrid.GetNeighbors(currentPos)) {
-				cameFrom[adjacent] = currentPos;
-				rayQueue.Enqueue(CalcPriority(adjacent, targetPosition), adjacent);
-			}
-		}
-		
-		// if we found the target, recount the path to get there
-		if (foundTarget) {
-			Debug.Log("Found the target! " + targetPosition);
-			newRay.end = targetPosition;
-			
-			Debug.Log("newRay.start: " + newRay.start);
-			Debug.Log("newRay.end: " + newRay.end);
-			
-			foreach (var k in cameFrom.Keys) {
-				Debug.Log("key: " + k);
-			}
-			
-			// init value only
-			Vector3Int progenitor = targetPosition;
-			
-			int cnt = 0;
-			while (progenitor != newRay.start) {
-				cnt++;
-				if (cnt > 100) break;
-				var newProgenitor = cameFrom[progenitor];
-								
-				// build the path in reverse, aka next steps (including target)
-				newRay.path[newProgenitor] = progenitor;
-				progenitor = newProgenitor;
-			}
-		} else {
-			// we didn't find a valid target/cost was too high. Stay put
-			newRay.start = startPosition;
-			newRay.end   = startPosition;
-			newRay.path[startPosition] = startPosition;
-		}
-		
-		return newRay;
-	}
-	
+	}	
 		
 	// AI pathfinding
 	// storing this is a hashmap also helps for quickly assessing what squares are available
@@ -160,7 +103,7 @@ public class MovingObjectPath
 	public static MovingObjectPath GetPathTo(Vector3Int startPosition, Vector3Int targetPosition, int costHeuristic) {
 		MovingObjectPath newPath = new MovingObjectPath(startPosition);
 		
-		// this is a simple BFS graph-search system
+		// this is a simple Best-Path-First BFS graph-search system
 		// Grid Positions are the Nodes, and are connected to their neighbors
 		
 		// init position
@@ -177,7 +120,7 @@ public class MovingObjectPath
 		pathQueue.Enqueue(0, currentPos);
 		
 		// BFS search here
-		while (pathQueue.size != 0) {
+		while (pathQueue.Count != 0) {
 			currentPos = pathQueue.Dequeue();
 			usedInSearch.Add(currentPos);
 			

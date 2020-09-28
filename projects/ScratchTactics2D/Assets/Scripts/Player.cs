@@ -17,11 +17,10 @@ public class Player : MovingObject, IPhasedObject
 	public static Player Spawn(Player prefab) {
 		Player player = Instantiate(prefab, GameManager.inst.worldGrid.RandomTileReal(), Quaternion.identity);
 		
-		Vector3Int pos = new Vector3Int(1,
-										(int)Mathf.Floor(GameManager.inst.worldGrid.mapDimensionY/2),
-										0);
+		Vector3Int pos = new Vector3Int(1, (int)Mathf.Floor(GameManager.inst.worldGrid.mapDimensionY/2), 0);
 		player.ResetPosition(pos);
 		GameManager.inst.worldGrid.UpdateOccupantAt(player.gridPosition, player);
+		
 		return player;
 	}
 
@@ -48,8 +47,8 @@ public class Player : MovingObject, IPhasedObject
 			pathToSelected.Clear();
 			GameManager.inst.worldGrid.ClearTilesOnLevel(Enum.TileLevel.overlay);
 			//
-			pathToSelected = MovingObjectPath.GetPathTo(gridPosition, GameManager.inst.mouseManager.currentMouseGridPos, pathRange);
-			pathToSelected.DrawPath();
+			//pathToSelected = MovingObjectPath.GetPathTo(gridPosition, GameManager.inst.mouseManager.currentMouseGridPos, pathRange);
+			//pathToSelected.DrawPath();
 		}
 		
 		// looks for input, returns true if input is taken otherwise spins
@@ -77,10 +76,13 @@ public class Player : MovingObject, IPhasedObject
 		// this takes precedent, and can be used to break yourself out of movement
 		if (Input.GetMouseButtonDown(0)) {
 			movementQueue.Clear();
-			
+			/*
 			foreach (Vector3Int nextMove in pathToSelected.GetPathEdges()) {
 				movementQueue.Enqueue(nextMove);
-			}
+			}*/
+			
+			var num = GameManager.inst.enemyManager.flowFieldToPlayer.field[GameManager.inst.mouseManager.currentMouseGridPos];
+			GameManager.inst.UIManager.SetTurnText("FF: " + num);
 		}
 			
 		// phaseAction possibilities below	
@@ -144,7 +146,8 @@ public class Player : MovingObject, IPhasedObject
 	}
 	
 	protected override bool AttemptGridMove(int xdir, int ydir) {
-		return base.AttemptGridMove(xdir, ydir);
+		var success = base.AttemptGridMove(xdir, ydir);		
+		return success;
 	}
 	
 	protected override void OnBlocked<T>(T component) {
