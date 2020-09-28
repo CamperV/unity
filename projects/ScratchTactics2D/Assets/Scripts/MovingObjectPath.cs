@@ -111,10 +111,8 @@ public class MovingObjectPath
 		
 		// track path creation
 		Dictionary<Vector3Int, Vector3Int> cameFrom = new Dictionary<Vector3Int, Vector3Int>();
+		Dictionary<Vector3Int, int> distance = new Dictionary<Vector3Int, int>();
 		bool foundTarget = false;
-		
-		HashSet<Vector3Int> usedInSearch = new HashSet<Vector3Int>();
-		HashSet<Vector3Int> targetPositions = GameManager.inst.worldGrid.GetNeighbors(targetPosition);
 		
 		PriorityQueue<Vector3Int> pathQueue = new PriorityQueue<Vector3Int>();
 		pathQueue.Enqueue(0, currentPos);
@@ -122,34 +120,32 @@ public class MovingObjectPath
 		// BFS search here
 		while (pathQueue.Count != 0) {
 			currentPos = pathQueue.Dequeue();
-			usedInSearch.Add(currentPos);
 			
 			// found the target, now recount the path
-			if (targetPositions.Contains(currentPos)) {
-				cameFrom[targetPosition] = currentPos;
+			if (currentPos == targetPosition) {
 				foundTarget = true;
 				break;
 			}
 			
 			// available positions are: your neighbors that are "moveable",
 			// minus any endpoints other pathers have scoped out
-			foreach (Vector3Int adjacent in GetMovementOptions(currentPos)) {
-				if (usedInSearch.Contains(adjacent)) continue;
-				cameFrom[adjacent] = currentPos;
+			foreach (Vector3Int adjacent in GetMovementOptions(currentPos)) {			
+				int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;
+				var updatedCost = distSoFar + Cost(currentPos, adjacent);
 				
-				// enqueueing based on EdgeCost between two nodes will search correctly
-				// but we need to modify such that the prioirty is the total path cost so far
-				var totalPathCostSoFar = TotalPathCost(startPosition, adjacent, cameFrom);
-				if (totalPathCostSoFar == -1) continue;
-				if (totalPathCostSoFar > costHeuristic) continue;
+				if (updatedCost > costHeuristic)
+					continue;
 				
-				pathQueue.Enqueue(CalcPriority(adjacent, targetPosition) + totalPathCostSoFar, adjacent);
+				if (!distance.ContainsKey(adjacent) || updatedCost < distance[adjacent]) {
+					distance[adjacent] = updatedCost;
+					cameFrom[adjacent] = currentPos;
+					pathQueue.Enqueue(distance[adjacent], adjacent);
+				}
 			}
 		}
 		
 		// if we found the target, recount the path to get there
 		if (foundTarget) {
-			//newPath.end = cameFrom[targetPosition]; // space just outside of the target
 			newPath.end = targetPosition; // space just outside of the target
 			
 			// init value only
@@ -179,6 +175,14 @@ public class MovingObjectPath
 	private static int EdgeCost(Vector3Int dest) {
 		var destTile = GameManager.inst.worldGrid.GetWorldTileAt(dest);
 		if (destTile == null) return -1;
+		return destTile.cost;
+	}
+	
+	private static int Cost(Vector3Int src, Vector3Int dest) {
+		// the way we have coded cost into WorldTile:
+		// the number listed is the cost to enter said tile
+		//var srcTile  = GameManager.inst.worldGrid.GetWorldTileAt(src);
+		var destTile = GameManager.inst.worldGrid.GetWorldTileAt(dest);
 		return destTile.cost;
 	}
 	

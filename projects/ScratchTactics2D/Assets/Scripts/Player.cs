@@ -47,8 +47,8 @@ public class Player : MovingObject, IPhasedObject
 			pathToSelected.Clear();
 			GameManager.inst.worldGrid.ClearTilesOnLevel(Enum.TileLevel.overlay);
 			//
-			//pathToSelected = MovingObjectPath.GetPathTo(gridPosition, GameManager.inst.mouseManager.currentMouseGridPos, pathRange);
-			//pathToSelected.DrawPath();
+			pathToSelected = MovingObjectPath.GetPathTo(gridPosition, GameManager.inst.mouseManager.currentMouseGridPos, pathRange);
+			pathToSelected.DrawPath();
 		}
 		
 		// looks for input, returns true if input is taken otherwise spins
@@ -76,13 +76,13 @@ public class Player : MovingObject, IPhasedObject
 		// this takes precedent, and can be used to break yourself out of movement
 		if (Input.GetMouseButtonDown(0)) {
 			movementQueue.Clear();
-			/*
+			
 			foreach (Vector3Int nextMove in pathToSelected.GetPathEdges()) {
 				movementQueue.Enqueue(nextMove);
-			}*/
-			
+			}
+			/*
 			var num = GameManager.inst.enemyManager.flowFieldToPlayer.field[GameManager.inst.mouseManager.currentMouseGridPos];
-			GameManager.inst.UIManager.SetTurnText("FF: " + num);
+			GameManager.inst.UIManager.SetTurnText("FF: " + num);*/
 		}
 			
 		// phaseAction possibilities below	
