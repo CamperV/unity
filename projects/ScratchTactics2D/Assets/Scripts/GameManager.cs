@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
 	// singleton
 	public static GameManager inst = null; // enforces singleton behavior
+	private Enum.GameState gameState;
 
 	// accessed by children via singleton
 	public int maxEnemies;
@@ -21,6 +22,8 @@ public class GameManager : MonoBehaviour
 	public EnemyManager enemyManagerPrefab;
 	public PhaseManager phaseManagerPrefab;
 	public MouseManager mouseManagerPrefab;
+	//
+	public TacticsManager tacticsManagerPrefab;
 	
 	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public WorldGrid worldGrid;
@@ -29,6 +32,10 @@ public class GameManager : MonoBehaviour
 	[HideInInspector] public EnemyManager enemyManager;
 	[HideInInspector] public PhaseManager phaseManager;
 	[HideInInspector] public MouseManager mouseManager;
+	
+	//
+	// this has its own grid/tilemap children
+	[HideInInspector] public TacticsManager tacticsManager;
 	
 	void Awake() {
 		// only allow one GameManager to exist at any time
@@ -50,11 +57,12 @@ public class GameManager : MonoBehaviour
 	}
 	
 	void Init() {
-		worldGrid    = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-		UIManager    = Instantiate(UIManagerPrefab);
-		mouseManager = Instantiate(mouseManagerPrefab);
-		phaseManager = Instantiate(phaseManagerPrefab);
-		enemyManager = Instantiate(enemyManagerPrefab);
+		worldGrid      = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		UIManager      = Instantiate(UIManagerPrefab);
+		mouseManager   = Instantiate(mouseManagerPrefab);
+		phaseManager   = Instantiate(phaseManagerPrefab);
+		enemyManager   = Instantiate(enemyManagerPrefab);
+		tacticsManager = Instantiate(tacticsManagerPrefab);
 		
 		// generate the world and spawn the player into it
 		worldGrid.GenerateWorld();
@@ -71,5 +79,19 @@ public class GameManager : MonoBehaviour
 		
 		// refit/retrack camera
 		CameraManager.SetTracking(player.transform);
+		
+		// now, "enable"
+		EnterOverworldState();
+	}
+	
+	public void EnterOverworldState() {
+		gameState = Enum.GameState.overworld;
+	}
+	
+	public void EnterBattleState() {
+		gameState = Enum.GameState.battle;
+		
+		// also, dim the background, enable Tilemaps/etc
+		//worldGrid.gameObject.SetActive(false);
 	}
 }

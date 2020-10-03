@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5140243916379933859}
   - component: {fileID: 5140243916379933852}
   - component: {fileID: 5140243916379933857}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -96,9 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 463842d859d9bd945b1273a0592a2d4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockingLayer:
-    serializedVersion: 2
-    m_Bits: 512
+  moveSpeed: 1
+  pathRange: 2147483647
 --- !u!50 &5140243916379933857
 Rigidbody2D:
   serializedVersion: 4

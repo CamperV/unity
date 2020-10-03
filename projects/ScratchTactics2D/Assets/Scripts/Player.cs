@@ -11,6 +11,8 @@ public class Player : MovingObject, IPhasedObject
 	private MovingObjectPath pathToSelected;
 	private Queue<Vector3Int> movementQueue;
 	
+	private readonly bool mouseControl = false;
+	
 	public int moveSpeed = 1;
 	public int pathRange = Int32.MaxValue;
 	
@@ -43,7 +45,7 @@ public class Player : MovingObject, IPhasedObject
 		if (!MyPhaseActive()) return;
 		
 		// re-calc movement path if necessary
-		if (movementQueue.Count == 0 && GameManager.inst.mouseManager.HasMouseMoved()) {
+		if (mouseControl && movementQueue.Count == 0 && GameManager.inst.mouseManager.HasMouseMoved()) {
 			pathToSelected.Clear();
 			GameManager.inst.worldGrid.ClearTilesOnLevel(Enum.TileLevel.overlay);
 			//
@@ -74,7 +76,7 @@ public class Player : MovingObject, IPhasedObject
 		// move via pathing, disable input afterwards
 		// left mouse button
 		// this takes precedent, and can be used to break yourself out of movement
-		if (Input.GetMouseButtonDown(0)) {
+		if (mouseControl && Input.GetMouseButtonDown(0)) {
 			movementQueue.Clear();
 			
 			foreach (Vector3Int nextMove in pathToSelected.GetPathEdges()) {
@@ -150,8 +152,17 @@ public class Player : MovingObject, IPhasedObject
 		return success;
 	}
 	
+	// this method is run when the Player moves INTO an Enemy
 	protected override void OnBlocked<T>(T component) {
 		Enemy hitEnemy = component as Enemy;
-		hitEnemy.OnHit();
+		hitEnemy.OnHit(); // play hit animation
+		
+		// programmatically load in a TacticsGrid that matches what we need
+		var playerTile = GameManager.inst.worldGrid.GetWorldTileAt(gridPosition);
+		var enemyTile = GameManager.inst.worldGrid.GetWorldTileAt(hitEnemy.gridPosition);
+		
+		GameManager.inst.tacticsManager.NewBattle(new List<MovingObject>() { this, hitEnemy }, new List<WorldTile>(){ playerTile, enemyTile });
+		
+		GameManager.inst.EnterBattleState();
 	}
 }

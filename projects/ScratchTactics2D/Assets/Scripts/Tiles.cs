@@ -16,6 +16,15 @@ public abstract class WorldTile : Tile
 	public List<Sprite> sprites;
 }
 
+public abstract class TacticsTile : Tile
+{
+	// returns an integer that signifies the cost of entering this tile
+	public abstract int GetCost();
+	public int cost { get { return GetCost(); } }
+	
+	public List<Sprite> sprites;
+}
+
 public abstract class OverlayTile : Tile
 {
 	public abstract Enum.TileLevel GetLevel();
@@ -49,7 +58,7 @@ public class DirtWorldTile : WorldTile
 	}
 	
 	public override int GetProbability() {
-		return 3;	// x/6
+		return 0;	// x/6
 	}
 	
 	public void OnEnable() {
@@ -90,7 +99,37 @@ public class MountainWorldTile : WorldTile
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("mountain_tile")
+			ResourceLoader.GetSprite("granite_mountain_tile")
+		};
+		sprite = sprites[0];
+	}
+}
+
+//
+// --------------
+public class GrassIsoTile : TacticsTile
+{
+	public override int GetCost() {
+		return 1;
+	}
+	
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("grass_tile_iso")
+		};
+		sprite = sprites[0];
+	}
+}
+
+public class MountainIsoTile : TacticsTile
+{
+	public override int GetCost() {
+		return 1;
+	}
+	
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("mountain_tile_iso")
 		};
 		sprite = sprites[0];
 	}

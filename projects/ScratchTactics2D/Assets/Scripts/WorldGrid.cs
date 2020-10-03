@@ -26,7 +26,7 @@ public class WorldGrid : MonoBehaviour
 		//  grass first, then dirt, then water, then mountain
 		tileOptions = new List<WorldTile>{
 			ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile,
-			//ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
+			ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
 			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile,
 			ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile
 		};
@@ -238,7 +238,7 @@ public class WorldGrid : MonoBehaviour
 		int yTiles = mapDimensionY;
 		CameraManager.RefitCamera(yTiles);
 		
-		Vector2 minBounds = new Vector2(Mathf.Min(mapDimensionY+1, 10), (float)yTiles/2);
+		Vector2 minBounds = new Vector2(Mathf.Min(mapDimensionY-1, 10), (float)yTiles/2);
 		Vector2 maxBounds = new Vector2(Mathf.Min(mapDimensionX-mapDimensionY-1, mapDimensionX-10), (float)yTiles/2);
 		CameraManager.SetBounds(minBounds, maxBounds);
     }

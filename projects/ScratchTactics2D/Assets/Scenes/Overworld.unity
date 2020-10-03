@@ -429,12 +429,14 @@ MonoBehaviour:
   enemyManagerPrefab: {fileID: 3033003337155828433, guid: 6611adfec92e8b74ca66b42288512725, type: 3}
   phaseManagerPrefab: {fileID: 6692847297558468328, guid: cb3de7f3f55db0444885d3b028c80c10, type: 3}
   mouseManagerPrefab: {fileID: 1876840539373920246, guid: 915bc20ac23c4eb409abcc2528584b50, type: 3}
+  tacticsManagerPrefab: {fileID: 4151950018943693497, guid: 9066bdbf68251324caa469531d1509d5, type: 3}
   worldGrid: {fileID: 0}
   player: {fileID: 0}
   UIManager: {fileID: 0}
   enemyManager: {fileID: 0}
   phaseManager: {fileID: 0}
   mouseManager: {fileID: 0}
+  tacticsManager: {fileID: 0}
 --- !u!1 &1959980562
 GameObject:
   m_ObjectHideFlags: 0

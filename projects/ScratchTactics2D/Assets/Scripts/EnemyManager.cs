@@ -139,7 +139,7 @@ public class EnemyManager : PhasedObject, IPhasedObject
 	
 	public void InitFlowField(Vector3Int initOrigin) {
 		flowFieldToPlayer = FlowField.FlowFieldFrom(initOrigin, traversable);
-		flowFieldToPlayer.Display();
+		//flowFieldToPlayer.Display();
 	}
 	
 	public void UpdateFlowField() {
@@ -148,7 +148,7 @@ public class EnemyManager : PhasedObject, IPhasedObject
 			
 			flowFieldToPlayer = FlowField.FlowFieldFrom(lastKnownPlayerPos, traversable);
 			flowFieldToPlayer.Absorb(prevFlowFieldToPlayer);
-			flowFieldToPlayer.Display();
+			//flowFieldToPlayer.Display();
 		}
 	}
 	
