@@ -13,6 +13,12 @@ public abstract class WorldTile : Tile
 	// returns a probability from 0-99 that this tile is generated
 	public abstract int GetProbability();
 	public int probability { get { return GetProbability(); } }
+	
+	// returns an integer that signifies the cost of entering this tile
+	public virtual Vector2Int GetBattleGridSize() {
+		return new Vector2Int(9, 9);
+	}
+	public Vector2Int battleGridSize { get { return GetBattleGridSize(); } }
 	public List<Sprite> sprites;
 }
 

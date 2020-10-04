@@ -162,7 +162,6 @@ public class Player : MovingObject, IPhasedObject
 		var enemyTile = GameManager.inst.worldGrid.GetWorldTileAt(hitEnemy.gridPosition);
 		
 		GameManager.inst.tacticsManager.NewBattle(new List<MovingObject>() { this, hitEnemy }, new List<WorldTile>(){ playerTile, enemyTile });
-		
 		GameManager.inst.EnterBattleState();
 	}
 }

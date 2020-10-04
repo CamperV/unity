@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 {
 	// singleton
 	public static GameManager inst = null; // enforces singleton behavior
-	private Enum.GameState gameState;
+	public Enum.GameState gameState { get; private set; }
 
 	// accessed by children via singleton
 	public int maxEnemies;
@@ -77,18 +77,22 @@ public class GameManager : MonoBehaviour
 		enemyManager.SetTraversableTiles();
 		enemyManager.InitFlowField(player.gridPosition);
 		
-		// refit/retrack camera
-		CameraManager.SetTracking(player.transform);
-		
 		// now, "enable"
 		EnterOverworldState();
 	}
 	
 	public void EnterOverworldState() {
+		// refit/retrack camera
+		CameraManager.SetTracking(player.transform);
+		
 		gameState = Enum.GameState.overworld;
 	}
 	
 	public void EnterBattleState() {
+		// freeze camera
+		CameraManager.SetTracking(Camera.main.transform);
+		
+		// give all control to TacticsManager
 		gameState = Enum.GameState.battle;
 		
 		// also, dim the background, enable Tilemaps/etc

@@ -31,27 +31,30 @@ public class PhaseManager : MonoBehaviour
     }
 
     void Update() {
-        // wait for phase objects to signal, and change phase for them
-		if (currentPhase == Enum.Phase.player) {
-			if (playerInst.phaseActionState == Enum.PhaseActionState.postPhase) {
-				OnPhaseEnd(currentPhase);
-				StartPhase(Enum.Phase.enemy);
-				enemyManagerInst.TriggerPhase();
+		if (GameManager.inst.gameState == Enum.GameState.overworld) {
+			// wait for phase objects to signal, and change phase for them
+			if (currentPhase == Enum.Phase.player) {
+				if (playerInst.phaseActionState == Enum.PhaseActionState.postPhase) {
+					OnPhaseEnd(currentPhase);
+					StartPhase(Enum.Phase.enemy);
+					enemyManagerInst.TriggerPhase();
+				}
+				//
+				// code spins here until player takes its phaseAction
+				//
 			}
-			//
-			// code spins here until player takes its phaseAction
-			//
-		}
-		else if (currentPhase == Enum.Phase.enemy) {
-			if (enemyManagerInst.phaseActionState == Enum.PhaseActionState.postPhase) {
-				OnPhaseEnd(currentPhase);
-				StartPhase(Enum.Phase.player);
-				playerInst.TriggerPhase();
+			else if (currentPhase == Enum.Phase.enemy) {
+				if (enemyManagerInst.phaseActionState == Enum.PhaseActionState.postPhase) {
+					OnPhaseEnd(currentPhase);
+					StartPhase(Enum.Phase.player);
+					playerInst.TriggerPhase();
+				}
+				//
+				// code spins here until all enemies takes their phaseAction
+				//
 			}
-			//
-			// code spins here until all enemies takes their phaseAction
-			//
 		}
+		// else, disable phasing
     }
 	
 	public void StartPhase(Enum.Phase phase) {

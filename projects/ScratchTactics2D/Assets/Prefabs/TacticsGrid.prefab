@@ -177,8 +177,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a1e11bde85a3e4469f69190623200a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapDimensionX: 10
-  mapDimensionY: 10
 --- !u!1839735485 &8332161020244928824
 Tilemap:
   m_ObjectHideFlags: 0
