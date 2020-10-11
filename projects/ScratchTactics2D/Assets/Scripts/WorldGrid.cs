@@ -5,21 +5,14 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class WorldGrid : MonoBehaviour
+public class WorldGrid : GameGrid
 {
-	public int mapDimensionX;
-	public int mapDimensionY;	
-	public Tilemap baseTilemap;
-
 	private List<WorldTile> tileOptions;
 	private Dictionary<Vector3Int, Component> occupancyGrid;
 	private Dictionary<Vector3Int, WorldTile> worldTileGrid;
-	private Dictionary<Enum.TileLevel, HashSet<Vector3Int>> currentSetTiles;	// @ level (int)
 	
-	public void Awake() {
-		// we have a Grid object which is actually attached
-		// the Tilemap is a child of the Grid object
-		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
+	void Awake() {
+		base.Awake();
 		
 		// tileOptions determine probability order as well
 		// so when WorldGrid is generated, it will check if the tile is:
@@ -31,53 +24,8 @@ public class WorldGrid : MonoBehaviour
 			ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile
 		};
 		
-		occupancyGrid   = new Dictionary<Vector3Int, Component>();
-		worldTileGrid   = new Dictionary<Vector3Int, WorldTile>();
-		currentSetTiles = new Dictionary<Enum.TileLevel, HashSet<Vector3Int>>() {
-			[Enum.TileLevel.world] 	= new HashSet<Vector3Int>(),
-			[Enum.TileLevel.overlay] = new HashSet<Vector3Int>(),
-			[Enum.TileLevel.super] 	= new HashSet<Vector3Int>()
-		};
-	}
-	
-	public Vector3 Grid2RealPos(Vector3Int tilePos) {
-		return baseTilemap.GetCellCenterWorld(tilePos);
-	}
-	
-	public Vector3Int Real2GridPos(Vector3 realPos) {
-		return baseTilemap.WorldToCell(realPos);
-	}
-	
-	public Vector3 GetTileInDirection(Vector3 start, Vector3Int dirVector) {
-		Vector3Int tileStart = Real2GridPos(start);
-		Vector3Int tileEnd   = tileStart + dirVector;
-		return Grid2RealPos(tileEnd);		
-	}
-	
-	public Vector3Int RandomTile() {
-		int x = Random.Range(0, mapDimensionX);
-		int y = Random.Range(0, mapDimensionY);
-		return new Vector3Int(x, y, 0);
-	}
-	
-	public Vector3 RandomTileReal() {
-		return Grid2RealPos(RandomTile());
-	}
-	
-	public Vector3Int RandomTileWithin(HashSet<Vector3Int> within) {
-		int x;
-		int y;
-		Vector3Int retVal;
-		do {
-			x = Random.Range(0, mapDimensionX);
-			y = Random.Range(0, mapDimensionY);
-			retVal = new Vector3Int(x, y, 0);
-		} while (!within.Contains(retVal));
-		return retVal;
-	}
-	
-	public Vector3 RandomTileWithinReal(HashSet<Vector3Int> within) {
-		return Grid2RealPos(RandomTileWithin(within));
+		occupancyGrid = new Dictionary<Vector3Int, Component>();
+		worldTileGrid = new Dictionary<Vector3Int, WorldTile>();
 	}
 	
 	public Vector3Int RandomTileExceptType(HashSet<Type> except) {
@@ -96,10 +44,6 @@ public class WorldGrid : MonoBehaviour
 		return Grid2RealPos(RandomTileExceptType(except));
 	}
 	
-	public TileBase GetTileAt(Vector3Int tilePos) {
-		return baseTilemap.GetTile(tilePos);
-	}
-	
 	public WorldTile GetWorldTileAt(Vector3Int tilePos) {
 		if (worldTileGrid.ContainsKey(tilePos)) {
 			return worldTileGrid[tilePos];
@@ -109,15 +53,6 @@ public class WorldGrid : MonoBehaviour
 	
 	public HashSet<Vector3Int> GetWorldTilePositions() {
 		return new HashSet<Vector3Int>(worldTileGrid.Keys);
-	}
-	
-	public void SetTile(Vector3Int tilePos, TileBase tile) {
-		if (tile == null) {
-			currentSetTiles[(Enum.TileLevel)tilePos.z].Remove(tilePos);
-		} else {
-			currentSetTiles[(Enum.TileLevel)tilePos.z].Add(tilePos);
-		}
-		baseTilemap.SetTile(tilePos, tile);
 	}
 	
 	public Component OccupantAt(Vector3Int tilePos) {
@@ -165,23 +100,7 @@ public class WorldGrid : MonoBehaviour
 		return allPositions;
 	}
 	
-	// neighbors are defined as adjacent squares in cardinal directions
-	public HashSet<Vector3Int> GetNeighbors(Vector3Int tilePos) {
-		List<Vector3Int> cardinal = new List<Vector3Int> {
-			tilePos + Vector3Int.up, 	// N
-			tilePos + Vector3Int.right, // E
-			tilePos + Vector3Int.down, 	// S
-			tilePos + Vector3Int.left  	// W
-		};
-		
-		HashSet<Vector3Int> retHash = new HashSet<Vector3Int>();
-		foreach (Vector3Int pos in cardinal) {
-			if (IsInBounds(pos)) retHash.Add(pos);
-		}
-		return retHash;
-	}
-	
-	public bool IsInBounds(Vector3Int tilePos) {
+	public override bool IsInBounds(Vector3Int tilePos) {
 		return worldTileGrid.ContainsKey(tilePos);
 	}
 	
@@ -207,25 +126,8 @@ public class WorldGrid : MonoBehaviour
 		baseTilemap.SetColor(tilePos, new Color(1, 1, 1, 1));
 	}
 	
-	public void OverlayAt(Vector3Int tilePos, OverlayTile tile) {
-		Debug.Assert(tilePos.z == 0);
-		Vector3Int overlayPos = new Vector3Int(tilePos.x, tilePos.y, (int)tile.level);
-		SetTile(overlayPos, tile);
-	}
-	
-	public void ResetOverlayAt(Vector3Int tilePos, Enum.TileLevel level) {
-		Debug.Assert(tilePos.z == 0);
-		Debug.Assert(level != Enum.TileLevel.world);
-		Vector3Int overlayPos = new Vector3Int(tilePos.x, tilePos.y, (int)level);
-		SetTile(overlayPos, null);
-	}
-	
-	public void ClearTilesOnLevel(Enum.TileLevel level) {
-		// can't use this to modify currentSetTiles during iteration
-		foreach (Vector3Int tilePos in currentSetTiles[level]) {
-			baseTilemap.SetTile(tilePos, null);
-		}
-		currentSetTiles[level].Clear();
+	public void ClearOverlayTiles() {
+		overlayTilemap.ClearAllTiles();
 	}
 	
 	public void GenerateWorld() {	
@@ -270,7 +172,7 @@ public class WorldGrid : MonoBehaviour
 		for (int x = 0; x < mapMatrix.GetLength(0); x++) {
 			for (int y = 0; y < mapMatrix.GetLength(1); y++) {
 				// set the WorldTile in the actual tilemap		
-				SetTile(currentPos, tileOptions[mapMatrix[x, y]]);
+				baseTilemap.SetTile(currentPos, tileOptions[mapMatrix[x, y]]);
 				
 				// set in the WorldTile dictionary for easy path cost lookup
 				worldTileGrid[new Vector3Int(x, y, 0)] = tileOptions[mapMatrix[x, y]];

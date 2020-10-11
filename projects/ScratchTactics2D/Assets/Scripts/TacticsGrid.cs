@@ -4,19 +4,14 @@ using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class TacticsGrid : MonoBehaviour
+public class TacticsGrid : GameGrid
 {
-	private Tilemap baseTilemap;
-	
 	private Dictionary<Type, TacticsTile> tileOptions;
 	private Dictionary<Vector3Int, Component> occupancyGrid;
 	private Dictionary<Vector3Int, TacticsTile> tacticsTileGrid;
 	
-    public void Awake() {
-		Debug.Log("TacticsGrid: I live!");
-		// we have a Grid object which is actually attached
-		// the Tilemap is a child of the Grid object
-		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
+    void Awake() {
+		base.Awake();
 		
 		// tileOptions determine probability order as well
 		// so when Tactics is generated, it will check if the tile is:
@@ -28,6 +23,10 @@ public class TacticsGrid : MonoBehaviour
 		
 		occupancyGrid = new Dictionary<Vector3Int, Component>();
 		tacticsTileGrid = new Dictionary<Vector3Int, TacticsTile>();
+	}
+	
+	public override bool IsInBounds(Vector3Int tilePos) {
+		return tacticsTileGrid.ContainsKey(tilePos);
 	}
 
     public void CreateTileMap(Vector3Int offset, WorldTile originTile) {

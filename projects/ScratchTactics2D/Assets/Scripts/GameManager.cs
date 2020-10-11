@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
 		mouseManager   = Instantiate(mouseManagerPrefab);
 		phaseManager   = Instantiate(phaseManagerPrefab);
 		enemyManager   = Instantiate(enemyManagerPrefab);
-		tacticsManager = Instantiate(tacticsManagerPrefab);
+		tacticsManager = Instantiate(tacticsManagerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 		
 		// generate the world and spawn the player into it
 		worldGrid.GenerateWorld();

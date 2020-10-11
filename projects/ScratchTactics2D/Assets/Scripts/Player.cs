@@ -47,7 +47,7 @@ public class Player : MovingObject, IPhasedObject
 		// re-calc movement path if necessary
 		if (mouseControl && movementQueue.Count == 0 && GameManager.inst.mouseManager.HasMouseMoved()) {
 			pathToSelected.Clear();
-			GameManager.inst.worldGrid.ClearTilesOnLevel(Enum.TileLevel.overlay);
+			GameManager.inst.worldGrid.ClearOverlayTiles();
 			//
 			pathToSelected = MovingObjectPath.GetPathTo(gridPosition, GameManager.inst.mouseManager.currentMouseGridPos, pathRange);
 			pathToSelected.DrawPath();

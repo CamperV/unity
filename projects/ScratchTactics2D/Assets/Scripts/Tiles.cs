@@ -33,8 +33,6 @@ public abstract class TacticsTile : Tile
 
 public abstract class OverlayTile : Tile
 {
-	public abstract Enum.TileLevel GetLevel();
-	public Enum.TileLevel level { get { return GetLevel(); } }
 }
 
 //
@@ -145,10 +143,6 @@ public class MountainIsoTile : TacticsTile
 // --------------
 public class SelectOverlayTile : OverlayTile
 {
-	public override Enum.TileLevel GetLevel() {
-		return Enum.TileLevel.super;
-	}
-	
 	public void OnEnable() {
 		sprite = ResourceLoader.GetSprite("select_overlay_tile");
 	}
@@ -156,10 +150,6 @@ public class SelectOverlayTile : OverlayTile
 
 public class PathOverlayTile : OverlayTile
 {
-	public override Enum.TileLevel GetLevel() {
-		return Enum.TileLevel.overlay;
-	}
-	
 	public void OnEnable() {
 		sprite = ResourceLoader.GetSprite("path_dot");
 	}
@@ -167,11 +157,14 @@ public class PathOverlayTile : OverlayTile
 
 public class EndpointOverlayTile : OverlayTile
 {
-	public override Enum.TileLevel GetLevel() {
-		return Enum.TileLevel.overlay;
-	}
-	
 	public void OnEnable() {
 		sprite = ResourceLoader.GetSprite("path_end");
+	}
+}
+
+public class SelectOverlayIsoTile : OverlayTile
+{
+	public void OnEnable() {
+		sprite = ResourceLoader.GetSprite("select_overlay_iso_tile");
 	}
 }

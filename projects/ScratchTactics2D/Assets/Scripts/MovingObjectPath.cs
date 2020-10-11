@@ -51,14 +51,13 @@ public class MovingObjectPath
 		// no available Remove(key, out val) override in Unity
 		Vector3Int retval = path[position];
 		path.Remove(position);
-		GameManager.inst.worldGrid.ResetOverlayAt(position, pathOverlayTile.level);
+		GameManager.inst.worldGrid.ResetOverlayAt(position);
 		return retval;
 	}
 	
 	public void Consume(Vector3Int position) {
 		path.Remove(position);
-		//GameManager.inst.worldGrid.ResetOverlayAt(position, pathOverlayTile.level);
-		GameManager.inst.worldGrid.ClearTilesOnLevel(pathOverlayTile.level);
+		GameManager.inst.worldGrid.ClearOverlayTiles();
 	}
 	
 	public List<Vector3Int> GetPathEdges() {
@@ -92,9 +91,9 @@ public class MovingObjectPath
 	
 	public void ResetDrawPath() {
 		foreach (Vector3Int tile in path.Keys) {
-			GameManager.inst.worldGrid.ResetOverlayAt(tile, pathOverlayTile.level);
+			GameManager.inst.worldGrid.ResetOverlayAt(tile);
 		}
-		GameManager.inst.worldGrid.ResetOverlayAt(end, endpointOverlayTile.level);
+		GameManager.inst.worldGrid.ResetOverlayAt(end);
 	}	
 		
 	// AI pathfinding

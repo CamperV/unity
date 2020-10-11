@@ -11,7 +11,4 @@ namespace Enum {
 	public enum Phase {none, player, enemy};
 	public enum PhaseActionState {waitingForInput, acting, complete, postPhaseDelay, postPhase};
 	public enum EnemyState {idle, followField, pathing};
-	
-	// overlay tile level
-	public enum TileLevel {world, overlay, super};
 }

@@ -402,7 +402,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950037451}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.48795047, y: 0.20445478, z: -5.875934}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -422,7 +422,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxEnemies: 15
   minEnemies: 10
-  worldGridPrefab: {fileID: 6553869377840780433, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
+  worldGridPrefab: {fileID: 6013225397290577684, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
   playerPrefab: {fileID: 5140243916379933852, guid: eb354dab14992314a92d8c6598838917, type: 3}
   enemyPrefab: {fileID: 2239003336567494943, guid: ec9a4e7a1dbe72348ad921ce61cc3648, type: 3}
   UIManagerPrefab: {fileID: 2771305699776815881, guid: 45179db8495c00d4f93fc8787bd04d3c, type: 3}

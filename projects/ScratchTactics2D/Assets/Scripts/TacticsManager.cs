@@ -34,8 +34,8 @@ public class TacticsManager : MonoBehaviour
 		
 		// move to center after the tilemap has been filled
 		var cameraPos = new Vector3(Camera.main.transform.position.x,
-							Camera.main.transform.position.y,
-							0);
+									Camera.main.transform.position.y,
+									0);
 		tacticsGrid = Instantiate(tacticsGridPrefab, cameraPos, Quaternion.identity);
 		
 		// determine orientations
@@ -77,6 +77,7 @@ public class TacticsManager : MonoBehaviour
 		// determine correct centering factor
 		Vector3 gridCenter = tacticsGrid.GetGridCenterReal();
 		Vector3 offsetPos = cameraPos - (gridCenter - cameraPos);
+		
 		tacticsGrid.transform.position = offsetPos;
 	}
 	
