@@ -46,6 +46,7 @@ public class MouseManager : MonoBehaviour
 		}
 		// debug
 		if (Input.GetMouseButtonDown(0)) {
+			Debug.Log("worldPos: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
 			Debug.Log("currentMouseGridPos: " + currentMouseGridPos);
 			Debug.Log("currentActiveGrid: " + currentActiveGrid);
 		}

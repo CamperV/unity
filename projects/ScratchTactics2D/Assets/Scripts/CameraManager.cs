@@ -7,7 +7,6 @@ public class CameraManager : MonoBehaviour
 	private static Transform trackingTarget;
 	private static Vector2 minBounds;
 	private static Vector2 maxBounds;
-
 	
 	public static void RefitStaticCamera(Vector3 pos, int height) {
 		Camera.main.transform.position = pos;

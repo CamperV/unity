@@ -5,12 +5,20 @@ using UnityEngine;
 
 public class TacticsManager : MonoBehaviour
 {
+	private Vector3 screenPoint;
+	private Vector3 dragOffset;
+	private bool draggingView;
+	
 	public TacticsGrid tacticsGridPrefab;
 	//
 	[HideInInspector] public TacticsGrid tacticsGrid;
+	
+	void Awake() {
+		dragOffset = Vector3.zero;
+		draggingView = false;
+	}
 
     void Update() {
-		
 		// while "in-battle" wait for key commands to exit state
 		if (GameManager.inst.gameState == Enum.GameState.battle) {
 			if (Input.GetKeyDown("space")) {
@@ -18,9 +26,35 @@ public class TacticsManager : MonoBehaviour
 				
 				FinishBattle();
 			}
-
-		}
-        
+			
+			var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			//
+			// RMB drag view
+			//
+			if (Input.GetMouseButtonDown(1) && !draggingView) {
+				dragOffset = tacticsGrid.transform.position - mouseWorldPos;
+				draggingView = true;
+			}
+			// update pos by offset, release drag when mouse goes up
+			if (draggingView) tacticsGrid.transform.position = mouseWorldPos + dragOffset;
+			if (draggingView && !Input.GetMouseButton(1)) draggingView = false;
+			
+			//
+			// mouse view control
+			//
+			if (!draggingView) {
+				// calculate what the new scale WILL been
+				// and calculate the scale ratio. Just use X, because our scale is uniform on all axes
+				var updatedScale = tacticsGrid.transform.localScale + (Input.GetAxis("Mouse ScrollWheel") * 0.75f) * Vector3.one;
+				float scaleRatio = updatedScale.x / tacticsGrid.transform.localScale.x;
+				
+				Vector3 localToMouse = tacticsGrid.transform.localPosition - mouseWorldPos;
+				
+				//update the scale, and position based on the new scale
+				tacticsGrid.transform.localScale = updatedScale;
+				tacticsGrid.transform.localPosition = mouseWorldPos + (localToMouse * scaleRatio);
+			}
+		}       
     }
 	
 	public void NewBattle(List<MovingObject> participants, List<WorldTile> tiles) {
