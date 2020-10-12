@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -42,8 +43,8 @@ public class TacticsGrid : GameGrid
 	public void ApplyTileMap() {
 		Debug.Assert(tacticsTileGrid.Count != 0);
 		
-		foreach(Vector3Int tilePos in tacticsTileGrid.Keys) {
-			baseTilemap.SetTile(tilePos, tacticsTileGrid[tilePos]);
+		foreach(var pair in tacticsTileGrid.OrderBy(k => k.Key.x)) {
+			baseTilemap.SetTile(pair.Key, pair.Value);
 		}
 		baseTilemap.CompressBounds();
 		baseTilemap.RefreshAllTiles();
