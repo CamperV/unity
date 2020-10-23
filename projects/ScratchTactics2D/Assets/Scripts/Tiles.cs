@@ -44,6 +44,10 @@ public abstract class TacticsTile : Tile
 
 public abstract class OverlayTile : Tile
 {
+	public List<Sprite> sprites;
+	public void SetSprite(int i) {
+		sprite = sprites[i];
+	}
 }
 
 //
@@ -143,7 +147,7 @@ public class CloudWorldTile : WorldTile
 		return 0;	// x/6
 	}
 	
-	public static CloudWorldTile GetWorldTileWithSprite(int spriteIndex) {
+	public static CloudWorldTile GetTileWithSprite(int spriteIndex) {
 		CloudWorldTile wt = ScriptableObject.CreateInstance<CloudWorldTile>() as CloudWorldTile;
 		wt.SetSprite(spriteIndex);
 		return wt;
@@ -172,7 +176,7 @@ public class RoadWorldTile : WorldTile
 		return 0;	// x/6
 	}
 	
-	public static RoadWorldTile GetWorldTileWithSprite(int spriteIndex) {
+	public static RoadWorldTile GetTileWithSprite(int spriteIndex) {
 		RoadWorldTile wt = ScriptableObject.CreateInstance<RoadWorldTile>() as RoadWorldTile;
 		wt.SetSprite(spriteIndex);
 		return wt;
@@ -214,7 +218,16 @@ public class MountainIsoTile : TacticsTile
 public class SelectOverlayTile : OverlayTile
 {
 	public void OnEnable() {
-		sprite = ResourceLoader.GetSprite("select_overlay_tile");
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("select_overlay_tile")
+		};
+		sprite = sprites[0];
+	}
+	
+	public static SelectOverlayTile GetTileWithSprite(int spriteIndex) {
+		SelectOverlayTile wt = ScriptableObject.CreateInstance<SelectOverlayTile>() as SelectOverlayTile;
+		wt.SetSprite(spriteIndex);
+		return wt;
 	}
 }
 

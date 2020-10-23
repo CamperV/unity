@@ -93,6 +93,37 @@ public abstract class GameGrid : MonoBehaviour
 		overlayTilemap.SetTile(tilePos, null);
 	}
 	
+	public void SelectAt(Vector3Int tilePos, OverlayTile tile) {
+		OverlayAt(tilePos, tile);
+		StartCoroutine(FadeUp(overlayTilemap, tilePos));
+	}
+	
+	public void ResetSelectionAt(Vector3Int tilePos) {
+		// this will nullify the tilePos after fading
+		StartCoroutine(FadeDownToNull(overlayTilemap, tilePos));
+	}
+	
+	public IEnumerator FadeUp(Tilemap tilemap, Vector3Int tilePos) {
+		tilemap.SetTileFlags(tilePos, TileFlags.None);
+		float c = 0.0f;
+		while (c < 1.0f) {
+			tilemap.SetColor(tilePos, new Color(1, 1, 1, c));
+			c += 0.025f;
+			yield return null;
+		}
+	}
+	
+	public IEnumerator FadeDownToNull(Tilemap tilemap, Vector3Int tilePos) {
+		tilemap.SetTileFlags(tilePos, TileFlags.None);
+		float c = 1.0f;
+		while (c > 0.0f) {
+			tilemap.SetColor(tilePos, new Color(1, 1, 1, c));
+			c -= 0.015f;
+			yield return null;
+		}
+		tilemap.SetTile(tilePos, null);
+	}
+	
 	// abstract zone
 	public abstract bool IsInBounds(Vector3Int tilePos);
 }

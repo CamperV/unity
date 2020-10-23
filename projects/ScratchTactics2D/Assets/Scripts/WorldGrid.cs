@@ -239,15 +239,15 @@ public class WorldGrid : GameGrid
 		}
 		
 		Dictionary<HashSet<Vector3Int>, RoadWorldTile> patternToTile = new Dictionary<HashSet<Vector3Int>, RoadWorldTile>(HashSet<Vector3Int>.CreateSetComparer()) {
-			[_HS(Vector3Int.left, Vector3Int.right)] = RoadWorldTile.GetWorldTileWithSprite(0),
+			[_HS(Vector3Int.left, Vector3Int.right)] = RoadWorldTile.GetTileWithSprite(0),
 			//			
-			[_HS(Vector3Int.up, Vector3Int.left)]	= RoadWorldTile.GetWorldTileWithSprite(1),
-			[_HS(Vector3Int.up, Vector3Int.right)]	= RoadWorldTile.GetWorldTileWithSprite(2),
+			[_HS(Vector3Int.up, Vector3Int.left)]	= RoadWorldTile.GetTileWithSprite(1),
+			[_HS(Vector3Int.up, Vector3Int.right)]	= RoadWorldTile.GetTileWithSprite(2),
 			//
-			[_HS(Vector3Int.down, Vector3Int.right)] = RoadWorldTile.GetWorldTileWithSprite(3),
-			[_HS(Vector3Int.down, Vector3Int.left)]	= RoadWorldTile.GetWorldTileWithSprite(4),
+			[_HS(Vector3Int.down, Vector3Int.right)] = RoadWorldTile.GetTileWithSprite(3),
+			[_HS(Vector3Int.down, Vector3Int.left)]	= RoadWorldTile.GetTileWithSprite(4),
 			//
-			[_HS(Vector3Int.up, Vector3Int.down)]	= RoadWorldTile.GetWorldTileWithSprite(5)
+			[_HS(Vector3Int.up, Vector3Int.down)]	= RoadWorldTile.GetTileWithSprite(5)
 		};
 		
 		Vector3Int startPos = new Vector3Int(1, Random.Range(1, mapDimensionY-1), 0);
@@ -274,9 +274,9 @@ public class WorldGrid : GameGrid
 	private void CreateTileBuffer(int[,] mapMatrix) {
 		// now that we have a world, create an out-of-bounds region for display purposes
 		List<CloudWorldTile> bufferTiles = new List<CloudWorldTile>{
-			CloudWorldTile.GetWorldTileWithSprite(0),
-			CloudWorldTile.GetWorldTileWithSprite(1),
-			CloudWorldTile.GetWorldTileWithSprite(2)
+			CloudWorldTile.GetTileWithSprite(0),
+			CloudWorldTile.GetTileWithSprite(1),
+			CloudWorldTile.GetTileWithSprite(2)
 		};
 		int buffer = bufferTiles.Count+3;
 		
