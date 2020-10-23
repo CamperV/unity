@@ -45,3 +45,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prevMouseGridPos: {x: 0, y: 0, z: 0}
   currentMouseGridPos: {x: 0, y: 0, z: 0}
+  mouseSelectorPrefab: {fileID: 3796395270085361481, guid: c46add2389195e346beec6d7fb8d8750, type: 3}
+  mouseSelector: {fileID: 3796395270085361481, guid: c46add2389195e346beec6d7fb8d8750, type: 3}

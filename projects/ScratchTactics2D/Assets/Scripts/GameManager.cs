@@ -85,12 +85,18 @@ public class GameManager : MonoBehaviour
 		// refit/retrack camera
 		CameraManager.SetTracking(player.transform);
 		
+		// show the overworld clearly
+		worldGrid.DisableTint();
+		
 		gameState = Enum.GameState.overworld;
 	}
 	
 	public void EnterBattleState() {
 		// freeze camera
 		CameraManager.SetTracking(Camera.main.transform);
+		
+		// tint overworld to give focus to battle
+		worldGrid.EnableTint();
 		
 		// give all control to TacticsManager
 		gameState = Enum.GameState.battle;

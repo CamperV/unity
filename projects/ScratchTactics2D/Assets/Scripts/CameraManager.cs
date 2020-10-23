@@ -14,7 +14,7 @@ public class CameraManager : MonoBehaviour
 	}
 	
 	public static void RefitCamera(int height) {
-		Camera.main.orthographicSize = (float)height / 2.0f;
+		Camera.main.orthographicSize = (float)height / 1.5f;
 	}
 	
 	public static void SetBounds(Vector2 min, Vector2 max) {

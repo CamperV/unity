@@ -11,6 +11,7 @@ public abstract class GameGrid : MonoBehaviour
 	public int mapDimensionY;
 	
 	[HideInInspector] public Tilemap baseTilemap;
+	[HideInInspector] public Tilemap depthTilemap;
 	[HideInInspector] public Tilemap overlayTilemap;
 	//
 	
@@ -19,7 +20,8 @@ public abstract class GameGrid : MonoBehaviour
 		// the Tilemap is a child of the Grid object
 		var tilemapComponents = GetComponentsInChildren<Tilemap>();
 		baseTilemap    = tilemapComponents[0];
-		overlayTilemap = tilemapComponents[1];
+		depthTilemap   = tilemapComponents[1];
+		overlayTilemap = tilemapComponents[2];
 	}
 	
 	public Vector3 Grid2RealPos(Vector3Int tilePos) {

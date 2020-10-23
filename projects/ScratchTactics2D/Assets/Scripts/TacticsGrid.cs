@@ -19,6 +19,7 @@ public class TacticsGrid : GameGrid
 		//  grass first, then dirt, then water, then mountain
 		tileOptions = new Dictionary<Type, TacticsTile>() {
 			[typeof(GrassWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
+			[typeof(RoadWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
 			[typeof(MountainWorldTile)] = ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile
 		};
 		
@@ -63,7 +64,6 @@ public class TacticsGrid : GameGrid
 		Vector3Int ceilCell  = new Vector3Int((int)Mathf.Ceil(baseTilemap.cellBounds.center.x),
 										   	  (int)Mathf.Ceil(baseTilemap.cellBounds.center.y), 0);
 		return (baseTilemap.GetCellCenterWorld(floorCell) + baseTilemap.GetCellCenterWorld(ceilCell)) / 2.0f;
-
 	}
 	
 	public Vector3 GetTilemapOrigin() {

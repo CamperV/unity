@@ -115,11 +115,11 @@ public class Enemy : MovingObject
 	}
 		
 	public void OnHit() {
-		animator.SetTrigger("EnemyFlash");
+		animator.SetTrigger("SkeletonAlert");
 	}
 	
 	public void Alert() {
-		animator.SetTrigger("EnemyFlash");
+		animator.SetTrigger("SkeletonAlert");
 	}
 	
 	protected override bool AttemptGridMove(int xdir, int ydir) {

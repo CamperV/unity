@@ -20,6 +20,17 @@ public abstract class WorldTile : Tile
 	}
 	public Vector2Int battleGridSize { get { return GetBattleGridSize(); } }
 	public List<Sprite> sprites;
+	
+	// reserved for tiles that have visual depth, ie mountains
+	public virtual int GetDepth() {
+		return 0;
+	}
+	public int depth { get { return GetDepth(); } }
+	
+	// utility methods for getting specific worldtile sprites
+	public void SetSprite(int i) {
+		sprite = sprites[i];
+	}
 }
 
 public abstract class TacticsTile : Tile
@@ -44,7 +55,7 @@ public class GrassWorldTile : WorldTile
 	}
 	
 	public override int GetProbability() {
-		return 4;	// x/6
+		return 5;	// x/6
 	}
 	
 	public void OnEnable() {
@@ -92,20 +103,79 @@ public class WaterWorldTile : WorldTile
 }
 
 public class MountainWorldTile : WorldTile
-{
+{	
 	public override int GetCost() {
 		return 5; // read: impassable
 	}
 	
 	public override int GetProbability() {
-		return 2;	// x/6
+		return 1;	// x/6
+	}
+	
+	public override int GetDepth() {
+		return 1;
 	}
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("granite_mountain_tile")
+			ResourceLoader.GetSprite("mountain_range_tile")
 		};
 		sprite = sprites[0];
+	}
+}
+
+public class CloudWorldTile : WorldTile
+{
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetMultiSprite("cloudy_grassy_mountain", "cloudy_grassy_mountain_0"),
+			ResourceLoader.GetMultiSprite("cloudy_grassy_mountain", "cloudy_grassy_mountain_1"),
+			ResourceLoader.GetMultiSprite("cloudy_grassy_mountain", "cloudy_grassy_mountain_2")
+		};
+		sprite = sprites[0];
+	}
+	
+	public override int GetCost() {
+		return -1; // read: impassable
+	}
+	
+	public override int GetProbability() {
+		return 0;	// x/6
+	}
+	
+	public static CloudWorldTile GetWorldTileWithSprite(int spriteIndex) {
+		CloudWorldTile wt = ScriptableObject.CreateInstance<CloudWorldTile>() as CloudWorldTile;
+		wt.SetSprite(spriteIndex);
+		return wt;
+	}
+}
+
+public class RoadWorldTile : WorldTile
+{
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_0"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_1"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_2"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_3"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_4"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_5")
+		};
+		sprite = sprites[0];
+	}
+	
+	public override int GetCost() {
+		return -1; // read: impassable
+	}
+	
+	public override int GetProbability() {
+		return 0;	// x/6
+	}
+	
+	public static RoadWorldTile GetWorldTileWithSprite(int spriteIndex) {
+		RoadWorldTile wt = ScriptableObject.CreateInstance<RoadWorldTile>() as RoadWorldTile;
+		wt.SetSprite(spriteIndex);
+		return wt;
 	}
 }
 
@@ -119,7 +189,7 @@ public class GrassIsoTile : TacticsTile
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("grass_tile_iso_2")
+			ResourceLoader.GetSprite("grass_tile_iso")
 		};
 		sprite = sprites[0];
 	}
@@ -133,7 +203,7 @@ public class MountainIsoTile : TacticsTile
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("mountain_tile_iso_2")
+			ResourceLoader.GetSprite("mountain_tile_iso")
 		};
 		sprite = sprites[0];
 	}

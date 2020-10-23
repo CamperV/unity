@@ -6,9 +6,10 @@ public abstract class MovingObject : PhasedObject
 {	
 	[HideInInspector] public Vector3Int gridPosition { get; protected set; }
 	
-	private Rigidbody2D rigidbody2D;
-	private bool crtMovingFlag = false;
-	private Coroutine crtMovement;
+	protected Rigidbody2D rigidbody2D;
+	
+	protected bool crtMovingFlag = false;
+	protected Coroutine crtMovement;
 	
     protected virtual void Start() {
 		rigidbody2D = GetComponent<Rigidbody2D>();

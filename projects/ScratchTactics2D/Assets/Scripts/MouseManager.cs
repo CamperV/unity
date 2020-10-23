@@ -10,6 +10,14 @@ public class MouseManager : MonoBehaviour
 	[HideInInspector] public Vector3Int prevMouseGridPos;
 	[HideInInspector] public Vector3Int currentMouseGridPos;
 	
+	// assigned in inspector
+	public MouseSelector mouseSelectorPrefab;
+	[HideInInspector] public MouseSelector mouseSelector;
+	
+	void Awake() {
+		mouseSelector = Instantiate(mouseSelectorPrefab);
+	}
+	
 	// dont' use Awake here, to avoid bootstrapping issues
     void Start() {
 		currentMouseGridPos = Vector3Int.zero;
@@ -40,10 +48,12 @@ public class MouseManager : MonoBehaviour
 		// overlay selection tile
 		//
 		// remove previous highlighting
-		if (HasMouseMoved()) {
-			currentActiveGrid.ResetOverlayAt(prevMouseGridPos);
-			currentActiveGrid.OverlayAt(currentMouseGridPos, tileOptions[GameManager.inst.gameState]);
-		}
+		/*if (!currentActiveGrid.IsInBounds(currentMouseGridPos)) {
+			mouseSelector.gameObject.SetActive(false);
+		}*/
+		// convert back to real after messing w/ active grid
+		RedrawSelectTile(currentActiveGrid.Grid2RealPos(currentMouseGridPos));
+		
 		// debug
 		if (Input.GetMouseButtonDown(0)) {
 			Debug.Log("worldPos: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -52,7 +62,15 @@ public class MouseManager : MonoBehaviour
 		}
     }
 	
+	public void RedrawSelectTile(Vector3 pos) {
+		if (HasMouseMoved()) {
+			mouseSelector.gameObject.SetActive(true);
+			mouseSelector.MoveTo(pos);
+		}
+	}
+	
 	public bool HasMouseMoved() {
 		return currentActiveGrid.IsInBounds(currentMouseGridPos) && prevMouseGridPos != currentMouseGridPos;
+		//return prevMouseGridPos != currentMouseGridPos;
 	}
 }

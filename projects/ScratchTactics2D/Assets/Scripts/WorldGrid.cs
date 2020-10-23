@@ -11,6 +11,8 @@ public class WorldGrid : GameGrid
 	private Dictionary<Vector3Int, Component> occupancyGrid;
 	private Dictionary<Vector3Int, WorldTile> worldTileGrid;
 	
+	private Canvas tintCanvas;
+	
 	void Awake() {
 		base.Awake();
 		
@@ -26,6 +28,32 @@ public class WorldGrid : GameGrid
 		
 		occupancyGrid = new Dictionary<Vector3Int, Component>();
 		worldTileGrid = new Dictionary<Vector3Int, WorldTile>();
+		
+		// set camera and canvas
+		tintCanvas = GetComponentsInChildren<Canvas>()[0];
+		tintCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+		tintCanvas.worldCamera = Camera.main;
+		tintCanvas.sortingLayerName = "Overworld Entities";
+		tintCanvas.sortingOrder = 1;
+	}
+	
+	public void EnableTint() {
+		tintCanvas.gameObject.SetActive(true);
+	}
+	
+	public void DisableTint() {
+		tintCanvas.gameObject.SetActive(false);
+	}
+	
+	public void SetAppropriateTile(Vector3Int tilePos, WorldTile tile) {
+		switch (tile.depth) {
+			case 0:			
+				baseTilemap.SetTile(tilePos, tile);
+				break;
+			case 1:			
+				depthTilemap.SetTile(tilePos, tile);
+				break;
+		}
 	}
 	
 	public Vector3Int RandomTileExceptType(HashSet<Type> except) {
@@ -117,8 +145,18 @@ public class WorldGrid : GameGrid
 	}
 	
 	public void TintTile(Vector3Int tilePos, Color color) {
-		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
-		baseTilemap.SetColor(tilePos, color);
+		if (baseTilemap.GetTile(tilePos) != null) {
+			baseTilemap.SetTileFlags(tilePos, TileFlags.None);
+			baseTilemap.SetColor(tilePos, color);
+			return;
+		} else if (depthTilemap.GetTile(tilePos) != null){
+			depthTilemap.SetTileFlags(tilePos, TileFlags.None);
+			depthTilemap.SetColor(tilePos, color);
+			return;
+		} else {
+			Debug.Log("Not a valid Tint target");
+			Debug.Assert(false);
+		}
 	}
 	
 	public void ResetTintTile(Vector3Int tilePos) {
@@ -135,19 +173,22 @@ public class WorldGrid : GameGrid
 		int[,] mapMatrix = GenerateMapMatrix();
 		
 		ApplyMap(mapMatrix);
+		CreateRoad();
+		CreateTintBuffer(mapMatrix);
 		
 		// how many tiles do we want shown vertically?
 		int yTiles = mapDimensionY;
 		CameraManager.RefitCamera(yTiles);
 		
-		Vector2 minBounds = new Vector2(Mathf.Min(mapDimensionY-1, 10), (float)yTiles/2);
-		Vector2 maxBounds = new Vector2(Mathf.Min(mapDimensionX-mapDimensionY-1, mapDimensionX-10), (float)yTiles/2);
+		Vector2 minBounds = new Vector2(7, (float)yTiles/2);
+		Vector2 maxBounds = new Vector2(mapDimensionX-7, (float)yTiles/2);
 		CameraManager.SetBounds(minBounds, maxBounds);
     }
 	
 	private int[,] GenerateMapMatrix() {
 		int[,] mapMatrix = new int[mapDimensionX, mapDimensionY];
 		
+		// randomly select all other tiles
 		for (int i = 0; i < mapMatrix.GetLength(0); i++) {
 			for (int j = 0; j < mapMatrix.GetLength(1); j++) {
 				// this determines which tile is chosen
@@ -163,6 +204,7 @@ public class WorldGrid : GameGrid
 				mapMatrix[i, j] = selection;
 			}
 		}
+		
 		return mapMatrix;
 	}
 	
@@ -171,11 +213,12 @@ public class WorldGrid : GameGrid
 
 		for (int x = 0; x < mapMatrix.GetLength(0); x++) {
 			for (int y = 0; y < mapMatrix.GetLength(1); y++) {
-				// set the WorldTile in the actual tilemap		
-				baseTilemap.SetTile(currentPos, tileOptions[mapMatrix[x, y]]);
+				
+				var tileChoice = tileOptions[mapMatrix[x, y]];
+				SetAppropriateTile(currentPos, tileChoice);
 				
 				// set in the WorldTile dictionary for easy path cost lookup
-				worldTileGrid[new Vector3Int(x, y, 0)] = tileOptions[mapMatrix[x, y]];
+				worldTileGrid[new Vector3Int(x, y, 0)] = tileChoice;
 				
 				currentPos = new Vector3Int(currentPos.x,
 											(int)(currentPos.y+baseTilemap.cellSize.y),
@@ -188,5 +231,95 @@ public class WorldGrid : GameGrid
 		//
 		baseTilemap.CompressBounds();
 		baseTilemap.RefreshAllTiles();
+	}
+	
+	private void CreateRoad() {
+		HashSet<Vector3Int> _HS(Vector3Int a, Vector3Int b) {
+			return new HashSet<Vector3Int> {a, b};
+		}
+		
+		Dictionary<HashSet<Vector3Int>, RoadWorldTile> patternToTile = new Dictionary<HashSet<Vector3Int>, RoadWorldTile>(HashSet<Vector3Int>.CreateSetComparer()) {
+			[_HS(Vector3Int.left, Vector3Int.right)] = RoadWorldTile.GetWorldTileWithSprite(0),
+			//			
+			[_HS(Vector3Int.up, Vector3Int.left)]	= RoadWorldTile.GetWorldTileWithSprite(1),
+			[_HS(Vector3Int.up, Vector3Int.right)]	= RoadWorldTile.GetWorldTileWithSprite(2),
+			//
+			[_HS(Vector3Int.down, Vector3Int.right)] = RoadWorldTile.GetWorldTileWithSprite(3),
+			[_HS(Vector3Int.down, Vector3Int.left)]	= RoadWorldTile.GetWorldTileWithSprite(4),
+			//
+			[_HS(Vector3Int.up, Vector3Int.down)]	= RoadWorldTile.GetWorldTileWithSprite(5)
+		};
+		
+		Vector3Int startPos = new Vector3Int(1, Random.Range(1, mapDimensionY-1), 0);
+		Vector3Int endPos   = new Vector3Int(mapDimensionX-1, Random.Range(1, mapDimensionY-1), 0);
+		MovingObjectPath road = MovingObjectPath.GetPathTo(startPos, endPos, Int32.MaxValue);
+		
+		// now that we have the path, place the correct road tiles
+		Vector3Int prevPos = startPos;
+		Vector3Int roadPos = startPos;
+		Vector3Int nextPos = startPos;
+		while(roadPos != endPos) {
+			prevPos = roadPos;
+			roadPos = nextPos;
+			nextPos = road.Next(roadPos);
+			
+			// create a pattern, only if they're different
+			if(prevPos != roadPos && roadPos != nextPos && prevPos != nextPos) {
+				HashSet<Vector3Int> pattern = _HS((prevPos - roadPos), (nextPos - roadPos));
+				baseTilemap.SetTile(roadPos, patternToTile[pattern]);
+			}
+		}
+	}
+	
+	private void CreateTileBuffer(int[,] mapMatrix) {
+		// now that we have a world, create an out-of-bounds region for display purposes
+		List<CloudWorldTile> bufferTiles = new List<CloudWorldTile>{
+			CloudWorldTile.GetWorldTileWithSprite(0),
+			CloudWorldTile.GetWorldTileWithSprite(1),
+			CloudWorldTile.GetWorldTileWithSprite(2)
+		};
+		int buffer = bufferTiles.Count+3;
+		
+		int xUpper = mapMatrix.GetLength(0);
+		int yUpper = mapMatrix.GetLength(1);
+		for (int x = -buffer; x < xUpper+buffer; x++) {			
+			for (int y = -buffer; y < yUpper+buffer; y++) {
+				if ((x > -1 && y > -1) && (x < xUpper && y < yUpper)) continue;
+				
+				CloudWorldTile tileChoice = bufferTiles[2];
+				if ((x >= -1 && x <= xUpper+1) && (y >= -1 && y <= yUpper+1)) {
+					tileChoice = bufferTiles[0];
+				} else if ((x >= -2 && x <= xUpper+2) && (y >= -2 && y <= yUpper+2)) {
+					tileChoice = bufferTiles[1];
+				}
+				
+				// set the WorldTile in the actual tilemap
+				baseTilemap.SetTile(new Vector3Int(x, y, 0), tileChoice);
+			}
+		}
+	}
+	
+	private void CreateTintBuffer(int[,] mapMatrix) {
+		int buffer = 5;
+		
+		int xUpper = mapMatrix.GetLength(0);
+		int yUpper = mapMatrix.GetLength(1);
+		for (int x = -buffer; x < xUpper+buffer; x++) {			
+			for (int y = -buffer; y < yUpper+buffer; y++) {
+				if ((x > -1 && y > -1) && (x < xUpper && y < yUpper)) continue;
+				
+				// set the WorldTile in the actual tilemap
+				Vector3Int tilePos = new Vector3Int(x, y, 0);
+				SetAppropriateTile(tilePos, ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile);
+				
+				if ((x >= -1 && x <= xUpper+1) && (y >= -1 && y <= yUpper+1)) {
+					TintTile(tilePos, new Color(.85f, .85f, .85f));
+				} else if ((x >= -2 && x <= xUpper+2) && (y >= -2 && y <= yUpper+2)) {
+					TintTile(tilePos, new Color(.55f, .55f, .55f));
+				} else {
+					TintTile(tilePos, new Color(.3f, .3f, .3f));
+				}
+			}
+		}
 	}
 }
