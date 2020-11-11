@@ -420,22 +420,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b824d2c15c78d845ab1cf15109c0ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxEnemies: 15
-  minEnemies: 10
+  maxEnemies: 12
+  minEnemies: 8
   worldGridPrefab: {fileID: 6013225397290577684, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
   playerPrefab: {fileID: 5140243916379933852, guid: eb354dab14992314a92d8c6598838917, type: 3}
-  enemyPrefab: {fileID: 2239003336567494943, guid: ec9a4e7a1dbe72348ad921ce61cc3648, type: 3}
   UIManagerPrefab: {fileID: 2771305699776815881, guid: 45179db8495c00d4f93fc8787bd04d3c, type: 3}
-  enemyManagerPrefab: {fileID: 3033003337155828433, guid: 6611adfec92e8b74ca66b42288512725, type: 3}
   phaseManagerPrefab: {fileID: 6692847297558468328, guid: cb3de7f3f55db0444885d3b028c80c10, type: 3}
   mouseManagerPrefab: {fileID: 1876840539373920246, guid: 915bc20ac23c4eb409abcc2528584b50, type: 3}
   tacticsManagerPrefab: {fileID: 4151950018943693497, guid: 9066bdbf68251324caa469531d1509d5, type: 3}
+  playerControllerPrefab: {fileID: 2585787102688693564, guid: c8c5d1b5244889148b58d86a2ba47699, type: 3}
+  enemyControllerPrefab: {fileID: 4983432242793738251, guid: 8accb420b12282249a02ede9de331096, type: 3}
+  enemyPrefab: {fileID: 8517083202827779547, guid: 437e378801b6cae4e9ff5fe88f5d8b82, type: 3}
   worldGrid: {fileID: 0}
   player: {fileID: 0}
   UIManager: {fileID: 0}
-  enemyManager: {fileID: 0}
   phaseManager: {fileID: 0}
   mouseManager: {fileID: 0}
+  playerController: {fileID: 0}
+  enemyController: {fileID: 0}
   tacticsManager: {fileID: 0}
 --- !u!1 &1959980562
 GameObject:

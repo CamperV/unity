@@ -8,7 +8,7 @@ public class FlowField
 	public Vector3Int origin;
 	public Dictionary<Vector3Int, int> field;
 	
-	public static FlowField FlowFieldFrom(Vector3Int origin, HashSet<Vector3Int> nodeSet) {
+	public static FlowField FlowFieldFrom(Vector3Int origin, HashSet<Vector3Int> nodeSet, int range = Int32.MaxValue, int numElements = Int32.MaxValue) {
 		//		
 		Dictionary<Vector3Int, int> distance = new Dictionary<Vector3Int, int>();
 		PriorityQueue<Vector3Int> fieldQueue = new PriorityQueue<Vector3Int>();
@@ -21,9 +21,12 @@ public class FlowField
 			currentPos = fieldQueue.Dequeue();
 					
 			foreach (Vector3Int adjacent in GetAdjacent(currentPos)) {
+				if (distance.Count > numElements) { continue; }
+				
 				if (nodeSet.Contains(adjacent)) {
 					int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;
 					var updatedCost = distSoFar + Cost(currentPos, adjacent);
+					if (updatedCost > range) { continue; }
 					
 					if (!distance.ContainsKey(adjacent) || updatedCost < distance[adjacent]) {
 						distance[adjacent] = updatedCost;

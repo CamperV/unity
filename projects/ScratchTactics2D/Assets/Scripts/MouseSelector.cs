@@ -51,6 +51,8 @@ public class MouseSelector : MovingObject
 		rigidbody2D.MovePosition(endpoint);
 		crtMovingFlag = false;
 	}
-	
-	protected override void OnBlocked<T>(T component) {}
+
+	public override bool GridMove(int xdir, int ydir) {
+		return base.AttemptGridMove(xdir, ydir, GameManager.inst.tacticsManager.GetActiveGrid());
+	}
 }

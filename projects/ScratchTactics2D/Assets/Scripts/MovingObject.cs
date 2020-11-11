@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class MovingObject : PhasedObject
+public abstract class MovingObject : MonoBehaviour
 {	
 	[HideInInspector] public Vector3Int gridPosition { get; protected set; }
 	
@@ -21,22 +21,36 @@ public abstract class MovingObject : PhasedObject
 							  Mathf.Clamp(pos.z - gridPosition.z,  -speed, speed));
 	}
 	
-	protected bool GridMove(int xdir, int ydir, out Component occupant) {
+	// child classes must specify which grid to travel on
+	public abstract bool GridMove(int xdir, int ydir);
+		
+	public bool AttemptGridMove(int xdir, int ydir, GameGrid grid) {
+		Component hitComponent;
+		bool canMove = CrtMove(xdir, ydir, grid, out hitComponent);
+		
+		// but if you did...
+		if(!canMove && hitComponent != null) {
+			OnBlocked(hitComponent);
+		}
+		return canMove;
+	}
+	
+	private bool CrtMove(int xdir, int ydir, GameGrid grid, out Component occupant) {
 		// need to always be a cell/Tile coordinate
 		Vector3Int endTile   = gridPosition + new Vector3Int(xdir, ydir, 0);
-		Vector3 endpoint = GameManager.inst.worldGrid.Grid2RealPos(endTile);
+		Vector3 endpoint = grid.Grid2RealPos(endTile);
 
 		// first check if you're even in bounds, THEN get the occupant
 		occupant = null;
-		if (GameManager.inst.worldGrid.IsInBounds(endTile)) {
-			occupant = GameManager.inst.worldGrid.OccupantAt(endTile);
+		if (grid.IsInBounds(endTile)) {
+			occupant = grid.OccupantAt(endTile);
 			
 			// no collisions
 			if (occupant == null) {
-				// we can move: instantly update the worldGrid w/ this info to block further inquiry
+				// we can move: instantly update the grid w/ this info to block further inquiry
 				// also, remove the ref to yourself and set occupancy to null. No two things can ever coexist, so this should be fine
-				GameManager.inst.worldGrid.UpdateOccupantAt(gridPosition, null);
-				GameManager.inst.worldGrid.UpdateOccupantAt(endTile, this);
+				grid.UpdateOccupantAt(gridPosition, null);
+				grid.UpdateOccupantAt(endTile, this);
 				gridPosition = endTile;
 				
 				// always interrupt a moving crt to change the destination of the SmoothMovement slide
@@ -53,19 +67,8 @@ public abstract class MovingObject : PhasedObject
 		return false;
 	}
 	
-	protected virtual bool AttemptGridMove(int xdir, int ydir) {
-		Component hitComponent;
-		bool canMove = GridMove(xdir, ydir, out hitComponent);
-		
-		// but if you did...
-		if(!canMove && hitComponent != null) {
-			OnBlocked(hitComponent);
-		}
-		return canMove;
-	}
-	
 	// this is like a Python-generator: Coroutine
-	protected IEnumerator SmoothMovement(Vector3 endpoint) {
+	private IEnumerator SmoothMovement(Vector3 endpoint) {
 		float sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
 		float snapFactor = 0.01f;
 		
@@ -88,10 +91,10 @@ public abstract class MovingObject : PhasedObject
 	}
 	
 	// this coroutine performs a little 'bump' when you can't move
-	protected IEnumerator SmoothBump(Vector3 endpoint) {	
+	private IEnumerator SmoothBump(Vector3 endpoint) {	
 		float speedFactor = 0.10f;
 		
-		Vector3 origPosition = GameManager.inst.worldGrid.Grid2RealPos(gridPosition);
+		Vector3 origPosition = transform.position;
 		Vector3 peak = origPosition + (endpoint - transform.position)/5.0f;
 		
 		// while these are the same now, they only need to be initialized the same
@@ -119,6 +122,5 @@ public abstract class MovingObject : PhasedObject
 		crtMovingFlag = false;
 	}
 	
-	// abstract methods are inherently virtual
-	protected abstract void OnBlocked<T>(T component) where T : Component;
+	public virtual void OnBlocked<T>(T component) where T : Component { return; }
 }

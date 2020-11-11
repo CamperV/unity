@@ -8,7 +8,6 @@ using UnityEngine.Tilemaps;
 public class TacticsGrid : GameGrid
 {
 	private Dictionary<Type, TacticsTile> tileOptions;
-	private Dictionary<Vector3Int, Component> occupancyGrid;
 	private Dictionary<Vector3Int, TacticsTile> tacticsTileGrid;
 	
     void Awake() {
@@ -20,10 +19,10 @@ public class TacticsGrid : GameGrid
 		tileOptions = new Dictionary<Type, TacticsTile>() {
 			[typeof(GrassWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
 			[typeof(RoadWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
-			[typeof(MountainWorldTile)] = ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile
+			[typeof(MountainWorldTile)] = ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile,
+			[typeof(MountainRoadWorldTile)] = ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile
 		};
 		
-		occupancyGrid = new Dictionary<Vector3Int, Component>();
 		tacticsTileGrid = new Dictionary<Vector3Int, TacticsTile>();
 	}
 	
@@ -68,5 +67,13 @@ public class TacticsGrid : GameGrid
 	
 	public Vector3 GetTilemapOrigin() {
 		return baseTilemap.GetCellCenterWorld(baseTilemap.origin);
+	}
+	
+	public override void SelectAt(Vector3Int tilePos, OverlayTile tile) {
+		TintTile(tilePos, new Color(0f, .75f, 1f, 1f));
+	}
+	
+	public override void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.025f) {
+		ResetTintTile(tilePos);
 	}
 }

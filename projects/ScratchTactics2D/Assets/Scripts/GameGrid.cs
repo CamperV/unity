@@ -13,6 +13,8 @@ public abstract class GameGrid : MonoBehaviour
 	[HideInInspector] public Tilemap baseTilemap;
 	[HideInInspector] public Tilemap depthTilemap;
 	[HideInInspector] public Tilemap overlayTilemap;
+	
+	private Dictionary<Vector3Int, Component> occupancyGrid;
 	//
 	
 	protected void Awake() {				
@@ -22,6 +24,8 @@ public abstract class GameGrid : MonoBehaviour
 		baseTilemap    = tilemapComponents[0];
 		depthTilemap   = tilemapComponents[1];
 		overlayTilemap = tilemapComponents[2];
+		
+		occupancyGrid = new Dictionary<Vector3Int, Component>();
 	}
 	
 	public Vector3 Grid2RealPos(Vector3Int tilePos) {
@@ -93,14 +97,14 @@ public abstract class GameGrid : MonoBehaviour
 		overlayTilemap.SetTile(tilePos, null);
 	}
 	
-	public void SelectAt(Vector3Int tilePos, OverlayTile tile) {
+	public virtual void SelectAt(Vector3Int tilePos, OverlayTile tile) {
 		OverlayAt(tilePos, tile);
 		StartCoroutine(FadeUp(overlayTilemap, tilePos));
 	}
 	
-	public void ResetSelectionAt(Vector3Int tilePos) {
+	public virtual void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.025f) {
 		// this will nullify the tilePos after fading
-		StartCoroutine(FadeDownToNull(overlayTilemap, tilePos));
+		StartCoroutine(FadeDownToNull(overlayTilemap, tilePos, fadeRate));
 	}
 	
 	public IEnumerator FadeUp(Tilemap tilemap, Vector3Int tilePos) {
@@ -108,20 +112,85 @@ public abstract class GameGrid : MonoBehaviour
 		float c = 0.0f;
 		while (c < 1.0f) {
 			tilemap.SetColor(tilePos, new Color(1, 1, 1, c));
-			c += 0.025f;
+			c += 0.035f;
 			yield return null;
 		}
 	}
 	
-	public IEnumerator FadeDownToNull(Tilemap tilemap, Vector3Int tilePos) {
+	public IEnumerator FadeDownToNull(Tilemap tilemap, Vector3Int tilePos, float fadeRate) {
 		tilemap.SetTileFlags(tilePos, TileFlags.None);
 		float c = 1.0f;
 		while (c > 0.0f) {
 			tilemap.SetColor(tilePos, new Color(1, 1, 1, c));
-			c -= 0.015f;
+			c -= fadeRate;
 			yield return null;
 		}
 		tilemap.SetTile(tilePos, null);
+	}
+	
+	public void TintTile(Vector3Int tilePos, Color color) {
+		if (baseTilemap.GetTile(tilePos) != null) {
+			baseTilemap.SetTileFlags(tilePos, TileFlags.None);
+			baseTilemap.SetColor(tilePos, color);
+			return;
+		} else if (depthTilemap.GetTile(tilePos) != null){
+			depthTilemap.SetTileFlags(tilePos, TileFlags.None);
+			depthTilemap.SetColor(tilePos, color);
+			return;
+		} else {
+			Debug.Log("Not a valid Tint target");
+			Debug.Assert(false);
+		}
+	}
+	
+	public void ResetTintTile(Vector3Int tilePos) {
+		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
+		baseTilemap.SetColor(tilePos, new Color(1, 1, 1, 1));
+	}
+	
+	public Component OccupantAt(Vector3Int tilePos) {
+		if (occupancyGrid.ContainsKey(tilePos)) {
+			return occupancyGrid[tilePos];
+		}
+		return null;
+	}
+	
+	public void UpdateOccupantAt(Vector3Int tilePos, Component newOccupant) {
+		if (occupancyGrid.ContainsKey(tilePos)) {
+			occupancyGrid[tilePos] = newOccupant;
+		} else {
+			occupancyGrid.Add(tilePos, newOccupant);
+		}
+	}
+		
+	public bool VacantAt(Vector3Int tilePos) {
+		if (occupancyGrid.ContainsKey(tilePos)) {
+			return occupancyGrid[tilePos] == null;
+		} else {
+			return true;
+		}
+	}
+
+	public List<Component> CurrentOccupants() {
+		List<Component> allOccupants = new List<Component>();
+		foreach (Vector3Int k in occupancyGrid.Keys) {
+			var occupantAt = OccupantAt(k);
+			if (occupantAt != null) {
+				allOccupants.Add(occupantAt);
+			}
+		}
+		return allOccupants;
+	}
+	
+	public HashSet<Vector3Int> CurrentOccupantPositions<T>() {
+		HashSet<Vector3Int> allPositions = new HashSet<Vector3Int>();
+		foreach (Vector3Int k in occupancyGrid.Keys) {
+			var occupantAt = OccupantAt(k);
+			if (occupantAt != null && occupantAt.GetType() == typeof(T)) {
+				allPositions.Add(k);
+			}
+		}
+		return allPositions;
 	}
 	
 	// abstract zone

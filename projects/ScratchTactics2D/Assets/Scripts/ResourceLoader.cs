@@ -14,8 +14,4 @@ public class ResourceLoader : MonoBehaviour
 		Sprite[] sprites = Resources.LoadAll<Sprite>(multiName);
 		return sprites.Single(s => s.name == name);
 	}
-	
-	private static Tile GetTile(string name) {
-		return (Tile)Resources.Load(name, typeof(Tile));
-	}
 }

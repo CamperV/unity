@@ -16,7 +16,7 @@ public abstract class WorldTile : Tile
 	
 	// returns an integer that signifies the cost of entering this tile
 	public virtual Vector2Int GetBattleGridSize() {
-		return new Vector2Int(9, 9);
+		return new Vector2Int(8, 8);
 	}
 	public Vector2Int battleGridSize { get { return GetBattleGridSize(); } }
 	public List<Sprite> sprites;
@@ -59,7 +59,7 @@ public class GrassWorldTile : WorldTile
 	}
 	
 	public override int GetProbability() {
-		return 5;	// x/6
+		return 85;	// x/6
 	}
 	
 	public void OnEnable() {
@@ -95,7 +95,7 @@ public class WaterWorldTile : WorldTile
 	}
 	
 	public override int GetProbability() {
-		return 0;	// x/6
+		return 2;	// x/6
 	}
 	
 	public void OnEnable() {
@@ -109,11 +109,11 @@ public class WaterWorldTile : WorldTile
 public class MountainWorldTile : WorldTile
 {	
 	public override int GetCost() {
-		return 5; // read: impassable
+		return 10;
 	}
 	
 	public override int GetProbability() {
-		return 1;	// x/6
+		return 13;	// x/6
 	}
 	
 	public override int GetDepth() {
@@ -169,7 +169,7 @@ public class RoadWorldTile : WorldTile
 	}
 	
 	public override int GetCost() {
-		return -1; // read: impassable
+		return 1; // read: impassable
 	}
 	
 	public override int GetProbability() {
@@ -178,6 +178,68 @@ public class RoadWorldTile : WorldTile
 	
 	public static RoadWorldTile GetTileWithSprite(int spriteIndex) {
 		RoadWorldTile wt = ScriptableObject.CreateInstance<RoadWorldTile>() as RoadWorldTile;
+		wt.SetSprite(spriteIndex);
+		return wt;
+	}
+}
+
+public class MountainRoadWorldTile : WorldTile
+{
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_0"),
+			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_1"),
+			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_2"),
+			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_3"),
+			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_4"),
+			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_5")			
+		};
+		sprite = sprites[0];
+	}
+	
+	public override int GetCost() {
+		return 1; // read: impassable
+	}
+	
+	public override int GetProbability() {
+		return 0;	// x/6
+	}
+	
+	public override int GetDepth() {
+		return 1;
+	}
+	
+	public static MountainRoadWorldTile GetTileWithSprite(int spriteIndex) {
+		MountainRoadWorldTile wt = ScriptableObject.CreateInstance<MountainRoadWorldTile>() as MountainRoadWorldTile;
+		wt.SetSprite(spriteIndex);
+		return wt;
+	}
+}
+
+public class WaterRoadWorldTile : WorldTile
+{
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_0"),
+			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_1"),
+			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_2"),
+			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_3"),
+			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_4"),
+			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_5")			
+		};
+		sprite = sprites[0];
+	}
+	
+	public override int GetCost() {
+		return 1; // read: impassable
+	}
+	
+	public override int GetProbability() {
+		return 0;	// x/6
+	}
+	
+	public static WaterRoadWorldTile GetTileWithSprite(int spriteIndex) {
+		WaterRoadWorldTile wt = ScriptableObject.CreateInstance<WaterRoadWorldTile>() as WaterRoadWorldTile;
 		wt.SetSprite(spriteIndex);
 		return wt;
 	}

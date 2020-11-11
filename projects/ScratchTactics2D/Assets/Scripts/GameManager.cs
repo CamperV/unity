@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -16,22 +17,26 @@ public class GameManager : MonoBehaviour
 	
 	// prefabs to be instantiated
 	public WorldGrid worldGridPrefab;
-	public Player playerPrefab;
-	public Enemy enemyPrefab;
+	public OverworldPlayer playerPrefab;
 	public UIManager UIManagerPrefab;
-	public EnemyManager enemyManagerPrefab;
 	public PhaseManager phaseManagerPrefab;
 	public MouseManager mouseManagerPrefab;
-	//
 	public TacticsManager tacticsManagerPrefab;
+	//
+	public PlayerController playerControllerPrefab;
+	public EnemyController enemyControllerPrefab;
+	//
+	public OverworldEnemyBase enemyPrefab;
 	
 	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public WorldGrid worldGrid;
-	[HideInInspector] public Player player;
+	[HideInInspector] public OverworldPlayer player;
 	[HideInInspector] public UIManager UIManager;
-	[HideInInspector] public EnemyManager enemyManager;
 	[HideInInspector] public PhaseManager phaseManager;
 	[HideInInspector] public MouseManager mouseManager;
+	//
+	[HideInInspector] public PlayerController playerController;
+	[HideInInspector] public EnemyController enemyController;
 	
 	//
 	// this has its own grid/tilemap children
@@ -57,25 +62,30 @@ public class GameManager : MonoBehaviour
 	}
 	
 	void Init() {
-		worldGrid      = Instantiate(worldGridPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		worldGrid      = Instantiate(worldGridPrefab, Vector3.zero, Quaternion.identity);
 		UIManager      = Instantiate(UIManagerPrefab);
 		mouseManager   = Instantiate(mouseManagerPrefab);
 		phaseManager   = Instantiate(phaseManagerPrefab);
-		enemyManager   = Instantiate(enemyManagerPrefab);
-		tacticsManager = Instantiate(tacticsManagerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		tacticsManager = Instantiate(tacticsManagerPrefab, Vector3.zero, Quaternion.identity);
+		//
+		// these will have to "register" their subjects
+		playerController = Instantiate(playerControllerPrefab);
+		enemyController  = Instantiate(enemyControllerPrefab);
 		
 		// generate the world and spawn the player into it
 		worldGrid.GenerateWorld();
-		player = Player.Spawn(playerPrefab);
+		player = OverworldPlayer.Spawn(playerPrefab);
+		playerController.Register(player);
 		
 		// now, spawn the enemies
 		for (int i = 0; i < Random.Range(minEnemies, maxEnemies); i++) {
-			Enemy newEnemy = Enemy.Spawn(enemyPrefab, Enemy.untraversable);
-			enemyManager.AddSubject(newEnemy);
+			var enemy = OverworldEnemyBase.Spawn(enemyPrefab);
+			Debug.Log("spawned " + enemy);
+			enemyController.Register(enemy);
 		}
 		
-		enemyManager.SetTraversableTiles();
-		enemyManager.InitFlowField(player.gridPosition);
+		enemyController.SetTraversableTiles();
+		enemyController.InitFlowField(player.gridPosition);
 		
 		// now, "enable"
 		EnterOverworldState();
@@ -97,11 +107,9 @@ public class GameManager : MonoBehaviour
 		
 		// tint overworld to give focus to battle
 		worldGrid.EnableTint();
+		worldGrid.ClearOverlayTiles();
 		
 		// give all control to TacticsManager
 		gameState = Enum.GameState.battle;
-		
-		// also, dim the background, enable Tilemaps/etc
-		//worldGrid.gameObject.SetActive(false);
 	}
 }

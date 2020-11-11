@@ -14,7 +14,7 @@ interface IPhasedObject
 
 public abstract class PhasedObject : MonoBehaviour, IPhasedObject
 {
-	public readonly float phaseDelayTime = 0.00f;	// in units of WaitForSeconds();
+	public readonly float phaseDelayTime = 0.01f;	// in units of WaitForSeconds();
 	[HideInInspector] public Enum.PhaseActionState phaseActionState { get; protected set; }
 	[HideInInspector] public Enum.Phase myPhase { get; protected set; }
 	
@@ -34,7 +34,7 @@ public abstract class PhasedObject : MonoBehaviour, IPhasedObject
 	}
 	
 	// only for overworld objects, right now
-	public bool MyPhaseActive() {
+	public virtual bool MyPhaseActive() {
 		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.overworld;
 	}
 	
