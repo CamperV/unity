@@ -8,6 +8,9 @@ public abstract class OverworldEntity : MovingObject
 	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;
 	
+	public Controller unitControllerPrefab;
+	[HideInInspector] public Controller unitController;
+	//
 	public Dictionary<string, Unit> unitPrefabs = new Dictionary<string, Unit>();
 	//
 	public virtual List<string> defaultUnitTags { get; }

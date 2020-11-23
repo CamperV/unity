@@ -63,10 +63,12 @@ public class OverworldPlayer : OverworldEntity
 		hitEnemy.OnHit(); // play hit animation
 		
 		// programmatically load in a TacticsGrid that matches what we need
-		var playerTile = GameManager.inst.worldGrid.GetWorldTileAt(gridPosition);
-		var enemyTile = GameManager.inst.worldGrid.GetWorldTileAt(hitEnemy.gridPosition);
+		var playerTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(gridPosition);
+		var enemyTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(hitEnemy.gridPosition);
 		
-		GameManager.inst.tacticsManager.CreateActiveBattle(new List<OverworldEntity>() { this, hitEnemy }, new List<WorldTile>(){ playerTile, enemyTile });
 		GameManager.inst.EnterBattleState();
+		var battleParticipants = new List<OverworldEntity>() { this, hitEnemy };
+		var battleTiles = new List<WorldTile>(){ playerTile, enemyTile };
+		GameManager.inst.tacticsManager.CreateActiveBattle(battleParticipants, battleTiles, Enum.Phase.player);
 	}
 }

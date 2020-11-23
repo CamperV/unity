@@ -53,6 +53,20 @@ public class PhaseManager : MonoBehaviour
 				// code spins here until all enemies takes their phaseAction
 				//
 			}
+		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
+			var activeController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(currentPhase);
+
+			// if the currently active controller has finished its phase
+			if (activeController.phaseActionState == Enum.PhaseActionState.postPhase) {
+				OnPhaseEnd(currentPhase);
+				StartPhase(currentPhase.NextPhase());
+
+				var nextController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(currentPhase.NextPhase());
+				nextController.TriggerPhase();
+			}
+			//
+			// code spins here until all enemies takes their phaseAction
+			//	
 		}
 		// else, disable phasing
     }

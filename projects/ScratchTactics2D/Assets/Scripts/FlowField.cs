@@ -55,8 +55,7 @@ public class FlowField
 	private static int Cost(Vector3Int src, Vector3Int dest) {
 		// the way we have coded cost into WorldTile:
 		// the number listed is the cost to enter said tile
-		//var srcTile  = GameManager.inst.worldGrid.GetWorldTileAt(src);
-		var destTile = GameManager.inst.worldGrid.GetWorldTileAt(dest);
+		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
 		return destTile.cost;
 	}
 	

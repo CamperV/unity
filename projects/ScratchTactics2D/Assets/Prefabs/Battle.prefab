@@ -44,7 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d76d98f12f567499009aeba36d60db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultControllerPrefab: {fileID: 5007282424744042210, guid: 40b81d5b47ed8ed48b32434d44080d2f, type: 3}
+  defaultController: {fileID: 0}
   worldParticipants: []
+  activeUnits: []
   grid: {fileID: 0}
   currentTurn: 0
 --- !u!1 &831110151278361556

@@ -26,4 +26,7 @@ public static class Utils
 		}
 		return retVal;
 	}
+
+	public static Color selectColorBlue = new Color(0f, .75f, 1f, 1f);
+	public static Color selectColorRed  = new Color(1f, .75f, 0f, 1f);
 }

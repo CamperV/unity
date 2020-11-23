@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 public class WorldGrid : GameGrid
 {
 	private List<WorldTile> tileOptions;
+	private OverlayTile selectTile;
 	private Dictionary<Vector3Int, WorldTile> worldTileGrid;
 	
 	private Canvas tintCanvas;
@@ -26,6 +27,7 @@ public class WorldGrid : GameGrid
 			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile,
 			ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile
 		};
+		selectTile = ScriptableObject.CreateInstance<SelectOverlayTile>() as SelectOverlayTile;
 		
 		worldTileGrid = new Dictionary<Vector3Int, WorldTile>();
 		
@@ -35,6 +37,31 @@ public class WorldGrid : GameGrid
 		tintCanvas.worldCamera = Camera.main;
 		tintCanvas.sortingLayerName = "Overworld Entities";
 		tintCanvas.sortingOrder = 1;
+	}
+
+	public override bool IsInBounds(Vector3Int tilePos) {
+		return worldTileGrid.ContainsKey(tilePos);
+	}
+		
+	public override GameTile GetTileAt(Vector3Int tilePos) {
+		if (worldTileGrid.ContainsKey(tilePos)) {
+			return worldTileGrid[tilePos];
+		}
+		return null;
+	}
+
+	public override HashSet<Vector3Int> GetAllTilePos() {
+		return new HashSet<Vector3Int>(worldTileGrid.Keys);
+	}
+
+	public override void SelectAt(Vector3Int tilePos) {
+		OverlayAt(tilePos, selectTile);
+		StartCoroutine(FadeUp(overlayTilemap, tilePos));
+	}
+	
+	public override void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.025f) {
+		// this will nullify the tilePos after fading
+		StartCoroutine(FadeDownToNull(overlayTilemap, tilePos, fadeRate));
 	}
 	
 	public void EnableTint() {
@@ -67,27 +94,12 @@ public class WorldGrid : GameGrid
 			x = Random.Range(0, mapDimensionX);
 			y = Random.Range(0, mapDimensionY);
 			retVal = new Vector3Int(x, y, 0);
-		} while (except.Contains(GetWorldTileAt(retVal).GetType()));
+		} while (except.Contains(GetTileAt(retVal).GetType()));
 		return retVal;
 	}
 	
 	public Vector3 RandomTileExceptTypeReal(HashSet<Type> except) {
 		return Grid2RealPos(RandomTileExceptType(except));
-	}
-	
-	public WorldTile GetWorldTileAt(Vector3Int tilePos) {
-		if (worldTileGrid.ContainsKey(tilePos)) {
-			return worldTileGrid[tilePos];
-		}
-		return null;
-	}
-	
-	public HashSet<Vector3Int> GetWorldTilePositions() {
-		return new HashSet<Vector3Int>(worldTileGrid.Keys);
-	}
-	
-	public override bool IsInBounds(Vector3Int tilePos) {
-		return worldTileGrid.ContainsKey(tilePos);
 	}
 	
 	public void HighlightTiles(HashSet<Vector3Int> tilePosSet, Color color) {

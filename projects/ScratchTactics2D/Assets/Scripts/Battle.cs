@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Battle : MonoBehaviour
 {
+	private Dictionary<OverworldEntity, Controller> activeControllers;
+	//
+	public Controller defaultControllerPrefab;
+	[HideInInspector] public Controller defaultController;
+	//
 	[HideInInspector] public List<OverworldEntity> worldParticipants;
 	[HideInInspector] public List<Unit> activeUnits;
 	[HideInInspector] public TacticsGrid grid;
@@ -16,13 +21,31 @@ public class Battle : MonoBehaviour
 	void Awake() {
 		worldParticipants = new List<OverworldEntity>();
 		grid = GetComponentsInChildren<TacticsGrid>()[0];
+		//
+		activeControllers = new Dictionary<OverworldEntity, Controller>();
+		defaultController = Instantiate(defaultControllerPrefab);
+		defaultController.transform.parent = this.transform;
 	}
 	
 	public void Init(List<OverworldEntity> participants, List<WorldTile> tiles) {
 		worldParticipants = participants;
 		//
 		PopulateGridAndReposition(tiles);
+		//
+		// register controllers for units to be registered to
+		foreach (OverworldEntity participant in worldParticipants) {
+			var prefab = participant.unitControllerPrefab;
+			if (prefab != null) {
+				activeControllers[participant] = Instantiate(prefab);
+				activeControllers[participant].transform.parent = this.transform;
+			}
+		}
+		//
 		SpawnAllUnits();
+	}
+
+	public void StartBattleOnPhase(Enum.Phase startingPhase) {
+		GameManager.inst.phaseManager.StartPhase(startingPhase);
 	}
 	
 	// we can only start a Battle with two participants
@@ -92,13 +115,15 @@ public class Battle : MonoBehaviour
 		var playerSpawnPositions = Utils.RandomSelections<Vector3Int>(playerSpawnZone, pUnits.Count);
 		for (int i=0; i<pUnits.Count; i++) {
 			Unit unit = (Unit)TacticsEntityBase.Spawn(pUnits[i], playerSpawnPositions[i], grid);
-			RegisterUnit(unit);
+			GetController(player).Register(unit);
+			activeUnits.Add(unit);
 		}
 		
 		var otherSpawnPositions = Utils.RandomSelections<Vector3Int>(otherSpawnZone, oUnits.Count);
 		for (int i=0; i<oUnits.Count; i++) {
 			Unit unit = (Unit)TacticsEntityBase.Spawn(oUnits[i], otherSpawnPositions[i], grid);
-			RegisterUnit(unit);
+			GetController(other).Register(unit);
+			activeUnits.Add(unit);
 		}
 	}
 	
@@ -160,9 +185,22 @@ public class Battle : MonoBehaviour
 		}
 		return retVal;
 	}
-	
-	private void RegisterUnit(Unit unit) {
-		activeUnits.Add(unit);
-		unit.transform.parent = this.transform;
+
+	private Controller GetController(OverworldEntity oe) {
+		if (activeControllers.ContainsKey(oe)) {
+			return activeControllers[oe];
+		} else {
+			return defaultController;
+		}
+	}
+
+	public Controller GetControllerFromPhase(Enum.Phase phase) {
+		if (phase == Enum.Phase.player) {
+			return GetController(player);
+		} else if (phase == Enum.Phase.enemy) {
+			return GetController(other);
+		} else {
+			return defaultController;
+		}
 	}
 }

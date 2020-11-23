@@ -69,10 +69,6 @@ public abstract class GameGrid : MonoBehaviour
 		return Grid2RealPos(RandomTileWithin(within));
 	}
 	
-	public TileBase GetTileAt(Vector3Int tilePos) {
-		return baseTilemap.GetTile(tilePos);
-	}
-	
 	// neighbors are defined as adjacent squares in cardinal directions
 	public HashSet<Vector3Int> GetNeighbors(Vector3Int tilePos) {
 		List<Vector3Int> cardinal = new List<Vector3Int> {
@@ -97,14 +93,12 @@ public abstract class GameGrid : MonoBehaviour
 		overlayTilemap.SetTile(tilePos, null);
 	}
 	
-	public virtual void SelectAt(Vector3Int tilePos, OverlayTile tile) {
-		OverlayAt(tilePos, tile);
-		StartCoroutine(FadeUp(overlayTilemap, tilePos));
+	public virtual void SelectAt(Vector3Int tilePos) {
+		TintTile(tilePos, Utils.selectColorBlue);
 	}
 	
 	public virtual void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.025f) {
-		// this will nullify the tilePos after fading
-		StartCoroutine(FadeDownToNull(overlayTilemap, tilePos, fadeRate));
+		ResetTintTile(tilePos);
 	}
 	
 	public IEnumerator FadeUp(Tilemap tilemap, Vector3Int tilePos) {
@@ -145,7 +139,7 @@ public abstract class GameGrid : MonoBehaviour
 	
 	public void ResetTintTile(Vector3Int tilePos) {
 		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
-		baseTilemap.SetColor(tilePos, new Color(1, 1, 1, 1));
+		baseTilemap.SetColor(tilePos, Color.white);
 	}
 	
 	public Component OccupantAt(Vector3Int tilePos) {
@@ -195,4 +189,6 @@ public abstract class GameGrid : MonoBehaviour
 	
 	// abstract zone
 	public abstract bool IsInBounds(Vector3Int tilePos);
+	public abstract GameTile GetTileAt(Vector3Int tilePos);
+	public abstract HashSet<Vector3Int> GetAllTilePos();
 }

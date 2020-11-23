@@ -14,8 +14,6 @@ public class EnemyController : Controller
 	
 	public HashSet<Vector3Int> traversable = new HashSet<Vector3Int>();
 	public HashSet<Vector3Int> currentEnemyPositions = new HashSet<Vector3Int>();
-	
-	public OverworldEnemySkeleton overworldEnemySkeletonPrefab;
 
 	void Awake() {
 		base.Awake();
@@ -24,6 +22,10 @@ public class EnemyController : Controller
 		subjectsActingTrigger = false;
 		flowFieldToPlayer = new FlowField();
     }
+
+	public override bool MyPhaseActive() {
+		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.overworld;
+	}
 
     void Update() {
         if (!MyPhaseActive()) return;
@@ -127,7 +129,7 @@ public class EnemyController : Controller
 				foreach (Vector3Int adjacent in GameManager.inst.worldGrid.GetNeighbors(currentPos)) {
 					if (traversable.Contains(adjacent))
 						continue;
-					if (enemy.untraversable.Contains(GameManager.inst.worldGrid.GetWorldTileAt(adjacent).GetType()))
+					if (enemy.untraversable.Contains(GameManager.inst.GetActiveGrid().GetTileAt(adjacent).GetType()))
 						continue;
 					
 					traversable.Add(adjacent);

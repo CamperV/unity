@@ -29,6 +29,17 @@ public class TacticsGrid : GameGrid
 	public override bool IsInBounds(Vector3Int tilePos) {
 		return tacticsTileGrid.ContainsKey(tilePos);
 	}
+	
+	public override GameTile GetTileAt(Vector3Int tilePos) {
+		if (tacticsTileGrid.ContainsKey(tilePos)) {
+			return tacticsTileGrid[tilePos];
+		}
+		return null;
+	}
+
+	public override HashSet<Vector3Int> GetAllTilePos() {
+		return new HashSet<Vector3Int>(tacticsTileGrid.Keys);
+	}
 
     public void CreateTileMap(Vector3Int offset, WorldTile originTile) {
 		var newOrigin = baseTilemap.origin + offset;
@@ -67,13 +78,5 @@ public class TacticsGrid : GameGrid
 	
 	public Vector3 GetTilemapOrigin() {
 		return baseTilemap.GetCellCenterWorld(baseTilemap.origin);
-	}
-	
-	public override void SelectAt(Vector3Int tilePos, OverlayTile tile) {
-		TintTile(tilePos, new Color(0f, .75f, 1f, 1f));
-	}
-	
-	public override void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.025f) {
-		ResetTintTile(tilePos);
 	}
 }

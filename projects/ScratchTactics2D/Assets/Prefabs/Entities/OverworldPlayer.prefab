@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5140243916379933857}
   - component: {fileID: 5232930140179158453}
   m_Layer: 9
-  m_Name: Player
+  m_Name: OverworldPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 463842d859d9bd945b1273a0592a2d4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitControllerPrefab: {fileID: 6070387731492201818, guid: 4a8617886f09b104b8893dcfe6c53d73, type: 3}
+  unitController: {fileID: 0}
   moveSpeed: 1
   pathRange: 2147483647
 --- !u!50 &5140243916379933857

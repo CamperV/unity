@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MouseManager : MonoBehaviour
 {
-	private Dictionary<Enum.GameState, OverlayTile> tileOptions;
 	private GameGrid currentActiveGrid;
 	
 	private Vector3 prevMousePos;
@@ -21,11 +20,6 @@ public class MouseManager : MonoBehaviour
 	// dont' use Awake here, to avoid bootstrapping issues
     void Start() {
 		currentMouseGridPos = Vector3Int.zero;
-		
-		tileOptions = new Dictionary<Enum.GameState, OverlayTile>() {
-			[Enum.GameState.overworld] = ScriptableObject.CreateInstance<SelectOverlayTile>() as SelectOverlayTile,
-			[Enum.GameState.battle] = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile
-		};
     }
 
     void Update() {
@@ -55,17 +49,20 @@ public class MouseManager : MonoBehaviour
 		//
 		// overlay selection tile
 		//
-		// remove previous highlighting
-		// convert back to real after messing w/ active grid
-		//RedrawSelectTile(currentActiveGrid.Grid2RealPos(currentMouseGridPos));
-		OverlaySelectTile();
+		if (GameManager.inst.gameState == Enum.GameState.overworld) {
+			// remove previous highlighting
+			// convert back to real after messing w/ active grid
+			SelectTile();
+		}
 		
 		// debug
+		/*
 		if (Input.GetMouseButtonDown(0)) {
 			Debug.Log("worldPos: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
 			Debug.Log("currentMouseGridPos: " + currentMouseGridPos);
 			Debug.Log("currentActiveGrid: " + currentActiveGrid);
 		}
+		*/
     }
 	
 	public void RedrawSelectTile(Vector3 pos) {
@@ -75,11 +72,11 @@ public class MouseManager : MonoBehaviour
 		}
 	}
 	
-	public void OverlaySelectTile() {
+	public void SelectTile() {
 		if (HasMouseMovedGrid()) {		
 			currentActiveGrid.ResetSelectionAt(prevMouseGridPos);
 			if (currentActiveGrid.IsInBounds(currentMouseGridPos)) {
-				currentActiveGrid.SelectAt(currentMouseGridPos, tileOptions[GameManager.inst.gameState]);
+				currentActiveGrid.SelectAt(currentMouseGridPos);
 			}
 		} else {
 			if (timeSinceLastMove >= 3.0f) {

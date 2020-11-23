@@ -24,6 +24,10 @@ public class PlayerController : Controller
 		actionBindings[KeyCode.S]  		   = MoveDown;
 		actionBindings[KeyCode.Space]	   = Pass;
 	}
+
+	public override bool MyPhaseActive() {
+		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.overworld;
+	}
 	
 	void Update() {
 		if (!MyPhaseActive()) return;

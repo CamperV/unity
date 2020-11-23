@@ -170,18 +170,17 @@ public class MovingObjectPath
 	private static int CalcPriority(Vector3Int src, Vector3Int dest) {
 		return (int)Vector3Int.Distance(src, dest);
 	}
-	
-	private static int EdgeCost(Vector3Int dest) {
-		var destTile = GameManager.inst.worldGrid.GetWorldTileAt(dest);
-		if (destTile == null) return -1;
-		return destTile.cost;
-	}
-	
+
 	private static int Cost(Vector3Int src, Vector3Int dest) {
 		// the way we have coded cost into WorldTile:
 		// the number listed is the cost to enter said tile
-		//var srcTile  = GameManager.inst.worldGrid.GetWorldTileAt(src);
-		var destTile = GameManager.inst.worldGrid.GetWorldTileAt(dest);
+		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
+		return destTile.cost;
+	}
+	
+	private static int EdgeCost(Vector3Int dest) {
+		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
+		if (destTile == null) return -1;
 		return destTile.cost;
 	}
 	
@@ -192,7 +191,7 @@ public class MovingObjectPath
 		
 		// build the path in reverse, aka next steps (including target)
 		while (progenitor != src) {
-			var progTile = GameManager.inst.worldGrid.GetWorldTileAt(progenitor);
+			var progTile = GameManager.inst.GetActiveGrid().GetTileAt(progenitor);
 			if (progTile == null) return -1;
 			
 			totalCost += progTile.cost;

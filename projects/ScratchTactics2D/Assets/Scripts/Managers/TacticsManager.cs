@@ -65,12 +65,14 @@ public class TacticsManager : MonoBehaviour
 	}
 	
 	// handles construction of Battle and management of tacticsGrid
-	public void CreateActiveBattle(List<OverworldEntity> participants, List<WorldTile> tiles) {
+	public void CreateActiveBattle(List<OverworldEntity> participants, List<WorldTile> tiles, Enum.Phase initiatingPhase) {
 		var cameraPos = new Vector3(Camera.main.transform.position.x,
 									Camera.main.transform.position.y,
 									0);		
 		activeBattle = Instantiate(battlePrefab, cameraPos, Quaternion.identity);
 		activeBattle.Init(participants, tiles);
+		//
+		activeBattle.StartBattleOnPhase(initiatingPhase);
 	}
 	
 	public void DestroyActiveBattle() {

@@ -80,7 +80,6 @@ public class GameManager : MonoBehaviour
 		// now, spawn the enemies
 		for (int i = 0; i < Random.Range(minEnemies, maxEnemies); i++) {
 			var enemy = OverworldEnemyBase.Spawn(enemyPrefab);
-			Debug.Log("spawned " + enemy);
 			enemyController.Register(enemy);
 		}
 		
@@ -111,5 +110,18 @@ public class GameManager : MonoBehaviour
 		
 		// give all control to TacticsManager
 		gameState = Enum.GameState.battle;
+		phaseManager.StartPhase(Enum.Phase.none);
+	}
+
+	// convenience
+	public GameGrid GetActiveGrid() {
+		switch (gameState) {
+			case Enum.GameState.overworld:
+				return worldGrid;
+			case Enum.GameState.battle:
+				return tacticsManager.GetActiveGrid();
+			default:
+				return worldGrid;
+		}
 	}
 }
