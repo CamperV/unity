@@ -40,8 +40,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 7605162957442551351}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7f23afc5a7837647a28fa68ff8907ee, type: 3}
+  m_Script: {fileID: 11500000, guid: 871e667875a071f4cb6ef37865c118b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battlePrefab: {fileID: 3021327120891181652, guid: bedf14c6d6f82a44db01b09220d28604, type: 3}
+  battlePrefab: {fileID: 3021327120891181652, guid: dde41af0fe9afad408ef31648ab82f80, type: 3}
   activeBattle: {fileID: 0}
