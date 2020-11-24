@@ -96,6 +96,8 @@ public class RoadWorldTile : WorldTile
 
 public class MountainRoadWorldTile : WorldTile
 {
+	public override int depth { get { return 1; } }
+
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_0"),
