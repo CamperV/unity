@@ -8,8 +8,6 @@ public class OverworldPlayer : OverworldEntity
 	private MovingObjectPath pathToSelected;
 	private Queue<Vector3Int> movementQueue;
 	
-	private readonly bool mouseControl = false;
-	
 	public int moveSpeed = 1;
 	public int pathRange = Int32.MaxValue;
 	

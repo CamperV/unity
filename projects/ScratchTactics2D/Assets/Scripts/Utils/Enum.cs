@@ -13,6 +13,9 @@ namespace Enum {
 	//
 	public enum EnemyState {idle, followField};
 	public enum UnitState {idle};
+
+	// Contextual Interaction states
+	public enum InteractState {noSelection, unitSelected};
 }
 
 public static class PhaseExtension {

@@ -79,5 +79,4 @@ public class PlayerController : Controller
 	private void MoveUp(MovingObject subject) 		{ subject.GridMove(0, 1); }
 	private void MoveDown(MovingObject subject) 	{ subject.GridMove(0, -1); }
 	private void Pass(MovingObject subject) 		{ return; }
-
 }

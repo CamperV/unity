@@ -37,9 +37,11 @@ public class TacticsManager : MonoBehaviour
 			// update pos by offset, release drag when mouse goes up
 			if (draggingView){
 				activeBattle.transform.position = mouseWorldPos + dragOffset;
-				GameManager.inst.mouseManager.mouseSelector.gameObject.SetActive(false);
 			}
-			if (draggingView && !Input.GetMouseButton(1)) draggingView = false;
+
+			// make sure we can drop out of the dragging mode
+			if (draggingView && (!Input.GetMouseButton(1)))
+				draggingView = false;
 			
 			//
 			// mouse view control

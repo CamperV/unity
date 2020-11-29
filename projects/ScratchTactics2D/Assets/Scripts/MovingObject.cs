@@ -37,7 +37,7 @@ public abstract class MovingObject : MonoBehaviour
 	
 	private bool CrtMove(int xdir, int ydir, GameGrid grid, out Component occupant) {
 		// need to always be a cell/Tile coordinate
-		Vector3Int endTile   = gridPosition + new Vector3Int(xdir, ydir, 0);
+		Vector3Int endTile = gridPosition + new Vector3Int(xdir, ydir, 0);
 		Vector3 endpoint = grid.Grid2RealPos(endTile);
 
 		// first check if you're even in bounds, THEN get the occupant
@@ -68,7 +68,7 @@ public abstract class MovingObject : MonoBehaviour
 	}
 	
 	// this is like a Python-generator: Coroutine
-	private IEnumerator SmoothMovement(Vector3 endpoint) {
+	protected IEnumerator SmoothMovement(Vector3 endpoint) {
 		float sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
 		float snapFactor = 0.01f;
 		
@@ -91,7 +91,7 @@ public abstract class MovingObject : MonoBehaviour
 	}
 	
 	// this coroutine performs a little 'bump' when you can't move
-	private IEnumerator SmoothBump(Vector3 endpoint) {	
+	protected IEnumerator SmoothBump(Vector3 endpoint) {	
 		float speedFactor = 0.10f;
 		
 		Vector3 origPosition = transform.position;
@@ -120,6 +120,31 @@ public abstract class MovingObject : MonoBehaviour
 		// after the while loop is broken:
 		rigidbody2D.MovePosition(origPosition);
 		crtMovingFlag = false;
+	}
+
+	protected IEnumerator SmoothMovementPath(MovingObjectPath path, GameGrid grid) {
+		float snapFactor = 0.10f;
+		float speedFactor = (15.0f * Time.deltaTime) + 0.10f;
+
+		Vector3 realPos;
+		foreach (var nextPos in path.Unwind()) {
+			realPos = grid.Grid2RealPos(nextPos);
+			float sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
+
+			int count = 0;
+			//while (sqrRemainingDistance > snapFactor && count < 50) {
+			while (count < 20) {
+				count++;
+				Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, realPos, speedFactor);
+				rigidbody2D.MovePosition(newPos);
+				//sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
+				
+				yield return null; // waits for a new frame
+			}
+			
+			// after the while loop is broken:
+			rigidbody2D.MovePosition(realPos);
+		}
 	}
 	
 	public virtual void OnBlocked<T>(T component) where T : Component { return; }

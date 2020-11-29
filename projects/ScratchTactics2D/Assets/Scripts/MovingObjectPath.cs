@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class MovingObjectPath
@@ -41,9 +42,6 @@ public class MovingObjectPath
 	public Vector3Int Next(Vector3Int position) {
 		if (position == end) return end;
 		return path[position];
-		//int ind = path.IndexOf(position);
-		//if (ind == path.Count-1) return end;
-		//return path[ind+1];
 	}
 	
 	public Vector3Int PopNext(Vector3Int position) {
@@ -53,6 +51,16 @@ public class MovingObjectPath
 		path.Remove(position);
 		GameManager.inst.worldGrid.ResetOverlayAt(position);
 		return retval;
+	}
+
+	public IEnumerable<Vector3Int> Unwind() {
+		Vector3Int pos = start;
+		Debug.Log($"Unwinding: {start} -> {end}");
+		do {
+			Debug.Log($"Unwinding {pos}");
+			pos = path[pos];
+			yield return pos;
+		} while (pos != end);
 	}
 	
 	public void Consume(Vector3Int position) {
@@ -94,7 +102,19 @@ public class MovingObjectPath
 			GameManager.inst.worldGrid.ResetOverlayAt(tile);
 		}
 		GameManager.inst.worldGrid.ResetOverlayAt(end);
-	}	
+	}
+
+	public void Show(GameGrid grid, OverlayTile overlayTile) {
+		foreach (Vector3Int tilePos in Unwind()) {
+			grid.OverlayAt(tilePos, overlayTile);
+		}
+	}
+
+	public void UnShow(GameGrid grid) {
+		foreach (Vector3Int tilePos in Unwind()) {
+			grid.ResetOverlayAt(tilePos);
+		}
+	}
 		
 	// AI pathfinding
 	// storing this is a hashmap also helps for quickly assessing what squares are available
@@ -164,6 +184,63 @@ public class MovingObjectPath
 			newPath.path[startPosition] = startPosition;
 		}
 		
+		return newPath;
+	}
+
+	public static MovingObjectPath GetPathFromField(Vector3Int targetPosition, FlowField ffield) {
+		IEnumerable<Vector3Int> GetFieldOptions(Vector3Int pos) {
+			List<Vector3Int> options = new List<Vector3Int>() {
+				pos + Vector3Int.up,
+				pos + Vector3Int.right,
+				pos + Vector3Int.down,
+				pos + Vector3Int.left
+			};
+			foreach (Vector3Int opt in options) {
+				if (opt == ffield.origin || ffield.field.ContainsKey(opt)) {
+					yield return opt;
+				} else {
+					Debug.Log($"Did not yield {opt} origin: {ffield.origin}");
+				}
+			}
+		}
+
+		MovingObjectPath newPath = new MovingObjectPath(ffield.origin);
+		newPath.start = ffield.origin;
+		newPath.end   = targetPosition;
+		Debug.Log($"creating FieldPath {newPath.start} -> {newPath.end}");
+		
+		// init position
+		Vector3Int currentPos = targetPosition;
+		
+		PriorityQueue<Vector3Int> pathQueue = new PriorityQueue<Vector3Int>();
+		pathQueue.Enqueue(0, currentPos);
+		
+		// BFS search here
+		while (pathQueue.Count != 0)  {
+			currentPos = pathQueue.Dequeue();
+			
+			// found the target, now recount the path
+			if (currentPos == ffield.origin) break;
+
+			Vector3Int bestMove = currentPos;
+			int bestMoveCost = ffield.field[currentPos];
+			foreach (Vector3Int adjacent in GetFieldOptions(currentPos)) {			
+				int cost = ffield.field[adjacent];
+				Debug.Log($"FieldOptions for {currentPos}: {adjacent},{cost}");
+				Debug.Log($"current bestCost: {bestMoveCost}");
+				if (cost < bestMoveCost) {
+					bestMoveCost = cost;
+					bestMove = adjacent;
+				}
+			}
+
+			if (bestMove != currentPos) {
+				pathQueue.Enqueue(bestMoveCost, bestMove);
+				newPath.path[bestMove] = currentPos;
+				Debug.Log($"Added [{bestMove}] = {currentPos}");
+			}
+		}
+
 		return newPath;
 	}
 	

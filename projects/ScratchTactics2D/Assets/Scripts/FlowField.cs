@@ -14,7 +14,8 @@ public class FlowField
 		PriorityQueue<Vector3Int> fieldQueue = new PriorityQueue<Vector3Int>();
 
 		// initial setup
-		Vector3Int currentPos = origin;		
+		Vector3Int currentPos = origin;
+		distance[origin] = 0;
 		fieldQueue.Enqueue(0, currentPos);
 		
 		while (fieldQueue.Count != 0) {
@@ -43,7 +44,7 @@ public class FlowField
 		return newField;
 	}
 	
-	private static List<Vector3Int> GetAdjacent(Vector3Int pos) {
+	protected static List<Vector3Int> GetAdjacent(Vector3Int pos) {
 		return new List<Vector3Int>() {
 			pos + Vector3Int.up,	// N
 			pos + Vector3Int.right,	// E
@@ -52,7 +53,7 @@ public class FlowField
 		};
 	}
 	
-	private static int Cost(Vector3Int src, Vector3Int dest) {
+	protected static int Cost(Vector3Int src, Vector3Int dest) {
 		// the way we have coded cost into WorldTile:
 		// the number listed is the cost to enter said tile
 		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
@@ -72,7 +73,7 @@ public class FlowField
 	}
 	
 	// just grabs worldGrid for prototyping
-	public void Display() {
+	public void DebugDisplay() {
 		GameManager.inst.worldGrid.ResetHighlightTiles(new HashSet<Vector3Int>(field.Keys));
 		
 		Dictionary<int, HashSet<Vector3Int>> toHighlight = new Dictionary<int, HashSet<Vector3Int>>();

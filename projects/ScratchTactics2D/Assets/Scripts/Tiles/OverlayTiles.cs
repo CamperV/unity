@@ -40,3 +40,10 @@ public class SelectOverlayIsoTile : OverlayTile
 		sprite = ResourceLoader.GetSprite("select_overlay_iso_tile");
 	}
 }
+
+public class WaypointOverlayIsoTile : OverlayTile
+{
+	public void OnEnable() {
+		sprite = ResourceLoader.GetSprite("waypoint_overlay_iso_tile");
+	}
+}

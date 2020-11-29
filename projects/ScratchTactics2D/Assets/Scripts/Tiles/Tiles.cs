@@ -6,14 +6,12 @@ using UnityEngine.Tilemaps;
 
 public abstract class GameTile : Tile
 {
+	// returns an integer that signifies the cost of entering this tile
 	public virtual int cost { get { return 1; } }
 }
 
 public abstract class WorldTile : GameTile
 {
-	// returns an integer that signifies the cost of entering this tile
-	public virtual int cost { get { return 1; } }
-	
 	// returns a probability from 0-99 that this tile is generated
 	public virtual int probability { get { return 0; } }
 	
@@ -32,9 +30,6 @@ public abstract class WorldTile : GameTile
 
 public abstract class TacticsTile : GameTile
 {
-	// returns an integer that signifies the cost of entering this tile
-	public virtual int cost { get { return 1; } }
-	
 	public List<Sprite> sprites;
 }
 
