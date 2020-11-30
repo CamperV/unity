@@ -123,27 +123,22 @@ public abstract class MovingObject : MonoBehaviour
 	}
 
 	protected IEnumerator SmoothMovementPath(MovingObjectPath path, GameGrid grid) {
-		float snapFactor = 0.10f;
-		float speedFactor = (15.0f * Time.deltaTime) + 0.10f;
+		float snapFactor = 0.01f;
+		float fixedDivisions = 10.0f;
 
 		Vector3 realPos;
 		foreach (var nextPos in path.Unwind()) {
 			realPos = grid.Grid2RealPos(nextPos);
-			float sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
-
-			int count = 0;
-			//while (sqrRemainingDistance > snapFactor && count < 50) {
-			while (count < 20) {
-				count++;
-				Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, realPos, speedFactor);
-				rigidbody2D.MovePosition(newPos);
-				//sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
-				
-				yield return null; // waits for a new frame
-			}
 			
-			// after the while loop is broken:
-			rigidbody2D.MovePosition(realPos);
+			// we want it to take X seconds to go over one tile
+			float sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
+			float distanceStep = sqrRemainingDistance / fixedDivisions;
+
+			while (sqrRemainingDistance > snapFactor*snapFactor) {
+				transform.position = Vector3.MoveTowards(transform.position, realPos, distanceStep);
+				sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
+				yield return null;
+			}
 		}
 	}
 	

@@ -22,7 +22,7 @@ public abstract class Unit : TacticsEntityBase
 	// valid Unit Actions:
 	// OnSelect
 	// ShowMovementRange
-	// Move
+	// TraverseTo
 	// Attack
 	// Wait
 	// Other
@@ -37,11 +37,11 @@ public abstract class Unit : TacticsEntityBase
 	public void OnDeselect() {
 		spriteRenderer.color = Color.white;
 		range.ClearDisplay(GameManager.inst.tacticsManager.GetActiveGrid());
+		_range = null; // clears _range to recalculate the range based on new parameters
 	}
 
 	public void TraverseTo(Vector3Int target, MovingObjectPath fieldPath = null) {
 		GameGrid grid = GameManager.inst.tacticsManager.GetActiveGrid();
-
 		if (fieldPath == null) {
 			fieldPath = MovingObjectPath.GetPathFromField(target, range);
 		}
@@ -52,7 +52,5 @@ public abstract class Unit : TacticsEntityBase
 		grid.UpdateOccupantAt(gridPosition, null);
 		grid.UpdateOccupantAt(target, this);
 		gridPosition = target;
-
-		_range = null;	// this resets so that MoveRange will recalculate when called
 	}
 }

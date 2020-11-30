@@ -41,6 +41,23 @@ public class SelectOverlayIsoTile : OverlayTile
 	}
 }
 
+public class PathOverlayIsoTile : OverlayTile
+{
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetMultiSprite("path_overlay_iso_tile", "path_overlay_iso_tile_0"),
+			ResourceLoader.GetMultiSprite("path_overlay_iso_tile", "path_overlay_iso_tile_1")			
+		};
+		sprite = sprites[0];
+	}
+
+	public static PathOverlayIsoTile GetTileWithSprite(int spriteIndex) {
+		PathOverlayIsoTile wt = ScriptableObject.CreateInstance<PathOverlayIsoTile>() as PathOverlayIsoTile;
+		wt.SetSprite(spriteIndex);
+		return wt;
+	}
+}
+
 public class WaypointOverlayIsoTile : OverlayTile
 {
 	public void OnEnable() {

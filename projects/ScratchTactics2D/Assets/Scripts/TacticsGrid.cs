@@ -27,7 +27,7 @@ public class TacticsGrid : GameGrid
 		
 		tacticsTileGrid = new Dictionary<Vector3Int, TacticsTile>();
 
-		waypointOverlayTile = ScriptableObject.CreateInstance<WaypointOverlayIsoTile>() as WaypointOverlayIsoTile;
+		waypointOverlayTile = PathOverlayIsoTile.GetTileWithSprite(1);
 	}
 	
 	public override bool IsInBounds(Vector3Int tilePos) {

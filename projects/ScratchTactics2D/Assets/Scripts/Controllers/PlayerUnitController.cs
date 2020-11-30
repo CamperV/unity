@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerUnitController : Controller
 {
-	private PathOverlayTile pathOverlayTile;
+	private PathOverlayIsoTile pathOverlayTile;
 
 
 
@@ -23,7 +23,7 @@ public class PlayerUnitController : Controller
 		myPhase = Enum.Phase.player;
 		grid = GameManager.inst.tacticsManager.GetActiveGrid();
 		
-		pathOverlayTile = ScriptableObject.CreateInstance<PathOverlayTile>() as PathOverlayTile;
+		pathOverlayTile = PathOverlayIsoTile.GetTileWithSprite(0);
 
 		// this needs to be done at run-time
 		actionBindings[KeyCode.Mouse0] = Interact;
@@ -112,11 +112,21 @@ public class PlayerUnitController : Controller
 				//				Wait?
 				//				Bring up Menu?
 
+				// if mouse is down on a current selection - deselect it
+				if (currentSelection.gridPosition == target) {
+					ClearInteract();
+					break;
+				}
+
 				// if the mouseDown is on a valid square, move to it
 				if (currentSelection.range.ValidMove(target)) {
 					MoveSelectedUnit(target);
 					ClearInteract();
+					break;
 				}
+
+				// default
+				SelectUnit(target);
 				break;
 		}
 
@@ -138,14 +148,9 @@ public class PlayerUnitController : Controller
 		// on a certain key, get the currently selected unit
 		// enter a special controller mode
 		var unitAt = (Unit)grid.OccupantAt(target);
-		if (registry.Contains(unitAt)) {
-			// if trying to select the current selection, just deselect it
-			if (currentSelection == unitAt) {
-				ClearInteract();
-				return;
-			}
 
-			// else, deselect current and select the new
+		if (registry.Contains(unitAt)) {
+			// deselect current and select the new
 			if (currentSelection != null) {
 				currentSelection.OnDeselect();
 			}
@@ -158,6 +163,8 @@ public class PlayerUnitController : Controller
 		if (currentSelection != null) {
 			currentSelection.OnDeselect();
 			currentSelection = null;
+
+			currentSelectionFieldPath.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
 		}
 	}
 

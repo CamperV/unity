@@ -55,9 +55,8 @@ public class MovingObjectPath
 
 	public IEnumerable<Vector3Int> Unwind() {
 		Vector3Int pos = start;
-		Debug.Log($"Unwinding: {start} -> {end}");
+
 		do {
-			Debug.Log($"Unwinding {pos}");
 			pos = path[pos];
 			yield return pos;
 		} while (pos != end);
@@ -106,6 +105,8 @@ public class MovingObjectPath
 
 	public void Show(GameGrid grid, OverlayTile overlayTile) {
 		foreach (Vector3Int tilePos in Unwind()) {
+			if (tilePos == end) break; // skip end tile for debug
+			
 			grid.OverlayAt(tilePos, overlayTile);
 		}
 	}
@@ -196,18 +197,13 @@ public class MovingObjectPath
 				pos + Vector3Int.left
 			};
 			foreach (Vector3Int opt in options) {
-				if (opt == ffield.origin || ffield.field.ContainsKey(opt)) {
-					yield return opt;
-				} else {
-					Debug.Log($"Did not yield {opt} origin: {ffield.origin}");
-				}
+				if (ffield.field.ContainsKey(opt)) yield return opt;
 			}
 		}
 
 		MovingObjectPath newPath = new MovingObjectPath(ffield.origin);
 		newPath.start = ffield.origin;
 		newPath.end   = targetPosition;
-		Debug.Log($"creating FieldPath {newPath.start} -> {newPath.end}");
 		
 		// init position
 		Vector3Int currentPos = targetPosition;
@@ -226,8 +222,7 @@ public class MovingObjectPath
 			int bestMoveCost = ffield.field[currentPos];
 			foreach (Vector3Int adjacent in GetFieldOptions(currentPos)) {			
 				int cost = ffield.field[adjacent];
-				Debug.Log($"FieldOptions for {currentPos}: {adjacent},{cost}");
-				Debug.Log($"current bestCost: {bestMoveCost}");
+
 				if (cost < bestMoveCost) {
 					bestMoveCost = cost;
 					bestMove = adjacent;
@@ -237,7 +232,6 @@ public class MovingObjectPath
 			if (bestMove != currentPos) {
 				pathQueue.Enqueue(bestMoveCost, bestMove);
 				newPath.path[bestMove] = currentPos;
-				Debug.Log($"Added [{bestMove}] = {currentPos}");
 			}
 		}
 
