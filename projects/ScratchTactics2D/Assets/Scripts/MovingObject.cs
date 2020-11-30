@@ -6,13 +6,11 @@ public abstract class MovingObject : MonoBehaviour
 {	
 	[HideInInspector] public Vector3Int gridPosition { get; protected set; }
 	
-	protected Rigidbody2D rigidbody2D;
-	
 	protected bool crtMovingFlag = false;
 	protected Coroutine crtMovement;
 	
     protected virtual void Start() {
-		rigidbody2D = GetComponent<Rigidbody2D>();
+		//
     }
 	
 	protected Vector3Int ToPosition(Vector3Int pos, int speed) {
@@ -71,28 +69,26 @@ public abstract class MovingObject : MonoBehaviour
 	protected IEnumerator SmoothMovement(Vector3 endpoint) {
 		float sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
 		float snapFactor = 0.01f;
-		
 		float speedFactor;
 		
 		crtMovingFlag = true;
-		while (sqrRemainingDistance > snapFactor) {	
-			speedFactor = (15.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime) + 0.10f;
+		while (sqrRemainingDistance > snapFactor*snapFactor) {	
+			speedFactor = (4.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime);
 
-			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, endpoint, speedFactor);
-			rigidbody2D.MovePosition(newPos);
+			transform.position = Vector3.MoveTowards(transform.position, endpoint, speedFactor);
 			sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
 			
 			yield return null; // waits for a new frame
 		}
 		
 		// after the while loop is broken:
-		rigidbody2D.MovePosition(endpoint);
+		transform.position = endpoint;
 		crtMovingFlag = false;
 	}
 	
 	// this coroutine performs a little 'bump' when you can't move
 	protected IEnumerator SmoothBump(Vector3 endpoint) {	
-		float speedFactor = 0.10f;
+		float speedFactor = 0.055f;
 		
 		Vector3 origPosition = transform.position;
 		Vector3 peak = origPosition + (endpoint - transform.position)/5.0f;
@@ -103,22 +99,20 @@ public abstract class MovingObject : MonoBehaviour
 		
 		crtMovingFlag = true;
 		while (sqrRemainingDistance > float.Epsilon) {
-			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, peak, speedFactor);
-			rigidbody2D.MovePosition(newPos);
+			transform.position = Vector3.MoveTowards(transform.position, peak, speedFactor);
 			sqrRemainingDistance = (transform.position - peak).sqrMagnitude;
 			
 			yield return null; // waits for a new frame
 		}
 		while (sqrReturnDistance > float.Epsilon) {
-			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, origPosition, speedFactor);
-			rigidbody2D.MovePosition(newPos);
+			transform.position = Vector3.MoveTowards(transform.position, origPosition, speedFactor);
 			sqrReturnDistance = (origPosition - transform.position).sqrMagnitude;
 
 			yield return null; // waits for a new frame
 		}
 		
 		// after the while loop is broken:
-		rigidbody2D.MovePosition(origPosition);
+		transform.position = origPosition;
 		crtMovingFlag = false;
 	}
 

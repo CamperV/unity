@@ -40,15 +40,14 @@ public class MouseSelector : MovingObject
 		while (sqrRemainingDistance > snapFactor) {	
 			speedFactor = (250.0f * Time.deltaTime);
 
-			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, endpoint, speedFactor);
-			rigidbody2D.MovePosition(newPos);
+			transform.position = Vector3.MoveTowards(transform.position, endpoint, speedFactor);
 			sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
 			
 			yield return null; // waits for a new frame
 		}
 		
 		// after the while loop is broken:
-		rigidbody2D.MovePosition(endpoint);
+		transform.position = endpoint;
 		crtMovingFlag = false;
 	}
 
