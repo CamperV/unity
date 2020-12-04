@@ -25,6 +25,10 @@ public class TacticsEntityBase : MovingObject
 		spriteRenderer.sortingOrder = 0;
 	}
 
+	protected void Update() {
+		//spriteRenderer.sortingOrder = -1*Mathf.RoundToInt(transform.position.y);
+	}
+
 	public override bool GridMove(int xdir, int ydir) {
 		return base.AttemptGridMove(xdir, ydir, GameManager.inst.tacticsManager.GetActiveGrid());
 	}

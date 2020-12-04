@@ -38,9 +38,7 @@ public class OverworldPlayer : OverworldEntity
 		movementQueue = new Queue<Vector3Int>();
     }
 	
-	protected override void Start() {
-		base.Start();
-		//
+	void Start() {
 		pathToSelected = new MovingObjectPath(gridPosition);
 	}
 		

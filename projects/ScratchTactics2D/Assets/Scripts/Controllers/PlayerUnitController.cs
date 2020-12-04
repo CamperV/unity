@@ -7,8 +7,6 @@ public class PlayerUnitController : Controller
 {
 	private PathOverlayIsoTile pathOverlayTile;
 
-
-
 	private Unit currentSelection;
 	private MovingObjectPath currentSelectionFieldPath;
 	private TacticsGrid grid;
@@ -27,11 +25,19 @@ public class PlayerUnitController : Controller
 
 		// this needs to be done at run-time
 		actionBindings[KeyCode.Mouse0] = Interact;
-		actionBindings[KeyCode.Mouse1] = ClearInteract;
+		actionBindings[KeyCode.Mouse1] = ClearSelection;
 	}
 
 	public override bool MyPhaseActive() {
 		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle;
+	}
+
+	public override void TriggerPhase() {
+		phaseActionState = Enum.PhaseActionState.waitingForInput;
+		//
+		foreach (Unit unit in registry) {
+			unit.OnStartTurn();
+		}
 	}
 	
 	void Update() {
@@ -41,18 +47,21 @@ public class PlayerUnitController : Controller
 		switch(phaseActionState) {
 			// always read input in these states
 			case Enum.PhaseActionState.waitingForInput:
-				if (actionBindings.ContainsKey(kc)) actionBindings[kc]();
-				break;
-
 			case Enum.PhaseActionState.acting:
 				if (actionBindings.ContainsKey(kc)) actionBindings[kc]();
 
 				// if we've entered this state as a result of selecting a unit:
 				if (currentSelection) {
-					// overlay tile for movement selections
-					// constantly recalculate the shortest path to mouse via FlowField
-					// on mouse down, start a coroutine to move along the path
-					DrawValidMoveForSelection(currentSelection.range);
+					if (currentSelection.OptionActive("Move")) {
+						// overlay tile for movement selections
+						// constantly recalculate the shortest path to mouse via FlowField
+						// on mouse down, start a coroutine to move along the path
+						DrawValidMoveForSelection(currentSelection.moveRange);
+					}
+
+					if (currentSelection.OptionActive("Attack")) {
+						// draw attack-able squares
+					}
 				}
 				break;
 				
@@ -102,54 +111,40 @@ public class PlayerUnitController : Controller
 		
 		switch (interactState) {
 			case Enum.InteractState.noSelection:
-				SelectUnit(target);
-				interactState = Enum.InteractState.unitSelected;
+				var success = SelectUnit(target);
+				if (success) {
+					interactState = Enum.InteractState.unitSelected;
+				} else {
+					Debug.Log($"Couldn't select {target}");
+				}
 				break;
 
 			case Enum.InteractState.unitSelected:
-				// available:	MoveUnit
-				//				Attack?
-				//				Wait?
-				//				Bring up Menu?
-
 				// if mouse is down on a current selection - deselect it
 				if (currentSelection.gridPosition == target) {
-					ClearInteract();
+					ClearSelection();
 					break;
 				}
 
 				// if the mouseDown is on a valid square, move to it
-				if (currentSelection.range.ValidMove(target)) {
+				if (currentSelection.OptionActive("Move") && currentSelection.moveRange.ValidMove(target)) {
 					MoveSelectedUnit(target);
-					ClearInteract();
+					EndTurnSelectedUnit();
 					break;
 				}
 
 				// default
-				SelectUnit(target);
+				//SelectUnit(target);
 				break;
 		}
-
-		// hold UnitController in "acting" state until we cancel or take a unit action
-		phaseActionState = Enum.PhaseActionState.acting;
 	}
-
-	private void ClearInteract() {
-		DeselectUnit();
-
-		var mm = GameManager.inst.mouseManager;
-		grid.ResetSelectionAtAlternate(mm.prevMouseGridPos);
-
-		interactState = Enum.InteractState.noSelection;
-		phaseActionState = Enum.PhaseActionState.waitingForInput;
-	}
-
-	private void SelectUnit(Vector3Int target) {
+	
+	private bool SelectUnit(Vector3Int target) {
 		// on a certain key, get the currently selected unit
 		// enter a special controller mode
 		var unitAt = (Unit)grid.OccupantAt(target);
 
-		if (registry.Contains(unitAt)) {
+		if (registry.Contains(unitAt) && unitAt.AnyOptionActive()) {
 			// deselect current and select the new
 			if (currentSelection != null) {
 				currentSelection.OnDeselect();
@@ -157,19 +152,34 @@ public class PlayerUnitController : Controller
 			currentSelection = unitAt;
 			currentSelection.OnSelect();
 		}
+
+		return currentSelection == unitAt;
 	}
 
-	private void DeselectUnit() {
+	private void ClearSelection() {
 		if (currentSelection != null) {
 			currentSelection.OnDeselect();
 			currentSelection = null;
-
-			currentSelectionFieldPath.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
 		}
+		currentSelectionFieldPath?.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
+
+		var mm = GameManager.inst.mouseManager;
+		grid.ResetSelectionAtAlternate(mm.prevMouseGridPos);
+
+		interactState = Enum.InteractState.noSelection;
+	}
+
+	private void EndTurnSelectedUnit() {
+		currentSelection.OnDeselect();
+		currentSelection.OnEndTurn();
+		currentSelection = null;
+		ClearSelection();
 	}
 
 	private void MoveSelectedUnit(Vector3Int target) {
 		Debug.Assert(currentSelection != null);
 		currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
+		//
+		currentSelection.SetOption("Move", false);
 	}
 }

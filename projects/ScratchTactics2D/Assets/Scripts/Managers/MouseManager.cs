@@ -12,11 +12,6 @@ public class MouseManager : MonoBehaviour
 	[HideInInspector] public Vector3Int prevMouseGridPos;
 	[HideInInspector] public Vector3Int currentMouseGridPos;
 	
-	// assigned in inspector
-	// currently NOT instantiated
-	public MouseSelector mouseSelectorPrefab;
-	[HideInInspector] public MouseSelector mouseSelector;
-	
 	// dont' use Awake here, to avoid bootstrapping issues
     void Start() {
 		currentMouseGridPos = Vector3Int.zero;
@@ -64,13 +59,6 @@ public class MouseManager : MonoBehaviour
 		}
 		*/
     }
-	
-	public void RedrawSelectTile(Vector3 pos) {
-		if (HasMouseMovedGrid()) {
-			mouseSelector.gameObject.SetActive(true);
-			mouseSelector.MoveTo(pos);
-		}
-	}
 	
 	public void SelectTile() {
 		if (HasMouseMovedGrid()) {		

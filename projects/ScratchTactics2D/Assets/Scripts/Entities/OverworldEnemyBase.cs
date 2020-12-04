@@ -35,9 +35,7 @@ public class OverworldEnemyBase : OverworldEntity
 		base.Awake();
     }
 	
-    protected override void Start() {
-        base.Start();
-		//
+    protected void Start() {
 		state = Enum.EnemyState.idle;
     }
 	

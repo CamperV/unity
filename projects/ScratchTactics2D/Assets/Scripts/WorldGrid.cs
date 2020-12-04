@@ -54,12 +54,12 @@ public class WorldGrid : GameGrid
 		return new HashSet<Vector3Int>(worldTileGrid.Keys);
 	}
 
-	public override void SelectAt(Vector3Int tilePos) {
+	public override void SelectAt(Vector3Int tilePos, Color? color = null) {
 		OverlayAt(tilePos, selectTile);
 		StartCoroutine(FadeUp(overlayTilemap, tilePos));
 	}
 	
-	public override void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.025f) {
+	public override void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.05f) {
 		// this will nullify the tilePos after fading
 		StartCoroutine(FadeDownToNull(overlayTilemap, tilePos, fadeRate));
 	}

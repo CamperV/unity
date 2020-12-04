@@ -93,11 +93,11 @@ public abstract class GameGrid : MonoBehaviour
 		overlayTilemap.SetTile(tilePos, null);
 	}
 	
-	public virtual void SelectAt(Vector3Int tilePos) {
-		TintTile(tilePos, Utils.selectColorBlue);
+	public virtual void SelectAt(Vector3Int tilePos, Color? color = null) {
+		TintTile(tilePos, color ?? Utils.selectColorBlue);
 	}
 	
-	public virtual void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.025f) {
+	public virtual void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.05f) {
 		ResetTintTile(tilePos);
 	}
 	
@@ -106,7 +106,7 @@ public abstract class GameGrid : MonoBehaviour
 		float c = 0.0f;
 		while (c < 1.0f) {
 			tilemap.SetColor(tilePos, new Color(1, 1, 1, c));
-			c += 0.035f;
+			c += 0.05f;
 			yield return null;
 		}
 	}

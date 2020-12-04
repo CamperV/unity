@@ -46,7 +46,7 @@ public class MoveRange : FlowField
 
 	public void Display(GameGrid grid) {
 		foreach (Vector3Int tilePos in field.Keys) {
-			if (ValidMove(tilePos)) grid.SelectAt(tilePos);
+			if (ValidMove(tilePos)) grid.SelectAt(tilePos, color: Utils.selectColorBlue);
 		}
 	}
 

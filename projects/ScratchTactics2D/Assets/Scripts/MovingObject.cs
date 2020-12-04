@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public abstract class MovingObject : MonoBehaviour
@@ -8,10 +9,6 @@ public abstract class MovingObject : MonoBehaviour
 	
 	protected bool crtMovingFlag = false;
 	protected Coroutine crtMovement;
-	
-    protected virtual void Start() {
-		//
-    }
 	
 	protected Vector3Int ToPosition(Vector3Int pos, int speed) {
 		return new Vector3Int(Mathf.Clamp(pos.x - gridPosition.x,  -speed, speed),
@@ -68,12 +65,11 @@ public abstract class MovingObject : MonoBehaviour
 	// this is like a Python-generator: Coroutine
 	protected IEnumerator SmoothMovement(Vector3 endpoint) {
 		float sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
-		float snapFactor = 0.01f;
 		float speedFactor;
 		
 		crtMovingFlag = true;
-		while (sqrRemainingDistance > snapFactor*snapFactor) {	
-			speedFactor = (4.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime);
+		while (sqrRemainingDistance > float.Epsilon) {	
+			speedFactor = (5.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime);
 
 			transform.position = Vector3.MoveTowards(transform.position, endpoint, speedFactor);
 			sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
@@ -117,23 +113,34 @@ public abstract class MovingObject : MonoBehaviour
 	}
 
 	protected IEnumerator SmoothMovementPath(MovingObjectPath path, GameGrid grid) {
-		float snapFactor = 0.01f;
-		float fixedDivisions = 10.0f;
+		float fixedDivisions = 8.0f;
 
+		crtMovingFlag = true;
+		GameManager.inst.tacticsManager.scrollLock = true;
+		//
 		Vector3 realPos;
 		foreach (var nextPos in path.Unwind()) {
 			realPos = grid.Grid2RealPos(nextPos);
 			
 			// we want it to take X seconds to go over one tile
 			float sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
-			float distanceStep = sqrRemainingDistance / fixedDivisions;
+			float distanceStep = ((transform.position - realPos).magnitude) / fixedDivisions;
 
-			while (sqrRemainingDistance > snapFactor*snapFactor) {
+			while (sqrRemainingDistance > float.Epsilon) {
 				transform.position = Vector3.MoveTowards(transform.position, realPos, distanceStep);
 				sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
 				yield return null;
 			}
 		}
+		crtMovingFlag = false;
+		GameManager.inst.tacticsManager.scrollLock = false;
+	}
+
+	protected IEnumerator ExecuteAfterMoving(Action voidAction) {
+		while (crtMovingFlag) {
+			yield return null;
+		}
+		voidAction();
 	}
 	
 	public virtual void OnBlocked<T>(T component) where T : Component { return; }
