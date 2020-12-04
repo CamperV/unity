@@ -122,7 +122,7 @@ public class Battle : MonoBehaviour
 		var otherSpawnPositions = Utils.RandomSelections<Vector3Int>(otherSpawnZone, oUnits.Count);
 		for (int i=0; i<oUnits.Count; i++) {
 			Unit unit = (Unit)TacticsEntityBase.Spawn(oUnits[i], otherSpawnPositions[i], grid);
-			GetController(player).Register(unit);
+			GetController(other).Register(unit);
 			activeUnits.Add(unit);
 		}
 	}

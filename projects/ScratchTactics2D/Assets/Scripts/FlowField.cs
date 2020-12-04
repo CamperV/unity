@@ -15,8 +15,10 @@ public class FlowField
 
 		// initial setup
 		Vector3Int currentPos = origin;
-		distance[origin] = 0;
 		fieldQueue.Enqueue(0, currentPos);
+		if (nodeSet.Contains(origin)) {
+			distance[origin] = 0;
+		}
 		
 		while (fieldQueue.Count != 0) {
 			currentPos = fieldQueue.Dequeue();
