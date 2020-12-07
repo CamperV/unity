@@ -5,6 +5,14 @@ using UnityEngine;
 
 public abstract class Unit : TacticsEntityBase
 {
+	// NOTE this is set by a Controller during registration
+	public Controller parentController;
+	public HashSet<Vector3Int> obstacles {
+		get {
+			return parentController.GetObstacles();
+		}
+	}
+
 	// to be defined at a lower level
 	public abstract int movementRange { get; }
 	public abstract int attackReach { get; }
@@ -46,27 +54,27 @@ public abstract class Unit : TacticsEntityBase
 	// Attack
 	// Wait
 	// Other
-	public void OnStartTurn() {
+	public void RefreshOptions() {
 		foreach (var k in optionAvailability.Keys.ToList()) {
 			optionAvailability[k] = true;
 		}
 		spriteRenderer.color = Color.white;
 		//
-		UpdateThreatRange();
+		Debug.Log($"Unit {this} has been refreshed");
 	}
 
 	public void OnEndTurn() {
-		foreach (var k in optionAvailability.Keys.ToList()) {
-			optionAvailability[k] = false;
-		}
-
 		StartCoroutine(ExecuteAfterMoving(() => {
+			foreach (var k in optionAvailability.Keys.ToList()) {
+				optionAvailability[k] = false;
+			}
 			spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f, 1f);
 		})); 
 	}
 
 	public void UpdateThreatRange() {
 		HashSet<Vector3Int> tiles = new HashSet<Vector3Int>(GameManager.inst.tacticsManager.GetActiveGrid().GetAllTilePos());
+		tiles.ExceptWith(obstacles);
 
 		moveRange = MoveRange.MoveRangeFrom(gridPosition, tiles, range: movementRange);
 		attackRange = AttackRange.AttackRangeFrom(moveRange, tiles, range: attackReach);

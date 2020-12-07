@@ -5,7 +5,15 @@ using UnityEngine;
 
 public abstract class MovingObject : MonoBehaviour
 {	
-	[HideInInspector] public Vector3Int gridPosition { get; protected set; }
+	private Vector3Int _gridPosition;
+	[HideInInspector] public Vector3Int gridPosition {
+		get {
+			return _gridPosition;
+		}
+		protected set {
+			_gridPosition = value;			
+		}
+	}
 	
 	protected bool crtMovingFlag = false;
 	protected Coroutine crtMovement;
@@ -144,4 +152,5 @@ public abstract class MovingObject : MonoBehaviour
 	}
 	
 	public virtual void OnBlocked<T>(T component) where T : Component { return; }
+	public virtual bool IsMoving() { return crtMovingFlag; }
 }

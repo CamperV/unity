@@ -19,7 +19,9 @@ public class OverworldEnemySkeleton : OverworldEnemyBase
 			return new List<string>() {
 				"UnitSkeleton",
 				"UnitSkeleton",
-				"UnitSkeleton"
+				"UnitSkeleton",
+				//"UnitSkeleton",
+				//"UnitSkeleton"
 			};
 		}
 	}

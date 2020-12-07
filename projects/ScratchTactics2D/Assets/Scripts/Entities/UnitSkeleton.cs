@@ -5,6 +5,6 @@ using UnityEngine;
 
 public class UnitSkeleton : Unit
 {
-    public override int movementRange { get { return 3; } }
+    public override int movementRange { get { return 4; } }
     public override int attackReach { get { return 1; } }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Extensions;
 
 public class PhaseManager : MonoBehaviour
 {
@@ -61,8 +62,8 @@ public class PhaseManager : MonoBehaviour
 				OnPhaseEnd(currentPhase);
 				StartPhase(currentPhase.NextPhase());
 
-				var nextController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(currentPhase.NextPhase());
-				nextController.TriggerPhase();
+				// delay for a bit, for "the feeling" of it
+				GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(currentPhase).TriggerPhase();
 			}
 			//
 			// code spins here until all enemies takes their phaseAction

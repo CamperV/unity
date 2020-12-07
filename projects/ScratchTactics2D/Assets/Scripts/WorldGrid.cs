@@ -216,7 +216,7 @@ public class WorldGrid : GameGrid
 			
 			// create paths between them
 			// for each path, replace the tile with a mountain tile
-			MovingObjectPath mRange = MovingObjectPath.GetPathTo(startMountain, endMountain, Int32.MaxValue);
+			MovingObjectPath mRange = MovingObjectPath.GetAnyPathTo(startMountain, endMountain);
 			Vector3Int currPos = startMountain;
 			while(currPos != endMountain) {
 				currPos = mRange.Next(currPos);
@@ -276,7 +276,7 @@ public class WorldGrid : GameGrid
 
 		Vector3Int startPos = new Vector3Int(1, Random.Range(1, mapDimensionY-1), 0);
 		Vector3Int endPos   = new Vector3Int(mapDimensionX-1, Random.Range(1, mapDimensionY-1), 0);
-		MovingObjectPath road = MovingObjectPath.GetPathTo(startPos, endPos, Int32.MaxValue);
+		MovingObjectPath road = MovingObjectPath.GetAnyPathTo(startPos, endPos);
 		
 		// now that we have the path, place the correct road tiles
 		Vector3Int prevPos = startPos;

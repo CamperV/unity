@@ -111,5 +111,21 @@ public class OverworldEnemyBase : OverworldEntity
 		return base.AttemptGridMove(xdir, ydir, GameManager.inst.worldGrid);
 	}
 	
-	public override void OnBlocked<T>(T component) {}
+	public override void OnBlocked<T>(T component) {
+		/*
+		OverworldEntity entity = component as OverworldEntity;
+		if (entity.GetType() == typeof(OverworldEnemyBase)) {
+			return;
+		}
+		
+		// programmatically load in a TacticsGrid that matches what we need
+		var thisTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(gridPosition);
+		var entityTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(entity.gridPosition);
+		
+		GameManager.inst.EnterBattleState();
+		var battleParticipants = new List<OverworldEntity>() { this, entity };
+		var battleTiles = new List<WorldTile>(){ thisTile, entityTile };
+		GameManager.inst.tacticsManager.CreateActiveBattle(battleParticipants, battleTiles, Enum.Phase.enemy);
+		*/
+	}
 }

@@ -49,13 +49,11 @@ public class MovingObjectPath
 		// no available Remove(key, out val) override in Unity
 		Vector3Int retval = path[position];
 		path.Remove(position);
-		GameManager.inst.worldGrid.ResetOverlayAt(position);
 		return retval;
 	}
 
 	public IEnumerable<Vector3Int> Unwind() {
 		Vector3Int pos = start;
-
 		do {
 			pos = path[pos];
 			yield return pos;
@@ -116,11 +114,28 @@ public class MovingObjectPath
 			grid.ResetOverlayAt(tilePos);
 		}
 	}
+	
+	public static MovingObjectPath Clip(MovingObjectPath mPath, MoveRange mRange) {
+		// unwind until out of bounds, then start whackin'
+		List<Vector3Int> forRemoval = new List<Vector3Int>();
+		foreach (var pos in mPath.Unwind()) {
+			if (!mRange.field.ContainsKey(mPath.Next(pos))) {
+				forRemoval.Add(pos);
+			}
+		}
+
+		// use two loops to avoid modifying path during iteration
+		foreach (var fr in forRemoval) {
+			mPath.path.Remove(fr);
+		}
+		mPath.CalcStartEnd();
+		return mPath;
+	}
 		
 	// AI pathfinding
 	// storing this is a hashmap also helps for quickly assessing what squares are available
 	// T is the type you expect to path towards, and don't mind a collision against
-	public static MovingObjectPath GetPathTo(Vector3Int startPosition, Vector3Int targetPosition, int costHeuristic) {
+	public static MovingObjectPath GetPathTo(Vector3Int startPosition, Vector3Int targetPosition, HashSet<Vector3Int> obstacles) {
 		MovingObjectPath newPath = new MovingObjectPath(startPosition);
 		
 		// this is a simple Best-Path-First BFS graph-search system
@@ -149,12 +164,13 @@ public class MovingObjectPath
 			
 			// available positions are: your neighbors that are "moveable",
 			// minus any endpoints other pathers have scoped out
-			foreach (Vector3Int adjacent in GetMovementOptions(currentPos)) {			
+			foreach (Vector3Int adjacent in GetMovementOptions(currentPos)) {
+				// first, check if its a specific obstacle
+				if (obstacles.Contains(adjacent)) continue;
+
+				// units can move through units of similar types, but not enemy types
 				int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;
 				var updatedCost = distSoFar + Cost(currentPos, adjacent);
-				
-				if (updatedCost > costHeuristic)
-					continue;
 				
 				if (!distance.ContainsKey(adjacent) || updatedCost < distance[adjacent]) {
 					distance[adjacent] = updatedCost;
@@ -184,8 +200,12 @@ public class MovingObjectPath
 			newPath.end   = startPosition;
 			newPath.path[startPosition] = startPosition;
 		}
-		
+
 		return newPath;
+	}
+
+	public static MovingObjectPath GetAnyPathTo(Vector3Int startPosition, Vector3Int targetPosition) {
+		return MovingObjectPath.GetPathTo(startPosition, targetPosition, new HashSet<Vector3Int>());
 	}
 
 	public static MovingObjectPath GetPathFromField(Vector3Int targetPosition, FlowField ffield) {
@@ -279,25 +299,15 @@ public class MovingObjectPath
 		// also, the conversion to HashSet, and the conversion back, is not worth it to remove from a list of 4 spaces max
 		List<Vector3Int> moveOptions = new List<Vector3Int>();
 		
-		foreach (Vector3Int pos in GameManager.inst.worldGrid.GetNeighbors(fromPosition)) {
-			if (!GameManager.inst.worldGrid.IsInBounds(pos)) {
-				continue;
+		var grid = GameManager.inst.GetActiveGrid();
+		foreach (Vector3Int pos in GameManager.inst.GetActiveGrid().GetNeighbors(fromPosition)) {
+			if (grid.IsInBounds(pos)) {
+				moveOptions.Add(pos);
 			}
-			var occupant = GameManager.inst.worldGrid.OccupantAt(pos);
-			
-			// either check the tag or type of occupant
-			// if occupant is null, short-circuit and add moveOption
-			// if it is occupied, but is a Player, still works
-			if (occupant != null) {
-				continue;
-			}
-			moveOptions.Add(pos);
 		}
 		return moveOptions;
 	}
 	
-	//
-	//
 	private void CalcStartEnd() {		
 		HashSet<Vector3Int> keys = new HashSet<Vector3Int>(path.Keys);
 		HashSet<Vector3Int> vals = new HashSet<Vector3Int>(path.Values);

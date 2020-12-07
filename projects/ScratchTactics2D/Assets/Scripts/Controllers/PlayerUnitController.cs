@@ -32,12 +32,11 @@ public class PlayerUnitController : Controller
 		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle;
 	}
 
-	public override void TriggerPhase() {
-		phaseActionState = Enum.PhaseActionState.waitingForInput;
+	public override void Register(MovingObject subject) {
+		base.Register(subject);
 		//
-		foreach (Unit unit in registry) {
-			unit.OnStartTurn();
-		}
+		Unit unit = subject as Unit;
+		unit.parentController = this;
 	}
 	
 	void Update() {
@@ -63,10 +62,22 @@ public class PlayerUnitController : Controller
 						// draw attack-able squares
 					}
 				}
+
+				// finally, check all unit in registry
+				// if none of them have any moves remaining, end the phase
+				bool endPhaseNow = true;
+				foreach (Unit unit in registry) {
+					if (unit.AnyOptionActive()) {
+						endPhaseNow = false;
+						break;
+					}
+				}
+				if (endPhaseNow) phaseActionState = Enum.PhaseActionState.complete;
 				break;
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
+				RefreshAllUnits();
 				EndPhase();
 				break;
 			
@@ -128,7 +139,9 @@ public class PlayerUnitController : Controller
 
 				// if the mouseDown is on a valid square, move to it
 				if (currentSelection.OptionActive("Move") && currentSelection.moveRange.ValidMove(target)) {
-					MoveSelectedUnit(target);
+					currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
+					//
+					currentSelection.SetOption("Move", false);
 					EndTurnSelectedUnit();
 					break;
 				}
@@ -143,6 +156,8 @@ public class PlayerUnitController : Controller
 		// on a certain key, get the currently selected unit
 		// enter a special controller mode
 		var unitAt = (Unit)grid.OccupantAt(target);
+
+		Debug.Log($"trying to select {unitAt}, options active?: {unitAt.AnyOptionActive()}");
 
 		if (registry.Contains(unitAt) && unitAt.AnyOptionActive()) {
 			// deselect current and select the new
@@ -174,12 +189,5 @@ public class PlayerUnitController : Controller
 		currentSelection.OnEndTurn();
 		currentSelection = null;
 		ClearSelection();
-	}
-
-	private void MoveSelectedUnit(Vector3Int target) {
-		Debug.Assert(currentSelection != null);
-		currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
-		//
-		currentSelection.SetOption("Move", false);
 	}
 }
