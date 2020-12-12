@@ -71,10 +71,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 244181823
+  m_SortingLayerID: -1039216137
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e06f49d6d2866164d8f2264a2c2dae72, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c1757cd86b6ef494da17523d12c7b297, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -94,10 +94,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5140243916379933854}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 463842d859d9bd945b1273a0592a2d4c, type: 3}
+  m_Script: {fileID: 11500000, guid: 13dfc39b55f51ce4ba7127ec135770de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitControllerPrefab: {fileID: 6070387731492201818, guid: 4a8617886f09b104b8893dcfe6c53d73, type: 3}
+  unitControllerPrefab: {fileID: 6070387731492201818, guid: 9834c21cc39052d428e08bc9cfc711bb, type: 3}
   unitController: {fileID: 0}
   moveSpeed: 1
   pathRange: 2147483647
@@ -132,7 +132,7 @@ Animator:
   m_GameObject: {fileID: 5140243916379933854}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a4b8c4946ffe85148a06d6c5be97e9ee, type: 2}
+  m_Controller: {fileID: 9100000, guid: ce2e2646df2d3284b90fae33d2d53636, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
