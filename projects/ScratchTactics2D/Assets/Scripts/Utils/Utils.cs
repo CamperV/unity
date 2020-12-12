@@ -22,11 +22,12 @@ public static class Utils
 			var selIndex = available[avaIndex];
 			
 			retVal.Add(list[selIndex]);
-			available.Remove(avaIndex);
+			available.Remove(selIndex);
 		}
 		return retVal;
 	}
 
 	public static Color selectColorBlue = new Color(0f, .75f, 1f, 1f);
 	public static Color selectColorRed  = new Color(1f, .75f, 0f, 1f);
+	public static Color threatColorRed  = new Color(1f, 0.50f, 0.50f, 1f);
 }

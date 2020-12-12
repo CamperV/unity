@@ -22,7 +22,7 @@ public abstract class PhasedObject : MonoBehaviour, IPhasedObject
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 	}
 	
-	public void TriggerPhase() {
+	public virtual void TriggerPhase() {
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 	}
 	

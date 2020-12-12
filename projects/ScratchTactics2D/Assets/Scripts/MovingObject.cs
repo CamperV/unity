@@ -1,19 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public abstract class MovingObject : MonoBehaviour
 {	
-	[HideInInspector] public Vector3Int gridPosition { get; protected set; }
-	
-	protected Rigidbody2D rigidbody2D;
+	private Vector3Int _gridPosition;
+	[HideInInspector] public Vector3Int gridPosition {
+		get {
+			return _gridPosition;
+		}
+		protected set {
+			_gridPosition = value;			
+		}
+	}
 	
 	protected bool crtMovingFlag = false;
 	protected Coroutine crtMovement;
-	
-    protected virtual void Start() {
-		rigidbody2D = GetComponent<Rigidbody2D>();
-    }
 	
 	protected Vector3Int ToPosition(Vector3Int pos, int speed) {
 		return new Vector3Int(Mathf.Clamp(pos.x - gridPosition.x,  -speed, speed),
@@ -37,7 +40,7 @@ public abstract class MovingObject : MonoBehaviour
 	
 	private bool CrtMove(int xdir, int ydir, GameGrid grid, out Component occupant) {
 		// need to always be a cell/Tile coordinate
-		Vector3Int endTile   = gridPosition + new Vector3Int(xdir, ydir, 0);
+		Vector3Int endTile = gridPosition + new Vector3Int(xdir, ydir, 0);
 		Vector3 endpoint = grid.Grid2RealPos(endTile);
 
 		// first check if you're even in bounds, THEN get the occupant
@@ -68,31 +71,28 @@ public abstract class MovingObject : MonoBehaviour
 	}
 	
 	// this is like a Python-generator: Coroutine
-	private IEnumerator SmoothMovement(Vector3 endpoint) {
+	protected IEnumerator SmoothMovement(Vector3 endpoint) {
 		float sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
-		float snapFactor = 0.01f;
-		
 		float speedFactor;
 		
 		crtMovingFlag = true;
-		while (sqrRemainingDistance > snapFactor) {	
-			speedFactor = (15.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime) + 0.10f;
+		while (sqrRemainingDistance > float.Epsilon) {	
+			speedFactor = (5.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime);
 
-			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, endpoint, speedFactor);
-			rigidbody2D.MovePosition(newPos);
+			transform.position = Vector3.MoveTowards(transform.position, endpoint, speedFactor);
 			sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
 			
 			yield return null; // waits for a new frame
 		}
 		
 		// after the while loop is broken:
-		rigidbody2D.MovePosition(endpoint);
+		transform.position = endpoint;
 		crtMovingFlag = false;
 	}
 	
 	// this coroutine performs a little 'bump' when you can't move
-	private IEnumerator SmoothBump(Vector3 endpoint) {	
-		float speedFactor = 0.10f;
+	protected IEnumerator SmoothBump(Vector3 endpoint) {	
+		float speedFactor = 0.055f;
 		
 		Vector3 origPosition = transform.position;
 		Vector3 peak = origPosition + (endpoint - transform.position)/5.0f;
@@ -103,24 +103,54 @@ public abstract class MovingObject : MonoBehaviour
 		
 		crtMovingFlag = true;
 		while (sqrRemainingDistance > float.Epsilon) {
-			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, peak, speedFactor);
-			rigidbody2D.MovePosition(newPos);
+			transform.position = Vector3.MoveTowards(transform.position, peak, speedFactor);
 			sqrRemainingDistance = (transform.position - peak).sqrMagnitude;
 			
 			yield return null; // waits for a new frame
 		}
 		while (sqrReturnDistance > float.Epsilon) {
-			Vector3 newPos = Vector3.MoveTowards(rigidbody2D.position, origPosition, speedFactor);
-			rigidbody2D.MovePosition(newPos);
+			transform.position = Vector3.MoveTowards(transform.position, origPosition, speedFactor);
 			sqrReturnDistance = (origPosition - transform.position).sqrMagnitude;
 
 			yield return null; // waits for a new frame
 		}
 		
 		// after the while loop is broken:
-		rigidbody2D.MovePosition(origPosition);
+		transform.position = origPosition;
 		crtMovingFlag = false;
+	}
+
+	protected IEnumerator SmoothMovementPath(MovingObjectPath path, GameGrid grid) {
+		float fixedDivisions = 8.0f;
+
+		crtMovingFlag = true;
+		GameManager.inst.tacticsManager.scrollLock = true;
+		//
+		Vector3 realPos;
+		foreach (var nextPos in path.Unwind()) {
+			realPos = grid.Grid2RealPos(nextPos);
+			
+			// we want it to take X seconds to go over one tile
+			float sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
+			float distanceStep = ((transform.position - realPos).magnitude) / fixedDivisions;
+
+			while (sqrRemainingDistance > float.Epsilon) {
+				transform.position = Vector3.MoveTowards(transform.position, realPos, distanceStep);
+				sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
+				yield return null;
+			}
+		}
+		crtMovingFlag = false;
+		GameManager.inst.tacticsManager.scrollLock = false;
+	}
+
+	protected IEnumerator ExecuteAfterMoving(Action voidAction) {
+		while (crtMovingFlag) {
+			yield return null;
+		}
+		voidAction();
 	}
 	
 	public virtual void OnBlocked<T>(T component) where T : Component { return; }
+	public virtual bool IsMoving() { return crtMovingFlag; }
 }

@@ -13,8 +13,11 @@ namespace Enum {
 	//
 	public enum EnemyState {idle, followField};
 	public enum UnitState {idle};
-}
 
+	// Contextual Interaction states
+	public enum InteractState {noSelection, unitSelected};
+}
+/*
 public static class PhaseExtension {
 	public static Enum.Phase NextPhase(this Enum.Phase p) {
 		switch (p) {
@@ -26,4 +29,4 @@ public static class PhaseExtension {
 				return Enum.Phase.none;
 		}
 	}
-}
+}*/

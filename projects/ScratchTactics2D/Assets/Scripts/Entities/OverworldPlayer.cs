@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class OverworldPlayer : OverworldEntity
 {
-	private MovingObjectPath pathToSelected;
 	private Queue<Vector3Int> movementQueue;
 	
 	public int moveSpeed = 1;
@@ -37,12 +36,6 @@ public class OverworldPlayer : OverworldEntity
 		//
 		movementQueue = new Queue<Vector3Int>();
     }
-	
-	protected override void Start() {
-		base.Start();
-		//
-		pathToSelected = new MovingObjectPath(gridPosition);
-	}
 		
 	public void ResetPosition(Vector3Int v) {
 		gridPosition = v;

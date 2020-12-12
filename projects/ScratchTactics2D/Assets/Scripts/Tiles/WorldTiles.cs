@@ -73,8 +73,6 @@ public class CloudWorldTile : WorldTile
 
 public class RoadWorldTile : WorldTile
 {
-	public override int depth { get { return 0; } }
-
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_0"),

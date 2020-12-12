@@ -19,6 +19,10 @@ public abstract class OverworldEntity : MovingObject
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
 	}
+
+	protected void Update() {
+		//spriteRenderer.sortingOrder = -1*Mathf.RoundToInt(transform.position.y);
+	}
 	
 	public List<Unit> LoadUnitsByTag(List<string> unitTags) {
 		List<Unit> retVal = new List<Unit>();

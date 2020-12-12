@@ -11,10 +11,13 @@ public class TacticsManager : MonoBehaviour
 	
 	public Battle battlePrefab;
 	[HideInInspector] public Battle activeBattle;
+
+	public bool scrollLock;
 	
 	void Awake() {
 		dragOffset = Vector3.zero;
 		draggingView = false;
+		scrollLock = false;
 	}
 
     void Update() {
@@ -26,35 +29,39 @@ public class TacticsManager : MonoBehaviour
 				DestroyActiveBattle();
 			}
 			
-			var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			//
-			// RMB drag view
-			//
-			if (Input.GetMouseButtonDown(1) && !draggingView) {
-				dragOffset = activeBattle.transform.position - mouseWorldPos;
-				draggingView = true;
-			}
-			// update pos by offset, release drag when mouse goes up
-			if (draggingView){
-				activeBattle.transform.position = mouseWorldPos + dragOffset;
-				GameManager.inst.mouseManager.mouseSelector.gameObject.SetActive(false);
-			}
-			if (draggingView && !Input.GetMouseButton(1)) draggingView = false;
-			
-			//
-			// mouse view control
-			//
-			if (!draggingView) {
-				// calculate what the new scale WILL been
-				// and calculate the scale ratio. Just use X, because our scale is uniform on all axes
-				var updatedScale = activeBattle.transform.localScale + (Input.GetAxis("Mouse ScrollWheel") * 0.75f) * Vector3.one;
-				float scaleRatio = updatedScale.x / activeBattle.transform.localScale.x;
+			if (!scrollLock) {
+				var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				//
+				// RMB drag view
+				//
+				if (Input.GetMouseButtonDown(1) && !draggingView) {
+					dragOffset = activeBattle.transform.position - mouseWorldPos;
+					draggingView = true;
+				}
+				// update pos by offset, release drag when mouse goes up
+				if (draggingView){
+					activeBattle.transform.position = mouseWorldPos + dragOffset;
+				}
+
+				// make sure we can drop out of the dragging mode
+				if (draggingView && (!Input.GetMouseButton(1)))
+					draggingView = false;
 				
-				Vector3 localToMouse = activeBattle.transform.position - mouseWorldPos;
-				
-				//update the scale, and position based on the new scale
-				activeBattle.transform.localScale = updatedScale;
-				activeBattle.transform.position = mouseWorldPos + (localToMouse * scaleRatio);
+				//
+				// mouse view control
+				//
+				if (!draggingView) {
+					// calculate what the new scale WILL been
+					// and calculate the scale ratio. Just use X, because our scale is uniform on all axes
+					var updatedScale = activeBattle.transform.localScale + (Input.GetAxis("Mouse ScrollWheel") * 0.75f) * Vector3.one;
+					float scaleRatio = updatedScale.x / activeBattle.transform.localScale.x;
+					
+					Vector3 localToMouse = activeBattle.transform.position - mouseWorldPos;
+					
+					//update the scale, and position based on the new scale
+					activeBattle.transform.localScale = updatedScale;
+					activeBattle.transform.position = mouseWorldPos + (localToMouse * scaleRatio);
+				}
 			}
 		}       
     }
