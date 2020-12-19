@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using Random = UnityEngine.Random;
 using UnityEngine;
 
 public abstract class Unit : TacticsEntityBase
 {
+	private bool animFlag = false;
+
 	// NOTE this is set by a Controller during registration
 	public Controller parentController;
 	public HashSet<Vector3Int> obstacles {
@@ -16,6 +20,10 @@ public abstract class Unit : TacticsEntityBase
 	// to be defined at a lower level
 	public abstract int movementRange { get; }
 	public abstract int attackReach { get; }
+	public abstract int damageValue { get; }
+	public abstract int maximumHealth { get; }
+
+	protected int currentHealth { set; get; }
 
 	// cache the movement range for easier lookup later
 	public MoveRange moveRange;
@@ -25,6 +33,14 @@ public abstract class Unit : TacticsEntityBase
 		["Move"]	= true,
 		["Attack"]	= true
 	};
+
+	void Start() {
+		currentHealth = maximumHealth;
+	}
+	
+	public override bool IsActive() {
+		return gameObject.activeInHierarchy && currentHealth > 0;
+	}
 
 	public bool OptionActive(string optionToCheck) {
 		if (!optionAvailability.ContainsKey(optionToCheck)) {
@@ -73,11 +89,14 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void UpdateThreatRange() {
-		HashSet<Vector3Int> tiles = new HashSet<Vector3Int>(GameManager.inst.tacticsManager.GetActiveGrid().GetAllTilePos());
+		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
+		HashSet<Vector3Int> tiles = new HashSet<Vector3Int>(grid.GetAllTilePos());
 		tiles.ExceptWith(obstacles);
 
-		moveRange = MoveRange.MoveRangeFrom(gridPosition, tiles, range: movementRange);
-		attackRange = AttackRange.AttackRangeFrom(moveRange, tiles, range: attackReach);
+		var moveable = (OptionActive("Move")) ? movementRange : 0;
+		var attackable = (OptionActive("Attack")) ? attackReach : 0;
+		moveRange = MoveRange.MoveRangeFrom(gridPosition, tiles, range: moveable);
+		attackRange = AttackRange.AttackRangeFrom(moveRange, grid.GetAllTilePos(), range: attackable);
 	}
 
 	public void OnSelect() {
@@ -85,7 +104,7 @@ public abstract class Unit : TacticsEntityBase
 		// play "awake" ready animation
 		// enter into "running" or "ready" animation loop
 		// display movement range
-		spriteRenderer.color = Utils.selectColorRed;
+		// spriteRenderer.color = Utils.selectColorRed;
 		
 		UpdateThreatRange();
 		attackRange?.Display(grid);
@@ -112,5 +131,62 @@ public abstract class Unit : TacticsEntityBase
 		grid.UpdateOccupantAt(gridPosition, null);
 		grid.UpdateOccupantAt(target, this);
 		gridPosition = target;
+	}
+
+	public void Attack(Unit other) {
+		other.SufferDamage(damageValue);
+	}
+
+	public void SufferDamage(int incomingDamage) {
+		currentHealth -= incomingDamage;
+		StartCoroutine(FlashColor(Utils.threatColorRed));
+		StartCoroutine(Shake(0.075f));
+
+		Debug.Log($"{this} suffered {incomingDamage}, {currentHealth}/{maximumHealth} health remaining.");
+
+		if (currentHealth < 1) { Die(); }
+	}
+
+	public void Die() {
+		// fade down
+		// when faded, remove gameObject
+		Debug.Log($"{this} has died :(");
+
+		StartCoroutine(ExecuteAfterAnimating(() => {
+			StartCoroutine(FadeDownToInactive(0.01f));
+		}));
+	}
+
+	public IEnumerator FlashColor(Color color) {
+		animFlag = true;
+
+		float c = 1.0f;
+		float rate = 0.005f;
+		while (c > 0.0f) {
+			var colorDiff = Color.white - (c * (Color.white - color));
+			spriteRenderer.color = new Color(colorDiff.r, colorDiff.g, colorDiff.b, 1);
+			c -= rate;
+			rate *= 1.05f;
+			yield return null;
+		}
+		spriteRenderer.color = Color.white;
+		animFlag = false;
+	}
+
+	public IEnumerator Shake(float radius) {
+		var ogPosition = transform.position;
+		for (int i=0; i<3; i++) {
+			transform.position = transform.position + (Vector3)Random.insideUnitCircle*radius;
+			radius /= 2f;
+			yield return new WaitForSeconds(0.05f);
+		}
+		transform.position = ogPosition;
+	}
+
+	public IEnumerator ExecuteAfterAnimating(Action voidAction) {
+		while (animFlag) {
+			yield return null;
+		}
+		voidAction();
 	}
 }

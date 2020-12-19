@@ -29,7 +29,7 @@ namespace Extensions {
             // let's avoid recursion in C#, at least in relatively-unknown-extension-space, yeah?
             while(queue.Count > 0) {
                 Vector3Int curr = queue.Dequeue();
-                toEnumerate.Add(curr);
+                if (curr != v) toEnumerate.Add(curr);
 
                 // add all surrounding tiles to the retval, but only do this $range times
                 if (currentDepth < range) {

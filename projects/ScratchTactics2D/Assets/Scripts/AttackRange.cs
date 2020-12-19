@@ -48,13 +48,14 @@ public class AttackRange : FlowField
 
 	// ValidMoves will indicate what can be passed through,
 	// and MoveRange will indicate what must be pathed around
-	public bool ValidAttack(Vector3Int tilePos) {
-		return field.ContainsKey(tilePos);
+	public bool ValidAttack(Unit currentSelection, Vector3Int tilePos) {
+		bool withinRange = (tilePos - currentSelection.gridPosition).magnitude <= currentSelection.attackReach;
+		return field.ContainsKey(tilePos) && withinRange;
 	}
 
 	public void Display(GameGrid grid) {
 		foreach (Vector3Int tilePos in field.Keys) {
-			if (ValidAttack(tilePos)) grid.SelectAt(tilePos, color: Utils.threatColorRed);
+			grid.SelectAt(tilePos, color: Utils.threatColorRed);
 		}
 	}
 

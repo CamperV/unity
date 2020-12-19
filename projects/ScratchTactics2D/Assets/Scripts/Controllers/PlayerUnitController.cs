@@ -26,6 +26,7 @@ public class PlayerUnitController : Controller
 		// this needs to be done at run-time
 		actionBindings[KeyCode.Mouse0] = Interact;
 		actionBindings[KeyCode.Mouse1] = ClearSelection;
+		actionBindings[KeyCode.K]	   = SkipPhase;
 	}
 
 	public override bool MyPhaseActive() {
@@ -66,7 +67,7 @@ public class PlayerUnitController : Controller
 				// finally, check all unit in registry
 				// if none of them have any moves remaining, end the phase
 				bool endPhaseNow = true;
-				foreach (Unit unit in registry) {
+				foreach (Unit unit in activeRegistry) {
 					if (unit.AnyOptionActive()) {
 						endPhaseNow = false;
 						break;
@@ -142,12 +143,32 @@ public class PlayerUnitController : Controller
 					currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
 					//
 					currentSelection.SetOption("Move", false);
+					currentSelection.OnDeselect();
+					currentSelectionFieldPath?.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
+
+					var mm = GameManager.inst.mouseManager;
+					grid.ResetSelectionAtAlternate(mm.prevMouseGridPos);
+
+					// dumb shenanigans: clear then re-select
+					StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
+						SelectUnit(currentSelection.gridPosition);
+					})); 
+					
+					//EndTurnSelectedUnit();
+					break;
+				}
+
+				// if the mouseDown is on a valid attackable are (after moving)
+				if (currentSelection.OptionActive("Attack") && currentSelection.attackRange.ValidAttack(currentSelection, target)) {
+					AttackUnit(target);
+					currentSelection.SetOption("Attack", false);
+
 					EndTurnSelectedUnit();
 					break;
 				}
 
-				// default
-				//SelectUnit(target);
+				// default: Select someone else
+				SelectUnit(target);
 				break;
 		}
 	}
@@ -157,9 +178,10 @@ public class PlayerUnitController : Controller
 		// enter a special controller mode
 		var unitAt = (Unit)grid.OccupantAt(target);
 
-		Debug.Log($"trying to select {unitAt}, options active?: {unitAt.AnyOptionActive()}");
+		if (unitAt != null)
+			Debug.Log($"trying to select {unitAt}, options active?: {unitAt.AnyOptionActive()}");
 
-		if (registry.Contains(unitAt) && unitAt.AnyOptionActive()) {
+		if (activeRegistry.Contains(unitAt) && unitAt.AnyOptionActive()) {
 			// deselect current and select the new
 			if (currentSelection != null) {
 				currentSelection.OnDeselect();
@@ -168,7 +190,7 @@ public class PlayerUnitController : Controller
 			currentSelection.OnSelect();
 		}
 
-		return currentSelection == unitAt;
+		return currentSelection != null && currentSelection == unitAt;
 	}
 
 	private void ClearSelection() {
@@ -189,5 +211,16 @@ public class PlayerUnitController : Controller
 		currentSelection.OnEndTurn();
 		currentSelection = null;
 		ClearSelection();
+	}
+
+	private void AttackUnit(Vector3Int target) {
+		Debug.Log($"{currentSelection} attacking {target}");
+		var unitAt = (Unit)grid.OccupantAt(target);
+		currentSelection.Attack(unitAt);
+	}
+
+	private void SkipPhase() {
+		ClearSelection();
+		phaseActionState = Enum.PhaseActionState.complete;
 	}
 }

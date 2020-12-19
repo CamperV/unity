@@ -204,4 +204,16 @@ public class Battle : MonoBehaviour
 			return defaultController;
 		}
 	}
+	
+	public OverworldEntity GetOverworldEntityFromPhase(Enum.Phase phase) {
+		if (phase == Enum.Phase.player) {
+			return player;
+		} else if (phase == Enum.Phase.enemy) {
+			return other;
+		}
+
+		// default,
+		Debug.Log($"Phase {phase} is causing a default return for OE");
+		return other;
+	}
 }

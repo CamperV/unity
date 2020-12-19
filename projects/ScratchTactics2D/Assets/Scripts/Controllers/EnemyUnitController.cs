@@ -52,7 +52,7 @@ public class EnemyUnitController : Controller
 			case Enum.PhaseActionState.acting:
 				// do nothing until finished acting
 				bool endPhaseNow = true;
-				foreach (Unit unit in registry) {
+				foreach (Unit unit in activeRegistry) {
 					if (unit.AnyOptionActive()) {
 						endPhaseNow = false;
 						break;
@@ -80,16 +80,17 @@ public class EnemyUnitController : Controller
 
 		// find initial target when there are no adversaries in one's AttackRange
 		Vector3 _oppositionCentroid = Vector3.zero;
-		foreach (var adv in playerController.registry) {
+		foreach (var adv in playerController.activeRegistry) {
 			_oppositionCentroid += adv.gridPosition;
 		}
-		_oppositionCentroid /= (playerController.registry.Count);
+		_oppositionCentroid /= (playerController.activeRegistry.Count);
 		Vector3Int oppositionCentroid = new Vector3Int(Mathf.RoundToInt(_oppositionCentroid.x),
 													   Mathf.RoundToInt(_oppositionCentroid.y),
 													   Mathf.RoundToInt(_oppositionCentroid.z));
+		oppositionCentroid = playerController.activeRegistry[0].gridPosition;
 
-		for (int i = 0; i < registry.Count; i++) {
-			Unit subject = (Unit)registry[i];
+		for (int i = 0; i < activeRegistry.Count; i++) {
+			Unit subject = (Unit)activeRegistry[i];
 			
 			// determine some order in which the enemies act
 			// target selection
@@ -97,23 +98,33 @@ public class EnemyUnitController : Controller
 			// if multiple adversaries in range, pick the adversary to which you can do the most damage
 			subject.UpdateThreatRange();
 
-			var targetPosition = GetTargetInAttackRange(subject, playerController.registry);
+			var targetPosition = GetTargetInAttackRange(subject, playerController.activeRegistry);
 			if (targetPosition == subject.gridPosition) targetPosition = oppositionCentroid;
 
 			// now that we have the target location, find all the "attackable" squares surrounding it
 			// then, select the optimal square to move into to perform your attack
-			var optimalPosition = targetPosition;
-			foreach (var attackablePos in targetPosition.Radiate(subject.attackReach)) {
-				var currMin = (subject.gridPosition - optimalPosition).magnitude;
+			Vector3Int optimalPosition = -1*Vector3Int.one;
+			float currMin = float.MaxValue;
+			//
+			//foreach (var attackablePos in targetPosition.Radiate(subject.attackReach)) {
+			foreach (var attackablePos in targetPosition.Radiate(subject.movementRange)) {
 				var currDis = (subject.gridPosition - attackablePos).magnitude;
 
-				if ((optimalPosition == targetPosition) || currDis < currMin) {
+				// also, enforce some global rules. No unit can stand in the same
+				// place as another, not only if they are considered obstacles
+				// for unoccupied: only check vacancy if you're not the one there ;)
+				var grid = GameManager.inst.tacticsManager.GetActiveGrid();
+				var inBounds   = grid.IsInBounds(attackablePos);
+				var unoccupied = (currDis == 0f) ? true : grid.VacantAt(attackablePos);
+
+				if (inBounds && unoccupied && currDis < currMin) {
 					optimalPosition = attackablePos;
+					currMin = currDis;
 				}
 			}
 			Debug.Log($"{this} found opt {optimalPosition} to attack {targetPosition}, reach {subject.attackReach}");
 
-			if (subject.OptionActive("Move")) {
+			if (subject.OptionActive("Move") && optimalPosition != subject.gridPosition) {
 				// now, find a full path to the location
 				// even if we can't reach it, just go as far as you can
 				var pathToTarget = MovingObjectPath.GetPathTo(subject.gridPosition, optimalPosition, subject.obstacles);
@@ -136,7 +147,7 @@ public class EnemyUnitController : Controller
 			subject.OnEndTurn();
 
 			// don't delay if you're the last
-			if (i != registry.Count-1) {
+			if (i != activeRegistry.Count-1) {
 				yield return new WaitForSeconds(0.5f);
 			}
 		}

@@ -7,6 +7,11 @@ using Extensions;
 public class Controller : PhasedObject
 {
 	public List<MovingObject> registry;
+	public List<MovingObject> activeRegistry {
+		get {
+			return registry.Where(it => it.IsActive()).ToList();
+		}
+	}
 
 	protected void Awake() {		
 		registry = new List<MovingObject>();
@@ -22,7 +27,7 @@ public class Controller : PhasedObject
 	}
 
 	public void RefreshAllUnits() {
-		foreach (Unit unit in registry) {
+		foreach (Unit unit in activeRegistry) {
 			unit.RefreshOptions();
 		}
 	}
@@ -31,7 +36,7 @@ public class Controller : PhasedObject
 		// the controller must dictate to the Unit/MovingObject what counts as obstacles for it
 		var adversaryPhase = myPhase.NextPhase();
 		var adversaryController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(adversaryPhase);
-		var uPositions = from u in adversaryController.registry select u.gridPosition;
+		var uPositions = from u in adversaryController.activeRegistry select u.gridPosition;
 		return new HashSet<Vector3Int>(uPositions);
 	}
 }

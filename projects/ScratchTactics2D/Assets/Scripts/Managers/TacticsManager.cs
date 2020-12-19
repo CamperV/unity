@@ -81,6 +81,11 @@ public class TacticsManager : MonoBehaviour
 		//
 		activeBattle.StartBattleOnPhase(initiatingPhase);
 	}
+
+	public void ResolveActiveBattle(OverworldEntity defeatedEntity) {
+		defeatedEntity.Die();
+		DestroyActiveBattle();
+	}
 	
 	public void DestroyActiveBattle() {
 		Destroy(activeBattle.grid.gameObject);

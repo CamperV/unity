@@ -32,4 +32,14 @@ public class TacticsEntityBase : MovingObject
 	public override bool GridMove(int xdir, int ydir) {
 		return base.AttemptGridMove(xdir, ydir, GameManager.inst.tacticsManager.GetActiveGrid());
 	}
+
+	public IEnumerator FadeDownToInactive(float fadeRate) {
+		float c = 1.0f;
+		while (c > 0.0f) {
+			spriteRenderer.color = new Color(1, 1, 1, c);
+			c -= fadeRate;
+			yield return null;
+		}
+		gameObject.SetActive(false);
+	}
 }

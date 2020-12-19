@@ -59,7 +59,7 @@ public class WorldGrid : GameGrid
 		StartCoroutine(FadeUp(overlayTilemap, tilePos));
 	}
 	
-	public override void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.05f) {
+	public override void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.10f) {
 		// this will nullify the tilePos after fading
 		StartCoroutine(FadeDownToNull(overlayTilemap, tilePos, fadeRate));
 	}

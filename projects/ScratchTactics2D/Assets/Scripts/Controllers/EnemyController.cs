@@ -70,8 +70,8 @@ public class EnemyController : Controller
 	}
 	
 	public IEnumerator SubjectsTakeAction() {
-		for (int i = 0; i < registry.Count; i++) {
-			OverworldEnemyBase subject = (OverworldEnemyBase)registry[i];
+		for (int i = 0; i < activeRegistry.Count; i++) {
+			OverworldEnemyBase subject = (OverworldEnemyBase)activeRegistry[i];
 			
 			switch(subject.state) {
 				case Enum.EnemyState.idle:
@@ -90,7 +90,7 @@ public class EnemyController : Controller
 			}
 			
 			// don't delay if you're the last
-			if (i == registry.Count-1 || subject.state == Enum.EnemyState.idle) {
+			if (i == activeRegistry.Count-1 || subject.state == Enum.EnemyState.idle) {
 				yield return null;
 			} else {
 				yield return new WaitForSeconds(phaseDelayTime);
@@ -112,7 +112,7 @@ public class EnemyController : Controller
 		traversable.Clear();
 		
 		// for each subject, grow a region to create traversable
-		foreach (var subject in registry) {
+		foreach (var subject in activeRegistry) {
 			OverworldEnemyBase enemy = (OverworldEnemyBase)subject;
 			Queue<Vector3Int> queue = new Queue<Vector3Int>();
 

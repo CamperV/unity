@@ -39,4 +39,25 @@ public abstract class OverworldEntity : MovingObject
 		}
 		return retVal;
 	}
+
+	public void Die() {
+		// fade down
+		// when faded, remove gameObject
+		Debug.Log($"{this} has died :(");
+		GameManager.inst.worldGrid.UpdateOccupantAt(gridPosition, null);
+		StartCoroutine(FadeDownToInactive(0.01f));
+	}
+
+	public IEnumerator FadeDownToInactive(float fadeRate) {
+		float c = 1.0f;
+		while (c > 0.0f) {
+			spriteRenderer.color = new Color(spriteRenderer.color.r,
+											 spriteRenderer.color.g,
+											 spriteRenderer.color.b,
+											 c);
+			c -= fadeRate;
+			yield return null;
+		}
+		gameObject.SetActive(false);
+	}
 }

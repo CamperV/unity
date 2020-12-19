@@ -17,6 +17,10 @@ public abstract class MovingObject : MonoBehaviour
 	
 	protected bool crtMovingFlag = false;
 	protected Coroutine crtMovement;
+
+	public virtual bool IsActive() {
+		return gameObject.activeInHierarchy;
+	}
 	
 	protected Vector3Int ToPosition(Vector3Int pos, int speed) {
 		return new Vector3Int(Mathf.Clamp(pos.x - gridPosition.x,  -speed, speed),
@@ -144,7 +148,7 @@ public abstract class MovingObject : MonoBehaviour
 		GameManager.inst.tacticsManager.scrollLock = false;
 	}
 
-	protected IEnumerator ExecuteAfterMoving(Action voidAction) {
+	public IEnumerator ExecuteAfterMoving(Action voidAction) {
 		while (crtMovingFlag) {
 			yield return null;
 		}

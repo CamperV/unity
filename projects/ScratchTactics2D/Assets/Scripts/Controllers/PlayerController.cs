@@ -66,7 +66,7 @@ public class PlayerController : Controller
 	}
 	
 	private IEnumerator SubjectsTakeAction(Action<MovingObject> action) {
-		foreach (var subject in registry) {
+		foreach (var subject in activeRegistry) {
 			action(subject);
 			yield return new WaitForSeconds(phaseDelayTime);
 		}

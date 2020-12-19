@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Extensions;
 
@@ -55,19 +56,26 @@ public class PhaseManager : MonoBehaviour
 				//
 			}
 		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
-			var activeController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(currentPhase);
+			var battle = GameManager.inst.tacticsManager.activeBattle;
+			var activeController = battle.GetControllerFromPhase(currentPhase);
 
 			// if the currently active controller has finished its phase
 			if (activeController.phaseActionState == Enum.PhaseActionState.postPhase) {
 				OnPhaseEnd(currentPhase);
-				StartPhase(currentPhase.NextPhase());
 
-				// delay for a bit, for "the feeling" of it
-				GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(currentPhase).TriggerPhase();
+				// after a phase has ended, use the controlled opportunity here
+				// to potentially destroy the battle. Check if a side won
+				if (!activeController.activeRegistry.Any()) {
+					Debug.Log("{activeController} has no units left, destroy battle");
+					var defeated = battle.GetOverworldEntityFromPhase(currentPhase);
+					GameManager.inst.tacticsManager.ResolveActiveBattle(defeated);
+					return; // jump out of the update loop early
+				}
+
+				// else:
+				StartPhase(currentPhase.NextPhase());
+				battle.GetControllerFromPhase(currentPhase).TriggerPhase();
 			}
-			//
-			// code spins here until all enemies takes their phaseAction
-			//	
 		}
 		// else, disable phasing
     }
