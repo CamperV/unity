@@ -75,8 +75,6 @@ public abstract class Unit : TacticsEntityBase
 			optionAvailability[k] = true;
 		}
 		spriteRenderer.color = Color.white;
-		//
-		Debug.Log($"Unit {this} has been refreshed");
 	}
 
 	public void OnEndTurn() {
@@ -151,6 +149,7 @@ public abstract class Unit : TacticsEntityBase
 		// fade down
 		// when faded, remove gameObject
 		Debug.Log($"{this} has died :(");
+		GameManager.inst.tacticsManager.GetActiveGrid().UpdateOccupantAt(gridPosition, null);
 
 		StartCoroutine(ExecuteAfterAnimating(() => {
 			StartCoroutine(FadeDownToInactive(0.01f));

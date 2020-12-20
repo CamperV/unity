@@ -111,21 +111,22 @@ public class OverworldEnemyBase : OverworldEntity
 		return base.AttemptGridMove(xdir, ydir, GameManager.inst.worldGrid);
 	}
 	
+	// let's be real... "entity" is just "player"
+	// in the future, I'd like to be able to orchestrate battles b/w NPCs
+	// but that's in the future. Change terminology now, to confuse less
 	public override void OnBlocked<T>(T component) {
-		/*
-		OverworldEntity entity = component as OverworldEntity;
-		if (entity.GetType() == typeof(OverworldEnemyBase)) {
+		OverworldEntity player = component as OverworldEntity;
+		if (player.GetType() == typeof(OverworldEnemyBase)) {
 			return;
 		}
 		
 		// programmatically load in a TacticsGrid that matches what we need
 		var thisTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(gridPosition);
-		var entityTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(entity.gridPosition);
+		var playerTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(player.gridPosition);
 		
 		GameManager.inst.EnterBattleState();
-		var battleParticipants = new List<OverworldEntity>() { this, entity };
-		var battleTiles = new List<WorldTile>(){ thisTile, entityTile };
+		var battleParticipants = new List<OverworldEntity>() { player, this };
+		var battleTiles = new List<WorldTile>(){ playerTile, thisTile };
 		GameManager.inst.tacticsManager.CreateActiveBattle(battleParticipants, battleTiles, Enum.Phase.enemy);
-		*/
 	}
 }

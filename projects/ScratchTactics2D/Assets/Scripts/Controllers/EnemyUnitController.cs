@@ -78,19 +78,9 @@ public class EnemyUnitController : Controller
 		// cache the playerController to pull from its registry
 		var playerController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(Enum.Phase.player);
 
-		// find initial target when there are no adversaries in one's AttackRange
-		Vector3 _oppositionCentroid = Vector3.zero;
-		foreach (var adv in playerController.activeRegistry) {
-			_oppositionCentroid += adv.gridPosition;
-		}
-		_oppositionCentroid /= (playerController.activeRegistry.Count);
-		Vector3Int oppositionCentroid = new Vector3Int(Mathf.RoundToInt(_oppositionCentroid.x),
-													   Mathf.RoundToInt(_oppositionCentroid.y),
-													   Mathf.RoundToInt(_oppositionCentroid.z));
-		oppositionCentroid = playerController.activeRegistry[0].gridPosition;
-
 		for (int i = 0; i < activeRegistry.Count; i++) {
 			Unit subject = (Unit)activeRegistry[i];
+			var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 			
 			// determine some order in which the enemies act
 			// target selection
@@ -99,30 +89,11 @@ public class EnemyUnitController : Controller
 			subject.UpdateThreatRange();
 
 			var targetPosition = GetTargetInAttackRange(subject, playerController.activeRegistry);
-			if (targetPosition == subject.gridPosition) targetPosition = oppositionCentroid;
+			if (targetPosition == -1*Vector3Int.one) targetPosition = GetClosestTarget(subject, playerController.activeRegistry);
 
 			// now that we have the target location, find all the "attackable" squares surrounding it
 			// then, select the optimal square to move into to perform your attack
-			Vector3Int optimalPosition = -1*Vector3Int.one;
-			float currMin = float.MaxValue;
-			//
-			//foreach (var attackablePos in targetPosition.Radiate(subject.attackReach)) {
-			foreach (var attackablePos in targetPosition.Radiate(subject.movementRange)) {
-				var currDis = (subject.gridPosition - attackablePos).magnitude;
-
-				// also, enforce some global rules. No unit can stand in the same
-				// place as another, not only if they are considered obstacles
-				// for unoccupied: only check vacancy if you're not the one there ;)
-				var grid = GameManager.inst.tacticsManager.GetActiveGrid();
-				var inBounds   = grid.IsInBounds(attackablePos);
-				var unoccupied = (currDis == 0f) ? true : grid.VacantAt(attackablePos);
-
-				if (inBounds && unoccupied && currDis < currMin) {
-					optimalPosition = attackablePos;
-					currMin = currDis;
-				}
-			}
-			Debug.Log($"{this} found opt {optimalPosition} to attack {targetPosition}, reach {subject.attackReach}");
+			var optimalPosition = GetOptimalToAttack(subject, targetPosition);
 
 			if (subject.OptionActive("Move") && optimalPosition != subject.gridPosition) {
 				// now, find a full path to the location
@@ -137,8 +108,11 @@ public class EnemyUnitController : Controller
 				while (subject.IsMoving()) { yield return null; }
 			}
 
-			if (subject.OptionActive("Attack")) {
+			if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, targetPosition)) {
+				var unitAt = (Unit)grid.OccupantAt(targetPosition);
+				subject.Attack(unitAt);
 				//
+				subject.SetOption("Attack", false);
 			}
 
 			// finally:
@@ -154,21 +128,41 @@ public class EnemyUnitController : Controller
 	}
 
 	private Vector3Int GetTargetInAttackRange(Unit subject, List<MovingObject> targets) {
-		// for right now, let's just attack the closest
-		Vector3Int finalTarget = subject.gridPosition;
+		var attackTargets = targets.FindAll(it => subject.attackRange.field.ContainsKey(it.gridPosition));
+		return (attackTargets.Any()) ? GetClosestTarget(subject, attackTargets) : -1*Vector3Int.one;
+	}
 
-		foreach (var target in targets) {
-			if (subject.attackRange.field.ContainsKey(target.gridPosition)) {
-				if (finalTarget == subject.gridPosition) {
-					finalTarget = target.gridPosition;
-					break;
-				}
-				var targetDistance = (subject.gridPosition - target.gridPosition).magnitude;
-				if (targetDistance < (subject.gridPosition - finalTarget).magnitude) {
-					finalTarget = target.gridPosition;
-				}
-			}
+	private Vector3Int GetClosestTarget(Unit subject, List<MovingObject> targets) {
+		var minDist = targets.Min(it => (subject.gridPosition - it.gridPosition).magnitude);
+		return targets.First(it => (subject.gridPosition - it.gridPosition).magnitude == minDist).gridPosition;
+	}
+
+	private Vector3Int GetOptimalToAttack(Unit subject, Vector3Int targetPosition) {
+		bool Traversable(Vector3Int v) { return grid.IsInBounds(v) && (grid.VacantAt(v) || v == subject.gridPosition); }
+		float DistToTarget(Vector3Int v) { return targetPosition.ManhattanDistance(v); }
+		float DistToSubject(Vector3Int v) { return subject.gridPosition.ManhattanDistance(v); }
+		// util
+
+		// max allowable attack positions (max range/reach)
+		var targetable = targetPosition.Radiate(subject.attackReach).Where(it => Traversable(it));
+		float maxDistWithin = targetable.Max(it => DistToTarget(it));
+		var atMaxDist = targetable.Where(it => DistToTarget(it) == maxDistWithin);
+
+		// the closest of those to the acting subject
+		float minDistSubject = atMaxDist.Min(it => DistToSubject(it));
+		var optimalPosition = atMaxDist.First(it => DistToSubject(it) == minDistSubject);
+		return optimalPosition;
+	}
+
+	private Vector3Int GetControllerCentroid(Controller controller) {
+		Vector3 _oppositionCentroid = Vector3.zero;
+		foreach (var adv in controller.activeRegistry) {
+			_oppositionCentroid += adv.gridPosition;
 		}
-		return finalTarget;
+		_oppositionCentroid /= (controller.activeRegistry.Count);
+		Vector3Int oppositionCentroid = new Vector3Int(Mathf.RoundToInt(_oppositionCentroid.x),
+													   Mathf.RoundToInt(_oppositionCentroid.y),
+													   Mathf.RoundToInt(_oppositionCentroid.z));
+		return oppositionCentroid;
 	}
 }

@@ -46,6 +46,7 @@ public class Battle : MonoBehaviour
 
 	public void StartBattleOnPhase(Enum.Phase startingPhase) {
 		GameManager.inst.phaseManager.StartPhase(startingPhase);
+		GetControllerFromPhase(startingPhase).TriggerPhase();
 		Debug.Log($"Starting battle on phase {startingPhase}");
 	}
 	

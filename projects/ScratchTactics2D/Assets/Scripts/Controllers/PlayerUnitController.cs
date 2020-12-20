@@ -51,16 +51,12 @@ public class PlayerUnitController : Controller
 				if (actionBindings.ContainsKey(kc)) actionBindings[kc]();
 
 				// if we've entered this state as a result of selecting a unit:
-				if (currentSelection) {
+				if (activeRegistry.Contains(currentSelection)) {
 					if (currentSelection.OptionActive("Move")) {
 						// overlay tile for movement selections
 						// constantly recalculate the shortest path to mouse via FlowField
 						// on mouse down, start a coroutine to move along the path
 						DrawValidMoveForSelection(currentSelection.moveRange);
-					}
-
-					if (currentSelection.OptionActive("Attack")) {
-						// draw attack-able squares
 					}
 				}
 
@@ -138,33 +134,42 @@ public class PlayerUnitController : Controller
 					break;
 				}
 
-				// if the mouseDown is on a valid square, move to it
-				if (currentSelection.OptionActive("Move") && currentSelection.moveRange.ValidMove(target)) {
-					currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
-					//
-					currentSelection.SetOption("Move", false);
-					currentSelection.OnDeselect();
-					currentSelectionFieldPath?.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
+				// OUR UNIT:
+				if (activeRegistry.Contains(currentSelection)) {
 
-					var mm = GameManager.inst.mouseManager;
-					grid.ResetSelectionAtAlternate(mm.prevMouseGridPos);
+					// if the mouseDown is on a valid square, move to it
+					if (currentSelection.OptionActive("Move") && currentSelection.moveRange.ValidMove(target)) {
+						currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
+						//
+						currentSelection.SetOption("Move", false);
+						currentSelection.OnDeselect();
+						currentSelectionFieldPath?.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
 
-					// dumb shenanigans: clear then re-select
-					StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
-						SelectUnit(currentSelection.gridPosition);
-					})); 
-					
-					//EndTurnSelectedUnit();
-					break;
+						var mm = GameManager.inst.mouseManager;
+						grid.ResetSelectionAtAlternate(mm.prevMouseGridPos);
+
+						// dumb shenanigans: clear then re-select
+						StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
+							SelectUnit(currentSelection.gridPosition);
+						})); 
+						
+						//EndTurnSelectedUnit();
+						break;
+					}
+
+					// if the mouseDown is on a valid attackable are (after moving)
+					if (currentSelection.OptionActive("Attack") && currentSelection.attackRange.ValidAttack(currentSelection, target)) {
+						AttackUnit(target);
+						currentSelection.SetOption("Attack", false);
+
+						EndTurnSelectedUnit();
+						break;
+					}
 				}
 
-				// if the mouseDown is on a valid attackable are (after moving)
-				if (currentSelection.OptionActive("Attack") && currentSelection.attackRange.ValidAttack(currentSelection, target)) {
-					AttackUnit(target);
-					currentSelection.SetOption("Attack", false);
-
-					EndTurnSelectedUnit();
-					break;
+				// NOT OUR UNIT
+				else {
+					Debug.Log("can't really do anything w/ a non-registered unit");
 				}
 
 				// default: Select someone else
@@ -180,8 +185,10 @@ public class PlayerUnitController : Controller
 
 		if (unitAt != null)
 			Debug.Log($"trying to select {unitAt}, options active?: {unitAt.AnyOptionActive()}");
+		if (unitAt == null) return false;
 
-		if (activeRegistry.Contains(unitAt) && unitAt.AnyOptionActive()) {
+		// if this is any unit at all:
+		if (unitAt.AnyOptionActive()) {
 			// deselect current and select the new
 			if (currentSelection != null) {
 				currentSelection.OnDeselect();
@@ -190,7 +197,7 @@ public class PlayerUnitController : Controller
 			currentSelection.OnSelect();
 		}
 
-		return currentSelection != null && currentSelection == unitAt;
+		return currentSelection == unitAt;
 	}
 
 	private void ClearSelection() {
