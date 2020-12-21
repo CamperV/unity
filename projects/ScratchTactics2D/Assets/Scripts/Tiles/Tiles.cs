@@ -20,6 +20,9 @@ public abstract class WorldTile : GameTile
 
 	// reserved for tiles that have visual depth, ie mountains
 	public virtual int depth { get { return 0; } }
+
+	// used for determining movement through terrain, and "how long" it takes
+	public virtual int tickCost { get { return 100; } }
 	
 	// utility methods for getting specific worldtile sprites
 	public List<Sprite> sprites;

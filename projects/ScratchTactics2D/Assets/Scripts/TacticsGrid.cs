@@ -21,6 +21,8 @@ public class TacticsGrid : GameGrid
 		tileOptions = new Dictionary<Type, TacticsTile>() {
 			[typeof(GrassWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
 			[typeof(RoadWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
+			[typeof(WaterWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
+			[typeof(WaterRoadWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
 			[typeof(MountainWorldTile)] = ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile,
 			[typeof(MountainRoadWorldTile)] = ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile
 		};
