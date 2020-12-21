@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 public class OverworldEnemySkeleton : OverworldEnemyBase
 {	
 	public override int detectionRange { get { return 3; } }
-	public override HashSet<Type> untraversable {
+	public override HashSet<Type> unspawnable {
 		get {
 			return new HashSet<Type>() { typeof(WaterWorldTile), typeof(MountainWorldTile) };
 		}

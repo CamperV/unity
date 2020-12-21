@@ -5,6 +5,8 @@ using UnityEngine;
 
 public abstract class MovingObject : MonoBehaviour
 {	
+	public virtual float moveSpeed { get { return 1.0f; } }
+
 	private Vector3Int _gridPosition;
 	[HideInInspector] public Vector3Int gridPosition {
 		get {

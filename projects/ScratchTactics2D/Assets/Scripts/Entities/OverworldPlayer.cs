@@ -5,10 +5,8 @@ using UnityEngine;
 
 public class OverworldPlayer : OverworldEntity
 {
+	public override float moveSpeed { get { return 2.0f; } }
 	private Queue<Vector3Int> movementQueue;
-	
-	public int moveSpeed = 1;
-	public int pathRange = Int32.MaxValue;
 	
 	// abstract implementations
 	public override List<string> defaultUnitTags {

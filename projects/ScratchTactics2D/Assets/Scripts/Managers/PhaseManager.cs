@@ -66,7 +66,6 @@ public class PhaseManager : MonoBehaviour
 				// after a phase has ended, use the controlled opportunity here
 				// to potentially destroy the battle. Check if a side won
 				if (!activeController.activeRegistry.Any()) {
-					Debug.Log("{activeController} has no units left, destroy battle");
 					var defeated = battle.GetOverworldEntityFromPhase(currentPhase);
 					GameManager.inst.tacticsManager.ResolveActiveBattle(defeated);
 					return; // jump out of the update loop early

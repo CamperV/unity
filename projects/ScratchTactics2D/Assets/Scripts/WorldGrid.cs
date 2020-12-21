@@ -94,7 +94,7 @@ public class WorldGrid : GameGrid
 			x = Random.Range(0, mapDimensionX);
 			y = Random.Range(0, mapDimensionY);
 			retVal = new Vector3Int(x, y, 0);
-		} while (except.Contains(GetTileAt(retVal).GetType()));
+		} while (!VacantAt(retVal) || except.Contains(GetTileAt(retVal).GetType()));
 		return retVal;
 	}
 	

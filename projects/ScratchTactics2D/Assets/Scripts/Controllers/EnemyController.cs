@@ -7,6 +7,8 @@ public class EnemyController : Controller
 {
 	// flags 
 	private bool subjectsActingTrigger;
+	private bool keepPhaseAlive;
+	private bool crtActing;
 
 	public Vector3Int lastKnownPlayerPos;
 	public Vector3Int playerPosLastTurn;
@@ -20,11 +22,14 @@ public class EnemyController : Controller
 		//
 		myPhase = Enum.Phase.enemy;
 		subjectsActingTrigger = false;
+		keepPhaseAlive = false;
+		crtActing = false;
 		flowFieldToPlayer = new FlowField();
     }
 
 	public override bool MyPhaseActive() {
-		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.overworld;
+		return GameManager.inst.phaseManager.currentPhase == myPhase &&
+			   GameManager.inst.gameState == Enum.GameState.overworld;
 	}
 
     void Update() {
@@ -48,7 +53,17 @@ public class EnemyController : Controller
 				break;
 				
 			case Enum.PhaseActionState.acting:
-				// do nothing until finished acting
+				// only end the phase if there are no available options to activated enemies
+				if (!crtActing) {
+					if (keepPhaseAlive) {
+						keepPhaseAlive = false;
+
+						// start anew
+						TriggerPhase();
+					} else {
+						phaseActionState = Enum.PhaseActionState.complete;
+					}
+				}
 				break;
 				
 			case Enum.PhaseActionState.complete:
@@ -70,6 +85,11 @@ public class EnemyController : Controller
 	}
 	
 	public IEnumerator SubjectsTakeAction() {
+		// use this bool to determine whether or not to start the phase over again
+		// this allows all enemies to spend out their ticks properly
+		keepPhaseAlive = false;
+		crtActing = true;
+
 		for (int i = 0; i < activeRegistry.Count; i++) {
 			OverworldEnemyBase subject = (OverworldEnemyBase)activeRegistry[i];
 			
@@ -83,21 +103,24 @@ public class EnemyController : Controller
 						subject.TakeIdleAction();
 					}
 					break;
-					
+				
+				// this state requires ticks to function
+				// tickpool is managed in the subject class, but we can tell it to keep moving here
 				case Enum.EnemyState.followField:
-					subject.FollowField(flowFieldToPlayer, GameManager.inst.player);
+					keepPhaseAlive |= subject.FollowField(flowFieldToPlayer, GameManager.inst.player);
 					break;
 			}
 			
-			// don't delay if you're the last
+			// don't delay if you're the last/idle
 			if (i == activeRegistry.Count-1 || subject.state == Enum.EnemyState.idle) {
 				yield return null;
 			} else {
 				yield return new WaitForSeconds(phaseDelayTime);
 			}
 		}
-		
-		phaseActionState = Enum.PhaseActionState.complete;
+
+		if (keepPhaseAlive) yield return new WaitForSeconds(phaseDelayTime*10);
+		crtActing = false;
 	}
 		
 	public bool HasPlayerMoved() {
@@ -108,7 +131,7 @@ public class EnemyController : Controller
 		// traversable is a hash set of all tiles that we can draw a flowfield on
 		// this method will check tile types to see if they're traversable
 		// it will also grow the tiles from subject placements, such that any
-		// "island" that is untraversable around, but traversable inside, will be eliminated
+		// "island" that is unspawnable around, but traversable inside, will be eliminated
 		traversable.Clear();
 		
 		// for each subject, grow a region to create traversable
@@ -125,13 +148,11 @@ public class EnemyController : Controller
 				
 				// will return in-bounds neighbors
 				// if: we've never seen them before
-				// if: they are not untraversable
+				// if: they are not unspawnable
 				foreach (Vector3Int adjacent in GameManager.inst.worldGrid.GetNeighbors(currentPos)) {
 					if (traversable.Contains(adjacent))
 						continue;
-					if (enemy.untraversable.Contains(GameManager.inst.GetActiveGrid().GetTileAt(adjacent).GetType()))
-						continue;
-					
+
 					traversable.Add(adjacent);
 					queue.Enqueue(adjacent);
 				}
@@ -174,5 +195,14 @@ public class EnemyController : Controller
 		}
 		
 		return false;
+	}
+
+	public void AddTicksAll(int ticks) {
+		// (implicitly re-box cast)
+		foreach (OverworldEnemyBase en in activeRegistry) {
+			if (en.state != Enum.EnemyState.idle) {
+				en.AddTicks(ticks);
+			}
+		}
 	}
 }

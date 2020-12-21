@@ -12,6 +12,9 @@ public abstract class GameTile : Tile
 
 public abstract class WorldTile : GameTile
 {
+	public static readonly int baseTileCost = 100;
+	public override int cost { get { return 100; } }
+
 	// returns a probability from 0-99 that this tile is generated
 	public virtual int probability { get { return 0; } }
 	
@@ -20,9 +23,6 @@ public abstract class WorldTile : GameTile
 
 	// reserved for tiles that have visual depth, ie mountains
 	public virtual int depth { get { return 0; } }
-
-	// used for determining movement through terrain, and "how long" it takes
-	public virtual int tickCost { get { return 100; } }
 	
 	// utility methods for getting specific worldtile sprites
 	public List<Sprite> sprites;

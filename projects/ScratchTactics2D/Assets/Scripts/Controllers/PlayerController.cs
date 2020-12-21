@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerController : Controller
 {
 	// possible actions for Player and their bindings
-	private Dictionary<KeyCode, Action<MovingObject>> actionBindings = new Dictionary<KeyCode, Action<MovingObject>>();
+	private Dictionary<KeyCode, Func<MovingObject, int>> actionBindings = new Dictionary<KeyCode, Func<MovingObject, int>>();
 	
 	void Awake() {
 		base.Awake();
@@ -65,18 +65,40 @@ public class PlayerController : Controller
 		return KeyCode.None;
 	}
 	
-	private IEnumerator SubjectsTakeAction(Action<MovingObject> action) {
+	private IEnumerator SubjectsTakeAction(Func<MovingObject, int> action) {
 		foreach (var subject in activeRegistry) {
-			action(subject);
+			// we've taken an action... but what did it cost
+			int ticksTaken = action(subject);
+			//
+			GameManager.inst.enemyController.AddTicksAll(ticksTaken);
 			yield return new WaitForSeconds(phaseDelayTime);
 		}
 		
 		phaseActionState = Enum.PhaseActionState.complete;
 	}
 
-	private void MoveLeft(MovingObject subject) 	{ subject.GridMove(-1, 0); }
-	private void MoveRight(MovingObject subject) 	{ subject.GridMove(1, 0); }
-	private void MoveUp(MovingObject subject) 		{ subject.GridMove(0, 1); }
-	private void MoveDown(MovingObject subject) 	{ subject.GridMove(0, -1); }
-	private void Pass(MovingObject subject) 		{ return; }
+	// these Funcs return the cost of taking said actions
+	private int MoveLeft(MovingObject subject) {
+		var success = subject.GridMove(-1, 0);
+		var tickCost = GameManager.inst.worldGrid.GetTileAt(subject.gridPosition).cost;
+		return (success) ? (int)(tickCost / subject.moveSpeed) : 100;
+	}
+	private int MoveRight(MovingObject subject) {
+		var success = subject.GridMove(1, 0);
+		var tickCost = GameManager.inst.worldGrid.GetTileAt(subject.gridPosition).cost;
+		return (success) ? (int)(tickCost / subject.moveSpeed) : 100;
+	}
+	private int MoveUp(MovingObject subject) {
+		var success = subject.GridMove(0, 1);
+		var tickCost = GameManager.inst.worldGrid.GetTileAt(subject.gridPosition).cost;
+		return (success) ? (int)(tickCost / subject.moveSpeed) : 100;
+	}
+	private int MoveDown(MovingObject subject) {
+		var success = subject.GridMove(0, -1);
+		var tickCost = GameManager.inst.worldGrid.GetTileAt(subject.gridPosition).cost;
+		return (success) ? (int)(tickCost / subject.moveSpeed) : 100;
+	}
+	private int Pass(MovingObject subject) {
+		return 100;
+	}
 }

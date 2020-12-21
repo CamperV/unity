@@ -1,38 +1,49 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Extensions;
 
 public class OverworldEnemyBase : OverworldEntity
 {
 	// OVERRIDABLES
-	public virtual int moveSpeed { get { return 1; } }
-	public virtual int pathRange { get { return 50; } }
 	public virtual int detectionRange { get { return 5; } }
-	public virtual HashSet<Type> untraversable {
+	public virtual HashSet<Type> unspawnable {
 		get {
 			return new HashSet<Type>() { typeof(MountainWorldTile) };
 		}
 	}
 	// OVERRIDABLES
-	//
+
+	// OverworldEneies have a special property: tickPool
+	// when the OverworldPlayer moves, they add ticks to all active entities controlled by EnemyController
+	// the enemies must check their pool for when they want to move. This will allow enemies to sometimes move
+	// multiple times in reference to the player - likewise, the player can move morethan once before an
+	// enemy can theoretically move
+	private int tickPool { get; set; }
 	
 	public Enum.EnemyState state;
 	public MovingObjectPath pathToPlayer; // use to cache and not recalculate every frame	
 	
-	// will never spawn into an untraversable tile
+	// will never spawn into an unspawnable tile
 	public static OverworldEnemyBase Spawn(OverworldEnemyBase prefab) {
 		OverworldEnemyBase enemy = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-		Vector3 spawnLoc = GameManager.inst.worldGrid.RandomTileExceptTypeReal(enemy.untraversable);
+		var grid = GameManager.inst.worldGrid;
+		
+		// this will auto-check occupancy
+		Vector3 spawnLoc = grid.RandomTileExceptTypeReal(enemy.unspawnable);
 		//
-		enemy.ResetPosition(GameManager.inst.worldGrid.Real2GridPos(spawnLoc));
-		GameManager.inst.worldGrid.UpdateOccupantAt(enemy.gridPosition, enemy);
+		enemy.ResetPosition(grid.Real2GridPos(spawnLoc));
+		grid.UpdateOccupantAt(enemy.gridPosition, enemy);
 		return enemy;
 	}
 	
     void Awake() {
 		base.Awake();
+		//
+		tickPool = 0;
     }
 	
     protected void Start() {
@@ -44,11 +55,24 @@ public class OverworldEnemyBase : OverworldEntity
 	}
 	
 	public bool InDetectionRange(FlowField flowField) {
+		/*
 		if (flowField.field.ContainsKey(gridPosition)) {
-			return flowField.field[gridPosition] <= detectionRange;
+			return flowField.field[gridPosition] <= (detectionRange * WorldTile.baseTileCost);
 		} else {
 			return false;
 		}
+		*/
+		return gridPosition.ManhattanDistance(flowField.origin) <= detectionRange;
+	}
+
+	public void AddTicks(int ticks) {
+		tickPool += ticks;
+		Debug.Log($"{this} received {ticks} ticks [{tickPool}]");
+	}
+
+	protected void SpendTicks(int ticks) {
+		tickPool -= (int)(ticks / moveSpeed);
+		Debug.Log($"{this} spent {ticks} [{tickPool}]");
 	}
 	
 	public bool FollowField(FlowField flowField, Component target) {		
@@ -58,6 +82,7 @@ public class OverworldEnemyBase : OverworldEntity
 			gridPosition + Vector3Int.down,		// S
 			gridPosition + Vector3Int.left		// W
 		};
+		var grid = GameManager.inst.worldGrid;
 		
 		// don't move until within detection range
 		int minCost = flowField.field[gridPosition];
@@ -67,9 +92,9 @@ public class OverworldEnemyBase : OverworldEntity
 		// if move remains unselected, remain still (.zero)
 		foreach(Vector3Int move in potentialMoves) {
 			// either check the tag or type of occupant
-			// this check allows enemies to "move" into untraversables
+			// this check allows enemies to "move" into unspawnables
 			// only if they have a Player in them
-			var occupant = GameManager.inst.worldGrid.OccupantAt(move);
+			var occupant = grid.OccupantAt(move);
 			if (occupant != null) {
 				if(occupant.GetType() == target.GetType()) {
 					selectedMove = move;
@@ -88,9 +113,24 @@ public class OverworldEnemyBase : OverworldEntity
 			}
 		}
 		
-		Vector3Int nextStep = ToPosition(selectedMove, moveSpeed);
-		var moveSuccess = GridMove(nextStep.x, nextStep.y);
+		// here, we check to see if we can even make this move (point pool)
+		// NOTE: it's important that we select our move before checking if we can move
+		// if we don't, you might have a little back and forth on a road
+		//
+		// Also, standardize the "attack" bump. Don't make them move into a square
+		bool moveSuccess = false;
+		var tickCost = (selectedMove == flowField.origin) ? 100 : grid.GetTileAt(selectedMove).cost;
 		
+		if (tickPool > 0 && tickCost <= tickPool) {
+			Vector3Int nextStep = ToPosition(selectedMove, 1);
+			moveSuccess = GridMove(nextStep.x, nextStep.y);
+			//
+			SpendTicks(tickCost);
+		}
+		
+		// return var is used to send a keepAlive signal to the phase
+		// if you've depleted your pool, send a false
+		// if you were able to move and the pool is not depleted, keep it alive
 		return moveSuccess;
 	}
 	

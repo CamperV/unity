@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class GrassWorldTile : WorldTile
 {
+	public override int cost { get { return 150; } }
 	public override int probability { get { return 85; } }
 	
 	public void OnEnable() {
@@ -18,6 +19,8 @@ public class GrassWorldTile : WorldTile
 
 public class DirtWorldTile : WorldTile
 {
+	public override int cost { get { return 150; } }
+
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetSprite("dirt_tile")
@@ -28,8 +31,8 @@ public class DirtWorldTile : WorldTile
 
 public class WaterWorldTile : WorldTile
 {
-	public override int cost { get { return 2; } }
 	public override int probability { get { return 2; } }
+	public override int cost { get { return 300; } }
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -41,9 +44,9 @@ public class WaterWorldTile : WorldTile
 
 public class MountainWorldTile : WorldTile
 {	
-	public override int cost { get { return 10; } }
 	public override int probability { get { return 13; } }
 	public override int depth { get { return 1; } }
+	public override int cost { get { return 400; } }
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -73,6 +76,8 @@ public class CloudWorldTile : WorldTile
 
 public class RoadWorldTile : WorldTile
 {
+	public override int cost { get { return 100; } }
+
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_0"),
