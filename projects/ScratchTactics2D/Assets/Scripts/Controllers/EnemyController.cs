@@ -17,7 +17,7 @@ public class EnemyController : Controller
 	public HashSet<Vector3Int> traversable = new HashSet<Vector3Int>();
 	public HashSet<Vector3Int> currentEnemyPositions = new HashSet<Vector3Int>();
 
-	void Awake() {
+	protected override void Awake() {
 		base.Awake();
 		//
 		myPhase = Enum.Phase.enemy;
@@ -79,7 +79,7 @@ public class EnemyController : Controller
     }
 	
 	// overrides base
-	public void TriggerPhase() {
+	public override void TriggerPhase() {
 		base.TriggerPhase();
 		subjectsActingTrigger = true;
 	}

@@ -15,19 +15,20 @@ public class WorldGrid : GameGrid
 	
 	private Canvas tintCanvas;
 	
-	void Awake() {
+	protected override void Awake() {
 		base.Awake();
 		
 		// tileOptions determine probability order as well
 		// so when WorldGrid is generated, it will check if the tile is:
 		//  grass first, then dirt, then water, then mountain
 		tileOptions = new List<WorldTile>{
-			ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile,
-			ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile,
-			ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile,
-			ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile
+			(ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile),
+			(ScriptableObject.CreateInstance<ForestWorldTile>() as ForestWorldTile),
+			(ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile),
+			(ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile),
+			(ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile)
 		};
-		selectTile = ScriptableObject.CreateInstance<SelectOverlayTile>() as SelectOverlayTile;
+		selectTile = (ScriptableObject.CreateInstance<SelectOverlayTile>() as SelectOverlayTile);
 		
 		worldTileGrid = new Dictionary<Vector3Int, WorldTile>();
 		
@@ -75,15 +76,7 @@ public class WorldGrid : GameGrid
 	public void SetAppropriateTile(Vector3Int tilePos, WorldTile tile) {	
 		// set in the WorldTile dictionary for easy path cost lookup
 		worldTileGrid[tilePos] = tile;
-		
-		switch (tile.depth) {
-			case 0:			
-				baseTilemap.SetTile(tilePos, tile);
-				break;
-			case 1:			
-				depthTilemap.SetTile(tilePos, tile);
-				break;
-		}
+		baseTilemap.SetTile(tilePos, tile);
 	}
 	
 	public Vector3Int RandomTileExceptType(HashSet<Type> except) {
@@ -114,14 +107,10 @@ public class WorldGrid : GameGrid
 		}
 	}
 	
-	public void TintTile(Vector3Int tilePos, Color color) {
+	public override void TintTile(Vector3Int tilePos, Color color) {
 		if (baseTilemap.GetTile(tilePos) != null) {
 			baseTilemap.SetTileFlags(tilePos, TileFlags.None);
 			baseTilemap.SetColor(tilePos, color);
-			return;
-		} else if (depthTilemap.GetTile(tilePos) != null){
-			depthTilemap.SetTileFlags(tilePos, TileFlags.None);
-			depthTilemap.SetColor(tilePos, color);
 			return;
 		} else {
 			Debug.Log("Not a valid Tint target");
@@ -129,7 +118,7 @@ public class WorldGrid : GameGrid
 		}
 	}
 	
-	public void ResetTintTile(Vector3Int tilePos) {
+	public override void ResetTintTile(Vector3Int tilePos) {
 		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
 		baseTilemap.SetColor(tilePos, new Color(1, 1, 1, 1));
 	}
@@ -141,10 +130,12 @@ public class WorldGrid : GameGrid
 	public void GenerateWorld() {	
 		baseTilemap.ClearAllTiles();
 		int[,] mapMatrix = GenerateMapMatrix();
-		
+		Debug.Log($"basedTilemap og: {baseTilemap.origin}");
+
 		ApplyMap(mapMatrix);
 		LinkMountainRanges(mapMatrix);
-		CreateLakes(mapMatrix);
+		CreateLakes(mapMatrix, 1, 3, 7); // forest tile index
+		CreateLakes(mapMatrix, 2); // water tile index
 		CreateRoad();
 		CreateTintBuffer(mapMatrix);
 		
@@ -181,7 +172,7 @@ public class WorldGrid : GameGrid
 		
 		return mapMatrix;
 	}
-	
+
 	private void ApplyMap(int[,] mapMatrix) {
 		var currentPos = baseTilemap.origin;
 
@@ -189,7 +180,8 @@ public class WorldGrid : GameGrid
 			for (int y = 0; y < mapMatrix.GetLength(1); y++) {
 				
 				var tileChoice = tileOptions[mapMatrix[x, y]];
-				SetAppropriateTile(currentPos, tileChoice);
+				var tilePos = new Vector3Int(currentPos.x, currentPos.y, tileChoice.depth);
+				SetAppropriateTile(tilePos, tileChoice);
 				
 				currentPos = new Vector3Int(currentPos.x,
 											(int)(currentPos.y+baseTilemap.cellSize.y),
@@ -225,9 +217,9 @@ public class WorldGrid : GameGrid
 		}
 	}
 	
-	private void CreateLakes(int[,] mapMatrix) {
+	private void CreateLakes(int[,] mapMatrix, int lakeType, int lowerBound = 4, int upperBound = 9) {
 		// choose random grass points to make into lakes
-		List<Vector3Int> posList = PositionsOfType(mapMatrix, 2);	// water
+		List<Vector3Int> posList = PositionsOfType(mapMatrix, lakeType);	// water=2
 		
 		// TODO: this can be faster for sure
 		HashSet<Vector3Int> nonMountains = new HashSet<Vector3Int>();
@@ -239,13 +231,13 @@ public class WorldGrid : GameGrid
 
 		// flood fill each of these areas with randomized tile counts
 		foreach(Vector3Int lakeOrigin in posList) {
-			int lakeRange = Random.Range(5, 11);
-			int lakeSize = Random.Range(5, 11);
+			int lakeRange = Random.Range(lowerBound, upperBound);
+			int lakeSize = Random.Range(lowerBound, upperBound);
 			
-			FlowField fField = FlowField.FlowFieldFrom(lakeOrigin, nonMountains, range: lakeRange, numElements: lakeSize);
+			FlowField fField = FlowField.FlowFieldFrom(lakeOrigin, nonMountains, range: lakeRange*100, numElements: lakeSize);
 			
 			foreach(Vector3Int lakePos in fField.field.Keys) {
-				SetAppropriateTile(lakePos, tileOptions[2]);
+				SetAppropriateTile(lakePos, tileOptions[lakeType]);
 			}
 		}
 	}
@@ -297,6 +289,9 @@ public class WorldGrid : GameGrid
 				if (tileType == typeof(GrassWorldTile)) {
 					roadTile = GetPatternTile<RoadWorldTile>(pattern);
 				}
+				else if (tileType == typeof(ForestWorldTile)) {
+					roadTile = GetPatternTile<ForestRoadWorldTile>(pattern);
+				}				
 				else if (tileType == typeof(WaterWorldTile)) {
 					roadTile = GetPatternTile<WaterRoadWorldTile>(pattern);
 				}
@@ -331,7 +326,7 @@ public class WorldGrid : GameGrid
 				}
 				
 				// set the WorldTile in the actual tilemap
-				baseTilemap.SetTile(new Vector3Int(x, y, 0), tileChoice);
+				baseTilemap.SetTile(new Vector3Int(x, y, tileChoice.depth), tileChoice);
 			}
 		}
 	}
@@ -347,8 +342,8 @@ public class WorldGrid : GameGrid
 				
 				// set the WorldTile in the actual tilemap
 				Vector3Int tilePos = new Vector3Int(x, y, 0);
-				depthTilemap.SetTile(tilePos, ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile);
-				
+				SetAppropriateTile(tilePos, tileOptions[3]);
+
 				if ((x >= -1 && x <= xUpper+1) && (y >= -1 && y <= yUpper+1)) {
 					TintTile(tilePos, new Color(.85f, .85f, .85f));
 				} else if ((x >= -2 && x <= xUpper+2) && (y >= -2 && y <= yUpper+2)) {

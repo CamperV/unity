@@ -11,19 +11,17 @@ public abstract class GameGrid : MonoBehaviour
 	public int mapDimensionY;
 	
 	[HideInInspector] public Tilemap baseTilemap;
-	[HideInInspector] public Tilemap depthTilemap;
 	[HideInInspector] public Tilemap overlayTilemap;
 	
 	private Dictionary<Vector3Int, Component> occupancyGrid;
 	//
 	
-	protected void Awake() {				
+	protected virtual void Awake() {				
 		// we have a Grid object which is actually attached
 		// the Tilemap is a child of the Grid object
 		var tilemapComponents = GetComponentsInChildren<Tilemap>();
 		baseTilemap    = tilemapComponents[0];
-		depthTilemap   = tilemapComponents[1];
-		overlayTilemap = tilemapComponents[2];
+		overlayTilemap = tilemapComponents[1];
 		
 		occupancyGrid = new Dictionary<Vector3Int, Component>();
 	}
@@ -122,14 +120,10 @@ public abstract class GameGrid : MonoBehaviour
 		tilemap.SetTile(tilePos, null);
 	}
 	
-	public void TintTile(Vector3Int tilePos, Color color) {
+	public virtual void TintTile(Vector3Int tilePos, Color color) {
 		if (baseTilemap.GetTile(tilePos) != null) {
 			baseTilemap.SetTileFlags(tilePos, TileFlags.None);
 			baseTilemap.SetColor(tilePos, color);
-			return;
-		} else if (depthTilemap.GetTile(tilePos) != null){
-			depthTilemap.SetTileFlags(tilePos, TileFlags.None);
-			depthTilemap.SetColor(tilePos, color);
 			return;
 		} else {
 			Debug.Log("Not a valid Tint target");
@@ -137,7 +131,7 @@ public abstract class GameGrid : MonoBehaviour
 		}
 	}
 	
-	public void ResetTintTile(Vector3Int tilePos) {
+	public virtual void ResetTintTile(Vector3Int tilePos) {
 		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
 		baseTilemap.SetColor(tilePos, Color.white);
 	}

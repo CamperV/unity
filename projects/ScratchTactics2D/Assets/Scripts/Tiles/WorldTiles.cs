@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 public class GrassWorldTile : WorldTile
 {
 	public override int cost { get { return 150; } }
-	public override int probability { get { return 85; } }
+	public override int probability { get { return 80; } }
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -29,10 +29,24 @@ public class DirtWorldTile : WorldTile
 	}
 }
 
+public class ForestWorldTile : WorldTile
+{
+	public override int probability { get { return 5; } }
+	public override int depth { get { return 1; } }
+	public override int cost { get { return 300; } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("dense_forest_tile")
+		};
+		sprite = sprites[0];
+	}
+}
+
 public class WaterWorldTile : WorldTile
 {
 	public override int probability { get { return 2; } }
-	public override int cost { get { return 300; } }
+	public override int cost { get { return 500; } }
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -45,8 +59,8 @@ public class WaterWorldTile : WorldTile
 public class MountainWorldTile : WorldTile
 {	
 	public override int probability { get { return 13; } }
-	public override int depth { get { return 1; } }
-	public override int cost { get { return 400; } }
+	public override int depth { get { return 2; } }
+	public override int cost { get { return 500; } }
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -136,6 +150,27 @@ public class WaterRoadWorldTile : WorldTile
 
 	public static WaterRoadWorldTile GetTileWithSprite(int spriteIndex) {
 		WaterRoadWorldTile wt = ScriptableObject.CreateInstance<WaterRoadWorldTile>() as WaterRoadWorldTile;
+		wt.SetSprite(spriteIndex);
+		return wt;
+	}
+}
+
+public class ForestRoadWorldTile : WorldTile
+{
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_0"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_1"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_2"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_3"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_4"),
+			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_5")		
+		};
+		sprite = sprites[0];
+	}
+
+	public static ForestRoadWorldTile GetTileWithSprite(int spriteIndex) {
+		ForestRoadWorldTile wt = ScriptableObject.CreateInstance<ForestRoadWorldTile>() as ForestRoadWorldTile;
 		wt.SetSprite(spriteIndex);
 		return wt;
 	}

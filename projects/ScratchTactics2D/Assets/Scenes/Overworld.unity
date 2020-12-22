@@ -420,8 +420,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b824d2c15c78d845ab1cf15109c0ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxEnemies: 12
-  minEnemies: 8
+  maxEnemies: 8
+  minEnemies: 6
   worldGridPrefab: {fileID: 6013225397290577684, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
   playerPrefab: {fileID: 5140243916379933852, guid: e378b7eb70c68894abdf51437ee7749a, type: 3}
   UIManagerPrefab: {fileID: 2771305699776815881, guid: 2a71c4ada3512f54781a5e3aa954e795, type: 3}

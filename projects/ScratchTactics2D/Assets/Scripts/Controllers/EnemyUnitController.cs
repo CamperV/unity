@@ -10,7 +10,7 @@ public class EnemyUnitController : Controller
 	private bool subjectsActingTrigger;
 	private TacticsGrid grid;
 	
-	void Awake() {
+	protected override void Awake() {
 		base.Awake();
 		myPhase = Enum.Phase.enemy;
 		grid = GameManager.inst.tacticsManager.GetActiveGrid();

@@ -8,7 +8,7 @@ public class PlayerController : Controller
 	// possible actions for Player and their bindings
 	private Dictionary<KeyCode, Func<MovingObject, int>> actionBindings = new Dictionary<KeyCode, Func<MovingObject, int>>();
 	
-	void Awake() {
+	protected override void Awake() {
 		base.Awake();
 		myPhase = Enum.Phase.player;
 		

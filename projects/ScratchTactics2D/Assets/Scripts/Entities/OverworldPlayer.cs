@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class OverworldPlayer : OverworldEntity
 {
-	public override float moveSpeed { get { return 2.0f; } }
+	public override float moveSpeed { get { return 1.0f; } }
 	private Queue<Vector3Int> movementQueue;
 	
 	// abstract implementations
@@ -29,7 +29,7 @@ public class OverworldPlayer : OverworldEntity
 		return player;
 	}
 
-    void Awake() {
+    protected override void Awake() {
 		base.Awake();
 		//
 		movementQueue = new Queue<Vector3Int>();

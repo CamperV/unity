@@ -13,7 +13,7 @@ public class Controller : PhasedObject
 		}
 	}
 
-	protected void Awake() {		
+	protected virtual void Awake() {		
 		registry = new List<MovingObject>();
     }
 	

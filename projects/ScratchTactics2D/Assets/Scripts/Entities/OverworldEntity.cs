@@ -15,7 +15,7 @@ public abstract class OverworldEntity : MovingObject
 	//
 	public virtual List<string> defaultUnitTags { get; }
 	
-	protected void Awake() {
+	protected virtual void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
 	}

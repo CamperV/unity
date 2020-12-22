@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
 		// these will have to "register" their subjects
 		playerController = Instantiate(playerControllerPrefab);
 		enemyController  = Instantiate(enemyControllerPrefab);
-		
+
 		// generate the world and spawn the player into it
 		worldGrid.GenerateWorld();
 		player = OverworldPlayer.Spawn(playerPrefab);
