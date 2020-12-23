@@ -12,7 +12,7 @@ public class TacticsGrid : GameGrid
 
 	private OverlayTile waypointOverlayTile;
 	
-    protected override void Awake() {
+    protected void Awake() {
 		base.Awake();
 		
 		// tileOptions determine probability order as well

@@ -15,7 +15,7 @@ public class WorldGrid : GameGrid
 	
 	private Canvas tintCanvas;
 	
-	protected override void Awake() {
+	void Awake() {
 		base.Awake();
 		
 		// tileOptions determine probability order as well
@@ -75,18 +75,24 @@ public class WorldGrid : GameGrid
 	
 	public void SetAppropriateTile(Vector3Int tilePos, WorldTile tile) {	
 		// set in the WorldTile dictionary for easy path cost lookup
+		Debug.Assert(tilePos.z == 0);
 		worldTileGrid[tilePos] = tile;
-		baseTilemap.SetTile(tilePos, tile);
+		//
+		var depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
+		baseTilemap.SetTile(depthPos, tile);
 	}
 	
 	public Vector3Int RandomTileExceptType(HashSet<Type> except) {
 		int x;
 		int y;
 		Vector3Int retVal;
+		Debug.Log($"except is valued: {except}");
 		do {
 			x = Random.Range(0, mapDimensionX);
 			y = Random.Range(0, mapDimensionY);
 			retVal = new Vector3Int(x, y, 0);
+			Debug.Log($"VA: {VacantAt(retVal)}, {retVal}");
+			Debug.Log($"GTA: {GetTileAt(retVal)}");
 		} while (!VacantAt(retVal) || except.Contains(GetTileAt(retVal).GetType()));
 		return retVal;
 	}
@@ -108,7 +114,9 @@ public class WorldGrid : GameGrid
 	}
 	
 	public override void TintTile(Vector3Int tilePos, Color color) {
-		if (baseTilemap.GetTile(tilePos) != null) {
+		var tile = worldTileGrid[tilePos];
+		var depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
+		if (baseTilemap.GetTile(depthPos) != null) {
 			baseTilemap.SetTileFlags(tilePos, TileFlags.None);
 			baseTilemap.SetColor(tilePos, color);
 			return;
@@ -134,8 +142,8 @@ public class WorldGrid : GameGrid
 
 		ApplyMap(mapMatrix);
 		LinkMountainRanges(mapMatrix);
-		CreateLakes(mapMatrix, 1, 3, 7); // forest tile index
-		CreateLakes(mapMatrix, 2); // water tile index
+		CreateLakes(mapMatrix, 1, 2, 5); // forest tile index
+		CreateLakes(mapMatrix, 2, 4, 10); // water tile index
 		CreateRoad();
 		CreateTintBuffer(mapMatrix);
 		
@@ -180,8 +188,7 @@ public class WorldGrid : GameGrid
 			for (int y = 0; y < mapMatrix.GetLength(1); y++) {
 				
 				var tileChoice = tileOptions[mapMatrix[x, y]];
-				var tilePos = new Vector3Int(currentPos.x, currentPos.y, tileChoice.depth);
-				SetAppropriateTile(tilePos, tileChoice);
+				SetAppropriateTile(currentPos, tileChoice);
 				
 				currentPos = new Vector3Int(currentPos.x,
 											(int)(currentPos.y+baseTilemap.cellSize.y),
@@ -215,6 +222,10 @@ public class WorldGrid : GameGrid
 				SetAppropriateTile(currPos, tileOptions[3]);
 			}
 		}
+	}
+
+	private void CreateMountainRanges(int[,] mapMatrix) {
+
 	}
 	
 	private void CreateLakes(int[,] mapMatrix, int lakeType, int lowerBound = 4, int upperBound = 9) {

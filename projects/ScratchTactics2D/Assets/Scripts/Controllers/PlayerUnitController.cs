@@ -16,7 +16,7 @@ public class PlayerUnitController : Controller
 
 	private Enum.InteractState interactState;
 	
-	protected override void Awake() {
+	protected void Awake() {
 		base.Awake();
 		myPhase = Enum.Phase.player;
 		grid = GameManager.inst.tacticsManager.GetActiveGrid();

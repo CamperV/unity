@@ -29,7 +29,7 @@ public class OverworldPlayer : OverworldEntity
 		return player;
 	}
 
-    protected override void Awake() {
+    protected void Awake() {
 		base.Awake();
 		//
 		movementQueue = new Queue<Vector3Int>();
