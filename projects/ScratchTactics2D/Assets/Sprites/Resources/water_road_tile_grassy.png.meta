@@ -1,25 +1,25 @@
 fileFormatVersion: 2
-guid: 4800afcabbb6ca942b2d4a4a6fb1305d
+guid: d0b771940eac3f44b9101870dd7e48ff
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 49040213241850203
-    second: water_road_tile_0
+      213: -469423846326259695
+    second: water_road_tile_grassy_0
   - first:
-      213: -6002954908156966021
-    second: water_road_tile_1
+      213: 1846525744820017597
+    second: water_road_tile_grassy_1
   - first:
-      213: -1113684324688718891
-    second: water_road_tile_2
+      213: -4963863695925401408
+    second: water_road_tile_grassy_2
   - first:
-      213: -93619856994296792
-    second: water_road_tile_3
+      213: -6137381105643248735
+    second: water_road_tile_grassy_3
   - first:
-      213: 5575041557487305996
-    second: water_road_tile_4
+      213: -934384621117647398
+    second: water_road_tile_grassy_4
   - first:
-      213: -518623714520540416
-    second: water_road_tile_5
+      213: 1566714374820623109
+    second: water_road_tile_grassy_5
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -73,6 +73,8 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
@@ -103,11 +105,23 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: water_road_tile_0
+      name: water_road_tile_grassy_0
       rect:
         serializedVersion: 2
         x: 0
@@ -121,14 +135,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b596df960d93ea000800000000000000
-      internalID: 49040213241850203
+      spriteID: 11030a6bf754c79f0800000000000000
+      internalID: -469423846326259695
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: water_road_tile_1
+      name: water_road_tile_grassy_1
       rect:
         serializedVersion: 2
         x: 32
@@ -142,14 +156,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b7bcd98e05831bca0800000000000000
-      internalID: -6002954908156966021
+      spriteID: db95c90b16d20a910800000000000000
+      internalID: 1846525744820017597
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: water_road_tile_2
+      name: water_road_tile_grassy_2
       rect:
         serializedVersion: 2
         x: 0
@@ -163,14 +177,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5d3120bd1066b80f0800000000000000
-      internalID: -1113684324688718891
+      spriteID: 0c8a8eaa440dc1bb0800000000000000
+      internalID: -4963863695925401408
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: water_road_tile_3
+      name: water_road_tile_grassy_3
       rect:
         serializedVersion: 2
         x: 32
@@ -184,14 +198,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 82c9eef6c3563bef0800000000000000
-      internalID: -93619856994296792
+      spriteID: 1a3a0f2d664a3daa0800000000000000
+      internalID: -6137381105643248735
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: water_road_tile_4
+      name: water_road_tile_grassy_4
       rect:
         serializedVersion: 2
         x: 0
@@ -205,14 +219,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c05421a32c68e5d40800000000000000
-      internalID: 5575041557487305996
+      spriteID: ad5d1be33266803f0800000000000000
+      internalID: -934384621117647398
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: water_road_tile_5
+      name: water_road_tile_grassy_5
       rect:
         serializedVersion: 2
         x: 32
@@ -226,8 +240,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 00bd8ebba7a7dc8f0800000000000000
-      internalID: -518623714520540416
+      spriteID: 5037eaf4c661eb510800000000000000
+      internalID: 1566714374820623109
       vertices: []
       indices: 
       edges: []

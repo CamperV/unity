@@ -76,8 +76,14 @@ public class WorldGrid : GameGrid
 	public void SetAppropriateTile(Vector3Int tilePos, WorldTile tile) {	
 		// set in the WorldTile dictionary for easy path cost lookup
 		Debug.Assert(tilePos.z == 0);
+
+		// if anything else is there, nullify it in the map first
+		// this will happen when replacing roads, etc
+		var nullDepth = ((WorldTile)GetTileAt(tilePos))?.depth ?? 0;
+		var nullPos = new Vector3Int(tilePos.x, tilePos.y, nullDepth);
+		baseTilemap.SetTile(nullPos, null);
+
 		worldTileGrid[tilePos] = tile;
-		//
 		var depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
 		baseTilemap.SetTile(depthPos, tile);
 	}
@@ -86,13 +92,10 @@ public class WorldGrid : GameGrid
 		int x;
 		int y;
 		Vector3Int retVal;
-		Debug.Log($"except is valued: {except}");
 		do {
 			x = Random.Range(0, mapDimensionX);
 			y = Random.Range(0, mapDimensionY);
 			retVal = new Vector3Int(x, y, 0);
-			Debug.Log($"VA: {VacantAt(retVal)}, {retVal}");
-			Debug.Log($"GTA: {GetTileAt(retVal)}");
 		} while (!VacantAt(retVal) || except.Contains(GetTileAt(retVal).GetType()));
 		return retVal;
 	}
@@ -138,12 +141,11 @@ public class WorldGrid : GameGrid
 	public void GenerateWorld() {	
 		baseTilemap.ClearAllTiles();
 		int[,] mapMatrix = GenerateMapMatrix();
-		Debug.Log($"basedTilemap og: {baseTilemap.origin}");
 
 		ApplyMap(mapMatrix);
 		LinkMountainRanges(mapMatrix);
 		CreateLakes(mapMatrix, 1, 2, 5); // forest tile index
-		CreateLakes(mapMatrix, 2, 4, 10); // water tile index
+		CreateLakes(mapMatrix, 2, 5, 10); // water tile index
 		CreateRoad();
 		CreateTintBuffer(mapMatrix);
 		

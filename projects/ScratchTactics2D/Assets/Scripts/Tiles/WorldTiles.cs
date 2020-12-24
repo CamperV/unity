@@ -32,12 +32,12 @@ public class DirtWorldTile : WorldTile
 public class ForestWorldTile : WorldTile
 {
 	public override int probability { get { return 5; } }
-	public override int depth { get { return 1; } }
+	public override int depth { get { return 2; } }
 	public override int cost { get { return 300; } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("dense_forest_tile")
+			ResourceLoader.GetSprite("full_forest_tile")
 		};
 		sprite = sprites[0];
 	}
@@ -113,7 +113,7 @@ public class RoadWorldTile : WorldTile
 
 public class MountainRoadWorldTile : WorldTile
 {
-	public override int depth { get { return 1; } }
+	public override int depth { get { return 2; } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -138,12 +138,12 @@ public class WaterRoadWorldTile : WorldTile
 {
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_0"),
-			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_1"),
-			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_2"),
-			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_3"),
-			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_4"),
-			ResourceLoader.GetMultiSprite("water_road_tile", "water_road_tile_5")			
+			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_0"),
+			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_1"),
+			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_2"),
+			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_3"),
+			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_4"),
+			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_5")			
 		};
 		sprite = sprites[0];
 	}
