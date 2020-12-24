@@ -24,6 +24,16 @@ public class ForestIsoTile : TacticsTile
 	}
 }
 
+public class WaterIsoTile : TacticsTile
+{
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("water_tile_iso")
+		};
+		sprite = sprites[0];
+	}
+}
+
 public class MountainIsoTile : TacticsTile
 {
 	public void OnEnable() {
