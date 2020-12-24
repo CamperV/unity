@@ -19,12 +19,14 @@ public class TacticsGrid : GameGrid
 		// so when Tactics is generated, it will check if the tile is:
 		//  grass first, then dirt, then water, then mountain
 		tileOptions = new Dictionary<Type, TacticsTile>() {
-			[typeof(GrassWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
-			[typeof(RoadWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
-			[typeof(WaterWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
-			[typeof(WaterRoadWorldTile)] = ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile,
-			[typeof(MountainWorldTile)] = ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile,
-			[typeof(MountainRoadWorldTile)] = ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile
+			[typeof(GrassWorldTile)] = (ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile),
+			[typeof(RoadWorldTile)] = (ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile),
+			[typeof(WaterWorldTile)] = (ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile),
+			[typeof(WaterRoadWorldTile)] = (ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile),
+			[typeof(ForestWorldTile)] = (ScriptableObject.CreateInstance<ForestIsoTile>() as ForestIsoTile),
+			[typeof(ForestRoadWorldTile)] = (ScriptableObject.CreateInstance<ForestIsoTile>() as ForestIsoTile),
+			[typeof(MountainWorldTile)] = (ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile),
+			[typeof(MountainRoadWorldTile)] = (ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile)
 		};
 		
 		tacticsTileGrid = new Dictionary<Vector3Int, TacticsTile>();

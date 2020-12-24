@@ -1,16 +1,25 @@
 fileFormatVersion: 2
-guid: 3fc349af2a28d9441b9fb2f5e16a7e41
+guid: 90996fde201c20e47a9fc5155c3ddb6b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1310282805105699020
-    second: path_overlay_iso_tile_0
+      213: -7676228780345405425
+    second: full_forest_road_tile_0
   - first:
-      213: -8096794882824412561
-    second: path_overlay_iso_tile_1
+      213: 7617157360351565951
+    second: full_forest_road_tile_1
   - first:
-      213: -6928734116366161750
-    second: path_overlay_iso_tile_2
+      213: 9112521089489965180
+    second: full_forest_road_tile_2
+  - first:
+      213: 6186501172204634007
+    second: full_forest_road_tile_3
+  - first:
+      213: -3767221810731314100
+    second: full_forest_road_tile_4
+  - first:
+      213: 6888006658553206807
+    second: full_forest_road_tile_5
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -55,7 +64,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -112,64 +121,127 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: path_overlay_iso_tile_0
+      name: full_forest_road_tile_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 64
-        width: 72
-        height: 64
-      alignment: 9
-      pivot: {x: 0.5138889, y: 0.5}
+        y: 96
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4375f5e1bb0f0dde0800000000000000
-      internalID: -1310282805105699020
+      spriteID: f00d1ec389e887590800000000000000
+      internalID: -7676228780345405425
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: path_overlay_iso_tile_1
+      name: full_forest_road_tile_1
       rect:
         serializedVersion: 2
-        x: 72
-        y: 64
-        width: 72
-        height: 64
-      alignment: 9
-      pivot: {x: 0.4861111, y: 0.484375}
+        x: 48
+        y: 96
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f62ec06e3f762af80800000000000000
-      internalID: -8096794882824412561
+      spriteID: f78d106034495b960800000000000000
+      internalID: 7617157360351565951
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: path_overlay_iso_tile_2
+      name: full_forest_road_tile_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c701e4396ad267e70800000000000000
+      internalID: 9112521089489965180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: full_forest_road_tile_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 48
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79f7bc3e90edad550800000000000000
+      internalID: 6186501172204634007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: full_forest_road_tile_4
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 72
-        height: 64
+        width: 48
+        height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aa86ddaf70138df90800000000000000
-      internalID: -6928734116366161750
+      spriteID: c44914509b328bbc0800000000000000
+      internalID: -3767221810731314100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: full_forest_road_tile_5
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 718d69dcf8d179f50800000000000000
+      internalID: 6888006658553206807
       vertices: []
       indices: 
       edges: []
