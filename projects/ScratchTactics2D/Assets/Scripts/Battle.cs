@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Extensions;
 
 public class Battle : MonoBehaviour
 {
 	private Dictionary<OverworldEntity, Controller> activeControllers;
+	private Dictionary<Controller, OverworldEntity> activeParticipants;
 	//
 	public Controller defaultControllerPrefab;
 	[HideInInspector] public Controller defaultController;
 	//
 	[HideInInspector] public List<OverworldEntity> worldParticipants;
-	[HideInInspector] public List<Unit> activeUnits;
 	[HideInInspector] public TacticsGrid grid;
 	//
 	[HideInInspector] public int currentTurn;
@@ -25,6 +26,8 @@ public class Battle : MonoBehaviour
 		activeControllers = new Dictionary<OverworldEntity, Controller>();
 		defaultController = Instantiate(defaultControllerPrefab);
 		defaultController.transform.parent = this.transform;
+
+		activeParticipants = new Dictionary<Controller, OverworldEntity>();
 	}
 	
 	public void Init(List<OverworldEntity> participants, List<WorldTile> tiles) {
@@ -33,11 +36,17 @@ public class Battle : MonoBehaviour
 		PopulateGridAndReposition(tiles);
 		//
 		// register controllers for units to be registered to
+		// we fully re-instantiate controllers each time. Including the player
+		// we don't necessarily want OverworldEntities to have unit controllers outside of a battle
+		// we do, however, need to keep track of the current units available to each entity better
 		foreach (OverworldEntity participant in worldParticipants) {
 			var prefab = participant.unitControllerPrefab;
 			if (prefab != null) {
-				activeControllers[participant] = Instantiate(prefab);
-				activeControllers[participant].transform.parent = this.transform;
+				var controller = Instantiate(prefab);
+				controller.transform.parent = this.transform;
+
+				activeControllers[participant] = controller;
+				activeParticipants[controller] = participant;
 			}
 		}
 		//
@@ -107,25 +116,29 @@ public class Battle : MonoBehaviour
 		var playerSpawnZone = spawnZones[0];
 		var otherSpawnZone  = spawnZones[1];
 		
-		// LoadUnitsByTag will look up if an appropriate prefab has already been loaded from the Resources folder
-		// if it has, it will instantiate it. If not, it will load first	
-		var pUnits = player.LoadUnitsByTag(player.defaultUnitTags);
-		var oUnits = other.LoadUnitsByTag(other.defaultUnitTags);
-		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
-		var playerSpawnPositions = Utils.RandomSelections<Vector3Int>(playerSpawnZone, pUnits.Count);
-		for (int i=0; i<pUnits.Count; i++) {
-			Unit unit = (Unit)TacticsEntityBase.Spawn(pUnits[i], playerSpawnPositions[i], grid);
+		var playerSpawnPositions = Utils.RandomSelections<Vector3Int>(playerSpawnZone, player.barracks.Count);
+
+		// the player will maintain a barracks of units
+		// the player has reference to each prefab needed, so we instantiate a prefab here
+		// then apply the actual relevant stats
+		foreach (UnitStats unitStats in player.barracks.Values) {
+			var uPrefab = player.LoadUnitByTag(unitStats.unitTag);
+			Unit unit = (Unit)TacticsEntityBase.Spawn(uPrefab, playerSpawnPositions.PopAt(0), grid);
+			//
+			unit.ApplyStats(unitStats);
 			GetController(player).Register(unit);
-			activeUnits.Add(unit);
 		}
-		
-		var otherSpawnPositions = Utils.RandomSelections<Vector3Int>(otherSpawnZone, oUnits.Count);
-		for (int i=0; i<oUnits.Count; i++) {
-			Unit unit = (Unit)TacticsEntityBase.Spawn(oUnits[i], otherSpawnPositions[i], grid);
+
+		// LoadUnitsByTag will look up if an appropriate prefab has already been loaded from the Resources folder
+		// if it has, it will instantiate it. If not, it will load first
+		var oUnitPrefabs = other.LoadUnitsByTag(other.defaultUnitTags);
+		var otherSpawnPositions = Utils.RandomSelections<Vector3Int>(otherSpawnZone, oUnitPrefabs.Count);
+
+		foreach (var prefab in oUnitPrefabs) {
+			Unit unit = (Unit)TacticsEntityBase.Spawn(prefab, otherSpawnPositions.PopAt(0), grid);
 			GetController(other).Register(unit);
-			activeUnits.Add(unit);
 		}
 	}
 	
@@ -203,6 +216,14 @@ public class Battle : MonoBehaviour
 			return GetController(other);
 		} else {
 			return defaultController;
+		}
+	}
+
+	public OverworldEntity GetOverworldEntityFromController(Controller con) {
+		if (activeParticipants.ContainsKey(con)) {
+			return activeParticipants[con];
+		} else {
+			return null;
 		}
 	}
 	

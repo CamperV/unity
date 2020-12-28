@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 
 public abstract class OverworldEntity : MovingObject
@@ -9,35 +10,43 @@ public abstract class OverworldEntity : MovingObject
 	protected Animator animator;
 	
 	public Controller unitControllerPrefab;
-	[HideInInspector] public Controller unitController;
 	//
 	public Dictionary<string, Unit> unitPrefabs = new Dictionary<string, Unit>();
-	//
 	public virtual List<string> defaultUnitTags { get; }
+
+	// this is where the "real" units are stored
+	public Dictionary<Guid, UnitStats> barracks = new Dictionary<Guid, UnitStats>();
 	
 	protected virtual void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
+		
+		// generate your units here (name, tags, etc)
+		foreach (string tag in defaultUnitTags) {
+			UnitStats stats = new UnitStats(tag);
+			barracks[stats.id] = stats;
+		}
 	}
 
-	protected void Update() {
-		//spriteRenderer.sortingOrder = -1*Mathf.RoundToInt(transform.position.y);
-	}
-	
-	public List<Unit> LoadUnitsByTag(List<string> unitTags) {
-		List<Unit> retVal = new List<Unit>();
-		// we determine initial spawn location by simply assigning them zip-style
-		for (int i=0; i < unitTags.Count; i++) {
-			Unit unitPrefab;
-			if (unitPrefabs.ContainsKey(unitTags[i])) {
-				unitPrefab = unitPrefabs[unitTags[i]];
-			} else {
-				unitPrefab = Resources.Load<Unit>(unitTags[i]);
-				unitPrefabs.Add(unitTags[i], unitPrefab);
-			}
-			retVal.Add(unitPrefab);
+	public Unit LoadUnitByTag(string tag) {
+		Unit unitPrefab;
+		if (unitPrefabs.ContainsKey(tag)) {
+			unitPrefab = unitPrefabs[tag];
+		} else {
+			unitPrefab = Resources.Load<Unit>(tag);
+			unitPrefabs.Add(tag, unitPrefab);
 		}
-		return retVal;
+		return unitPrefab;
+	}
+		
+	public List<Unit> LoadUnitsByTag(List<string> unitTags) {
+		return unitTags.Select(it => LoadUnitByTag(it)).ToList();
+	}
+
+	//
+	//
+	public void RemoveUnit(Guid id) {
+		barracks.Remove(id);
 	}
 
 	public void Die() {

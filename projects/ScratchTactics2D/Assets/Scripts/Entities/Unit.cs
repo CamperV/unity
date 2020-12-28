@@ -9,6 +9,8 @@ public abstract class Unit : TacticsEntityBase
 {
 	private bool animFlag = false;
 
+	public Guid id; // to be set by UnitStats
+
 	// NOTE this is set by a Controller during registration
 	public Controller parentController;
 	public HashSet<Vector3Int> obstacles {
@@ -18,10 +20,10 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	// to be defined at a lower level
-	public abstract int movementRange { get; }
-	public abstract int attackReach { get; }
-	public abstract int damageValue { get; }
-	public abstract int maximumHealth { get; }
+	public abstract int movementRange 	{ get; set; }
+	public abstract int attackReach 	{ get; set; }
+	public abstract int damageValue 	{ get; set; }
+	public abstract int maximumHealth 	{ get; set; }
 
 	protected int currentHealth { set; get; }
 
@@ -61,6 +63,11 @@ public abstract class Unit : TacticsEntityBase
 			if (optionAvailability[k]) return true;
 		}
 		return false;
+	}
+
+	public void ApplyStats(UnitStats stats) {
+		id = stats.id;
+		movementRange += stats.moveMod;
 	}
 
 	// valid Unit Actions:
@@ -150,6 +157,12 @@ public abstract class Unit : TacticsEntityBase
 		// when faded, remove gameObject
 		Debug.Log($"{this} has died :(");
 		GameManager.inst.tacticsManager.GetActiveGrid().UpdateOccupantAt(gridPosition, null);
+
+		// this unit will be automatically removed from the activeRegistry of the controller...
+		// but won't be removed from the actual OverworldEntity unless we force it
+		var battle = GameManager.inst.tacticsManager.activeBattle;
+		OverworldEntity oe = battle.GetOverworldEntityFromController(parentController);
+		oe.RemoveUnit(this.id);
 
 		StartCoroutine(ExecuteAfterAnimating(() => {
 			StartCoroutine(FadeDownToInactive(0.01f));

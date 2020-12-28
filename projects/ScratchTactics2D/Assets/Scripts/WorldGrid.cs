@@ -117,8 +117,14 @@ public class WorldGrid : GameGrid
 	}
 	
 	public override void TintTile(Vector3Int tilePos, Color color) {
-		var tile = worldTileGrid[tilePos];
-		var depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
+		Vector3Int depthPos;
+		if (worldTileGrid.ContainsKey(tilePos)) {
+			var tile = worldTileGrid[tilePos];
+			depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
+		} else  {
+			depthPos = tilePos;
+		}
+
 		if (baseTilemap.GetTile(depthPos) != null) {
 			baseTilemap.SetTileFlags(tilePos, TileFlags.None);
 			baseTilemap.SetColor(tilePos, color);
@@ -150,13 +156,13 @@ public class WorldGrid : GameGrid
 		CreateTintBuffer(mapMatrix);
 		
 		// how many tiles do we want shown vertically?
-		int yTiles = mapDimensionY;
-		CameraManager.RefitCamera(yTiles);
+		CameraManager.RefitCamera(mapDimensionY);
 		
-		//Vector2 minBounds = new Vector2(7, (float)yTiles/2);
-		//Vector2 maxBounds = new Vector2(mapDimensionX-7, (float)yTiles/2);
-		Vector2 minBounds = new Vector2(7, (float)yTiles/2);
-		Vector2 maxBounds = new Vector2(mapDimensionX-7, (float)yTiles/2);
+		//Vector2 minBounds = new Vector2(7, (float)mapDimensionY/2);
+		//Vector2 maxBounds = new Vector2(mapDimensionX-7, (float)mapDimensionY/2);
+		
+		Vector2 minBounds = new Vector2(4, (float)mapDimensionY/2);
+		Vector2 maxBounds = new Vector2(mapDimensionX-4, (float)mapDimensionY/2);
 		CameraManager.SetBounds(minBounds, maxBounds);
     }
 	
@@ -354,8 +360,8 @@ public class WorldGrid : GameGrid
 				if ((x > -1 && y > -1) && (x < xUpper && y < yUpper)) continue;
 				
 				// set the WorldTile in the actual tilemap
-				Vector3Int tilePos = new Vector3Int(x, y, 0);
-				SetAppropriateTile(tilePos, tileOptions[3]);
+				Vector3Int tilePos = new Vector3Int(x, y, tileOptions[3].depth);
+				baseTilemap.SetTile(tilePos, tileOptions[3]);
 
 				if ((x >= -1 && x <= xUpper+1) && (y >= -1 && y <= yUpper+1)) {
 					TintTile(tilePos, new Color(.85f, .85f, .85f));

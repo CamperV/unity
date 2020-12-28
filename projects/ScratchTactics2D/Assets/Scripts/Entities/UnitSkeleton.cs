@@ -5,8 +5,13 @@ using UnityEngine;
 
 public class UnitSkeleton : Unit
 {
-    public override int movementRange { get { return 4; } }
-    public override int attackReach { get { return 1; } }
-    public override int damageValue { get { return 1; } }
-    public override int maximumHealth { get { return 2; } }
+    private int MOVE = 8;
+    private int RANGE = 2;
+    private int DAMAGE = 1;
+    private int HEALTH = 1;
+    
+    public override int movementRange   { get => MOVE;      set => MOVE = value; }
+    public override int attackReach     { get => RANGE;     set => RANGE = value; }
+    public override int damageValue     { get => DAMAGE;    set => DAMAGE = value; }
+    public override int maximumHealth   { get => HEALTH;    set => HEALTH = value; }
 }

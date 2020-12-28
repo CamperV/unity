@@ -48,5 +48,11 @@ namespace Extensions {
         public static int ManhattanDistance(this Vector3Int v, Vector3Int o) {
             return Mathf.Abs(v.x-o.x) + Mathf.Abs(v.y-o.y) + Mathf.Abs(v.z-o.z);
         }
+
+        public static T PopAt<T>(this List<T> list, int index) {
+            T r = list[index];
+            list.RemoveAt(index);
+            return r;
+        }
     }
 }

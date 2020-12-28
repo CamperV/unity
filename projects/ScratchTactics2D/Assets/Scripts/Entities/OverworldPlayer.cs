@@ -6,7 +6,6 @@ using UnityEngine;
 public class OverworldPlayer : OverworldEntity
 {
 	public override float moveSpeed { get { return 1.0f; } }
-	private Queue<Vector3Int> movementQueue;
 	
 	// abstract implementations
 	public override List<string> defaultUnitTags {
@@ -31,8 +30,6 @@ public class OverworldPlayer : OverworldEntity
 
     protected void Awake() {
 		base.Awake();
-		//
-		movementQueue = new Queue<Vector3Int>();
     }
 		
 	public void ResetPosition(Vector3Int v) {
