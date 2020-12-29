@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitControllerPrefab: {fileID: 0}
-  unitController: {fileID: 0}
   state: 0
 --- !u!95 &3996583895950419961
 Animator:

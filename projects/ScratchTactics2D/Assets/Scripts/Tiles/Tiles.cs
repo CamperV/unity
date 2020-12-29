@@ -43,3 +43,11 @@ public abstract class OverlayTile : Tile
 		sprite = sprites[i];
 	}
 }
+
+public abstract class UITile : Tile 
+{
+	public List<Sprite> sprites;
+	public void SetSprite(int i) {
+		sprite = sprites[i];
+	}
+}

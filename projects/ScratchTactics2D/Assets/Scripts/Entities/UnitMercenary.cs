@@ -8,7 +8,7 @@ public class UnitMercenary : Unit
     private int MOVE = 5;
     private int RANGE = 1;
     private int DAMAGE = 2;
-    private int HEALTH = 1;
+    private int HEALTH = 10;
 
     public override int movementRange   { get => MOVE;      set => MOVE = value; }
     public override int attackReach     { get => RANGE;     set => RANGE = value; }

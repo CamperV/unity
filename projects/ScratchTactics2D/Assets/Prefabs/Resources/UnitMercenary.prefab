@@ -83,6 +83,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentController: {fileID: 0}
+  unitUIPrefab: {fileID: 54845570200524099, guid: f9b5bd7a4113c2d429bce4b5e790e8ed, type: 3}
+  unitUI: {fileID: 0}
 --- !u!1001 &522959950618016496
 PrefabInstance:
   m_ObjectHideFlags: 0

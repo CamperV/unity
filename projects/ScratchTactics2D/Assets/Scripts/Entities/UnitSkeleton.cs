@@ -8,7 +8,7 @@ public class UnitSkeleton : Unit
     private int MOVE = 8;
     private int RANGE = 2;
     private int DAMAGE = 1;
-    private int HEALTH = 1;
+    private int HEALTH = 5;
     
     public override int movementRange   { get => MOVE;      set => MOVE = value; }
     public override int attackReach     { get => RANGE;     set => RANGE = value; }

@@ -13,6 +13,10 @@ public abstract class Unit : TacticsEntityBase
 
 	// NOTE this is set by a Controller during registration
 	public Controller parentController;
+
+	public UnitUI unitUIPrefab;
+	[HideInInspector] public UnitUI unitUI;
+
 	public HashSet<Vector3Int> obstacles {
 		get {
 			return parentController.GetObstacles();
@@ -25,7 +29,14 @@ public abstract class Unit : TacticsEntityBase
 	public abstract int damageValue 	{ get; set; }
 	public abstract int maximumHealth 	{ get; set; }
 
-	protected int currentHealth { set; get; }
+	private int _currentHealth;
+	protected int currentHealth {
+		get => _currentHealth;
+		set {
+			_currentHealth = value;
+			unitUI.healthBar.UpdateBar(_currentHealth);
+		}
+	}
 
 	// cache the movement range for easier lookup later
 	public MoveRange moveRange;
@@ -35,6 +46,14 @@ public abstract class Unit : TacticsEntityBase
 		["Move"]	= true,
 		["Attack"]	= true
 	};
+
+	void Awake() {
+		base.Awake();
+
+		unitUI = Instantiate(unitUIPrefab, this.transform);
+		unitUI.transform.parent = this.transform;
+		unitUI.healthBar.InitHealthBar(maximumHealth);
+	}
 
 	void Start() {
 		currentHealth = maximumHealth;
@@ -68,6 +87,8 @@ public abstract class Unit : TacticsEntityBase
 	public void ApplyStats(UnitStats stats) {
 		id = stats.id;
 		movementRange += stats.moveMod;
+
+		unitUI.healthBar.InitHealthBar(maximumHealth);
 	}
 
 	// valid Unit Actions:

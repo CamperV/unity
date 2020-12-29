@@ -69,7 +69,7 @@ public class PlayerUnitController : Controller
 						break;
 					}
 				}
-				if (endPhaseNow) phaseActionState = Enum.PhaseActionState.complete;
+				//if (endPhaseNow) phaseActionState = Enum.PhaseActionState.complete;
 				break;
 				
 			case Enum.PhaseActionState.complete:

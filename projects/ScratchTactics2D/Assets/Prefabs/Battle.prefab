@@ -52,7 +52,6 @@ MonoBehaviour:
   defaultControllerPrefab: {fileID: 5007282424744042210, guid: 8f44ac671b19b08478b75c1609a95db8, type: 3}
   defaultController: {fileID: 0}
   worldParticipants: []
-  activeUnits: []
   grid: {fileID: 0}
   currentTurn: 0
 --- !u!1 &831110151278361556
@@ -99,7 +98,7 @@ Grid:
   m_Enabled: 1
   m_CellSize: {x: 1, y: 0.5, z: 1}
   m_CellGap: {x: 0, y: 0, z: 0}
-  m_CellLayout: 2
+  m_CellLayout: 0
   m_CellSwizzle: 0
 --- !u!114 &5113726490093097474
 MonoBehaviour:
