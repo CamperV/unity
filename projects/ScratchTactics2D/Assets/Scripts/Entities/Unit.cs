@@ -7,6 +7,7 @@ using UnityEngine;
 
 public abstract class Unit : TacticsEntityBase
 {
+	private readonly float scaleFactor = 0.75f;
 	private bool animFlag = false;
 
 	public Guid id; // to be set by UnitStats
@@ -51,12 +52,20 @@ public abstract class Unit : TacticsEntityBase
 		base.Awake();
 
 		unitUI = Instantiate(unitUIPrefab, this.transform);
-		unitUI.transform.parent = this.transform;
 		unitUI.healthBar.InitHealthBar(maximumHealth);
+		unitUI.transform.parent = this.transform;
 	}
 
 	void Start() {
 		currentHealth = maximumHealth;
+
+		// scale down to avoid weird parent/child problems w/ UnitUI
+		// apply inverse scale to all children of our transform
+		// Unity Enumerable<Xform> is weird and I wish they'd just use a method for getting children
+		transform.localScale *= scaleFactor;
+		foreach (Transform childT in transform) {
+			childT.localScale /= scaleFactor;
+		}
 	}
 	
 	public override bool IsActive() {
@@ -89,6 +98,7 @@ public abstract class Unit : TacticsEntityBase
 		movementRange += stats.moveMod;
 
 		unitUI.healthBar.InitHealthBar(maximumHealth);
+		unitUI.healthBar.UpdateBar(currentHealth);
 	}
 
 	// valid Unit Actions:

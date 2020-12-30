@@ -15,6 +15,8 @@ public class UnitStats
     // this class holds the offsets that can be applied to that base level
     public int moveMod;
     public int defMod;
+    public int maximumHealth;
+    public int currentHealth;
     // etc
 
     public List<EquipableObject> inventory;
@@ -25,7 +27,9 @@ public class UnitStats
         unitTag = tag;
         unitName = "Jeremy";
 
-        moveMod = 4;
+        moveMod = 0;
         defMod = 0;
+
+        currentHealth = -1;
     }
 }
