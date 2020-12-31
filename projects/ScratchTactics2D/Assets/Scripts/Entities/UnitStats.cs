@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UnitStats
 {
-    public Guid id;
+    public Guid ID;
 
     public string unitTag;  // used to look up the appropriate prefab
     public string unitName;
@@ -13,23 +13,18 @@ public class UnitStats
     // stats modifiers - usually, the base class (think UnitMercenary) holds stat values
     // these include move speed, max health, etc
     // this class holds the offsets that can be applied to that base level
-    public int moveMod;
-    public int defMod;
-    public int maximumHealth;
-    public int currentHealth;
+    public int STRENGTH;
+    public int HEALTH;
+    public int MAXHEALTH;
+    public int MOVE;
+    public int RANGE;
     // etc
 
     public List<EquipableObject> inventory;
 
-    public UnitStats(string tag) {
-        id = Guid.NewGuid();
-        //
-        unitTag = tag;
-        unitName = "Jeremy";
+    public UnitStats() { }
 
-        moveMod = 0;
-        defMod = 0;
-
-        currentHealth = -1;
+    public override string ToString() {
+        return $"UnitStats=>{unitName}/{unitTag}/S{STRENGTH}/H{HEALTH}/MH{MAXHEALTH}/M{MOVE}/R{RANGE}";
     }
 }

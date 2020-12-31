@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public abstract class OverworldEntity : MovingObject
 {
@@ -22,10 +24,7 @@ public abstract class OverworldEntity : MovingObject
 		animator = GetComponent<Animator>();
 		
 		// generate your units here (name, tags, etc)
-		foreach (string tag in defaultUnitTags) {
-			UnitStats stats = new UnitStats(tag);
-			barracks[stats.id] = stats;
-		}
+		GenerateUnitStats();
 	}
 
 	public Unit LoadUnitByTag(string tag) {
@@ -41,6 +40,20 @@ public abstract class OverworldEntity : MovingObject
 		
 	public List<Unit> LoadUnitsByTag(List<string> unitTags) {
 		return unitTags.Select(it => LoadUnitByTag(it)).ToList();
+	}
+
+	public void GenerateUnitStats() {
+		foreach (string tag in defaultUnitTags) {
+			PropertyInfo defaultProp = Type.GetType(tag).GetProperty("defaultStats");
+			UnitStats defaultStats = (UnitStats)defaultProp.GetValue(null, null);
+			//
+			defaultStats.ID = Guid.NewGuid();
+			defaultStats.unitName = $"{tag} Jeremy {Random.Range(0, 101)}";
+
+			// now save the unit in our barracks
+			barracks[defaultStats.ID] = defaultStats;
+			Debug.Log($"{this} generated {barracks[defaultStats.ID]}");
+		}
 	}
 
 	//

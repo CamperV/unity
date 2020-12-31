@@ -144,7 +144,7 @@ public class EnemyUnitController : Controller
 		// util
 
 		// max allowable attack positions (max range/reach)
-		var targetable = targetPosition.Radiate(subject.attackReach).Where(it => Traversable(it));
+		var targetable = targetPosition.Radiate(subject.RANGE).Where(it => Traversable(it));
 		float maxDistWithin = targetable.Max(it => DistToTarget(it));
 		var atMaxDist = targetable.Where(it => DistToTarget(it) == maxDistWithin);
 

@@ -32,11 +32,16 @@ public class Controller : PhasedObject
 		}
 	}
 
+	public List<MovingObject> GetAllRegistered() {
+		var controllers = GameManager.inst.tacticsManager.activeBattle.GetActiveControllers();
+		return controllers.SelectMany(con => con.activeRegistry).ToList();
+	}
+
 	public HashSet<Vector3Int> GetObstacles() {
 		// the controller must dictate to the Unit/MovingObject what counts as obstacles for it
 		var adversaryPhase = myPhase.NextPhase();
 		var adversaryController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(adversaryPhase);
-		var uPositions = from u in adversaryController.activeRegistry select u.gridPosition;
+		var uPositions = adversaryController.activeRegistry.Select(it => it.gridPosition);
 		return new HashSet<Vector3Int>(uPositions);
 	}
 }

@@ -5,13 +5,24 @@ using UnityEngine;
 
 public class UnitSkeleton : Unit
 {
-    private int MOVE = 8;
-    private int RANGE = 2;
-    private int DAMAGE = 1;
-    private int HEALTH = 5;
-    
-    public override int movementRange   { get => MOVE;      set => MOVE = value; }
-    public override int attackReach     { get => RANGE;     set => RANGE = value; }
-    public override int damageValue     { get => DAMAGE;    set => DAMAGE = value; }
-    public override int maximumHealth   { get => HEALTH;    set => HEALTH = value; }
+    // default unit stats
+    public static UnitStats defaultStats {
+        get {
+            return new UnitStats {
+                unitTag = "UnitSkeleton",
+
+                STRENGTH  = 1,
+                HEALTH    = 5,
+                MAXHEALTH = 5,
+                MOVE      = 4,
+                RANGE     = 2
+            };
+        }
+    }
+
+    private UnitStats _unitStats;
+    public override UnitStats unitStats {
+        get => _unitStats ?? UnitSkeleton.defaultStats;
+        set => _unitStats = value;
+    }
 }

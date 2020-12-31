@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerUnitController : Controller
@@ -69,7 +70,7 @@ public class PlayerUnitController : Controller
 						break;
 					}
 				}
-				//if (endPhaseNow) phaseActionState = Enum.PhaseActionState.complete;
+				if (endPhaseNow) phaseActionState = Enum.PhaseActionState.complete;
 				break;
 				
 			case Enum.PhaseActionState.complete:
@@ -149,11 +150,15 @@ public class PlayerUnitController : Controller
 						grid.ResetSelectionAtAlternate(mm.prevMouseGridPos);
 
 						// dumb shenanigans: clear then re-select
-						StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
-							SelectUnit(currentSelection.gridPosition);
-						})); 
-						
-						//EndTurnSelectedUnit();
+						// if there is an enemy in the selection, keep it alive
+						// otherwise, end the turn						
+						if (PossibleValidAttack(currentSelection, GetAllRegistered())) {
+							StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
+								SelectUnit(currentSelection.gridPosition);
+							})); 
+						} else {
+							EndTurnSelectedUnit();
+						}
 						break;
 					}
 
@@ -182,9 +187,6 @@ public class PlayerUnitController : Controller
 		// on a certain key, get the currently selected unit
 		// enter a special controller mode
 		var unitAt = (Unit)grid.OccupantAt(target);
-
-		if (unitAt != null)
-			Debug.Log($"trying to select {unitAt}, options active?: {unitAt.AnyOptionActive()}");
 		if (unitAt == null) return false;
 
 		// if this is any unit at all:
@@ -221,7 +223,6 @@ public class PlayerUnitController : Controller
 	}
 
 	private void AttackUnit(Vector3Int target) {
-		Debug.Log($"{currentSelection} attacking {target}");
 		var unitAt = (Unit)grid.OccupantAt(target);
 		currentSelection.Attack(unitAt);
 	}
@@ -229,5 +230,12 @@ public class PlayerUnitController : Controller
 	private void SkipPhase() {
 		ClearSelection();
 		phaseActionState = Enum.PhaseActionState.complete;
+	}
+
+	private bool PossibleValidAttack(Unit subject, List<MovingObject> potentialTargets) {
+		subject.UpdateThreatRange();
+		return potentialTargets.FindAll(
+			it => it != subject && subject.attackRange.field.ContainsKey(it.gridPosition)
+		).Any();
 	}
 }

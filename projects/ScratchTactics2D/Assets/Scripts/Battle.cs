@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Extensions;
 
@@ -124,6 +125,7 @@ public class Battle : MonoBehaviour
 		// the player has reference to each prefab needed, so we instantiate a prefab here
 		// then apply the actual relevant stats
 		foreach (UnitStats unitStats in player.barracks.Values) {
+			Debug.Log($"Got {unitStats}, {unitStats.unitTag}/{unitStats.ID}/{unitStats.unitName}");
 			var uPrefab = player.LoadUnitByTag(unitStats.unitTag);
 			Unit unit = (Unit)TacticsEntityBase.Spawn(uPrefab, playerSpawnPositions.PopAt(0), grid);
 			//
@@ -133,11 +135,14 @@ public class Battle : MonoBehaviour
 
 		// LoadUnitsByTag will look up if an appropriate prefab has already been loaded from the Resources folder
 		// if it has, it will instantiate it. If not, it will load first
-		var oUnitPrefabs = other.LoadUnitsByTag(other.defaultUnitTags);
-		var otherSpawnPositions = Utils.RandomSelections<Vector3Int>(otherSpawnZone, oUnitPrefabs.Count);
+		var otherSpawnPositions = Utils.RandomSelections<Vector3Int>(otherSpawnZone, other.barracks.Count);
 
-		foreach (var prefab in oUnitPrefabs) {
-			Unit unit = (Unit)TacticsEntityBase.Spawn(prefab, otherSpawnPositions.PopAt(0), grid);
+		foreach (UnitStats unitStats in other.barracks.Values) {
+			Debug.Log($"Got {unitStats}, {unitStats.unitTag}/{unitStats.ID}/{unitStats.unitName}");
+			var uPrefab = other.LoadUnitByTag(unitStats.unitTag);
+			Unit unit = (Unit)TacticsEntityBase.Spawn(uPrefab, otherSpawnPositions.PopAt(0), grid);
+			//
+			unit.ApplyStats(unitStats);
 			GetController(other).Register(unit);
 		}
 	}
@@ -207,6 +212,10 @@ public class Battle : MonoBehaviour
 		} else {
 			return defaultController;
 		}
+	}
+
+	public List<Controller> GetActiveControllers() {
+		return activeControllers.Values.ToList();
 	}
 
 	public Controller GetControllerFromPhase(Enum.Phase phase) {

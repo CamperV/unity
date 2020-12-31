@@ -10,8 +10,6 @@ public abstract class Unit : TacticsEntityBase
 	private readonly float scaleFactor = 0.75f;
 	private bool animFlag = false;
 
-	public Guid id; // to be set by UnitStats
-
 	// NOTE this is set by a Controller during registration
 	public Controller parentController;
 
@@ -25,18 +23,34 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	// to be defined at a lower level
-	public abstract int movementRange 	{ get; set; }
-	public abstract int attackReach 	{ get; set; }
-	public abstract int damageValue 	{ get; set; }
-	public abstract int maximumHealth 	{ get; set; }
-
-	private int _currentHealth;
-	protected int currentHealth {
-		get => _currentHealth;
+	// defaultStats is static, and will be defined by the final class
+	public abstract UnitStats unitStats { get; set; }
+	public Guid ID { get => unitStats.ID; }
+    public int STRENGTH {
+		get => unitStats.STRENGTH;
+		set => unitStats.STRENGTH = value;
+	}
+    public int HEALTH {
+		get => unitStats.HEALTH;
 		set {
-			_currentHealth = value;
-			unitUI.healthBar.UpdateBar(_currentHealth);
+			unitStats.HEALTH = value;
+			unitUI.healthBar.UpdateBar(unitStats.HEALTH);
 		}
+	}
+	public int MAXHEALTH {
+		get => unitStats.MAXHEALTH;
+		set {
+			unitStats.MAXHEALTH = value;
+			unitUI.healthBar.maxPips = value;
+		}
+	}
+    public int MOVE {
+		get => unitStats.MOVE;
+		set => unitStats.MOVE = value;
+	}
+    public int RANGE {
+		get => unitStats.RANGE;
+		set => unitStats.RANGE = value;
 	}
 
 	// cache the movement range for easier lookup later
@@ -44,21 +58,19 @@ public abstract class Unit : TacticsEntityBase
 	public AttackRange attackRange;
 
 	protected Dictionary<string, bool> optionAvailability = new Dictionary<string, bool>() {
-		["Move"]	= true,
-		["Attack"]	= true
+		["Move"]   = true,
+		["Attack"] = true
 	};
 
 	void Awake() {
 		base.Awake();
 
 		unitUI = Instantiate(unitUIPrefab, this.transform);
-		unitUI.healthBar.InitHealthBar(maximumHealth);
+		unitUI.healthBar.InitHealthBar(MAXHEALTH);
 		unitUI.transform.parent = this.transform;
 	}
 
 	void Start() {
-		currentHealth = maximumHealth;
-
 		// scale down to avoid weird parent/child problems w/ UnitUI
 		// apply inverse scale to all children of our transform
 		// Unity Enumerable<Xform> is weird and I wish they'd just use a method for getting children
@@ -69,7 +81,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 	
 	public override bool IsActive() {
-		return gameObject.activeInHierarchy && currentHealth > 0;
+		return gameObject.activeInHierarchy && HEALTH > 0;
 	}
 
 	public bool OptionActive(string optionToCheck) {
@@ -94,20 +106,11 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void ApplyStats(UnitStats stats) {
-		id = stats.id;
-		movementRange += stats.moveMod;
-
-		unitUI.healthBar.InitHealthBar(maximumHealth);
-		unitUI.healthBar.UpdateBar(currentHealth);
+		unitStats = stats;
+		unitUI.healthBar.UpdateBar(HEALTH);
 	}
 
-	// valid Unit Actions:
-	// OnSelect
-	// ShowMovementRange
-	// TraverseTo
-	// Attack
-	// Wait
-	// Other
+	// Action zone
 	public void RefreshOptions() {
 		foreach (var k in optionAvailability.Keys.ToList()) {
 			optionAvailability[k] = true;
@@ -129,8 +132,8 @@ public abstract class Unit : TacticsEntityBase
 		HashSet<Vector3Int> tiles = new HashSet<Vector3Int>(grid.GetAllTilePos());
 		tiles.ExceptWith(obstacles);
 
-		var moveable = (OptionActive("Move")) ? movementRange : 0;
-		var attackable = (OptionActive("Attack")) ? attackReach : 0;
+		var moveable = (OptionActive("Move")) ? MOVE : 0;
+		var attackable = (OptionActive("Attack")) ? RANGE : 0;
 		moveRange = MoveRange.MoveRangeFrom(gridPosition, tiles, range: moveable);
 		attackRange = AttackRange.AttackRangeFrom(moveRange, grid.GetAllTilePos(), range: attackable);
 	}
@@ -140,7 +143,6 @@ public abstract class Unit : TacticsEntityBase
 		// play "awake" ready animation
 		// enter into "running" or "ready" animation loop
 		// display movement range
-		// spriteRenderer.color = Utils.selectColorRed;
 		
 		UpdateThreatRange();
 		attackRange?.Display(grid);
@@ -170,17 +172,17 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void Attack(Unit other) {
-		other.SufferDamage(damageValue);
+		other.SufferDamage(STRENGTH);
 	}
 
 	public void SufferDamage(int incomingDamage) {
-		currentHealth -= incomingDamage;
+		HEALTH -= incomingDamage;
 		StartCoroutine(FlashColor(Utils.threatColorRed));
 		StartCoroutine(Shake(0.075f));
 
-		Debug.Log($"{this} suffered {incomingDamage}, {currentHealth}/{maximumHealth} health remaining.");
+		Debug.Log($"{this} suffered {incomingDamage}, {HEALTH}/{MAXHEALTH} health remaining.");
 
-		if (currentHealth < 1) { Die(); }
+		if (HEALTH < 1) { Die(); }
 	}
 
 	public void Die() {
@@ -193,7 +195,7 @@ public abstract class Unit : TacticsEntityBase
 		// but won't be removed from the actual OverworldEntity unless we force it
 		var battle = GameManager.inst.tacticsManager.activeBattle;
 		OverworldEntity oe = battle.GetOverworldEntityFromController(parentController);
-		oe.RemoveUnit(this.id);
+		oe.RemoveUnit(ID);
 
 		StartCoroutine(ExecuteAfterAnimating(() => {
 			StartCoroutine(FadeDownToInactive(0.01f));
