@@ -34,7 +34,7 @@ public abstract class Unit : TacticsEntityBase
 		get => unitStats.HEALTH;
 		set {
 			unitStats.HEALTH = value;
-			unitUI.healthBar.UpdateBar(unitStats.HEALTH);
+			unitUI.UpdateHealthBar(unitStats.HEALTH);
 		}
 	}
 	public int MAXHEALTH {
@@ -67,6 +67,7 @@ public abstract class Unit : TacticsEntityBase
 
 		unitUI = Instantiate(unitUIPrefab, this.transform);
 		unitUI.healthBar.InitHealthBar(MAXHEALTH);
+		unitUI.SetTransparency(0.0f);
 		unitUI.transform.parent = this.transform;
 	}
 
@@ -80,7 +81,7 @@ public abstract class Unit : TacticsEntityBase
 		}
 	}
 	
-	void OnMouseOver() {
+	void OnMouseEnter() {
 		Debug.DrawLine(boxCollider2D.bounds.min, boxCollider2D.bounds.max);
 		Debug.DrawLine(new Vector3(boxCollider2D.bounds.max.x,
 								   boxCollider2D.bounds.min.y,
@@ -89,10 +90,11 @@ public abstract class Unit : TacticsEntityBase
 					   			   boxCollider2D.bounds.max.y,
 								   boxCollider2D.bounds.max.z));
 
+		unitUI.SetTransparency(1.0f);
+
 		// find if you're behind things
 		// if you are, fade those in front things
 		foreach (Unit activeUnit in parentController.GetRegisteredInBattle()) {
-			activeUnit.SetTransparency(1.0f);
 
 			// if a unit is potentially in front of us
 			if (!activeUnit.Equals(this) && activeUnit.transform.position.y <= transform.position.y) {
@@ -104,6 +106,12 @@ public abstract class Unit : TacticsEntityBase
 				}
 			}
 		}
+	}
+	void OnMouseExit() {
+		foreach (Unit activeUnit in parentController.GetRegisteredInBattle()) {
+			activeUnit.SetTransparency(1.0f);
+			activeUnit.unitUI.SetTransparency(0.0f);
+		}		
 	}
 	
 	public override bool IsActive() {
@@ -133,7 +141,7 @@ public abstract class Unit : TacticsEntityBase
 
 	public void ApplyStats(UnitStats stats) {
 		unitStats = stats;
-		unitUI.healthBar.UpdateBar(HEALTH);
+		unitUI.UpdateHealthBar(HEALTH);
 	}
 
 	// Action zone
@@ -265,8 +273,5 @@ public abstract class Unit : TacticsEntityBase
 		var currColor = spriteRenderer.color;
 		currColor.a = val;
 		spriteRenderer.color = currColor;
-
-		// and for the UnitUI
-		unitUI.healthBar.SetTransparentAllTiles(val);
 	}
 }
