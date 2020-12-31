@@ -45,10 +45,19 @@ namespace Extensions {
             }
         }
 
+        // Vector3Int
         public static int ManhattanDistance(this Vector3Int v, Vector3Int o) {
             return Mathf.Abs(v.x-o.x) + Mathf.Abs(v.y-o.y) + Mathf.Abs(v.z-o.z);
         }
 
+        // Vector3
+        public static Vector3 SafeScale(this Vector3 v, Vector3 o) {
+            return new Vector3((o.x > 0) ? v.x/o.x : 1,
+                               (o.y > 0) ? v.y/o.y : 1,
+                               (o.z > 0) ? v.z/o.z : 1);
+        }
+
+        // List
         public static T PopAt<T>(this List<T> list, int index) {
             T r = list[index];
             list.RemoveAt(index);

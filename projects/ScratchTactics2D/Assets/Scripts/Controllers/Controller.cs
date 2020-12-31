@@ -32,7 +32,7 @@ public class Controller : PhasedObject
 		}
 	}
 
-	public List<MovingObject> GetAllRegistered() {
+	public List<MovingObject> GetRegisteredInBattle() {
 		var controllers = GameManager.inst.tacticsManager.activeBattle.GetActiveControllers();
 		return controllers.SelectMany(con => con.activeRegistry).ToList();
 	}

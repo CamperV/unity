@@ -44,4 +44,21 @@ public class HealthBar : MonoBehaviour
             barTilemap.SetTile(new Vector3Int(x, y, 0), (i < val) ? fullPip : emptyPip);
         }
     }
+
+    public void SetTransparentAllTiles(float val) {
+        for (int i = 0; i < maxPips; i++) {
+            int x = i % pipsInRow;
+            int y = (int)(i / pipsInRow); // this should truncate, do you C#?
+            
+            Vector3Int tilePos = new Vector3Int(x, y, 0);
+            //
+            if (barTilemap.GetTile(tilePos) != null) {
+                var currColor = barTilemap.GetColor(tilePos);
+                currColor.a = val;
+
+                barTilemap.SetTileFlags(tilePos, TileFlags.None);
+                barTilemap.SetColor(tilePos, currColor);
+            }
+        }
+    }
 }

@@ -11,8 +11,8 @@ public class OverworldPlayer : OverworldEntity
 	public override List<string> defaultUnitTags {
 		get {
 			return new List<string>() {
-				//"UnitMercenary",
-				//"UnitMercenary",
+				"UnitMercenary",
+				"UnitMercenary",
 				"UnitMercenary"
 			};
 		}

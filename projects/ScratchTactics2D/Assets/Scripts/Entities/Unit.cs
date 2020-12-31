@@ -80,6 +80,32 @@ public abstract class Unit : TacticsEntityBase
 		}
 	}
 	
+	void OnMouseOver() {
+		Debug.DrawLine(boxCollider2D.bounds.min, boxCollider2D.bounds.max);
+		Debug.DrawLine(new Vector3(boxCollider2D.bounds.max.x,
+								   boxCollider2D.bounds.min.y,
+								   boxCollider2D.bounds.min.z),
+					   new Vector3(boxCollider2D.bounds.min.x,
+					   			   boxCollider2D.bounds.max.y,
+								   boxCollider2D.bounds.max.z));
+
+		// find if you're behind things
+		// if you are, fade those in front things
+		foreach (Unit activeUnit in parentController.GetRegisteredInBattle()) {
+			activeUnit.SetTransparency(1.0f);
+
+			// if a unit is potentially in front of us
+			if (!activeUnit.Equals(this) && activeUnit.transform.position.y <= transform.position.y) {
+
+				// and also is intersecting w/ you
+				// don't use compound if for line-length readability
+				if (boxCollider2D.bounds.Intersects(activeUnit.boxCollider2D.bounds)) {
+					activeUnit.SetTransparency(0.5f);
+				}
+			}
+		}
+	}
+	
 	public override bool IsActive() {
 		return gameObject.activeInHierarchy && HEALTH > 0;
 	}
@@ -233,5 +259,14 @@ public abstract class Unit : TacticsEntityBase
 			yield return null;
 		}
 		voidAction();
+	}
+	
+	public void SetTransparency(float val) {
+		var currColor = spriteRenderer.color;
+		currColor.a = val;
+		spriteRenderer.color = currColor;
+
+		// and for the UnitUI
+		unitUI.healthBar.SetTransparentAllTiles(val);
 	}
 }

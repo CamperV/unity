@@ -152,7 +152,7 @@ public class PlayerUnitController : Controller
 						// dumb shenanigans: clear then re-select
 						// if there is an enemy in the selection, keep it alive
 						// otherwise, end the turn						
-						if (PossibleValidAttack(currentSelection, GetAllRegistered())) {
+						if (PossibleValidAttack(currentSelection, GetRegisteredInBattle())) {
 							StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
 								SelectUnit(currentSelection.gridPosition);
 							})); 

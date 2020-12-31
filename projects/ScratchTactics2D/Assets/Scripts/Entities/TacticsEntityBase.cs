@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Extensions;
 
 public class TacticsEntityBase : MovingObject
 {
 	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;
+	protected BoxCollider2D boxCollider2D;
 	
 	// this is higher up, because we should be able to have Entities which are not Units
 	public static TacticsEntityBase Spawn(TacticsEntityBase prefab, Vector3Int tilePos, TacticsGrid grid) {
@@ -23,10 +25,11 @@ public class TacticsEntityBase : MovingObject
 		// set sprite properties
 		spriteRenderer.sortingLayerName = "Tactics Entities";
 		spriteRenderer.sortingOrder = 0;
-	}
 
-	protected void Update() {
-		//spriteRenderer.sortingOrder = -1*Mathf.RoundToInt(transform.position.y);
+		// modify bounding box to match sprite
+		boxCollider2D = GetComponent<BoxCollider2D>();
+		Bounds spriteBounds = spriteRenderer.sprite.bounds;
+		boxCollider2D.offset = spriteBounds.center;
 	}
 
 	public override bool GridMove(int xdir, int ydir) {
