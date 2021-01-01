@@ -15,7 +15,7 @@ public class UnitMercenary : Unit
                 HEALTH    = 10,
                 MAXHEALTH = 10,
                 MOVE      = 5,
-                RANGE     = 1
+                RANGE     = 2
             };
         }
     }

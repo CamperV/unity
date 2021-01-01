@@ -9,6 +9,7 @@ public class MouseManager : MonoBehaviour
 	private Vector3 prevMousePos;
 	private float timeSinceLastMove = 0.0f;
 	
+	[HideInInspector] public Vector3 mouseWorldPos;
 	[HideInInspector] public Vector3Int prevMouseGridPos;
 	[HideInInspector] public Vector3Int currentMouseGridPos;
 	
@@ -19,7 +20,7 @@ public class MouseManager : MonoBehaviour
 
     void Update() {
 		prevMousePos = Input.mousePosition;
-		Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		
 		// in overworld mode:
 		if (GameManager.inst.gameState == Enum.GameState.overworld) {

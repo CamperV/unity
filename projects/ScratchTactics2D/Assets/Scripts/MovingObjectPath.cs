@@ -52,10 +52,16 @@ public class MovingObjectPath
 		return retval;
 	}
 
-	public IEnumerable<Vector3Int> Unwind() {
+	public IEnumerable<Vector3Int> Unwind(int slice = 0) {
 		Vector3Int pos = start;
 		do {
 			pos = path[pos];
+			
+			// skip a certain number of tiles when unwinding
+			if (slice > 0) {
+				slice--;
+				continue;
+			}
 			yield return pos;
 		} while (pos != end);
 	}
@@ -110,6 +116,7 @@ public class MovingObjectPath
 	}
 
 	public void UnShow(GameGrid grid) {
+		// slice 1 will clip the start position out
 		foreach (Vector3Int tilePos in Unwind()) {
 			grid.ResetOverlayAt(tilePos);
 		}

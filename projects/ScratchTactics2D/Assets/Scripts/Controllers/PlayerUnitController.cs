@@ -97,8 +97,7 @@ public class PlayerUnitController : Controller
 	private void DrawValidMoveForSelection(MoveRange mRange) {
 		var mm = GameManager.inst.mouseManager;
 		//
-		if (mm.HasMouseMovedGrid()) {		
-			grid.ResetSelectionAtAlternate(mm.prevMouseGridPos);
+		if (mm.HasMouseMovedGrid()) {
 			currentSelectionFieldPath?.UnShow(grid);
 
 			// while the origin is a ValidMove, don't draw it
@@ -115,8 +114,16 @@ public class PlayerUnitController : Controller
 	// ACTION ZONE
 	private void Interact() {
 		// this is the contextual interaction
-		// 
+		// get the gridPosition of the targeted click
+		// check a unit's box collider too, so that user can click the sprite too
 		Vector3Int target = GameManager.inst.mouseManager.currentMouseGridPos;
+
+		foreach (TacticsEntityBase clickable in GetRegisteredInBattle().OrderBy(it => it.transform.position.y)) {
+			if (clickable.ColliderContains(GameManager.inst.mouseManager.mouseWorldPos)) {
+				target = clickable.gridPosition;
+				break;
+			}
+		};
 		
 		switch (interactState) {
 			case Enum.InteractState.noSelection:
@@ -140,14 +147,12 @@ public class PlayerUnitController : Controller
 
 					// if the mouseDown is on a valid square, move to it
 					if (currentSelection.OptionActive("Move") && currentSelection.moveRange.ValidMove(target)) {
-						currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
-						//
 						currentSelection.SetOption("Move", false);
 						currentSelection.OnDeselect();
 						currentSelectionFieldPath?.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
 
-						var mm = GameManager.inst.mouseManager;
-						grid.ResetSelectionAtAlternate(mm.prevMouseGridPos);
+						currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
+						//
 
 						// dumb shenanigans: clear then re-select
 						// if there is an enemy in the selection, keep it alive
@@ -208,10 +213,6 @@ public class PlayerUnitController : Controller
 			currentSelection = null;
 		}
 		currentSelectionFieldPath?.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
-
-		var mm = GameManager.inst.mouseManager;
-		grid.ResetSelectionAtAlternate(mm.prevMouseGridPos);
-
 		interactState = Enum.InteractState.noSelection;
 	}
 

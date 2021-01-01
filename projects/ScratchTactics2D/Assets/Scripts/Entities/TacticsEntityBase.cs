@@ -45,4 +45,8 @@ public class TacticsEntityBase : MovingObject
 		}
 		gameObject.SetActive(false);
 	}
+
+	public bool ColliderContains(Vector3 v) {
+		return boxCollider2D.bounds.Contains((Vector2)v);
+	}
 }

@@ -5,6 +5,8 @@ using UnityEngine.Tilemaps;
 
 public class HealthBar : MonoBehaviour
 {
+    public bool transparencyLock = false;
+
     public int maxPips;
     public int pipsInRow;
 
@@ -24,7 +26,7 @@ public class HealthBar : MonoBehaviour
 
     void Start() {
         transform.position -= barTilemap.localBounds.center;
-        transform.position -= new Vector3(0, barTilemap.localBounds.center.y*3, 0);
+        transform.position += new Vector3(0, barTilemap.localBounds.center.y*11, 0);
     }
 
     public void InitHealthBar(int max) {
@@ -52,6 +54,8 @@ public class HealthBar : MonoBehaviour
     }
 
     public void UpdateBarTransparency(float alpha) {
+        if (transparencyLock) return;
+
         // fully draw here
         for (int i = 0; i < maxPips; i++) {
             int x = i % pipsInRow;
@@ -65,4 +69,13 @@ public class HealthBar : MonoBehaviour
             barTilemap.SetColor(tilePos, currColor);
         }
     }
+
+    public IEnumerator FadeDown(float fadeRate) {
+		float c = 1.0f;
+		while (c > 0.0f) {
+			UpdateBarTransparency(c);
+			c -= fadeRate;
+			yield return null;
+		}
+	}
 }

@@ -9,6 +9,8 @@ public abstract class Unit : TacticsEntityBase
 {
 	private readonly float scaleFactor = 0.75f;
 	private bool animFlag = false;
+	private bool selectionLock = false;
+	private bool inFocus = false;
 
 	// NOTE this is set by a Controller during registration
 	public Controller parentController;
@@ -81,37 +83,63 @@ public abstract class Unit : TacticsEntityBase
 		}
 	}
 	
-	void OnMouseEnter() {
-		Debug.DrawLine(boxCollider2D.bounds.min, boxCollider2D.bounds.max);
-		Debug.DrawLine(new Vector3(boxCollider2D.bounds.max.x,
-								   boxCollider2D.bounds.min.y,
-								   boxCollider2D.bounds.min.z),
-					   new Vector3(boxCollider2D.bounds.min.x,
-					   			   boxCollider2D.bounds.max.y,
-								   boxCollider2D.bounds.max.z));
-
-		unitUI.SetTransparency(1.0f);
-
-		// find if you're behind things
-		// if you are, fade those in front things
-		foreach (Unit activeUnit in parentController.GetRegisteredInBattle()) {
-
-			// if a unit is potentially in front of us
-			if (!activeUnit.Equals(this) && activeUnit.transform.position.y <= transform.position.y) {
-
-				// and also is intersecting w/ you
-				// don't use compound if for line-length readability
-				if (boxCollider2D.bounds.Intersects(activeUnit.boxCollider2D.bounds)) {
-					activeUnit.SetTransparency(0.5f);
-				}
-			}
-		}
+	void OnMouseEnter() {		
+		if (selectionLock) return;
+		SetFocus(true);
 	}
 	void OnMouseExit() {
-		foreach (Unit activeUnit in parentController.GetRegisteredInBattle()) {
-			activeUnit.SetTransparency(1.0f);
-			activeUnit.unitUI.SetTransparency(0.0f);
-		}		
+		if (selectionLock) return;
+		SetFocus(false);
+	}
+
+	public void SetFocus(bool takeFocus) {
+		// only one unit can hold focus
+		// force others to drop focus if their Y value is larger (unit is behind)
+		switch (takeFocus) {
+			case true:
+				inFocus = true;
+				SetTransparency(1.0f);
+
+				var overlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
+				GameManager.inst.GetActiveGrid().OverlayAt(gridPosition, overlayTile);
+				//
+				unitUI.SetTransparency(1.0f);
+
+				// find if you're behind things
+				// if you are, fade those in front things
+				foreach (Unit activeUnit in parentController.GetRegisteredInBattle()) {
+					if (activeUnit.inFocus) continue;
+
+					// if a unit is potentially in front of us
+					if (activeUnit.transform.position.y <= transform.position.y) {
+
+						// and also is intersecting w/ you
+						// don't use compound if for line-length readability
+						if (boxCollider2D.bounds.Intersects(activeUnit.boxCollider2D.bounds)) {
+							activeUnit.SetTransparency(0.5f);
+						}
+					}
+				}
+				break;
+
+			case false:
+				inFocus = false;
+
+				GameManager.inst.GetActiveGrid().ResetOverlayAt(gridPosition);
+				//
+				unitUI.SetTransparency(0.0f);
+
+				foreach (Unit activeUnit in parentController.GetRegisteredInBattle()) {
+					if (!activeUnit.Equals(this) && activeUnit.transform.position.y <= transform.position.y) {
+						// and also is intersecting w/ you
+						// don't use compound if for line-length readability
+						if (boxCollider2D.bounds.Intersects(activeUnit.boxCollider2D.bounds)) {
+							activeUnit.SetTransparency(1.0f);
+						}
+					}	
+				}
+				break;	
+		}
 	}
 	
 	public override bool IsActive() {
@@ -181,6 +209,9 @@ public abstract class Unit : TacticsEntityBase
 		UpdateThreatRange();
 		attackRange?.Display(grid);
 		moveRange?.Display(grid);
+
+		selectionLock = true;
+		SetFocus(true);
 	}
 
 	public void OnDeselect() {
@@ -189,6 +220,9 @@ public abstract class Unit : TacticsEntityBase
 		spriteRenderer.color = Color.white;
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
+
+		selectionLock = false;
+		SetFocus(false);
 	}
 
 	public void TraverseTo(Vector3Int target, MovingObjectPath fieldPath = null) {

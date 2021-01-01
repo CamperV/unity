@@ -8,9 +8,9 @@ using Random = UnityEngine.Random;
 // All global enum definitions here
 public static class Utils
 {
-	public static IEnumerator DelayedExecute(float delay, Action voidAction) {
+	public static IEnumerator DelayedExecute(float delay, Action VoidAction) {
 		yield return new WaitForSeconds(delay);
-		voidAction();
+		VoidAction();
 	}
 	
 	public static List<T> RandomSelections<T>(List<T> list, int numSelections) {
