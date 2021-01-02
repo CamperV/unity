@@ -170,13 +170,11 @@ public class PlayerUnitController : Controller
 
 					// if the mouseDown is on a valid attackable are (after moving)
 					if (currentSelection.OptionActive("Attack") && currentSelection.attackRange.ValidAttack(currentSelection, target)) {
-						if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
-							AttackUnit(target);
-							currentSelection.SetOption("Attack", false);
+						AttackUnit(target);
+						currentSelection.SetOption("Attack", false);
 
-							EndTurnSelectedUnit();
-							break;
-						}
+						EndTurnSelectedUnit();
+						break;
 					}
 				}
 

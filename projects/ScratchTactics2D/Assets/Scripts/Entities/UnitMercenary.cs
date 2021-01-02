@@ -17,7 +17,7 @@ public class UnitMercenary : Unit
                 SPEED     = 5,
                 MOVE      = 5,
 
-                inventoryPool = new List<Weapon>{
+                inventoryPool = new List<Equipment>{
                     new Shortsword(),
                     new ThrowingDagger()
                 }

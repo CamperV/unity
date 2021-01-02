@@ -17,7 +17,7 @@ public class UnitSkeleton : Unit
                 SPEED     = 3,
                 MOVE      = 4,
 
-                inventoryPool = new List<Weapon>{
+                inventoryPool = new List<Equipment>{
                     new Shortsword()
                 }
             }.DeriveRemaining();

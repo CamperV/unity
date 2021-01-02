@@ -22,7 +22,7 @@ public class UnitStats
     public int HP;          // tracks current Hit Points/Health
     public int CAPACITY;    // dictates how much weight a unit can carry at once
 
-    public List<Weapon> inventoryPool; // choose from this pool when spawning to determine your inventory
+    public List<Equipment> inventoryPool; // choose from this pool when spawning to determine your inventory
     public Inventory inventory;
 
     // use the bare constructor for readability when creating default stats 
@@ -38,7 +38,7 @@ public class UnitStats
         CAPACITY = STRENGTH;
 
         // this will later be limited by strength
-        inventory = new Inventory(inventoryPool.RandomSelections<Weapon>(1));
+        inventory = new Inventory(inventoryPool.RandomSelections<Equipment>(1));
         return this;
     }
 }

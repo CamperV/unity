@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class Inventory
@@ -10,11 +11,11 @@ public class Inventory
 
     private List<Weapon> weapons;
     public Weapon equippedWeapon {
-        get => weapons[0];
+        get => weapons.First(it => it.isEquipped);
     }
 
     // simple struct to store a Unit's inventory
-    public Inventory(List<Weapon> equipment) {
+    public Inventory(List<Equipment> equipment) {
         totalWeight = 0;
         weapons = new List<Weapon>();
 
@@ -22,11 +23,16 @@ public class Inventory
         // just go ahead and call the constructors ahead of time
         foreach (var e in equipment) {
             totalWeight += e.weight;
-            weapons.Add(e);
+            weapons.Add( (e as Weapon) );
         }
+
+        EquipWeapon(weapons[0]);
     }
 
     public void EquipWeapon(Weapon w) {
-        weapons[0] = w;
+        if (!weapons.Contains(w)) weapons.Add(w);
+        weapons.ForEach(it => it.Unequip());
+
+        w.Equip();
     }
 }
