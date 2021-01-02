@@ -12,20 +12,6 @@ public static class Utils
 		yield return new WaitForSeconds(delay);
 		VoidAction();
 	}
-	
-	public static List<T> RandomSelections<T>(List<T> list, int numSelections) {
-		List<T> retVal = new List<T>();
-		List<int> available = Enumerable.Range(0, list.Count).ToList();
-		
-		while (retVal.Count <= numSelections) {
-			var avaIndex = Random.Range(0, available.Count);
-			var selIndex = available[avaIndex];
-			
-			retVal.Add(list[selIndex]);
-			available.Remove(selIndex);
-		}
-		return retVal;
-	}
 
 	public static Color selectColorBlue = new Color(0f, .75f, 1f, 1f);
 	public static Color selectColorRed  = new Color(1f, .75f, 0f, 1f);

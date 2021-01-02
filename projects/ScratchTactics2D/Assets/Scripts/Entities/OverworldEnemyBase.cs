@@ -40,7 +40,7 @@ public class OverworldEnemyBase : OverworldEntity
 		return enemy;
 	}
 	
-    protected void Awake() {
+    protected override void Awake() {
 		base.Awake();
 		//
 		tickPool = 0;

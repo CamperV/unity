@@ -7,6 +7,7 @@ using UnityEngine;
 
 public abstract class Unit : TacticsEntityBase
 {
+	// flags, constants, etc
 	private readonly float scaleFactor = 0.75f;
 	private bool animFlag = false;
 	private bool selectionLock = false;
@@ -18,13 +19,21 @@ public abstract class Unit : TacticsEntityBase
 	public UnitUI unitUIPrefab;
 	[HideInInspector] public UnitUI unitUI;
 
+	//
+	// what can't I run through?
 	public HashSet<Vector3Int> obstacles {
 		get {
 			return parentController.GetObstacles();
 		}
 	}
 
-	// to be defined at a lower level
+	// Equipment management
+	public Weapon equippedWeapon {
+		get => unitStats.inventory.equippedWeapon;
+		set => unitStats.inventory.EquipWeapon(value);
+	}
+
+	// Attribute Area
 	// defaultStats is static, and will be defined by the final class
 	public abstract UnitStats unitStats { get; set; }
 	public Guid ID { get => unitStats.ID; }
@@ -32,17 +41,17 @@ public abstract class Unit : TacticsEntityBase
 		get => unitStats.STRENGTH;
 		set => unitStats.STRENGTH = value;
 	}
-    public int HEALTH {
-		get => unitStats.HEALTH;
+    public int HP {
+		get => unitStats.HP;
 		set {
-			unitStats.HEALTH = value;
-			unitUI.UpdateHealthBar(unitStats.HEALTH);
+			unitStats.HP = value;
+			unitUI.UpdateHealthBar(unitStats.HP);
 		}
 	}
-	public int MAXHEALTH {
-		get => unitStats.MAXHEALTH;
+	public int MAXHP {
+		get => unitStats.MAXHP;
 		set {
-			unitStats.MAXHEALTH = value;
+			unitStats.MAXHP = value;
 			unitUI.healthBar.maxPips = value;
 		}
 	}
@@ -50,9 +59,10 @@ public abstract class Unit : TacticsEntityBase
 		get => unitStats.MOVE;
 		set => unitStats.MOVE = value;
 	}
-    public int RANGE {
-		get => unitStats.RANGE;
-		set => unitStats.RANGE = value;
+
+	// derived stat: calculate from equipped weapon + modifiers
+    public int _RANGE {
+		get => equippedWeapon?.REACH ?? 1;
 	}
 
 	// cache the movement range for easier lookup later
@@ -64,11 +74,11 @@ public abstract class Unit : TacticsEntityBase
 		["Attack"] = true
 	};
 
-	void Awake() {
+	protected override void Awake() {
 		base.Awake();
 
 		unitUI = Instantiate(unitUIPrefab, this.transform);
-		unitUI.healthBar.InitHealthBar(MAXHEALTH);
+		unitUI.healthBar.InitHealthBar(MAXHP);
 		unitUI.SetTransparency(0.0f);
 		unitUI.transform.parent = this.transform;
 	}
@@ -150,7 +160,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 	
 	public override bool IsActive() {
-		return gameObject.activeInHierarchy && HEALTH > 0;
+		return gameObject.activeInHierarchy && HP > 0;
 	}
 
 	public bool OptionActive(string optionToCheck) {
@@ -176,7 +186,7 @@ public abstract class Unit : TacticsEntityBase
 
 	public void ApplyStats(UnitStats stats) {
 		unitStats = stats;
-		unitUI.UpdateHealthBar(HEALTH);
+		unitUI.UpdateHealthBar(HP);
 	}
 
 	// Action zone
@@ -201,7 +211,7 @@ public abstract class Unit : TacticsEntityBase
 		tiles.ExceptWith(obstacles);
 
 		var moveable = (OptionActive("Move")) ? MOVE : 0;
-		var attackable = (OptionActive("Attack")) ? RANGE : 0;
+		var attackable = (OptionActive("Attack")) ? _RANGE : 0;
 		moveRange = MoveRange.MoveRangeFrom(gridPosition, tiles, range: moveable);
 		attackRange = AttackRange.AttackRangeFrom(moveRange, grid.GetAllTilePos(), range: attackable);
 	}
@@ -246,17 +256,21 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void Attack(Unit other) {
-		other.SufferDamage(STRENGTH);
+		// calculate damage here
+		var outgoingDamage = (STRENGTH + equippedWeapon.MIGHT);
+		var totalResistance = 0;
+
+		other.SufferDamage(outgoingDamage - totalResistance);
 	}
 
 	public void SufferDamage(int incomingDamage) {
-		HEALTH -= incomingDamage;
+		HP -= incomingDamage;
 		StartCoroutine(FlashColor(Utils.threatColorRed));
 		StartCoroutine(Shake(0.075f));
 
-		Debug.Log($"{this} suffered {incomingDamage}, {HEALTH}/{MAXHEALTH} health remaining.");
+		Debug.Log($"{this} suffered {incomingDamage}, {HP}/{MAXHP} health remaining.");
 
-		if (HEALTH < 1) { Die(); }
+		if (HP < 1) { Die(); }
 	}
 
 	public void Die() {

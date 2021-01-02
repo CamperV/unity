@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Extensions {
     public static class Extensions {
@@ -62,6 +64,20 @@ namespace Extensions {
             T r = list[index];
             list.RemoveAt(index);
             return r;
+        }
+
+        public static List<T> RandomSelections<T>(this List<T> l, int numSelections) {
+            List<T> retVal = new List<T>();
+            List<int> available = Enumerable.Range(0, l.Count).ToList();
+            
+            while (retVal.Count < numSelections) {
+                var avaIndex = Random.Range(0, available.Count);
+                var selIndex = available[avaIndex];
+                
+                retVal.Add(l[selIndex]);
+                available.Remove(selIndex);
+            }
+            return retVal;
         }
     }
 }

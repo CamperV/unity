@@ -17,7 +17,7 @@ public class PlayerUnitController : Controller
 
 	private Enum.InteractState interactState;
 	
-	protected void Awake() {
+	protected override void Awake() {
 		base.Awake();
 		myPhase = Enum.Phase.player;
 		grid = GameManager.inst.tacticsManager.GetActiveGrid();
@@ -158,7 +158,7 @@ public class PlayerUnitController : Controller
 						// dumb shenanigans: clear then re-select
 						// if there is an enemy in the selection, keep it alive
 						// otherwise, end the turn						
-						if (PossibleValidAttack(currentSelection, GetRegisteredInBattle())) {
+						if (PossibleValidAttack(currentSelection, GetOpposing())) {
 							StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
 								SelectUnit(currentSelection.gridPosition);
 							})); 
@@ -170,11 +170,13 @@ public class PlayerUnitController : Controller
 
 					// if the mouseDown is on a valid attackable are (after moving)
 					if (currentSelection.OptionActive("Attack") && currentSelection.attackRange.ValidAttack(currentSelection, target)) {
-						AttackUnit(target);
-						currentSelection.SetOption("Attack", false);
+						if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
+							AttackUnit(target);
+							currentSelection.SetOption("Attack", false);
 
-						EndTurnSelectedUnit();
-						break;
+							EndTurnSelectedUnit();
+							break;
+						}
 					}
 				}
 

@@ -11,12 +11,17 @@ public class UnitMercenary : Unit
             return new UnitStats {
                 unitTag = "UnitMercenary",
 
+                MAXHP     = 10,
                 STRENGTH  = 3,
-                HEALTH    = 10,
-                MAXHEALTH = 10,
+                DEXTERITY = 3,
+                SPEED     = 5,
                 MOVE      = 5,
-                RANGE     = 2
-            };
+
+                inventoryPool = new List<Weapon>{
+                    new Shortsword(),
+                    new ThrowingDagger()
+                }
+            }.DeriveRemaining();
         }
     }
 

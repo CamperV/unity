@@ -10,7 +10,7 @@ public class EnemyUnitController : Controller
 	private bool subjectsActingTrigger;
 	private TacticsGrid grid;
 	
-	protected void Awake() {
+	protected override void Awake() {
 		base.Awake();
 		myPhase = Enum.Phase.enemy;
 		grid = GameManager.inst.tacticsManager.GetActiveGrid();
@@ -144,7 +144,7 @@ public class EnemyUnitController : Controller
 		// util
 
 		// max allowable attack positions (max range/reach)
-		var targetable = targetPosition.Radiate(subject.RANGE).Where(it => Traversable(it));
+		var targetable = targetPosition.Radiate(subject._RANGE).Where(it => Traversable(it));
 		float maxDistWithin = targetable.Max(it => DistToTarget(it));
 		var atMaxDist = targetable.Where(it => DistToTarget(it) == maxDistWithin);
 

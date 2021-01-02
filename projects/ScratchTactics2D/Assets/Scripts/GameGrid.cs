@@ -16,7 +16,7 @@ public abstract class GameGrid : MonoBehaviour
 	private Dictionary<Vector3Int, Component> occupancyGrid;
 	//
 	
-	protected void Awake() {				
+	protected virtual void Awake() {				
 		// we have a Grid object which is actually attached
 		// the Tilemap is a child of the Grid object
 		var tilemapComponents = GetComponentsInChildren<Tilemap>();

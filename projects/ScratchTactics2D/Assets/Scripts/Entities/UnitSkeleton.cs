@@ -11,12 +11,16 @@ public class UnitSkeleton : Unit
             return new UnitStats {
                 unitTag = "UnitSkeleton",
 
+                MAXHP     = 5,
                 STRENGTH  = 1,
-                HEALTH    = 5,
-                MAXHEALTH = 5,
+                DEXTERITY = 1,
+                SPEED     = 3,
                 MOVE      = 4,
-                RANGE     = 2
-            };
+
+                inventoryPool = new List<Weapon>{
+                    new Shortsword()
+                }
+            }.DeriveRemaining();
         }
     }
 

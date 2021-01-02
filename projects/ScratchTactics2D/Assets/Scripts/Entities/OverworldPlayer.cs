@@ -27,10 +27,6 @@ public class OverworldPlayer : OverworldEntity
 		
 		return player;
 	}
-
-    protected void Awake() {
-		base.Awake();
-    }
 		
 	public void ResetPosition(Vector3Int v) {
 		gridPosition = v;

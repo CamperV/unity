@@ -118,7 +118,7 @@ public class Battle : MonoBehaviour
 		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
-		var playerSpawnPositions = Utils.RandomSelections<Vector3Int>(playerSpawnZone, player.barracks.Count);
+		var playerSpawnPositions = playerSpawnZone.RandomSelections<Vector3Int>(player.barracks.Count);
 
 		// the player will maintain a barracks of units
 		// the player has reference to each prefab needed, so we instantiate a prefab here
@@ -134,7 +134,7 @@ public class Battle : MonoBehaviour
 
 		// LoadUnitsByTag will look up if an appropriate prefab has already been loaded from the Resources folder
 		// if it has, it will instantiate it. If not, it will load first
-		var otherSpawnPositions = Utils.RandomSelections<Vector3Int>(otherSpawnZone, other.barracks.Count);
+		var otherSpawnPositions = otherSpawnZone.RandomSelections<Vector3Int>(other.barracks.Count);
 
 		foreach (UnitStats unitStats in other.barracks.Values) {
 			Debug.Log($"Got {unitStats}, {unitStats.unitTag}/{unitStats.ID}/{unitStats.unitName}");

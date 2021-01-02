@@ -17,7 +17,7 @@ public class EnemyController : Controller
 	public HashSet<Vector3Int> traversable = new HashSet<Vector3Int>();
 	public HashSet<Vector3Int> currentEnemyPositions = new HashSet<Vector3Int>();
 
-	protected void Awake() {
+	protected override void Awake() {
 		base.Awake();
 		//
 		myPhase = Enum.Phase.enemy;

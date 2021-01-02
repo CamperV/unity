@@ -27,7 +27,7 @@ public class TacticsEntityBase : MovingObject
 		return entity;
 	}
 	
-	protected void Awake() {
+	protected virtual void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
 		

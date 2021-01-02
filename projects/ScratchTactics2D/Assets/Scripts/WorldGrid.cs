@@ -6,6 +6,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
+using Extensions;
 
 public class WorldGrid : GameGrid
 {
@@ -15,7 +16,7 @@ public class WorldGrid : GameGrid
 	
 	private Canvas tintCanvas;
 	
-	void Awake() {
+	protected override void Awake() {
 		base.Awake();
 		
 		// tileOptions determine probability order as well
@@ -215,7 +216,7 @@ public class WorldGrid : GameGrid
 		// choose some %age of mountains to link
 		// "3" is mountain type in mapMatrix
 		List<Vector3Int> posList = PositionsOfType(mapMatrix, 3);
-		List<Vector3Int> toLink = Utils.RandomSelections<Vector3Int>(posList, (int)(posList.Count/2));
+		List<Vector3Int> toLink = posList.RandomSelections<Vector3Int>((int)(posList.Count/2));
 		
 		// for each linking mountain, find the closest next mountain, and link to it
 		foreach(Vector3Int startMountain in toLink) {
