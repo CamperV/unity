@@ -39,7 +39,7 @@ public class TacticsManager : MonoBehaviour
 					draggingView = true;
 				}
 				// update pos by offset, release drag when mouse goes up
-				if (draggingView){
+				if (draggingView) {
 					activeBattle.transform.position = mouseWorldPos + dragOffset;
 				}
 
@@ -63,6 +63,8 @@ public class TacticsManager : MonoBehaviour
 					activeBattle.transform.position = mouseWorldPos + (localToMouse * scaleRatio);
 				}
 			}
+
+			// offer alternative Unit focus here, instead of only the bounding box
 		}       
     }
 	

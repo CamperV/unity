@@ -116,10 +116,11 @@ public class PlayerUnitController : Controller
 		// this is the contextual interaction
 		// get the gridPosition of the targeted click
 		// check a unit's box collider too, so that user can click the sprite too
+		// ALSO, make sure a ghosted clickable is click-thru only
 		Vector3Int target = GameManager.inst.mouseManager.currentMouseGridPos;
 
 		foreach (TacticsEntityBase clickable in GetRegisteredInBattle().OrderBy(it => it.transform.position.y)) {
-			if (clickable.ColliderContains(GameManager.inst.mouseManager.mouseWorldPos)) {
+			if (!clickable.ghosted && clickable.ColliderContains(GameManager.inst.mouseManager.mouseWorldPos)) {
 				target = clickable.gridPosition;
 				break;
 			}

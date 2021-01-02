@@ -8,6 +8,15 @@ public class TacticsEntityBase : MovingObject
 	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;
 	protected BoxCollider2D boxCollider2D;
+
+	private bool _ghosted = false;
+	public bool ghosted {
+		get => _ghosted;
+		set {
+			_ghosted = value;
+			SetTransparency((_ghosted) ? 0.5f : 1.0f);
+		}
+	}
 	
 	// this is higher up, because we should be able to have Entities which are not Units
 	public static TacticsEntityBase Spawn(TacticsEntityBase prefab, Vector3Int tilePos, TacticsGrid grid) {
@@ -48,5 +57,11 @@ public class TacticsEntityBase : MovingObject
 
 	public bool ColliderContains(Vector3 v) {
 		return boxCollider2D.bounds.Contains((Vector2)v);
+	}
+		
+	private void SetTransparency(float val) {
+		var currColor = spriteRenderer.color;
+		currColor.a = val;
+		spriteRenderer.color = currColor;
 	}
 }

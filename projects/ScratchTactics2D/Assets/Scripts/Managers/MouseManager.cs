@@ -6,7 +6,6 @@ public class MouseManager : MonoBehaviour
 {
 	private GameGrid currentActiveGrid;
 	
-	private Vector3 prevMousePos;
 	private float timeSinceLastMove = 0.0f;
 	
 	[HideInInspector] public Vector3 mouseWorldPos;
@@ -19,17 +18,8 @@ public class MouseManager : MonoBehaviour
     }
 
     void Update() {
-		prevMousePos = Input.mousePosition;
 		mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		
-		// in overworld mode:
-		if (GameManager.inst.gameState == Enum.GameState.overworld) {
-			currentActiveGrid = GameManager.inst.worldGrid;
-			
-		// in tactics mode:
-		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
-			currentActiveGrid = GameManager.inst.tacticsManager.GetActiveGrid();
-		}
+		currentActiveGrid = GameManager.inst.GetActiveGrid();
 		
 		// store old position and get new position
 		prevMouseGridPos = currentMouseGridPos;
@@ -42,21 +32,12 @@ public class MouseManager : MonoBehaviour
 			timeSinceLastMove += Time.deltaTime;
 		}
 		
-		//
-		// overlay selection tile
-		//
-		if (GameManager.inst.gameState == Enum.GameState.overworld) {
-			// remove previous highlighting
-			// convert back to real after messing w/ active grid
-			SelectTile();
-		}
-		
 		// debug
 		/*
 		if (Input.GetMouseButtonDown(0)) {
 			Debug.Log("worldPos: " + Camera.main.ScreenToWorldPoint(Input.mousePosition));
 			Debug.Log("currentMouseGridPos: " + currentMouseGridPos);
-			Debug.Log("currentActiveGrid: " + currentActiveGrid);
+			Debug.Log("currentActiv)eGrid: " + currentActiveGrid);
 		}
 		*/
     }

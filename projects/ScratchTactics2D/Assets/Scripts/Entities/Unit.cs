@@ -10,7 +10,7 @@ public abstract class Unit : TacticsEntityBase
 	private readonly float scaleFactor = 0.75f;
 	private bool animFlag = false;
 	private bool selectionLock = false;
-	private bool inFocus = false;
+	[HideInInspector] public bool inFocus = false;
 
 	// NOTE this is set by a Controller during registration
 	public Controller parentController;
@@ -83,62 +83,69 @@ public abstract class Unit : TacticsEntityBase
 		}
 	}
 	
-	void OnMouseEnter() {		
-		if (selectionLock) return;
-		SetFocus(true);
+	//void OnMouseOver() {
+	//	Debug.DrawLine(boxCollider2D.bounds.min, boxCollider2D.bounds.max);
+	//}
+	void OnMouseOver() {	
+		if (!ghosted) SetFocus(true);
 	}
 	void OnMouseExit() {
 		if (selectionLock) return;
 		SetFocus(false);
 	}
 
+	void Update() {
+		// control all color information here, via polymorphic resolution
+		var grid = GameManager.inst.GetActiveGrid();
+		var mm = GameManager.inst.mouseManager;
+
+		// Focus control: reset if applicable and highlight/focus
+		if (!selectionLock && mm.prevMouseGridPos == gridPosition) SetFocus(false);
+		if (!IsMoving() && mm.currentMouseGridPos == gridPosition) SetFocus(true);
+
+		// Ghost control
+		ghosted = false;
+		if (!inFocus) {
+			// each unit will check its own processes to see if it should be ghosted
+			// having multiple senders, i.e. PathOverlayIso tiles and other Units, is difficult to keep track of
+
+			// if there is any overlay that can be obscured:
+			Vector3Int northPos = gridPosition + new Vector3Int(1, 1, 0);
+			if (grid.GetOverlayAt(gridPosition) || grid.GetOverlayAt(northPos)) {
+				ghosted = true;
+			}
+					
+			// or, if there is a Unit with an active focus right behind
+			if (((Unit)grid.OccupantAt(northPos))?.inFocus ?? false) {
+				ghosted = true;
+			}
+		}
+
+		// Color control
+		// if no options are available, set your color again, just to be sure
+		if (!optionAvailability.Values.Where(it => it == true).Any()) {
+			spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f,
+											 spriteRenderer.color.a);
+		}
+	}
+
 	public void SetFocus(bool takeFocus) {
+		if (takeFocus == inFocus) return;
+
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
-		switch (takeFocus) {
-			case true:
-				inFocus = true;
-				SetTransparency(1.0f);
+		inFocus = takeFocus;
+		if (takeFocus) {
+			unitUI.SetTransparency(1.0f);
 
-				var overlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
-				GameManager.inst.GetActiveGrid().OverlayAt(gridPosition, overlayTile);
-				//
-				unitUI.SetTransparency(1.0f);
+			var overlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
+			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
+			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, overlayTile);
+		} else {
+			unitUI.SetTransparency(0.0f);
 
-				// find if you're behind things
-				// if you are, fade those in front things
-				foreach (Unit activeUnit in parentController.GetRegisteredInBattle()) {
-					if (activeUnit.inFocus) continue;
-
-					// if a unit is potentially in front of us
-					if (activeUnit.transform.position.y <= transform.position.y) {
-
-						// and also is intersecting w/ you
-						// don't use compound if for line-length readability
-						if (boxCollider2D.bounds.Intersects(activeUnit.boxCollider2D.bounds)) {
-							activeUnit.SetTransparency(0.5f);
-						}
-					}
-				}
-				break;
-
-			case false:
-				inFocus = false;
-
-				GameManager.inst.GetActiveGrid().ResetOverlayAt(gridPosition);
-				//
-				unitUI.SetTransparency(0.0f);
-
-				foreach (Unit activeUnit in parentController.GetRegisteredInBattle()) {
-					if (!activeUnit.Equals(this) && activeUnit.transform.position.y <= transform.position.y) {
-						// and also is intersecting w/ you
-						// don't use compound if for line-length readability
-						if (boxCollider2D.bounds.Intersects(activeUnit.boxCollider2D.bounds)) {
-							activeUnit.SetTransparency(1.0f);
-						}
-					}	
-				}
-				break;	
+			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
+			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, null);			
 		}
 	}
 	
@@ -185,7 +192,6 @@ public abstract class Unit : TacticsEntityBase
 			foreach (var k in optionAvailability.Keys.ToList()) {
 				optionAvailability[k] = false;
 			}
-			spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f, 1f);
 		})); 
 	}
 
@@ -272,17 +278,18 @@ public abstract class Unit : TacticsEntityBase
 
 	public IEnumerator FlashColor(Color color) {
 		animFlag = true;
+		var ogColor = spriteRenderer.color;
 
 		float c = 1.0f;
 		float rate = 0.005f;
 		while (c > 0.0f) {
-			var colorDiff = Color.white - (c * (Color.white - color));
+			var colorDiff = ogColor - (c * (ogColor - color));
 			spriteRenderer.color = new Color(colorDiff.r, colorDiff.g, colorDiff.b, 1);
 			c -= rate;
 			rate *= 1.05f;
 			yield return null;
 		}
-		spriteRenderer.color = Color.white;
+		spriteRenderer.color = ogColor;
 		animFlag = false;
 	}
 
@@ -296,16 +303,10 @@ public abstract class Unit : TacticsEntityBase
 		transform.position = ogPosition;
 	}
 
-	public IEnumerator ExecuteAfterAnimating(Action voidAction) {
+	public IEnumerator ExecuteAfterAnimating(Action VoidAction) {
 		while (animFlag) {
 			yield return null;
 		}
-		voidAction();
-	}
-	
-	public void SetTransparency(float val) {
-		var currColor = spriteRenderer.color;
-		currColor.a = val;
-		spriteRenderer.color = currColor;
+		VoidAction();
 	}
 }
