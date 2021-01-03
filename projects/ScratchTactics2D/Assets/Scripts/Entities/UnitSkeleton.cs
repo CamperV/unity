@@ -11,10 +11,10 @@ public class UnitSkeleton : Unit
             return new UnitStats {
                 unitTag = "UnitSkeleton",
 
-                MAXHP     = 5,
+                VITALITY  = 5,
                 STRENGTH  = 1,
                 DEXTERITY = 1,
-                SPEED     = 3,
+                REFLEX    = 3,
                 MOVE      = 4,
 
                 inventoryPool = new List<Equipment>{

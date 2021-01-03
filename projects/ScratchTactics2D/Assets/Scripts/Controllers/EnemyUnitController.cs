@@ -110,9 +110,13 @@ public class EnemyUnitController : Controller
 
 			if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, targetPosition)) {
 				var unitAt = (Unit)grid.OccupantAt(targetPosition);
-				subject.Attack(unitAt);
-				//
-				subject.SetOption("Attack", false);
+				var engagement = new Engagement(subject, unitAt);
+				StartCoroutine(engagement.Start());
+
+				// wait until the engagement has ended
+				StartCoroutine(engagement.ExecuteAfterResolving(() => {
+					subject.SetOption("Attack", false);
+				}));
 			}
 
 			// finally:

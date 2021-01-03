@@ -11,10 +11,10 @@ public class UnitMercenary : Unit
             return new UnitStats {
                 unitTag = "UnitMercenary",
 
-                MAXHP     = 10,
+                VITALITY  = 10,
                 STRENGTH  = 3,
                 DEXTERITY = 3,
-                SPEED     = 5,
+                REFLEX    = 5,
                 MOVE      = 5,
 
                 inventoryPool = new List<Equipment>{

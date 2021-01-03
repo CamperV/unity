@@ -170,10 +170,16 @@ public class PlayerUnitController : Controller
 
 					// if the mouseDown is on a valid attackable are (after moving)
 					if (currentSelection.OptionActive("Attack") && currentSelection.attackRange.ValidAttack(currentSelection, target)) {
-						AttackUnit(target);
-						currentSelection.SetOption("Attack", false);
+						var unitAt = (Unit)grid.OccupantAt(target);
+						
+						var engagement = new Engagement(currentSelection, unitAt);
+						StartCoroutine(engagement.Start());
 
-						EndTurnSelectedUnit();
+						// wait until the engagement has ended
+						StartCoroutine(engagement.ExecuteAfterResolving(() => {
+							currentSelection.SetOption("Attack", false);
+							EndTurnSelectedUnit();
+						}));
 						break;
 					}
 				}
@@ -186,6 +192,8 @@ public class PlayerUnitController : Controller
 				// default: Select someone else
 				SelectUnit(target);
 				break;
+
+			// endcase
 		}
 	}
 	
@@ -222,11 +230,6 @@ public class PlayerUnitController : Controller
 		currentSelection.OnEndTurn();
 		currentSelection = null;
 		ClearSelection();
-	}
-
-	private void AttackUnit(Vector3Int target) {
-		var unitAt = (Unit)grid.OccupantAt(target);
-		currentSelection.Attack(unitAt);
 	}
 
 	private void SkipPhase() {

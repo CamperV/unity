@@ -150,11 +150,11 @@ public abstract class MovingObject : MonoBehaviour
 		GameManager.inst.tacticsManager.scrollLock = false;
 	}
 
-	public IEnumerator ExecuteAfterMoving(Action voidAction) {
+	public IEnumerator ExecuteAfterMoving(Action VoidAction) {
 		while (crtMovingFlag) {
 			yield return null;
 		}
-		voidAction();
+		VoidAction();
 	}
 	
 	public virtual void OnBlocked<T>(T component) where T : Component { return; }

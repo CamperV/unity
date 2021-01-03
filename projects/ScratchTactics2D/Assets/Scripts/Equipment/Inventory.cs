@@ -23,7 +23,10 @@ public class Inventory
         // just go ahead and call the constructors ahead of time
         foreach (var e in equipment) {
             totalWeight += e.weight;
-            weapons.Add( (e as Weapon) );
+
+            if (e is Weapon) {
+                weapons.Add( (e as Weapon) );
+            }   
         }
 
         EquipWeapon(weapons[0]);

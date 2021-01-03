@@ -4,6 +4,7 @@ using System.Linq;
 using System;
 using Random = UnityEngine.Random;
 using UnityEngine;
+using Extensions;
 
 public abstract class Unit : TacticsEntityBase
 {
@@ -37,23 +38,25 @@ public abstract class Unit : TacticsEntityBase
 	// defaultStats is static, and will be defined by the final class
 	public abstract UnitStats unitStats { get; set; }
 	public Guid ID { get => unitStats.ID; }
+
+	public int VITALITY {
+		get => unitStats.VITALITY;
+		set {
+			unitStats.VITALITY = value;
+			unitUI.healthBar.maxPips = value;
+		}
+	}
     public int STRENGTH {
 		get => unitStats.STRENGTH;
 		set => unitStats.STRENGTH = value;
 	}
-    public int HP {
-		get => unitStats.HP;
-		set {
-			unitStats.HP = value;
-			unitUI.UpdateHealthBar(unitStats.HP);
-		}
+    public int DEXTERITY {
+		get => unitStats.DEXTERITY;
+		set => unitStats.DEXTERITY = value;
 	}
-	public int MAXHP {
-		get => unitStats.MAXHP;
-		set {
-			unitStats.MAXHP = value;
-			unitUI.healthBar.maxPips = value;
-		}
+    public int REFLEX {
+		get => unitStats.REFLEX;
+		set => unitStats.REFLEX = value;
 	}
     public int MOVE {
 		get => unitStats.MOVE;
@@ -61,6 +64,17 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	// derived stat: calculate from equipped weapon + modifiers
+	public int _HP {
+		get => unitStats._HP;
+		set {
+			unitStats._HP = value;
+			unitUI.UpdateHealthBar(unitStats._HP);
+		}
+	}
+    public int _CAPACITY {
+		get => unitStats._CAPACITY;
+		set => unitStats._CAPACITY = value;
+	}
     public int _RANGE {
 		get => equippedWeapon?.REACH ?? 1;
 	}
@@ -78,7 +92,7 @@ public abstract class Unit : TacticsEntityBase
 		base.Awake();
 
 		unitUI = Instantiate(unitUIPrefab, this.transform);
-		unitUI.healthBar.InitHealthBar(MAXHP);
+		unitUI.healthBar.InitHealthBar(VITALITY);
 		unitUI.SetTransparency(0.0f);
 		unitUI.transform.parent = this.transform;
 	}
@@ -160,7 +174,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 	
 	public override bool IsActive() {
-		return gameObject.activeInHierarchy && HP > 0;
+		return gameObject.activeInHierarchy && _HP > 0;
 	}
 
 	public bool OptionActive(string optionToCheck) {
@@ -186,7 +200,7 @@ public abstract class Unit : TacticsEntityBase
 
 	public void ApplyStats(UnitStats stats) {
 		unitStats = stats;
-		unitUI.UpdateHealthBar(HP);
+		unitUI.UpdateHealthBar(_HP);
 	}
 
 	// Action zone
@@ -255,22 +269,69 @@ public abstract class Unit : TacticsEntityBase
 		gridPosition = target;
 	}
 
-	public void Attack(Unit other) {
-		// calculate damage here
-		var outgoingDamage = (STRENGTH + equippedWeapon.MIGHT);
-		var totalResistance = 0;
-
-		other.SufferDamage(outgoingDamage - totalResistance);
+	public bool InStandingAttackRange(Vector3Int target) {
+		return gridPosition.Radiate(_RANGE).ToList().Contains(target);
 	}
 
-	public void SufferDamage(int incomingDamage) {
-		HP -= incomingDamage;
+	public Attack GenerateAttack(bool isAggressor = true) {
+		// range has already been calculated, otherwise we couldn't initiate the attack
+		// calc hit rate
+		// calc is crit?
+		// calc damage
+		// package it up w/ weapon/attack type (Slash/Pierce/Blunt)
+		float strScalingDamage = (STRENGTH * equippedWeapon.strScalingBonus);
+		float dexScalingDamage = (DEXTERITY * equippedWeapon.dexScalingBonus);
+		int baseDamage = (int)(equippedWeapon.MIGHT + strScalingDamage + dexScalingDamage);
+
+		int critRate = DEXTERITY + equippedWeapon.CRITICAL;
+		int hitRate = (DEXTERITY*2) + equippedWeapon.ACCURACY;
+
+		string attackType;
+		if (equippedWeapon is WeaponSlash) {
+			attackType = "WeaponSlash";
+		} else {
+			attackType = "None";
+		}
+		return new Attack(baseDamage, hitRate, critRate, attackType);
+	}
+
+	public bool ReceiveAttack(Attack incomingAttack) {
+		int finalHitRate = incomingAttack.hitRate - (REFLEX*2);
+		int finalCritRate = incomingAttack.critRate - REFLEX;
+
+		// calc hit/crit
+		int diceRoll = Random.Range(0, 100);
+		bool isHit = diceRoll < finalHitRate;
+
+		// final retval
+		bool survived = true;
+		if (isHit) {
+			bool isCrit = diceRoll < finalCritRate;
+			int finalDamage = (int)((isCrit) ? incomingAttack.damage*3 : incomingAttack.damage);
+
+			if (isCrit) Debug.Log($"Critical hit! ({finalCritRate}%) for {finalDamage} damage");
+			survived = SufferDamage(finalDamage);
+		} else {
+			Debug.Log($"{this} dodged the attack! ({finalHitRate}% to hit)");
+		}
+
+		return survived;
+	}
+
+	public bool SufferDamage(int incomingDamage) {
+		bool survived = true;
+		_HP -= incomingDamage;
+		//
 		StartCoroutine(FlashColor(Utils.threatColorRed));
 		StartCoroutine(Shake(0.075f));
 
-		Debug.Log($"{this} suffered {incomingDamage}, {HP}/{MAXHP} health remaining.");
+		Debug.Log($"{this} suffered {incomingDamage}, {_HP}/{VITALITY} health remaining.");
 
-		if (HP < 1) { Die(); }
+		if (_HP < 1) {
+			Die();
+			survived = false;
+		}
+		return survived;
 	}
 
 	public void Die() {
@@ -322,5 +383,9 @@ public abstract class Unit : TacticsEntityBase
 			yield return null;
 		}
 		VoidAction();
+	}
+
+	public bool IsAnimating() {
+		return animFlag;
 	}
 }

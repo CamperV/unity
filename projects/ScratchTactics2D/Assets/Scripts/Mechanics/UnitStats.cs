@@ -12,30 +12,29 @@ public class UnitStats
     public string unitName;
 
     // Attributes!  
-    public int MAXHP;       // starting value and upper bound of HP
-    public int STRENGTH;    // contributes to damage and carrying capacity(?)
-    public int DEXTERITY;   // contributes to damage and accuracy
-    public int SPEED;       // contributes to evasion and critical
+    public int VITALITY;    // starting value and upper bound of _HP
+    public int STRENGTH;    // contributes to scaling damage, and carrying capacity
+    public int DEXTERITY;   // contributes to scaling damage, hit rate, and critical rate
+    public int REFLEX;      // contributes to evasion and critical evasion
     public int MOVE;        // dictates squares a unit can move in a turn
 
     // Derived Attributes!
-    public int HP;          // tracks current Hit Points/Health
-    public int CAPACITY;    // dictates how much weight a unit can carry at once
+    public int _HP;          // tracks current Hit Points/Health
+    public int _CAPACITY;    // dictates how much weight a unit can carry at once
 
     public List<Equipment> inventoryPool; // choose from this pool when spawning to determine your inventory
     public Inventory inventory;
 
     // use the bare constructor for readability when creating default stats 
     public UnitStats() { }
-
     public override string ToString() {
-        return $"UnitStats=>{unitName}/{unitTag}/S{STRENGTH}.D{DEXTERITY}.H{HP}/{MAXHP}.M{MOVE}";
+        return $"UnitStats=>{unitName}/{unitTag}/S{STRENGTH}.D{DEXTERITY}.H{_HP}/{VITALITY}.M{MOVE}";
     }
 
     public UnitStats DeriveRemaining() {
         // after construction, assign the remaining stats
-        HP = MAXHP;
-        CAPACITY = STRENGTH;
+        _HP = VITALITY;
+        _CAPACITY = STRENGTH;
 
         // this will later be limited by strength
         inventory = new Inventory(inventoryPool.RandomSelections<Equipment>(1));
