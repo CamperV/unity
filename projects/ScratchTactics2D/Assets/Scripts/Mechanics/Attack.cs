@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Attack
 {
+    public readonly float criticalMultiplier = 3.0f;
+
     public int damage;
     public int hitRate;
     public int critRate;

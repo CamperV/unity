@@ -8,15 +8,19 @@ public class Engagement
     private Unit aggressor;
     private Unit defender;
 
-    public Tuple<bool, bool> results { get; private set; }
+    public bool resolved { get; private set; }
+    public EngagementResults results { get; private set; }
 
     // this class is created for an acutal battle between two Units
     public Engagement(Unit a, Unit b) {
+        resolved = false;
+
         aggressor = a;
         defender = b;
     }
 
-    public IEnumerator Start() {
+    public IEnumerator ResolveResults() {
+        Debug.Assert(resolved == false);
         bool aggressorSurvived = true;
         bool defenderSurvived = true;
 
@@ -28,7 +32,7 @@ public class Engagement
         defenderSurvived = defender.ReceiveAttack(firstAttack);
 
         // create a little pause before counterattacking
-        while (defender.IsAnimating()) yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.5f);
 
         // if we can counterattack:
         if (defenderSurvived && defender.InStandingAttackRange(aggressor.gridPosition)) {
@@ -38,14 +42,15 @@ public class Engagement
             aggressorSurvived = aggressor.ReceiveAttack(counterAttack);
 
             // pause again to let the animation finish
-            while (aggressor.IsAnimating()) yield return null;
+            yield return new WaitForSeconds(0.5f);
         }
 
-        results = new Tuple<bool, bool>(aggressorSurvived, defenderSurvived);
+        results = new EngagementResults(aggressor, defender, aggressorSurvived, defenderSurvived);
+        resolved = true;
     }
-
+    
 	public IEnumerator ExecuteAfterResolving(Action VoidAction) {
-		while (results == null) {
+		while (!resolved) {
 			yield return null;
 		}
 		VoidAction();

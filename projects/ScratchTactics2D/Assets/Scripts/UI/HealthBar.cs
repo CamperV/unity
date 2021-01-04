@@ -26,7 +26,7 @@ public class HealthBar : MonoBehaviour
 
     void Start() {
         transform.position -= barTilemap.localBounds.center;
-        transform.position += new Vector3(0, barTilemap.localBounds.center.y*11, 0);
+        transform.position -= new Vector3(0, barTilemap.localBounds.center.y*2, 0);
     }
 
     public void InitHealthBar(int max) {

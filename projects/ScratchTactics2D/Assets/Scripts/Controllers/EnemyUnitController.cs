@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Extensions;
 
-public class EnemyUnitController : Controller
+public class EnemyUnitController : UnitController
 {
 	private bool subjectsActingTrigger;
 	private TacticsGrid grid;
@@ -77,9 +77,10 @@ public class EnemyUnitController : Controller
 	public IEnumerator SubjectsTakeAction() {
 		// cache the playerController to pull from its registry
 		var playerController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(Enum.Phase.player);
+		List<MovingObject> activeRegistryClone = new List<MovingObject>(activeRegistry);
 
-		for (int i = 0; i < activeRegistry.Count; i++) {
-			Unit subject = (Unit)activeRegistry[i];
+		for (int i = 0; i < activeRegistryClone.Count; i++) {
+			Unit subject = (Unit)activeRegistryClone[i];
 			var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 			
 			// determine some order in which the enemies act
@@ -89,34 +90,41 @@ public class EnemyUnitController : Controller
 			subject.UpdateThreatRange();
 
 			var targetPosition = GetTargetInAttackRange(subject, playerController.activeRegistry);
-			if (targetPosition == -1*Vector3Int.one) targetPosition = GetClosestTarget(subject, playerController.activeRegistry);
+			if (targetPosition == -1*Vector3Int.one) {
+				targetPosition = GetClosestTarget(subject, playerController.activeRegistry);
+			}
 
 			// now that we have the target location, find all the "attackable" squares surrounding it
 			// then, select the optimal square to move into to perform your attack
 			var optimalPosition = GetOptimalToAttack(subject, targetPosition);
 
 			if (subject.OptionActive("Move") && optimalPosition != subject.gridPosition) {
+				subject.SetOption("Move", false);
+
 				// now, find a full path to the location
 				// even if we can't reach it, just go as far as you can
 				var pathToTarget = MovingObjectPath.GetPathTo(subject.gridPosition, optimalPosition, subject.obstacles);
 				var clippedPath  = MovingObjectPath.Clip(pathToTarget, subject.moveRange);
 				//
 				subject.TraverseTo(clippedPath.end, fieldPath: clippedPath);
-				subject.SetOption("Move", false);
 
 				// spin until this subject is entirely done moving
 				while (subject.IsMoving()) { yield return null; }
 			}
 
 			if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, targetPosition)) {
+				subject.SetOption("Attack", false);
+
 				var unitAt = (Unit)grid.OccupantAt(targetPosition);
 				var engagement = new Engagement(subject, unitAt);
-				StartCoroutine(engagement.Start());
 
 				// wait until the engagement has ended
-				StartCoroutine(engagement.ExecuteAfterResolving(() => {
-					subject.SetOption("Attack", false);
-				}));
+				StartCoroutine(engagement.ResolveResults());
+				while (!engagement.resolved) { yield return null; }
+
+				// wait until results have killed units, if necessary
+				StartCoroutine(engagement.results.ResolveCasualties());
+				while (!engagement.results.resolved) { yield return null; }
 			}
 
 			// finally:
@@ -125,7 +133,7 @@ public class EnemyUnitController : Controller
 			subject.OnEndTurn();
 
 			// don't delay if you're the last
-			if (i != activeRegistry.Count-1) {
+			if (i != activeRegistryClone.Count-1) {
 				yield return new WaitForSeconds(0.5f);
 			}
 		}

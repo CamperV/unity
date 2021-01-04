@@ -10,18 +10,18 @@ public abstract class Weapon : Equipment
     public abstract int REACH    { get; }
 
     private Dictionary<string, float> strScalingValues = new Dictionary<string, float>{
-        ["A"] = 4.00f,
-        ["B"] = 2.00f,
-        ["C"] = 1.00f,
-        ["D"] = 0.50f
+        ["A"] = 4.0f,
+        ["B"] = 3.0f,
+        ["C"] = 2.0f,
+        ["D"] = 1.0f
     };
     public abstract string strScaling { get; }
 
     private Dictionary<string, float> dexScalingValues = new Dictionary<string, float>{
-        ["A"] = 2.00f,
-        ["B"] = 1.00f,
-        ["C"] = 0.50f,
-        ["D"] = 0.25f
+        ["A"] = 3.0f,
+        ["B"] = 2.0f,
+        ["C"] = 1.0f,
+        ["D"] = 0.0f
     };
     public abstract string dexScaling { get; }
 

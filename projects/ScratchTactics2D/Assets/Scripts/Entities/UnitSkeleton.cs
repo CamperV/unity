@@ -11,14 +11,15 @@ public class UnitSkeleton : Unit
             return new UnitStats {
                 unitTag = "UnitSkeleton",
 
-                VITALITY  = 5,
+                VITALITY  = 30,
                 STRENGTH  = 1,
                 DEXTERITY = 1,
                 REFLEX    = 3,
                 MOVE      = 4,
 
                 inventoryPool = new List<Equipment>{
-                    new Shortsword()
+                    new Shortsword(),
+                    new ThrowingDagger()
                 }
             }.DeriveRemaining();
         }

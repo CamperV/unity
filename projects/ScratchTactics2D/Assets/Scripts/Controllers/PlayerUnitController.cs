@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class PlayerUnitController : Controller
+public class PlayerUnitController : UnitController
 {
 	private PathOverlayIsoTile pathOverlayTile;
 
@@ -147,40 +147,52 @@ public class PlayerUnitController : Controller
 				if (activeRegistry.Contains(currentSelection)) {
 
 					// if the mouseDown is on a valid square, move to it
-					if (currentSelection.OptionActive("Move") && currentSelection.moveRange.ValidMove(target)) {
-						currentSelection.SetOption("Move", false);
-						currentSelection.OnDeselect();
-						currentSelectionFieldPath?.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
+					if (currentSelection.OptionActive("Move")) {
+						if (currentSelection.moveRange.ValidMove(target)) {
+							currentSelection.SetOption("Move", false);
+							currentSelection.OnDeselect();
+							currentSelectionFieldPath?.UnShow(grid);
 
-						currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
-						//
+							currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
+							//
 
-						// dumb shenanigans: clear then re-select
-						// if there is an enemy in the selection, keep it alive
-						// otherwise, end the turn						
-						if (PossibleValidAttack(currentSelection, GetOpposing())) {
-							StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
-								SelectUnit(currentSelection.gridPosition);
-							})); 
-						} else {
-							EndTurnSelectedUnit();
+							// dumb shenanigans: clear then re-select
+							// if there is an enemy in the selection, keep it alive
+							// otherwise, end the turn						
+							if (PossibleValidAttack(currentSelection, GetOpposing())) {
+								StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
+									SelectUnit(currentSelection.gridPosition);
+								})); 
+							} else {
+								EndTurnSelectedUnit();
+							}
+							break;
 						}
-						break;
 					}
 
 					// if the mouseDown is on a valid attackable are (after moving)
-					if (currentSelection.OptionActive("Attack") && currentSelection.attackRange.ValidAttack(currentSelection, target)) {
-						var unitAt = (Unit)grid.OccupantAt(target);
-						
-						var engagement = new Engagement(currentSelection, unitAt);
-						StartCoroutine(engagement.Start());
+					if (currentSelection.OptionActive("Attack")) {
+						if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
+						    if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
+								currentSelection.SetOption("Attack", false);
+								//
+								var unitAt = (Unit)grid.OccupantAt(target);
+								
+								var engagement = new Engagement(currentSelection, unitAt);
+								StartCoroutine(engagement.ResolveResults());
 
-						// wait until the engagement has ended
-						StartCoroutine(engagement.ExecuteAfterResolving(() => {
-							currentSelection.SetOption("Attack", false);
-							EndTurnSelectedUnit();
-						}));
-						break;
+								// wait until the engagement has ended
+								// once the engagement has processed, resolve the casualties
+								// once the casualties are resolved, EndTurnSelectedUnit()
+								StartCoroutine(engagement.ExecuteAfterResolving(() => {
+									StartCoroutine(engagement.results.ResolveCasualties());
+									StartCoroutine(engagement.results.ExecuteAfterResolving(() => {
+										EndTurnSelectedUnit();
+									}));
+								}));
+								break;
+							}
+						}
 					}
 				}
 

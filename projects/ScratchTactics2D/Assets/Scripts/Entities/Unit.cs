@@ -9,7 +9,7 @@ using Extensions;
 public abstract class Unit : TacticsEntityBase
 {
 	// flags, constants, etc
-	private readonly float scaleFactor = 0.75f;
+	private readonly float scaleFactor = 0.65f;
 	private bool animFlag = false;
 	private bool selectionLock = false;
 	[HideInInspector] public bool inFocus = false;
@@ -112,6 +112,7 @@ public abstract class Unit : TacticsEntityBase
 	//}
 	void OnMouseOver() {	
 		if (!ghosted) SetFocus(true);
+		Debug.DrawLine(boxCollider2D.bounds.min, boxCollider2D.bounds.max);
 	}
 	void OnMouseExit() {
 		if (selectionLock) return;
@@ -240,7 +241,7 @@ public abstract class Unit : TacticsEntityBase
 		attackRange?.Display(grid);
 		moveRange?.Display(grid);
 
-		selectionLock = true;
+		//selectionLock = true;
 		SetFocus(true);
 	}
 
@@ -307,10 +308,13 @@ public abstract class Unit : TacticsEntityBase
 		bool survived = true;
 		if (isHit) {
 			bool isCrit = diceRoll < finalCritRate;
-			int finalDamage = (int)((isCrit) ? incomingAttack.damage*3 : incomingAttack.damage);
+			float finalDamage = (float)incomingAttack.damage;
+			if (isCrit) {
+				finalDamage *= incomingAttack.criticalMultiplier;
+				Debug.Log($"Critical hit! ({finalCritRate}%) for {finalDamage} damage");
+			}
 
-			if (isCrit) Debug.Log($"Critical hit! ({finalCritRate}%) for {finalDamage} damage");
-			survived = SufferDamage(finalDamage);
+			survived = SufferDamage((int)finalDamage);
 		} else {
 			Debug.Log($"{this} dodged the attack! ({finalHitRate}% to hit)");
 		}
@@ -318,20 +322,16 @@ public abstract class Unit : TacticsEntityBase
 		return survived;
 	}
 
-	public bool SufferDamage(int incomingDamage) {
-		bool survived = true;
+	private bool SufferDamage(int incomingDamage) {
 		_HP -= incomingDamage;
 		//
+		float shakeVal = (incomingDamage > VITALITY) ? 0.15f : 0.075f;
+
 		StartCoroutine(FlashColor(Utils.threatColorRed));
-		StartCoroutine(Shake(0.075f));
+		StartCoroutine(Shake(shakeVal));
 
 		Debug.Log($"{this} suffered {incomingDamage}, {_HP}/{VITALITY} health remaining.");
-
-		if (_HP < 1) {
-			Die();
-			survived = false;
-		}
-		return survived;
+		return _HP > 0;
 	}
 
 	public void Die() {

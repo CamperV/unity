@@ -19,7 +19,7 @@ public abstract class WorldTile : GameTile
 	public virtual int probability { get { return 0; } }
 	
 	// returns the dimensions of the battleGrid to be created when a Battle is started on this tile
-	public virtual Vector2Int battleGridSize { get { return new Vector2Int(8, 8); } }
+	public virtual Vector2Int battleGridSize { get { return new Vector2Int(6, 4); } }
 
 	// reserved for tiles that have visual depth, ie mountains
 	public virtual int depth { get { return 0; } }
