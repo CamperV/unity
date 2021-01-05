@@ -10,14 +10,14 @@ public class UIManager : MonoBehaviour
 	
     void Awake() {
         currentPhaseText = GameObject.Find("CurrentPhaseText").GetComponent<Text>();
-		currentTurnText = GameObject.Find("CurrentTurnText").GetComponent<Text>();
+		    currentTurnText = GameObject.Find("CurrentTurnText").GetComponent<Text>();
     }
 
     public void SetPhaseText(string text) {
-		currentPhaseText.text = text;        
+		  currentPhaseText.text = text;        
     }
 	
     public void SetTurnText(string text) {
-		currentTurnText.text = text;        
+        currentTurnText.text = text;        
     }
 }

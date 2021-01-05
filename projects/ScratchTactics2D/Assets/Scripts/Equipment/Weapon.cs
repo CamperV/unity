@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class Weapon : Equipment
 {
+    public abstract string tag { get; }
+
     public abstract int MIGHT    { get; }
     public abstract int ACCURACY { get; }
     public abstract int CRITICAL { get; }

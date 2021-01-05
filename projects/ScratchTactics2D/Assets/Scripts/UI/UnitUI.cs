@@ -9,10 +9,16 @@ public class UnitUI : MonoBehaviour
     public HealthBar healthBarPrefab;
     [HideInInspector] public HealthBar healthBar;
 
+    public WeaponDisplay weaponDisplayPrefab;
+    [HideInInspector] public WeaponDisplay weaponDisplay;
+
     void Awake() {
         // spawn health bar
         healthBar = Instantiate(healthBarPrefab, transform);
 		healthBar.transform.parent = transform;
+
+        weaponDisplay = Instantiate(weaponDisplayPrefab, transform);
+        weaponDisplay.transform.parent = transform;
     }
 
     public void UpdateHealthBar(int val) {
@@ -24,6 +30,10 @@ public class UnitUI : MonoBehaviour
 			StartCoroutine(healthBar.FadeDown(0.05f));
             healthBar.transparencyLock = false;
 		}));
+    }
+
+    public void UpdateWeaponDisplay(string val) {
+        weaponDisplay.SetCurrentWeapon(val);
     }
 
     public void SetTransparency(float alpha) {

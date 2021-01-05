@@ -19,7 +19,8 @@ public class UnitSkeleton : Unit
 
                 inventoryPool = new List<Equipment>{
                     new Shortsword(),
-                    new ThrowingDagger()
+                    new Pilum(),
+                    new Mace()
                 }
             }.DeriveRemaining();
         }

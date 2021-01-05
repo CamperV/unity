@@ -29,10 +29,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	// Equipment management
-	public Weapon equippedWeapon {
-		get => unitStats.inventory.equippedWeapon;
-		set => unitStats.inventory.EquipWeapon(value);
-	}
+	public Weapon equippedWeapon { get => unitStats.inventory.equippedWeapon; }
 
 	// Attribute Area
 	// defaultStats is static, and will be defined by the final class
@@ -202,6 +199,7 @@ public abstract class Unit : TacticsEntityBase
 	public void ApplyStats(UnitStats stats) {
 		unitStats = stats;
 		unitUI.UpdateHealthBar(_HP);
+		unitUI.UpdateWeaponDisplay(unitStats.inventory.equippedWeapon.tag);
 	}
 
 	// Action zone
@@ -287,13 +285,7 @@ public abstract class Unit : TacticsEntityBase
 		int critRate = DEXTERITY + equippedWeapon.CRITICAL;
 		int hitRate = (DEXTERITY*2) + equippedWeapon.ACCURACY;
 
-		string attackType;
-		if (equippedWeapon is WeaponSlash) {
-			attackType = "WeaponSlash";
-		} else {
-			attackType = "None";
-		}
-		return new Attack(baseDamage, hitRate, critRate, attackType);
+		return new Attack(baseDamage, hitRate, critRate);
 	}
 
 	public bool ReceiveAttack(Attack incomingAttack) {
