@@ -91,7 +91,8 @@ public abstract class Unit : TacticsEntityBase
 		unitUI = Instantiate(unitUIPrefab, this.transform);
 		unitUI.healthBar.InitHealthBar(VITALITY);
 		unitUI.SetTransparency(0.0f);
-		unitUI.transform.parent = this.transform;
+		//
+		unitUI.BindUnit(this);
 	}
 
 	void Start() {
@@ -199,7 +200,6 @@ public abstract class Unit : TacticsEntityBase
 	public void ApplyStats(UnitStats stats) {
 		unitStats = stats;
 		unitUI.UpdateHealthBar(_HP);
-		unitUI.UpdateWeaponDisplay(unitStats.inventory.equippedWeapon.tag);
 	}
 
 	// Action zone
@@ -347,19 +347,22 @@ public abstract class Unit : TacticsEntityBase
 		animFlag = true;
 		var ogColor = spriteRenderer.color;
 
-		float c = 1.0f;
-		float rate = 0.005f;
-		while (c > 0.0f) {
-			var colorDiff = ogColor - (c * (ogColor - color));
+		float fixedTime = 1.0f;
+		float timeRatio = 0.0f;
+		
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+
+			var colorDiff = ogColor - ((1.0f - timeRatio) * (ogColor - color));
 			spriteRenderer.color = new Color(colorDiff.r, colorDiff.g, colorDiff.b, 1);
-			c -= rate;
-			rate *= 1.05f;
+
 			yield return null;
 		}
 		spriteRenderer.color = ogColor;
 		animFlag = false;
 	}
 
+	// not relative to time: shake only 3 times, wait a static amt of time
 	public IEnumerator Shake(float radius) {
 		var ogPosition = transform.position;
 		for (int i=0; i<3; i++) {

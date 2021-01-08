@@ -4,21 +4,28 @@ using UnityEngine;
 
 public class UnitUI : MonoBehaviour
 {
+    // this UnitUI must be bound to a particular unit, and access its information
+    [HideInInspector] public Unit boundUnit;
+    [HideInInspector] public List<UnitUIElement> boundElements;
+
     [HideInInspector] public float persistentAlpha = 0.0f;
 
     public HealthBar healthBarPrefab;
     [HideInInspector] public HealthBar healthBar;
 
-    public WeaponDisplay weaponDisplayPrefab;
-    [HideInInspector] public WeaponDisplay weaponDisplay;
-
     void Awake() {
-        // spawn health bar
-        healthBar = Instantiate(healthBarPrefab, transform);
-		healthBar.transform.parent = transform;
+        boundElements = new List<UnitUIElement>();
 
-        weaponDisplay = Instantiate(weaponDisplayPrefab, transform);
-        weaponDisplay.transform.parent = transform;
+        // spawn UnitUIElements
+        healthBar = Instantiate(healthBarPrefab, transform);
+        healthBar.BindUI(this);
+        boundElements.Add(healthBar);
+    }
+
+    public void BindUnit(Unit unit) {
+        Debug.Assert(boundUnit == null);
+		transform.parent = unit.transform;
+        boundUnit = unit;
     }
 
     public void UpdateHealthBar(int val) {
@@ -30,10 +37,6 @@ public class UnitUI : MonoBehaviour
 			StartCoroutine(healthBar.FadeDown(0.05f));
             healthBar.transparencyLock = false;
 		}));
-    }
-
-    public void UpdateWeaponDisplay(string val) {
-        weaponDisplay.SetCurrentWeapon(val);
     }
 
     public void SetTransparency(float alpha) {

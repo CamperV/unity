@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class HealthBar : MonoBehaviour
+public class HealthBar : UnitUIElement
 {
-    public bool transparencyLock = false;
-
     public int maxPips;
     public int pipsInRow;
 
@@ -26,7 +24,7 @@ public class HealthBar : MonoBehaviour
 
     void Start() {
         transform.position -= barTilemap.localBounds.center;
-        transform.position -= new Vector3(0, barTilemap.localBounds.center.y*2, 0);
+        transform.position += new Vector3(0, (barTilemap.localBounds.center.y+boundUnit.spriteHeight)*0.85f, 0);
     }
 
     public void InitHealthBar(int max) {

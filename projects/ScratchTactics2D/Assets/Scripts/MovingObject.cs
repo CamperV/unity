@@ -78,17 +78,17 @@ public abstract class MovingObject : MonoBehaviour
 	
 	// this is like a Python-generator: Coroutine
 	protected IEnumerator SmoothMovement(Vector3 endpoint) {
-		float sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
-		float speedFactor;
-		
 		crtMovingFlag = true;
-		while (sqrRemainingDistance > float.Epsilon) {	
-			speedFactor = (5.0f * (1.0f/sqrRemainingDistance) * Time.deltaTime);
 
-			transform.position = Vector3.MoveTowards(transform.position, endpoint, speedFactor);
-			sqrRemainingDistance = (transform.position - endpoint).sqrMagnitude;
-			
-			yield return null; // waits for a new frame
+		// we want it to take X seconds to go over one tile
+		float fixedTime = 0.10f;
+		float timeStep = 0.0f;
+		Vector3 startPos = transform.position;
+
+		while (timeStep < 1.0f) {
+			timeStep += (Time.deltaTime / fixedTime);
+			transform.position = Vector3.Lerp(startPos, endpoint, timeStep);
+			yield return null;
 		}
 		
 		// after the while loop is broken:
@@ -97,55 +97,57 @@ public abstract class MovingObject : MonoBehaviour
 	}
 	
 	// this coroutine performs a little 'bump' when you can't move
-	protected IEnumerator SmoothBump(Vector3 endpoint) {	
-		float speedFactor = 0.055f;
-		
-		Vector3 origPosition = transform.position;
-		Vector3 peak = origPosition + (endpoint - transform.position)/5.0f;
-		
-		// while these are the same now, they only need to be initialized the same
-		float sqrRemainingDistance = (transform.position - peak).sqrMagnitude;
-		float sqrReturnDistance    = (peak - transform.position).sqrMagnitude;
-		
+	protected IEnumerator SmoothBump(Vector3 endpoint) {
 		crtMovingFlag = true;
-		while (sqrRemainingDistance > float.Epsilon) {
-			transform.position = Vector3.MoveTowards(transform.position, peak, speedFactor);
-			sqrRemainingDistance = (transform.position - peak).sqrMagnitude;
-			
-			yield return null; // waits for a new frame
-		}
-		while (sqrReturnDistance > float.Epsilon) {
-			transform.position = Vector3.MoveTowards(transform.position, origPosition, speedFactor);
-			sqrReturnDistance = (origPosition - transform.position).sqrMagnitude;
 
-			yield return null; // waits for a new frame
+		// we want it to take X seconds to go over one tile
+		float fixedTime = 0.05f;
+
+		Vector3 startPos = transform.position;
+		Vector3 peakPos = startPos + (endpoint - transform.position)/5.0f;
+		
+		float timeStep = 0.0f;
+		while (timeStep < 1.0f) {
+			timeStep += (Time.deltaTime / fixedTime);
+			transform.position = Vector3.Lerp(startPos, peakPos, timeStep);			
+			yield return null;
+		}
+
+		// now for the return journey
+		timeStep = 0.0f;
+		while (timeStep < 1.0f)  {
+			timeStep += (Time.deltaTime / fixedTime);
+			transform.position = Vector3.Lerp(peakPos, startPos, timeStep);			
+			yield return null;
 		}
 		
 		// after the while loop is broken:
-		transform.position = origPosition;
+		transform.position = startPos;
 		crtMovingFlag = false;
 	}
 
 	protected IEnumerator SmoothMovementPath(MovingObjectPath path, GameGrid grid) {
-		float fixedDivisions = 8.0f;
-
 		crtMovingFlag = true;
 		GameManager.inst.tacticsManager.scrollLock = true;
-		//
-		Vector3 realPos;
-		foreach (var nextPos in path.Unwind()) {
-			realPos = grid.Grid2RealPos(nextPos);
-			
-			// we want it to take X seconds to go over one tile
-			float sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
-			float distanceStep = ((transform.position - realPos).magnitude) / fixedDivisions;
 
-			while (sqrRemainingDistance > float.Epsilon) {
-				transform.position = Vector3.MoveTowards(transform.position, realPos, distanceStep);
-				sqrRemainingDistance = (transform.position - realPos).sqrMagnitude;
+		// we want it to take X seconds to go over one tile
+		float fixedTimePerTile = 0.10f;
+		//
+		Vector3 realNextPos = transform.position;
+		foreach (var nextPos in path.Unwind()) {
+			realNextPos = grid.Grid2RealPos(nextPos);
+
+			float timeStep = 0.0f;
+			Vector3 startPos = transform.position;
+
+			while (timeStep < 1.0f) {
+				timeStep += (Time.deltaTime / fixedTimePerTile);
+				transform.position = Vector3.Lerp(startPos, realNextPos, timeStep);
 				yield return null;
 			}
 		}
+		transform.position = realNextPos;
+
 		crtMovingFlag = false;
 		GameManager.inst.tacticsManager.scrollLock = false;
 	}

@@ -11,7 +11,7 @@ public class UnitSkeleton : Unit
             return new UnitStats {
                 unitTag = "UnitSkeleton",
 
-                VITALITY  = 30,
+                VITALITY  = 6,
                 STRENGTH  = 1,
                 DEXTERITY = 1,
                 REFLEX    = 3,
