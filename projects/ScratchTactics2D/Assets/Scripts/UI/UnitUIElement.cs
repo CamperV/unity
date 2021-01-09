@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class UnitUIElement : MonoBehaviour
+public abstract class UnitUIElement : MonoBehaviour
 {
     [HideInInspector] UnitUI parentUI;
     public Unit boundUnit { get => parentUI?.boundUnit ?? null; }
@@ -13,6 +13,17 @@ public class UnitUIElement : MonoBehaviour
     public void BindUI(UnitUI UI) {
         Debug.Assert(parentUI == null);
         parentUI = UI;
-        transform.parent = UI.transform;
     }
+
+    public virtual IEnumerator FadeDown(float fixedTime) {
+		float timeRatio = 0.0f;
+
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+            UpdateTransparency(1.0f - timeRatio);
+			yield return null;
+		}
+	}
+
+    public abstract void UpdateTransparency(float alpha);
 }

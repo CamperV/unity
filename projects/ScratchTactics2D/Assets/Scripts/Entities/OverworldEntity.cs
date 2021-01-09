@@ -10,6 +10,9 @@ public abstract class OverworldEntity : MovingObject
 {
 	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;
+
+	// constants
+	protected readonly float timeToDie = 1.0f;
 	
 	public Controller unitControllerPrefab;
 	//
@@ -67,17 +70,17 @@ public abstract class OverworldEntity : MovingObject
 		// when faded, remove gameObject
 		Debug.Log($"{this} has died :(");
 		GameManager.inst.worldGrid.UpdateOccupantAt(gridPosition, null);
-		StartCoroutine(FadeDownToInactive(0.01f));
+		StartCoroutine(FadeDownToInactive(timeToDie));
 	}
 
-	public IEnumerator FadeDownToInactive(float fadeRate) {
-		float c = 1.0f;
-		while (c > 0.0f) {
-			spriteRenderer.color = new Color(spriteRenderer.color.r,
-											 spriteRenderer.color.g,
-											 spriteRenderer.color.b,
-											 c);
-			c -= fadeRate;
+	public IEnumerator FadeDownToInactive(float fixedTime) {
+		float timeRatio = 0.0f;
+		Color ogColor = spriteRenderer.color;
+
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+
+			spriteRenderer.color = new Color(ogColor.r, ogColor.g, ogColor.b, (1.0f - timeRatio));
 			yield return null;
 		}
 		gameObject.SetActive(false);

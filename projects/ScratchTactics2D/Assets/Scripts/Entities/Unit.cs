@@ -12,7 +12,10 @@ public abstract class Unit : TacticsEntityBase
 	private readonly float scaleFactor = 0.65f;
 	private bool animFlag = false;
 	private bool selectionLock = false;
-	[HideInInspector] public bool inFocus = false;
+	[HideInInspector] public bool inFocus {
+		get => GameManager.inst.tacticsManager.focusLock == this;
+		set => GameManager.inst.tacticsManager.focusLock = (value) ? this : null;
+	}
 
 	// NOTE this is set by a Controller during registration
 	public Controller parentController;
@@ -105,9 +108,6 @@ public abstract class Unit : TacticsEntityBase
 		}
 	}
 	
-	//void OnMouseOver() {
-	//	Debug.DrawLine(boxCollider2D.bounds.min, boxCollider2D.bounds.max);
-	//}
 	void OnMouseOver() {	
 		if (!ghosted) SetFocus(true);
 		Debug.DrawLine(boxCollider2D.bounds.min, boxCollider2D.bounds.max);
@@ -153,22 +153,23 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void SetFocus(bool takeFocus) {
-		if (takeFocus == inFocus) return;
-
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
-		inFocus = takeFocus;
-		if (takeFocus) {
+		if (takeFocus && GameManager.inst.tacticsManager.FocusLockFree(this)) {
 			unitUI.SetTransparency(1.0f);
 
 			var overlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
 			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
 			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, overlayTile);
+
+			inFocus = true;
 		} else {
 			unitUI.SetTransparency(0.0f);
 
 			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
-			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, null);			
+			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, null);
+
+			inFocus = false;
 		}
 	}
 	
@@ -239,7 +240,7 @@ public abstract class Unit : TacticsEntityBase
 		attackRange?.Display(grid);
 		moveRange?.Display(grid);
 
-		//selectionLock = true;
+		selectionLock = true;
 		SetFocus(true);
 	}
 
@@ -279,11 +280,11 @@ public abstract class Unit : TacticsEntityBase
 		// calc damage
 		// package it up w/ weapon/attack type (Slash/Pierce/Blunt)
 		float strScalingDamage = (STRENGTH * equippedWeapon.strScalingBonus);
-		float dexScalingDamage = (DEXTERITY * equippedWeapon.dexScalingBonus);
-		int baseDamage = (int)(equippedWeapon.MIGHT + strScalingDamage + dexScalingDamage);
+		int baseDamage = (int)(equippedWeapon.MIGHT + strScalingDamage);
 
+		float dexScalingHit = (DEXTERITY * equippedWeapon.dexScalingBonus);
+		int hitRate =  (int)(equippedWeapon.ACCURACY + dexScalingHit);
 		int critRate = DEXTERITY + equippedWeapon.CRITICAL;
-		int hitRate = (DEXTERITY*2) + equippedWeapon.ACCURACY;
 
 		return new Attack(baseDamage, hitRate, critRate);
 	}
@@ -321,6 +322,7 @@ public abstract class Unit : TacticsEntityBase
 
 		StartCoroutine(FlashColor(Utils.threatColorRed));
 		StartCoroutine(Shake(shakeVal));
+		unitUI.DisplayDamageMessage(incomingDamage.ToString());
 
 		Debug.Log($"{this} suffered {incomingDamage}, {_HP}/{VITALITY} health remaining.");
 		return _HP > 0;
@@ -339,8 +341,22 @@ public abstract class Unit : TacticsEntityBase
 		oe.RemoveUnit(ID);
 
 		StartCoroutine(ExecuteAfterAnimating(() => {
-			StartCoroutine(FadeDownToInactive(0.01f));
+			StartCoroutine(FadeDownToInactive(timeToDie));
 		}));
+	}
+
+	public override IEnumerator FadeDownToInactive(float fixedTime) {
+		float timeRatio = 0.0f;
+		Color ogColor = spriteRenderer.color;
+
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+
+			spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
+			unitUI.SetTransparency(1.0f - timeRatio);
+			yield return null;
+		}
+		gameObject.SetActive(false);
 	}
 
 	public IEnumerator FlashColor(Color color) {

@@ -51,7 +51,7 @@ public class HealthBar : UnitUIElement
         }
     }
 
-    public void UpdateBarTransparency(float alpha) {
+    public override void UpdateTransparency(float alpha) {
         if (transparencyLock) return;
 
         // fully draw here
@@ -67,13 +67,4 @@ public class HealthBar : UnitUIElement
             barTilemap.SetColor(tilePos, currColor);
         }
     }
-
-    public IEnumerator FadeDown(float fadeRate) {
-		float c = 1.0f;
-		while (c > 0.0f) {
-			UpdateBarTransparency(c);
-			c -= fadeRate;
-			yield return null;
-		}
-	}
 }

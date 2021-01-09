@@ -9,6 +9,9 @@ public class TacticsEntityBase : MovingObject
 	protected Animator animator;
 	protected BoxCollider2D boxCollider2D;
 
+	// constants for fade time, etc
+	protected readonly float timeToDie = 1.0f;
+
 	private bool _ghosted = false;
 	public bool ghosted {
 		get => _ghosted;
@@ -49,11 +52,14 @@ public class TacticsEntityBase : MovingObject
 		return base.AttemptGridMove(xdir, ydir, GameManager.inst.tacticsManager.GetActiveGrid());
 	}
 
-	public IEnumerator FadeDownToInactive(float fadeRate) {
-		float c = 1.0f;
-		while (c > 0.0f) {
-			spriteRenderer.color = new Color(1, 1, 1, c);
-			c -= fadeRate;
+	public virtual IEnumerator FadeDownToInactive(float fixedTime) {
+		float timeRatio = 0.0f;
+		Color ogColor = spriteRenderer.color;
+
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+
+			spriteRenderer.color = new Color(ogColor.r, ogColor.g, ogColor.b, (1.0f - timeRatio));
 			yield return null;
 		}
 		gameObject.SetActive(false);
@@ -64,8 +70,9 @@ public class TacticsEntityBase : MovingObject
 	}
 		
 	private void SetTransparency(float val) {
-		var currColor = spriteRenderer.color;
-		currColor.a = val;
-		spriteRenderer.color = currColor;
+		spriteRenderer.color = new Color(spriteRenderer.color.r,
+										 spriteRenderer.color.g,
+										 spriteRenderer.color.b,
+										 val);
 	}
 }

@@ -13,6 +13,7 @@ public class TacticsManager : MonoBehaviour
 	[HideInInspector] public Battle activeBattle;
 
 	public bool scrollLock;
+	public Unit focusLock;
 	
 	void Awake() {
 		dragOffset = Vector3.zero;
@@ -94,5 +95,9 @@ public class TacticsManager : MonoBehaviour
 		Destroy(activeBattle.gameObject);
 		//
 		GameManager.inst.EnterOverworldState();
+	}
+
+	public bool FocusLockFree(Unit unit) {
+		return (focusLock == null) || (focusLock == unit);
 	}
 }

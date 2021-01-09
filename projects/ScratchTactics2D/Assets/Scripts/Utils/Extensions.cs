@@ -79,5 +79,10 @@ namespace Extensions {
             }
             return retVal;
         }
+
+        // Color
+        public static Color WithAlpha(this Color c, float alpha) {
+            return new Color(c.r, c.g, c.b, alpha);
+        }
     }
 }
