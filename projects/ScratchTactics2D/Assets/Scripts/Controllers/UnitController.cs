@@ -6,6 +6,8 @@ using Extensions;
 
 public class UnitController : Controller
 {
+	public const float postPhaseDelay = 1.0f;
+
 	public void RefreshAllUnits() {
 		foreach (Unit unit in activeRegistry) {
 			unit.RefreshOptions();

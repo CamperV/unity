@@ -64,7 +64,7 @@ public class EnemyUnitController : UnitController
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
 				RefreshAllUnits();
-				EndPhase();
+				EndPhase(postPhaseDelay);
 				break;
 				
 			// delay for phaseDelayTime, until you go into postPhase
@@ -131,11 +131,7 @@ public class EnemyUnitController : UnitController
 			// this will discolor the unit and set its options to false, after movement is complete
 			// BUT, don't let the other units move until this subject has finished
 			subject.OnEndTurn();
-
-			// don't delay if you're the last
-			if (i != activeRegistryClone.Count-1) {
-				yield return new WaitForSeconds(0.5f);
-			}
+			yield return new WaitForSeconds(0.5f);
 		}
 	}
 

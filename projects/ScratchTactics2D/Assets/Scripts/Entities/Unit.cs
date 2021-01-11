@@ -307,23 +307,24 @@ public abstract class Unit : TacticsEntityBase
 				Debug.Log($"Critical hit! ({finalCritRate}%) for {finalDamage} damage");
 			}
 
-			survived = SufferDamage((int)finalDamage);
+			survived = SufferDamage((int)finalDamage, critical: isCrit);
 		} else {
 			Debug.Log($"{this} dodged the attack! ({finalHitRate}% to hit)");
+			unitUI.DisplayDamageMessage("MISS");
 		}
 
 		return survived;
 	}
 
-	private bool SufferDamage(int incomingDamage) {
+	private bool SufferDamage(int incomingDamage, bool critical = false) {
 		_HP -= incomingDamage;
 		//
-		float shakeVal = (incomingDamage > VITALITY) ? 0.15f : 0.075f;
+		float shakeVal = (critical) ? 0.15f : 0.075f;
 
 		StartCoroutine(FlashColor(Utils.threatColorRed));
 		StartCoroutine(Shake(shakeVal));
-		unitUI.DisplayDamageMessage(incomingDamage.ToString());
 
+		unitUI.DisplayDamageMessage(incomingDamage.ToString(), emphasize: critical);
 		Debug.Log($"{this} suffered {incomingDamage}, {_HP}/{VITALITY} health remaining.");
 		return _HP > 0;
 	}
@@ -382,7 +383,13 @@ public abstract class Unit : TacticsEntityBase
 	public IEnumerator Shake(float radius) {
 		var ogPosition = transform.position;
 		for (int i=0; i<3; i++) {
-			transform.position = transform.position + (Vector3)Random.insideUnitCircle*radius;
+			Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
+			transform.position += offset;
+
+			// reverse offset all children, so only the main Unit shakes
+			foreach (Transform child in transform) {
+				child.position -= offset;
+			}
 			radius /= 2f;
 			yield return new WaitForSeconds(0.05f);
 		}

@@ -32,7 +32,7 @@ public class Engagement
         defenderSurvived = defender.ReceiveAttack(firstAttack);
 
         // create a little pause before counterattacking
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
 
         // if we can counterattack:
         if (defenderSurvived && defender.InStandingAttackRange(aggressor.gridPosition)) {
@@ -42,7 +42,7 @@ public class Engagement
             aggressorSurvived = aggressor.ReceiveAttack(counterAttack);
 
             // pause again to let the animation finish
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1.0f);
         }
 
         results = new EngagementResults(aggressor, defender, aggressorSurvived, defenderSurvived);

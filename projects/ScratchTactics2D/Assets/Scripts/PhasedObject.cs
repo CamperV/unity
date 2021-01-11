@@ -14,7 +14,7 @@ interface IPhasedObject
 
 public abstract class PhasedObject : MonoBehaviour, IPhasedObject
 {
-	public readonly float phaseDelayTime = 0.01f;	// in units of WaitForSeconds();
+	public const float phaseDelayTime = 0.01f;	// in units of WaitForSeconds();
 	[HideInInspector] public Enum.PhaseActionState phaseActionState { get; protected set; }
 	[HideInInspector] public Enum.Phase myPhase { get; protected set; }
 	
@@ -26,9 +26,9 @@ public abstract class PhasedObject : MonoBehaviour, IPhasedObject
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 	}
 	
-	public void EndPhase() {
+	public void EndPhase(float timeOverride = phaseDelayTime) {
 		// then reset your phase, and mark as complete
-		StartCoroutine(Utils.DelayedExecute(phaseDelayTime, () => {
+		StartCoroutine(Utils.DelayedExecute(timeOverride, () => {
 			phaseActionState = Enum.PhaseActionState.postPhase;
 		})); 
 	}

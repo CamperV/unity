@@ -76,11 +76,11 @@ public class PlayerUnitController : UnitController
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
 				RefreshAllUnits();
-				EndPhase();
+				EndPhase(postPhaseDelay);
 				break;
 			
 			// delay for phaseDelayTime, until you go into postPhase
-			case Enum.PhaseActionState.postPhaseDelay:	
+			case Enum.PhaseActionState.postPhaseDelay:
 			case Enum.PhaseActionState.postPhase:
 				break;
 		}

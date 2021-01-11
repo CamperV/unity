@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class UnitUI : MonoBehaviour
 {
@@ -38,12 +39,12 @@ public class UnitUI : MonoBehaviour
 
     public void UpdateHealthBar(int val) {
         healthBar.UpdateBar(val, 1.0f);
-        healthBar.transparencyLock = true;
+        //healthBar.transparencyLock = true;
 
         // set the transparency for a while, then fade down
         StartCoroutine(Utils.DelayedExecute(3.0f, () => {
 			StartCoroutine(healthBar.FadeDown(1.0f));
-            healthBar.transparencyLock = false;
+            //healthBar.transparencyLock = false;
 		}));
     }
 
@@ -55,17 +56,24 @@ public class UnitUI : MonoBehaviour
         }
     }
 
-    public void DisplayDamageMessage(string message) {
+    public void DisplayDamageMessage(string message, bool emphasize = false) {
         // valid options are: damage taken, damage done? miss, crit
-        // do not register this to the UI, we don't want the transform to move with our unitUI
         TextUI textUI = Instantiate(textUIPrefab, transform);
-        textUI.SetText(message);
-        textUI.transparencyLock = true;
+        textUI.transform.position += new Vector3(0, boundUnit.spriteHeight*1.15f, 0);
 
-        StartCoroutine(Utils.DelayedExecute(1.5f, () => {
-            StartCoroutine(textUI.FadeDown(1.0f));
-            textUI.transparencyLock = false;
-			Destroy(textUI);
+        // determine if emphasis is necessary
+        if (emphasize) {
+            textUI.Bold();
+            textUI.SetColor(Utils.threatColorRed);
+            message = message.ToString() + "!";
+            textUI.SetScale(1.5f);
+        }
+        textUI.SetText(message);
+
+        // animate the motion here
+        // this will destory the textUI gameObject
+        StartCoroutine(Utils.DelayedExecute(0.0f, () => {
+            StartCoroutine(textUI.FloatAway(1.5f, boundUnit.spriteHeight * 0.5f));
 		}));
     }
 }
