@@ -51,19 +51,11 @@ public class EnemyUnitController : UnitController
 				
 			case Enum.PhaseActionState.acting:
 				// do nothing until finished acting
-				bool endPhaseNow = true;
-				foreach (Unit unit in activeRegistry) {
-					if (unit.AnyOptionActive()) {
-						endPhaseNow = false;
-						break;
-					}
-				}
-				if (endPhaseNow) phaseActionState = Enum.PhaseActionState.complete;
+				if (EndPhaseNow()) phaseActionState = Enum.PhaseActionState.complete;
 				break;
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				RefreshAllUnits();
 				EndPhase(postPhaseDelay);
 				break;
 				

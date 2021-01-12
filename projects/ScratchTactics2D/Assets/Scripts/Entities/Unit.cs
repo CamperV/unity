@@ -18,7 +18,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	// NOTE this is set by a Controller during registration
-	public Controller parentController;
+	public UnitController parentController;
 
 	public UnitUI unitUIPrefab;
 	[HideInInspector] public UnitUI unitUI;
@@ -83,19 +83,23 @@ public abstract class Unit : TacticsEntityBase
 	public MoveRange moveRange;
 	public AttackRange attackRange;
 
-	protected Dictionary<string, bool> optionAvailability = new Dictionary<string, bool>() {
-		["Move"]   = true,
-		["Attack"] = true
-	};
+	public bool turnActive { get; protected set; }
+	protected Dictionary<string, bool> optionAvailability;
 
 	protected override void Awake() {
 		base.Awake();
 
-		unitUI = Instantiate(unitUIPrefab, this.transform);
+		unitUI = Instantiate(unitUIPrefab, transform);
 		unitUI.healthBar.InitHealthBar(VITALITY);
 		unitUI.SetTransparency(0.0f);
 		//
 		unitUI.BindUnit(this);
+
+		// init values
+		optionAvailability = new Dictionary<string, bool>() {
+			["Move"]   = true,
+			["Attack"] = true
+		};
 	}
 
 	void Start() {
@@ -143,13 +147,6 @@ public abstract class Unit : TacticsEntityBase
 				ghosted = true;
 			}
 		}
-
-		// Color control
-		// if no options are available, set your color again, just to be sure
-		if (!optionAvailability.Values.Where(it => it == true).Any()) {
-			spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f,
-											 spriteRenderer.color.a);
-		}
 	}
 
 	public void SetFocus(bool takeFocus) {
@@ -191,32 +188,24 @@ public abstract class Unit : TacticsEntityBase
 		optionAvailability[option] = setting;
 	}
 
-	public bool AnyOptionActive() {
-		foreach (var k in optionAvailability.Keys.ToList()) {
-			if (optionAvailability[k]) return true;
-		}
-		return false;
-	}
-
 	public void ApplyStats(UnitStats stats) {
 		unitStats = stats;
 		unitUI.UpdateHealthBar(_HP);
 	}
 
 	// Action zone
-	public void RefreshOptions() {
-		foreach (var k in optionAvailability.Keys.ToList()) {
-			optionAvailability[k] = true;
-		}
+	public void OnStartTurn() {	
+		optionAvailability.Keys.ToList().ForEach(k => optionAvailability[k] = true);
 		spriteRenderer.color = Color.white;
+		//
+		turnActive = true;
 	}
 
 	public void OnEndTurn() {
-		StartCoroutine(ExecuteAfterMoving(() => {
-			foreach (var k in optionAvailability.Keys.ToList()) {
-				optionAvailability[k] = false;
-			}
-		})); 
+		optionAvailability.Keys.ToList().ForEach(k => optionAvailability[k] = false);
+		spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f, spriteRenderer.color.a);
+		//
+		turnActive = false;
 	}
 
 	public void UpdateThreatRange() {
@@ -247,7 +236,6 @@ public abstract class Unit : TacticsEntityBase
 	public void OnDeselect() {
 		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 		//
-		spriteRenderer.color = Color.white;
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
@@ -371,7 +359,7 @@ public abstract class Unit : TacticsEntityBase
 			timeRatio += (Time.deltaTime / fixedTime);
 
 			var colorDiff = ogColor - ((1.0f - timeRatio) * (ogColor - color));
-			spriteRenderer.color = new Color(colorDiff.r, colorDiff.g, colorDiff.b, 1);
+			spriteRenderer.color = colorDiff.WithAlpha(1.0f);
 
 			yield return null;
 		}

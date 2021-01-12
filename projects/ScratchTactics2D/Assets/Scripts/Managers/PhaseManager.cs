@@ -57,19 +57,17 @@ public class PhaseManager : MonoBehaviour
 			}
 		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
 			var battle = GameManager.inst.tacticsManager.activeBattle;
-			var activeController = battle.GetControllerFromPhase(currentPhase);
+
+			// before doing anything, check flags to see if the battle should be terminated
+			if (battle.CheckBattleEndState()) {
+				GameManager.inst.tacticsManager.ResolveActiveBattle(battle.GetDefeated());
+				return; // jump out of the update loop early
+			}
 
 			// if the currently active controller has finished its phase
+			var activeController = battle.GetControllerFromPhase(currentPhase);
 			if (activeController.phaseActionState == Enum.PhaseActionState.postPhase) {
 				OnPhaseEnd(currentPhase);
-
-				// after a phase has ended, use the controlled opportunity here
-				// to potentially destroy the battle. Check if a side won
-				if (!activeController.activeRegistry.Any()) {
-					var defeated = battle.GetOverworldEntityFromPhase(currentPhase);
-					GameManager.inst.tacticsManager.ResolveActiveBattle(defeated);
-					return; // jump out of the update loop early
-				}
 
 				// else:
 				StartPhase(currentPhase.NextPhase());

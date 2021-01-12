@@ -246,4 +246,27 @@ public class Battle : MonoBehaviour
 		Debug.Log($"Phase {phase} is causing a default return for OE");
 		return other;
 	}
+
+	// this will only work with 2-participant battles, if one side dies, it's over
+	// in the future, make some actual decision:
+	// a) battles can't happen between two non-players
+	// b) there will be explicity variables for players/non-players
+	public bool CheckBattleEndState() {
+		foreach (UnitController participantController in activeParticipants.Keys) {
+			bool alive = participantController.activeRegistry.Any();
+			if (!alive) return true;
+		}
+		return false; // battle continues
+	}
+
+	public OverworldEntity GetDefeated() {
+		foreach (UnitController participantController in activeParticipants.Keys) {
+			bool alive = participantController.activeRegistry.Any();
+			if (!alive) return activeParticipants[participantController];
+		}
+
+		// this should be unreachable code
+		Debug.Assert(false);
+		return player; // battle continues		
+	}
 }

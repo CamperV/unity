@@ -26,7 +26,7 @@ public abstract class PhasedObject : MonoBehaviour, IPhasedObject
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 	}
 	
-	public void EndPhase(float timeOverride = phaseDelayTime) {
+	public virtual void EndPhase(float timeOverride = phaseDelayTime) {
 		// then reset your phase, and mark as complete
 		StartCoroutine(Utils.DelayedExecute(timeOverride, () => {
 			phaseActionState = Enum.PhaseActionState.postPhase;

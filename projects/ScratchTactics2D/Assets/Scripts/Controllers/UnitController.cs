@@ -7,11 +7,28 @@ using Extensions;
 public class UnitController : Controller
 {
 	public const float postPhaseDelay = 1.0f;
+		
+	public override void TriggerPhase() {
+		phaseActionState = Enum.PhaseActionState.waitingForInput;
+		activeRegistry.ForEach(u => ((Unit)u).OnStartTurn());
+	}
 
-	public void RefreshAllUnits() {
+	public override void EndPhase(float timeOverride = phaseDelayTime) {
+		// then reset your phase, and mark as complete
+		StartCoroutine(Utils.DelayedExecute(timeOverride, () => {
+			phaseActionState = Enum.PhaseActionState.postPhase;
+		}));
+		activeRegistry.ForEach(u => ((Unit)u).RefreshColor());
+	}
+
+	// if any unit is active at all, don't end the phase
+	public bool EndPhaseNow() {
 		foreach (Unit unit in activeRegistry) {
-			unit.RefreshOptions();
+			if (unit.turnActive) {
+				return false;
+			}
 		}
+		return true;
 	}
 
 	public List<MovingObject> GetRegisteredInBattle() {

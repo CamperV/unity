@@ -26,12 +26,6 @@ public class Controller : PhasedObject
 		subject.transform.parent = transform;
 	}
 
-	public void RefreshAllUnits() {
-		foreach (Unit unit in activeRegistry) {
-			unit.RefreshOptions();
-		}
-	}
-
 	public List<MovingObject> GetRegisteredInBattle() {
 		var controllers = GameManager.inst.tacticsManager.activeBattle.GetActiveControllers();
 		return controllers.SelectMany(con => con.activeRegistry).ToList();

@@ -68,6 +68,10 @@ public class TacticsEntityBase : MovingObject
 	public bool ColliderContains(Vector3 v) {
 		return boxCollider2D.bounds.Contains((Vector2)v);
 	}
+
+	public void RefreshColor() {
+		spriteRenderer.color = Color.white;
+	}
 		
 	private void SetTransparency(float val) {
 		spriteRenderer.color = new Color(spriteRenderer.color.r,

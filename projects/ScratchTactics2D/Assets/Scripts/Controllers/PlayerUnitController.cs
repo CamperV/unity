@@ -63,19 +63,11 @@ public class PlayerUnitController : UnitController
 
 				// finally, check all unit in registry
 				// if none of them have any moves remaining, end the phase
-				bool endPhaseNow = true;
-				foreach (Unit unit in activeRegistry) {
-					if (unit.AnyOptionActive()) {
-						endPhaseNow = false;
-						break;
-					}
-				}
-				if (endPhaseNow) phaseActionState = Enum.PhaseActionState.complete;
+				if (EndPhaseNow()) phaseActionState = Enum.PhaseActionState.complete;
 				break;
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				RefreshAllUnits();
 				EndPhase(postPhaseDelay);
 				break;
 			
@@ -172,7 +164,11 @@ public class PlayerUnitController : UnitController
 
 					// if the mouseDown is on a valid attackable are (after moving)
 					if (currentSelection.OptionActive("Attack")) {
+
+						// if currentSelection can actually attack the target
 						if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
+
+							// if target is an enemy combatant
 						    if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
 								currentSelection.SetOption("Attack", false);
 								//
@@ -216,7 +212,7 @@ public class PlayerUnitController : UnitController
 		if (unitAt == null) return false;
 
 		// if this is any unit at all:
-		if (unitAt.AnyOptionActive()) {
+		if (unitAt.turnActive) {
 			// deselect current and select the new
 			if (currentSelection != null) {
 				currentSelection.OnDeselect();
