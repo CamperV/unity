@@ -23,7 +23,7 @@ public class EnemyUnitController : UnitController
 
 	public override void TriggerPhase() {
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
-		//
+		activeRegistry.ForEach(u => ((Unit)u).OnStartTurn());
 		subjectsActingTrigger = true;
 	}
 

@@ -24,9 +24,7 @@ public class UnitController : Controller
 	// if any unit is active at all, don't end the phase
 	public bool EndPhaseNow() {
 		foreach (Unit unit in activeRegistry) {
-			if (unit.turnActive) {
-				return false;
-			}
+			if (unit.turnActive) return false;
 		}
 		return true;
 	}

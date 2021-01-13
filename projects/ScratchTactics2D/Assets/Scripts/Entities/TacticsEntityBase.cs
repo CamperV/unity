@@ -1,17 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 using Extensions;
 
 public class TacticsEntityBase : MovingObject
 {
-	protected SpriteRenderer spriteRenderer;
-	protected Animator animator;
-	protected BoxCollider2D boxCollider2D;
-
 	// constants for fade time, etc
 	protected readonly float timeToDie = 1.0f;
 
+	protected Animator animator;
+
+	private int _animationStack;
+	private int animationStack {
+		get => _animationStack;
+		set {
+			Debug.Assert(value > -1);
+			_animationStack = value;
+		}
+	}
+
+	protected BoxCollider2D boxCollider2D;
 	private bool _ghosted = false;
 	public bool ghosted {
 		get => _ghosted;
@@ -21,6 +31,7 @@ public class TacticsEntityBase : MovingObject
 		}
 	}
 
+	protected SpriteRenderer spriteRenderer;
 	public float spriteHeight {
 		get => spriteRenderer.bounds.size.y;
 	}
@@ -52,19 +63,6 @@ public class TacticsEntityBase : MovingObject
 		return base.AttemptGridMove(xdir, ydir, GameManager.inst.tacticsManager.GetActiveGrid());
 	}
 
-	public virtual IEnumerator FadeDownToInactive(float fixedTime) {
-		float timeRatio = 0.0f;
-		Color ogColor = spriteRenderer.color;
-
-		while (timeRatio < 1.0f) {
-			timeRatio += (Time.deltaTime / fixedTime);
-
-			spriteRenderer.color = new Color(ogColor.r, ogColor.g, ogColor.b, (1.0f - timeRatio));
-			yield return null;
-		}
-		gameObject.SetActive(false);
-	}
-
 	public bool ColliderContains(Vector3 v) {
 		return boxCollider2D.bounds.Contains((Vector2)v);
 	}
@@ -78,5 +76,80 @@ public class TacticsEntityBase : MovingObject
 										 spriteRenderer.color.g,
 										 spriteRenderer.color.b,
 										 val);
+	}
+
+	//
+	// Animation Coroutines
+	//
+	public bool IsAnimating() {
+		return animationStack > 0;
+	}
+
+	public IEnumerator ExecuteAfterAnimating(Action VoidAction) {
+		while (animationStack > 0) {
+			yield return null;
+		}
+		VoidAction();
+	}
+
+	public IEnumerator FadeDown(float fixedTime) {
+		animationStack++;
+		//
+
+		float timeRatio = 0.0f;
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+			spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
+			yield return null;
+		}
+
+		//
+		animationStack--;
+	}
+	
+	public IEnumerator FlashColor(Color color) {
+		animationStack++;
+		//
+
+		var ogColor = spriteRenderer.color;
+
+		float fixedTime = 1.0f;
+		float timeRatio = 0.0f;
+		
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+
+			var colorDiff = ogColor - ((1.0f - timeRatio) * (ogColor - color));
+			spriteRenderer.color = colorDiff.WithAlpha(1.0f);
+
+			yield return null;
+		}
+		spriteRenderer.color = ogColor;
+
+		//
+		animationStack--;
+	}
+
+	// not relative to time: shake only 3 times, wait a static amt of time
+	public IEnumerator Shake(float radius) {
+		animationStack++;
+		//
+
+		var ogPosition = transform.position;
+		for (int i=0; i<3; i++) {
+			Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
+			transform.position += offset;
+
+			// reverse offset all children, so only the main Unit shakes
+			foreach (Transform child in transform) {
+				child.position -= offset;
+			}
+			radius /= 2f;
+			yield return new WaitForSeconds(0.05f);
+		}
+		transform.position = ogPosition;
+
+		//
+		animationStack--;
 	}
 }

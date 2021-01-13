@@ -9,12 +9,10 @@ using Extensions;
 public abstract class Unit : TacticsEntityBase
 {
 	// flags, constants, etc
-	private readonly float scaleFactor = 0.65f;
-	private bool animFlag = false;
-	private bool selectionLock = false;
+	private readonly float spriteScaleFactor = 0.55f;
+	private bool mouseOver = false;
 	[HideInInspector] public bool inFocus {
-		get => GameManager.inst.tacticsManager.focusLock == this;
-		set => GameManager.inst.tacticsManager.focusLock = (value) ? this : null;
+		get => GameManager.inst.tacticsManager.focusSingleton == this;
 	}
 
 	// NOTE this is set by a Controller during registration
@@ -95,10 +93,10 @@ public abstract class Unit : TacticsEntityBase
 		//
 		unitUI.BindUnit(this);
 
-		// init values
+		// init keys
 		optionAvailability = new Dictionary<string, bool>() {
-			["Move"]   = true,
-			["Attack"] = true
+			["Move"]   = false,
+			["Attack"] = false
 		};
 	}
 
@@ -106,20 +104,23 @@ public abstract class Unit : TacticsEntityBase
 		// scale down to avoid weird parent/child problems w/ UnitUI
 		// apply inverse scale to all children of our transform
 		// Unity Enumerable<Xform> is weird and I wish they'd just use a method for getting children
-		transform.localScale *= scaleFactor;
+		transform.localScale *= spriteScaleFactor;
 		foreach (Transform childT in transform) {
-			childT.localScale /= scaleFactor;
+			childT.localScale /= spriteScaleFactor;
 		}
 	}
-	
-	void OnMouseOver() {	
-		if (!ghosted) SetFocus(true);
+	/*
+	void OnMouseOver() {
+		if (!ghosted) {
+			mouseOver = true;
+			ClaimFocus(true);
+		}
 		Debug.DrawLine(boxCollider2D.bounds.min, boxCollider2D.bounds.max);
 	}
 	void OnMouseExit() {
-		if (selectionLock) return;
-		SetFocus(false);
-	}
+		mouseOver = false;
+		ClaimFocus(false);
+	}*/
 
 	void Update() {
 		// control all color information here, via polymorphic resolution
@@ -127,8 +128,12 @@ public abstract class Unit : TacticsEntityBase
 		var mm = GameManager.inst.mouseManager;
 
 		// Focus control: reset if applicable and highlight/focus
-		if (!selectionLock && mm.prevMouseGridPos == gridPosition) SetFocus(false);
-		if (!IsMoving() && mm.currentMouseGridPos == gridPosition) SetFocus(true);
+		
+		if (!IsMoving() && mm.currentMouseGridPos == gridPosition) {
+			ClaimFocus(true);
+		} else if (mm.currentMouseGridPos != gridPosition/* && !mouseOver*/) {
+			ClaimFocus(false);
+		}
 
 		// Ghost control
 		ghosted = false;
@@ -149,24 +154,26 @@ public abstract class Unit : TacticsEntityBase
 		}
 	}
 
-	public void SetFocus(bool takeFocus) {
+	private void ClaimFocus(bool takeFocus) {
+		if (inFocus == takeFocus) return;
+
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
-		if (takeFocus && GameManager.inst.tacticsManager.FocusLockFree(this)) {
+		if (takeFocus) {
 			unitUI.SetTransparency(1.0f);
 
 			var overlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
 			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
 			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, overlayTile);
-
-			inFocus = true;
+			//
+			GameManager.inst.tacticsManager.focusSingleton = this;
 		} else {
 			unitUI.SetTransparency(0.0f);
 
 			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
 			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, null);
-
-			inFocus = false;
+			//
+			GameManager.inst.tacticsManager.focusSingleton = null;
 		}
 	}
 	
@@ -228,9 +235,6 @@ public abstract class Unit : TacticsEntityBase
 		UpdateThreatRange();
 		attackRange?.Display(grid);
 		moveRange?.Display(grid);
-
-		selectionLock = true;
-		SetFocus(true);
 	}
 
 	public void OnDeselect() {
@@ -238,9 +242,6 @@ public abstract class Unit : TacticsEntityBase
 		//
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
-
-		selectionLock = false;
-		SetFocus(false);
 	}
 
 	public void TraverseTo(Vector3Int target, MovingObjectPath fieldPath = null) {
@@ -295,7 +296,7 @@ public abstract class Unit : TacticsEntityBase
 				Debug.Log($"Critical hit! ({finalCritRate}%) for {finalDamage} damage");
 			}
 
-			survived = SufferDamage((int)finalDamage, critical: isCrit);
+			survived = SufferDamage((int)finalDamage, isCritical: isCrit);
 		} else {
 			Debug.Log($"{this} dodged the attack! ({finalHitRate}% to hit)");
 			unitUI.DisplayDamageMessage("MISS");
@@ -304,23 +305,27 @@ public abstract class Unit : TacticsEntityBase
 		return survived;
 	}
 
-	private bool SufferDamage(int incomingDamage, bool critical = false) {
+	private bool SufferDamage(int incomingDamage, bool isCritical = false) {
 		_HP -= incomingDamage;
-		//
-		float shakeVal = (critical) ? 0.15f : 0.075f;
 
 		StartCoroutine(FlashColor(Utils.threatColorRed));
-		StartCoroutine(Shake(shakeVal));
+		StartCoroutine(Shake((isCritical) ? 0.15f : 0.075f));
 
-		unitUI.DisplayDamageMessage(incomingDamage.ToString(), emphasize: critical);
-		Debug.Log($"{this} suffered {incomingDamage}, {_HP}/{VITALITY} health remaining.");
+		unitUI.DisplayDamageMessage(incomingDamage.ToString(), emphasize: isCritical);
 		return _HP > 0;
 	}
+	
+	public void TriggerDeathAnimation() {
+		StartCoroutine(ExecuteAfterAnimating(() => {
+			StartCoroutine(FadeDown(timeToDie));
+		}));
+	}
 
-	public void Die() {
-		// fade down
-		// when faded, remove gameObject
-		Debug.Log($"{this} has died :(");
+	public void DeathCleanUp() {
+		// this will affect the get value of activeRegistry which contains it
+		// and therefore end the battle immediately, if last unit
+		gameObject.SetActive(false);
+
 		GameManager.inst.tacticsManager.GetActiveGrid().UpdateOccupantAt(gridPosition, null);
 
 		// this unit will be automatically removed from the activeRegistry of the controller...
@@ -328,70 +333,5 @@ public abstract class Unit : TacticsEntityBase
 		var battle = GameManager.inst.tacticsManager.activeBattle;
 		OverworldEntity oe = battle.GetOverworldEntityFromController(parentController);
 		oe.RemoveUnit(ID);
-
-		StartCoroutine(ExecuteAfterAnimating(() => {
-			StartCoroutine(FadeDownToInactive(timeToDie));
-		}));
-	}
-
-	public override IEnumerator FadeDownToInactive(float fixedTime) {
-		float timeRatio = 0.0f;
-		Color ogColor = spriteRenderer.color;
-
-		while (timeRatio < 1.0f) {
-			timeRatio += (Time.deltaTime / fixedTime);
-
-			spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
-			unitUI.SetTransparency(1.0f - timeRatio);
-			yield return null;
-		}
-		gameObject.SetActive(false);
-	}
-
-	public IEnumerator FlashColor(Color color) {
-		animFlag = true;
-		var ogColor = spriteRenderer.color;
-
-		float fixedTime = 1.0f;
-		float timeRatio = 0.0f;
-		
-		while (timeRatio < 1.0f) {
-			timeRatio += (Time.deltaTime / fixedTime);
-
-			var colorDiff = ogColor - ((1.0f - timeRatio) * (ogColor - color));
-			spriteRenderer.color = colorDiff.WithAlpha(1.0f);
-
-			yield return null;
-		}
-		spriteRenderer.color = ogColor;
-		animFlag = false;
-	}
-
-	// not relative to time: shake only 3 times, wait a static amt of time
-	public IEnumerator Shake(float radius) {
-		var ogPosition = transform.position;
-		for (int i=0; i<3; i++) {
-			Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
-			transform.position += offset;
-
-			// reverse offset all children, so only the main Unit shakes
-			foreach (Transform child in transform) {
-				child.position -= offset;
-			}
-			radius /= 2f;
-			yield return new WaitForSeconds(0.05f);
-		}
-		transform.position = ogPosition;
-	}
-
-	public IEnumerator ExecuteAfterAnimating(Action VoidAction) {
-		while (animFlag) {
-			yield return null;
-		}
-		VoidAction();
-	}
-
-	public bool IsAnimating() {
-		return animFlag;
 	}
 }

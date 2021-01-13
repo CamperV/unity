@@ -41,7 +41,8 @@ public class TextUI : UnitUIElement
 
     // float away over a certain time, with the distance being a function of our Mesh's size
     public IEnumerator FloatAway(float fixedTime, float fixedDistance) {
-        animFlag = true;
+        animationStack++;
+        //
 
 		float timeRatio = 0.0f;
         Vector3 startPos = transform.position;
@@ -49,7 +50,7 @@ public class TextUI : UnitUIElement
         Vector3 endPos = startPos + new Vector3(0, fixedDistance, 0);
 
         // sine values
-        float amplitude = fixedDistance / 2.0f;
+        float amplitude = fixedDistance / 4.0f;
         float freq = 4.0f;
 
         // calculate to offset the starting position of the sine
@@ -65,8 +66,9 @@ public class TextUI : UnitUIElement
             UpdateTransparency(1.0f - timeRatio);
 			yield return null;
 		}
-
-        animFlag = false;
         Destroy(gameObject);
+
+        //
+        animationStack--;
 	}
 }

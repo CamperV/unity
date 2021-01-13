@@ -13,7 +13,25 @@ public class TacticsManager : MonoBehaviour
 	[HideInInspector] public Battle activeBattle;
 
 	public bool scrollLock;
-	public Unit focusLock;
+
+	// only one Unit can be in focus at any given time
+	private Unit _focusSingleton = null;
+	public Unit focusSingleton {
+		get => _focusSingleton;
+		set {
+			// only set if it has been cleared first, or if you're clearing, or if you are
+			if (value == null || _focusSingleton == null) {
+				_focusSingleton = value;
+			} else {
+				// actually throw something here, you yellowbelly
+				Debug.Assert(false);
+				Debug.Log("ERROR: Cannot assign focusSingleton without clearing it first.");
+				Debug.Log($"Current assignee: {_focusSingleton}.{_focusSingleton?.gridPosition}. Offending assigner: {value}.{value?.gridPosition}");
+				_focusSingleton = null;
+			}
+
+		}
+	}
 	
 	void Awake() {
 		dragOffset = Vector3.zero;
@@ -95,9 +113,5 @@ public class TacticsManager : MonoBehaviour
 		Destroy(activeBattle.gameObject);
 		//
 		GameManager.inst.EnterOverworldState();
-	}
-
-	public bool FocusLockFree(Unit unit) {
-		return (focusLock == null) || (focusLock == unit);
 	}
 }

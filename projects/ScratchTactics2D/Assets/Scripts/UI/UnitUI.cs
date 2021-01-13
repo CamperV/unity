@@ -39,12 +39,10 @@ public class UnitUI : MonoBehaviour
 
     public void UpdateHealthBar(int val) {
         healthBar.UpdateBar(val, 1.0f);
-        //healthBar.transparencyLock = true;
 
         // set the transparency for a while, then fade down
         StartCoroutine(Utils.DelayedExecute(3.0f, () => {
 			StartCoroutine(healthBar.FadeDown(1.0f));
-            //healthBar.transparencyLock = false;
 		}));
     }
 
@@ -59,7 +57,7 @@ public class UnitUI : MonoBehaviour
     public void DisplayDamageMessage(string message, bool emphasize = false) {
         // valid options are: damage taken, damage done? miss, crit
         TextUI textUI = Instantiate(textUIPrefab, transform);
-        textUI.transform.position += new Vector3(0, boundUnit.spriteHeight*1.15f, 0);
+        textUI.transform.position += new Vector3(0, boundUnit.spriteHeight*1.0f, 0);
 
         // determine if emphasis is necessary
         if (emphasize) {
@@ -72,8 +70,6 @@ public class UnitUI : MonoBehaviour
 
         // animate the motion here
         // this will destory the textUI gameObject
-        StartCoroutine(Utils.DelayedExecute(0.0f, () => {
-            StartCoroutine(textUI.FloatAway(1.5f, boundUnit.spriteHeight * 0.5f));
-		}));
+        StartCoroutine(textUI.FloatAway(2.0f, boundUnit.spriteHeight * 0.5f));
     }
 }

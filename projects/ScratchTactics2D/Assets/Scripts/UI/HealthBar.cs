@@ -24,7 +24,8 @@ public class HealthBar : UnitUIElement
 
     void Start() {
         transform.position -= barTilemap.localBounds.center;
-        transform.position += new Vector3(0, (barTilemap.localBounds.center.y+boundUnit.spriteHeight)*0.85f, 0);
+        //transform.position += new Vector3(0, (barTilemap.localBounds.center.y+boundUnit.spriteHeight)*0.85f, 0);
+        transform.position -= new Vector3(0, (barTilemap.localBounds.center.y)*3.0f, 0);
     }
 
     public void InitHealthBar(int max) {
