@@ -217,6 +217,10 @@ public class Battle : MonoBehaviour
 		return activeControllers.Values.ToList();
 	}
 
+	public List<MovingObject> GetRegisteredInBattle() {
+		return activeControllers.Values.SelectMany(con => con.activeRegistry).ToList();
+	}
+
 	public Controller GetControllerFromPhase(Enum.Phase phase) {
 		if (phase == Enum.Phase.player) {
 			return GetController(player);

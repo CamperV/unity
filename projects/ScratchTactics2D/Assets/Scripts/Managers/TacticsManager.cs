@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class TacticsManager : MonoBehaviour
@@ -15,7 +16,7 @@ public class TacticsManager : MonoBehaviour
 	public bool scrollLock;
 
 	// only one Unit can be in focus at any given time
-	public Unit focusSingleton { get; set; }
+	public Unit focusSingleton { get; private set; }
 	
 	void Awake() {
 		dragOffset = Vector3.zero;
@@ -67,9 +68,42 @@ public class TacticsManager : MonoBehaviour
 				}
 			}
 
+			// focus control:
+			// move it all into once-per-frame centralized check, because we can't guarantee 
+			// the order in which the other Update()/LateUpdate()s resolve
+			Unit newFocus = GetNewFocus();
+
+			// actually set the focus here
+			if (newFocus != focusSingleton) {
+				if (focusSingleton && !focusSingleton.selectionLock)
+					focusSingleton.SetFocus(false);
+				focusSingleton = newFocus;
+				focusSingleton?.SetFocus(true);
+			}
+
 			//
-			focusSingleton = null;
-		}       
+			// finally, Ghost Control
+			var grid = GetActiveGrid();
+
+			foreach (Unit u in descendingInBattle) {
+				u.ghosted = false;
+				if (!u.inFocus) {
+					// each unit will check its own processes to see if it should be ghosted
+					// having multiple senders, i.e. PathOverlayIso tiles and other Units, is difficult to keep track of
+
+					// if there is any overlay that can be obscured:
+					Vector3Int northPos = u.gridPosition + new Vector3Int(1, 1, 0);
+					if (grid.GetOverlayAt(u.gridPosition) || grid.GetOverlayAt(northPos)) {
+						u.ghosted = true;
+					}
+							
+					// or, if there is a Unit with an active focus right behind
+					if (((Unit)grid.OccupantAt(northPos))?.inFocus ?? false) {
+						u.ghosted = true;
+					}
+				}
+			}
+		}
     }
 	
 	public TacticsGrid GetActiveGrid() {
@@ -98,5 +132,29 @@ public class TacticsManager : MonoBehaviour
 		Destroy(activeBattle.gameObject);
 		//
 		GameManager.inst.EnterOverworldState();
+	}
+
+	public Unit GetNewFocus() {
+		var mm = GameManager.inst.mouseManager;
+		Unit newFocus = null;
+
+		// Focus control: reset if applicable and highlight/focus
+		var descendingInBattle = activeBattle.GetRegisteredInBattle().OrderByDescending(it => it.gridPosition.y);
+		foreach (Unit u in descendingInBattle) {
+			if (!u.ghosted && u.ColliderContains(mm.mouseWorldPos)) {
+				newFocus = u;
+			}
+		}
+		
+		// secondary try: select based on tileGridPos AFTER determining BB collisions
+		if (!newFocus) {
+			foreach (Unit u in descendingInBattle) {
+				if (!u.IsMoving() && mm.currentMouseGridPos == u.gridPosition) {
+					newFocus = u;
+				}
+			}
+		}
+
+		return newFocus;
 	}
 }

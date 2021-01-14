@@ -28,11 +28,6 @@ public class UnitController : Controller
 		}
 		return true;
 	}
-
-	public List<MovingObject> GetRegisteredInBattle() {
-		var controllers = GameManager.inst.tacticsManager.activeBattle.GetActiveControllers();
-		return controllers.SelectMany(con => con.activeRegistry).ToList();
-	}
 	
 	public List<MovingObject> GetOpposing() {
 		var advPhase = myPhase.NextPhase();

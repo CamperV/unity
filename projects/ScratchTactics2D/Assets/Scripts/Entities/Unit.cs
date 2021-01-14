@@ -10,7 +10,7 @@ public abstract class Unit : TacticsEntityBase
 {
 	// flags, constants, etc
 	private readonly float spriteScaleFactor = 0.55f;
-	private bool mouseOver = false;
+	public bool selectionLock { get; private set; }
 	[HideInInspector] public bool inFocus {
 		get => GameManager.inst.tacticsManager.focusSingleton == this;
 	}
@@ -109,71 +109,8 @@ public abstract class Unit : TacticsEntityBase
 			childT.localScale /= spriteScaleFactor;
 		}
 	}
-	/*
-	void OnMouseOver() {
-		if (!ghosted) {
-			mouseOver = true;
-			ClaimFocus(true);
-		}
-		Debug.DrawLine(boxCollider2D.bounds.min, boxCollider2D.bounds.max);
-	}
-	void OnMouseExit() {
-		mouseOver = false;
-		ClaimFocus(false);
-	}*/
 
-	void Update() {
-		var grid = GameManager.inst.GetActiveGrid();
-		// Ghost control
-		ghosted = false;
-		if (!inFocus) {
-			// each unit will check its own processes to see if it should be ghosted
-			// having multiple senders, i.e. PathOverlayIso tiles and other Units, is difficult to keep track of
-
-			// if there is any overlay that can be obscured:
-			Vector3Int northPos = gridPosition + new Vector3Int(1, 1, 0);
-			if (grid.GetOverlayAt(gridPosition) || grid.GetOverlayAt(northPos)) {
-				ghosted = true;
-			}
-					
-			// or, if there is a Unit with an active focus right behind
-			if (((Unit)grid.OccupantAt(northPos))?.inFocus ?? false) {
-				ghosted = true;
-			}
-		}
-	}
-
-	void LateUpdate() {
-		// control all color information here, via polymorphic resolution
-		var grid = GameManager.inst.GetActiveGrid();
-		var mm = GameManager.inst.mouseManager;
-
-		// Focus control: reset if applicable and highlight/focus
-
-		// if MouseOver boxCollider2D
-		if (!ghosted && ColliderContains(mm.mouseWorldPos)) {
-			ClaimFocus(true);
-		}
-		/*if (!IsMoving() && mm.currentMouseGridPos == gridPosition) {
-			ClaimFocus(true);
-		}*/
-		var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
-		if (inFocus) {
-			unitUI.SetTransparency(1.0f);
-			//
-			var overlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;		
-			grid.baseTilemap.SetTile(overlayPosition, overlayTile);
-		} else {
-			unitUI.SetTransparency(0.0f);
-			//
-			grid.baseTilemap.SetTile(overlayPosition, null);	
-		}
-	}
-
-	private void ClaimFocus(bool takeFocus) {
-		//if (inFocus == takeFocus) return;
-		GameManager.inst.tacticsManager.focusSingleton = this;
-/*
+	public void SetFocus(bool takeFocus) {
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
 		if (takeFocus) {
@@ -182,16 +119,12 @@ public abstract class Unit : TacticsEntityBase
 			var overlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
 			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
 			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, overlayTile);
-			//
-			GameManager.inst.tacticsManager.focusSingleton = this;
 		} else {
 			unitUI.SetTransparency(0.0f);
 
 			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
 			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, null);
-			//
-			GameManager.inst.tacticsManager.focusSingleton = null;
-		}*/
+		}
 	}
 	
 	public override bool IsActive() {
@@ -252,6 +185,10 @@ public abstract class Unit : TacticsEntityBase
 		UpdateThreatRange();
 		attackRange?.Display(grid);
 		moveRange?.Display(grid);
+
+		// 
+		SetFocus(true);
+		selectionLock = true;
 	}
 
 	public void OnDeselect() {
@@ -259,6 +196,10 @@ public abstract class Unit : TacticsEntityBase
 		//
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
+
+		//
+		SetFocus(false);
+		selectionLock = false;
 	}
 
 	public void TraverseTo(Vector3Int target, MovingObjectPath fieldPath = null) {
