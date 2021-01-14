@@ -57,7 +57,7 @@ public class UnitUI : MonoBehaviour
     public void DisplayDamageMessage(string message, bool emphasize = false) {
         // valid options are: damage taken, damage done? miss, crit
         TextUI textUI = Instantiate(textUIPrefab, transform);
-        textUI.transform.position += new Vector3(0, boundUnit.spriteHeight*1.0f, 0);
+        textUI.transform.position += new Vector3(0, boundUnit.spriteHeight*0.5f, 0);
 
         // determine if emphasis is necessary
         if (emphasize) {

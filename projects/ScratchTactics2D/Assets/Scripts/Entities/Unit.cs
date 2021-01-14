@@ -123,18 +123,7 @@ public abstract class Unit : TacticsEntityBase
 	}*/
 
 	void Update() {
-		// control all color information here, via polymorphic resolution
 		var grid = GameManager.inst.GetActiveGrid();
-		var mm = GameManager.inst.mouseManager;
-
-		// Focus control: reset if applicable and highlight/focus
-		
-		if (!IsMoving() && mm.currentMouseGridPos == gridPosition) {
-			ClaimFocus(true);
-		} else if (mm.currentMouseGridPos != gridPosition/* && !mouseOver*/) {
-			ClaimFocus(false);
-		}
-
 		// Ghost control
 		ghosted = false;
 		if (!inFocus) {
@@ -154,9 +143,37 @@ public abstract class Unit : TacticsEntityBase
 		}
 	}
 
-	private void ClaimFocus(bool takeFocus) {
-		if (inFocus == takeFocus) return;
+	void LateUpdate() {
+		// control all color information here, via polymorphic resolution
+		var grid = GameManager.inst.GetActiveGrid();
+		var mm = GameManager.inst.mouseManager;
 
+		// Focus control: reset if applicable and highlight/focus
+
+		// if MouseOver boxCollider2D
+		if (!ghosted && ColliderContains(mm.mouseWorldPos)) {
+			ClaimFocus(true);
+		}
+		/*if (!IsMoving() && mm.currentMouseGridPos == gridPosition) {
+			ClaimFocus(true);
+		}*/
+		var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
+		if (inFocus) {
+			unitUI.SetTransparency(1.0f);
+			//
+			var overlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;		
+			grid.baseTilemap.SetTile(overlayPosition, overlayTile);
+		} else {
+			unitUI.SetTransparency(0.0f);
+			//
+			grid.baseTilemap.SetTile(overlayPosition, null);	
+		}
+	}
+
+	private void ClaimFocus(bool takeFocus) {
+		//if (inFocus == takeFocus) return;
+		GameManager.inst.tacticsManager.focusSingleton = this;
+/*
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
 		if (takeFocus) {
@@ -174,7 +191,7 @@ public abstract class Unit : TacticsEntityBase
 			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, null);
 			//
 			GameManager.inst.tacticsManager.focusSingleton = null;
-		}
+		}*/
 	}
 	
 	public override bool IsActive() {
