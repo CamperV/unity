@@ -84,6 +84,7 @@ public class TacticsManager : MonoBehaviour
 			//
 			// finally, Ghost Control
 			var grid = GetActiveGrid();
+			var descendingInBattle = activeBattle.GetRegisteredInBattle().OrderByDescending(it => it.gridPosition.y);
 
 			foreach (Unit u in descendingInBattle) {
 				u.ghosted = false;
@@ -136,25 +137,22 @@ public class TacticsManager : MonoBehaviour
 
 	public Unit GetNewFocus() {
 		var mm = GameManager.inst.mouseManager;
-		Unit newFocus = null;
 
 		// Focus control: reset if applicable and highlight/focus
-		var descendingInBattle = activeBattle.GetRegisteredInBattle().OrderByDescending(it => it.gridPosition.y);
-		foreach (Unit u in descendingInBattle) {
+		var unitsInBattle = activeBattle.GetRegisteredInBattle().OrderBy(it => it.gridPosition.y);
+		foreach (Unit u in unitsInBattle) {
 			if (!u.ghosted && u.ColliderContains(mm.mouseWorldPos)) {
-				newFocus = u;
+				return u;
 			}
 		}
 		
 		// secondary try: select based on tileGridPos AFTER determining BB collisions
-		if (!newFocus) {
-			foreach (Unit u in descendingInBattle) {
-				if (!u.IsMoving() && mm.currentMouseGridPos == u.gridPosition) {
-					newFocus = u;
-				}
+		foreach (Unit u in unitsInBattle) {
+			if (!u.IsMoving() && mm.currentMouseGridPos == u.gridPosition) {
+				return u;
 			}
 		}
 
-		return newFocus;
+		return null;
 	}
 }
