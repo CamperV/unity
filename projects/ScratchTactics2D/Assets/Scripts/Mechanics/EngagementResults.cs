@@ -7,11 +7,14 @@ public class EngagementResults
 {
     public bool resolved { get; private set; }
 
-    private Unit aggressor;
-    private Unit defender;
+    public Unit aggressor;
+    public Unit defender;
 
     public bool aggressorSurvived;
     public bool defenderSurvived;
+
+    public Attack? firstAttack;
+    public Attack? secondAttack;
 
     // this class is created for an acutal battle between two Units
     public EngagementResults(Unit a, Unit b, bool aS, bool dS) {
@@ -21,6 +24,18 @@ public class EngagementResults
         defender = b;
         aggressorSurvived = aS;
         defenderSurvived = dS;
+    }
+
+    // this inst is created for EngagementPreviews
+    public EngagementResults(Unit a, Unit b, Attack attack, Attack counterAttack) {
+        resolved = false;
+        
+        aggressor = a;
+        defender = b;
+        aggressorSurvived = true;
+        defenderSurvived = true;
+        firstAttack = attack;
+        secondAttack = counterAttack;
     }
 
     public IEnumerator ResolveCasualties() {

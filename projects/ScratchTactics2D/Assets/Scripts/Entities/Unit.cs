@@ -17,6 +17,11 @@ public abstract class Unit : TacticsEntityBase
 
 	// NOTE this is set by a Controller during registration
 	public UnitController parentController;
+	public bool isPlayerControlled {
+		get {
+			return parentController.GetType() == typeof(PlayerUnitController);
+		}
+	}
 
 	public UnitUI unitUIPrefab;
 	[HideInInspector] public UnitUI unitUI;
@@ -237,26 +242,23 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public bool ReceiveAttack(Attack incomingAttack) {
-		int finalHitRate = incomingAttack.hitRate - (REFLEX*2);
-		int finalCritRate = incomingAttack.critRate - REFLEX;
-
 		// calc hit/crit
 		int diceRoll = Random.Range(0, 100);
-		bool isHit = diceRoll < finalHitRate;
+		bool isHit = diceRoll < incomingAttack.hitRate;
 
 		// final retval
 		bool survived = true;
 		if (isHit) {
-			bool isCrit = diceRoll < finalCritRate;
+			bool isCrit = diceRoll < incomingAttack.critRate;
 			float finalDamage = (float)incomingAttack.damage;
 			if (isCrit) {
 				finalDamage *= incomingAttack.criticalMultiplier;
-				Debug.Log($"Critical hit! ({finalCritRate}%) for {finalDamage} damage");
+				Debug.Log($"Critical hit! ({incomingAttack.critRate}%) for {finalDamage} damage");
 			}
 
 			survived = SufferDamage((int)finalDamage, isCritical: isCrit);
 		} else {
-			Debug.Log($"{this} dodged the attack! ({finalHitRate}% to hit)");
+			Debug.Log($"{this} dodged the attack! ({incomingAttack.hitRate}% to hit)");
 			unitUI.DisplayDamageMessage("MISS");
 		}
 

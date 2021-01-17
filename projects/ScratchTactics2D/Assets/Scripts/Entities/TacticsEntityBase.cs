@@ -59,6 +59,10 @@ public class TacticsEntityBase : MovingObject
 		boxCollider2D.offset = spriteBounds.center;
 	}
 
+	public Sprite GetSprite() {
+		return spriteRenderer.sprite;
+	}
+
 	public override bool GridMove(int xdir, int ydir) {
 		return base.AttemptGridMove(xdir, ydir, GameManager.inst.tacticsManager.GetActiveGrid());
 	}

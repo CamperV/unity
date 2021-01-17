@@ -29,7 +29,7 @@ public class PhaseManager : MonoBehaviour
 		playerControllerInst = GameManager.inst.playerController;
 		enemyControllerInst = GameManager.inst.enemyController;
 		
-		GameManager.inst.UIManager.SetTurnText("Turn " + currentTurn);
+		UIManager.inst.SetTurnText("Turn " + currentTurn);
     }
 
     void Update() {
@@ -79,7 +79,7 @@ public class PhaseManager : MonoBehaviour
 	
 	public void StartPhase(Enum.Phase phase) {
 		currentPhase = phase;
-		GameManager.inst.UIManager.SetPhaseText("Current Phase: " + phaseStringRepr[currentPhase]);
+		UIManager.inst.SetPhaseText("Current Phase: " + phaseStringRepr[currentPhase]);
 	}
 	
 	public void OnPhaseEnd(Enum.Phase phase) {
@@ -88,7 +88,7 @@ public class PhaseManager : MonoBehaviour
 		// update turn counter, start a new turn after two phases have completed
 		if (currentPhaseCount % 2 == 0) {
 			currentTurn++;
-			GameManager.inst.UIManager.SetTurnText("Turn " + currentTurn);
+			UIManager.inst.SetTurnText("Turn " + currentTurn);
 		}
 	}
 	

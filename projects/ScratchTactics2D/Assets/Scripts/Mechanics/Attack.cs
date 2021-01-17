@@ -7,9 +7,21 @@ public class Attack
 {
     public readonly float criticalMultiplier = 3.0f;
 
-    public int damage;
-    public int hitRate;
-    public int critRate;
+    private int _damage;
+    public int damage {
+        get => _damage;
+        set { _damage = (value < 0) ? 0 : value; }
+    }
+    private int _hitRate;
+    public int hitRate {
+        get => _hitRate;
+        set { _hitRate = (value < 0) ? 0 : value; }
+    }
+    private int _critRate;
+    public int critRate {
+        get => _critRate;
+        set { _critRate = (value < 0) ? 0 : value; }
+    }
 
     private Dictionary<string, string> advantages = new Dictionary<string, string>{
         ["WeaponSlash"]  = "WeaponBlunt",
@@ -30,6 +42,7 @@ public class Attack
     public void Modify(Unit aggressor, Unit defender) {
         Debug.Assert(advantages.ContainsKey(aggressor.equippedWeapon.tag) && advantages.ContainsKey(defender.equippedWeapon.tag));
 
+        // "Weapon Triangle" modifications
         if (defender.equippedWeapon.tag == advantages[aggressor.equippedWeapon.tag]) {
             damage   += 1;
             hitRate  += 15;
@@ -39,6 +52,10 @@ public class Attack
             hitRate  -= 15;
             critRate -= 5;
         }
+
+        // stat modifications
+        hitRate  -= defender.REFLEX*2;
+		critRate -= defender.REFLEX;
 
         Debug.Log($"Attack modified to {this}");
     }

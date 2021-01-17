@@ -61,6 +61,10 @@ public class PlayerUnitController : UnitController
 					}
 				}
 
+				// MOUSE OVER/PREVIEW ETC
+				UIManager.inst.DestroyCurrentEngagementPreview();
+				if (currentSelection && currentSelection.OptionActive("Attack")) PreviewPossibleEngagement();
+
 				// finally, check all unit in registry
 				// if none of them have any moves remaining, end the phase
 				if (EndPhaseNow()) phaseActionState = Enum.PhaseActionState.complete;
@@ -103,22 +107,29 @@ public class PlayerUnitController : UnitController
 		}
 	}
 
+	private void PreviewPossibleEngagement() {
+		Vector3Int target = GetMouseTarget();
+
+		// if target is an enemy combatant & we are about to attack it
+		if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
+			if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
+				// preview the potential engagement here
+				var unitAt = (Unit)grid.OccupantAt(target);	
+				var previewEngagement = new Engagement(currentSelection, unitAt);
+				EngagementResults er = previewEngagement.PreviewResults();
+
+				UIManager.inst.CreateEngagementPreview(er);
+			}
+		}
+	}
+
 	// ACTION ZONE
 	private void Interact() {
 		// this is the contextual interaction
 		// get the gridPosition of the targeted click
 		// check a unit's box collider too, so that user can click the sprite too
 		// ALSO, make sure a ghosted clickable is click-thru only
-		Vector3Int target = GameManager.inst.mouseManager.currentMouseGridPos;
-		var activeBattle = GameManager.inst.tacticsManager.activeBattle;
-		var ascendingInBattle = activeBattle.GetRegisteredInBattle().OrderBy(it => it.transform.position.y);
-
-		foreach (TacticsEntityBase clickable in ascendingInBattle) {
-			if (!clickable.ghosted && clickable.ColliderContains(GameManager.inst.mouseManager.mouseWorldPos)) {
-				target = clickable.gridPosition;
-				break;
-			}
-		};
+		Vector3Int target = GetMouseTarget();
 		
 		switch (interactState) {
 			case Enum.InteractState.noSelection:
@@ -167,6 +178,7 @@ public class PlayerUnitController : UnitController
 					// if the mouseDown is on a valid attackable are (after moving)
 					if (currentSelection.OptionActive("Attack")) {
 
+						// ON CLICK - target has already been selected
 						// if currentSelection can actually attack the target
 						if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
 
@@ -252,5 +264,19 @@ public class PlayerUnitController : UnitController
 		return potentialTargets.FindAll(
 			it => it != subject && subject.attackRange.field.ContainsKey(it.gridPosition)
 		).Any();
+	}
+
+	private Vector3Int GetMouseTarget() {
+		// check bboxes to reset target
+		// and if it isn't there, get the gridpos
+		var activeBattle = GameManager.inst.tacticsManager.activeBattle;
+		var ascendingInBattle = activeBattle.GetRegisteredInBattle().OrderBy(it => it.transform.position.y);
+
+		foreach (TacticsEntityBase clickable in ascendingInBattle) {
+			if (!clickable.ghosted && clickable.ColliderContains(GameManager.inst.mouseManager.mouseWorldPos)) {
+				return clickable.gridPosition;
+			}
+		};
+		return GameManager.inst.mouseManager.currentMouseGridPos;
 	}
 }

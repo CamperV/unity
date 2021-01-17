@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Engagement
 {
-    private Unit aggressor;
-    private Unit defender;
+    public Unit aggressor;
+    public Unit defender;
 
     public bool resolved { get; private set; }
     public EngagementResults results { get; private set; }
@@ -47,6 +47,21 @@ public class Engagement
 
         results = new EngagementResults(aggressor, defender, aggressorSurvived, defenderSurvived);
         resolved = true;
+    }
+
+    // this previews what will happen, to display, and not resolve
+    public EngagementResults PreviewResults() {
+        Attack firstAttack = aggressor.GenerateAttack(isAggressor: true);
+        firstAttack.Modify(aggressor, defender);
+
+        // if we can counterattack:
+        Attack counterAttack = null;
+        if (defender.InStandingAttackRange(aggressor.gridPosition)) {
+            counterAttack = defender.GenerateAttack(isAggressor: false);
+            counterAttack.Modify(defender, aggressor);
+        }
+
+        return new EngagementResults(aggressor, defender, firstAttack, counterAttack ?? null);
     }
     
 	public IEnumerator ExecuteAfterResolving(Action VoidAction) {

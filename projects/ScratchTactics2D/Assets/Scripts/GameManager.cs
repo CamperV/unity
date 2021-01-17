@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
 	// prefabs to be instantiated
 	public WorldGrid worldGridPrefab;
 	public OverworldPlayer playerPrefab;
-	public UIManager UIManagerPrefab;
 	public PhaseManager phaseManagerPrefab;
 	public MouseManager mouseManagerPrefab;
 	public TacticsManager tacticsManagerPrefab;
@@ -31,7 +30,6 @@ public class GameManager : MonoBehaviour
 	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public WorldGrid worldGrid;
 	[HideInInspector] public OverworldPlayer player;
-	[HideInInspector] public UIManager UIManager;
 	[HideInInspector] public PhaseManager phaseManager;
 	[HideInInspector] public MouseManager mouseManager;
 	//
@@ -63,7 +61,6 @@ public class GameManager : MonoBehaviour
 	
 	void Init() {
 		worldGrid      = Instantiate(worldGridPrefab, Vector3.zero, Quaternion.identity);
-		UIManager      = Instantiate(UIManagerPrefab);
 		mouseManager   = Instantiate(mouseManagerPrefab);
 		phaseManager   = Instantiate(phaseManagerPrefab);
 		tacticsManager = Instantiate(tacticsManagerPrefab, Vector3.zero, Quaternion.identity);
