@@ -59,12 +59,14 @@ public class TacticsManager : MonoBehaviour
 					// and calculate the scale ratio. Just use X, because our scale is uniform on all axes
 					var updatedScale = activeBattle.transform.localScale + (Input.GetAxis("Mouse ScrollWheel") * 0.75f) * Vector3.one;
 					float scaleRatio = updatedScale.x / activeBattle.transform.localScale.x;
-					
-					Vector3 localToMouse = activeBattle.transform.position - mouseWorldPos;
-					
-					//update the scale, and position based on the new scale
-					activeBattle.transform.localScale = updatedScale;
-					activeBattle.transform.position = mouseWorldPos + (localToMouse * scaleRatio);
+
+					if (scaleRatio != 1.0f) {
+						Vector3 localToMouse = activeBattle.transform.position - mouseWorldPos;
+						
+						//update the scale, and position based on the new scale
+						activeBattle.transform.localScale = updatedScale;
+						activeBattle.transform.position = mouseWorldPos + (localToMouse * scaleRatio);
+					}
 				}
 			}
 

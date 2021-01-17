@@ -12,8 +12,8 @@ public class TacticsEntityBase : MovingObject
 
 	protected Animator animator;
 
-	private int _animationStack;
-	private int animationStack {
+	protected int _animationStack;
+	protected int animationStack {
 		get => _animationStack;
 		set {
 			Debug.Assert(value > -1);
@@ -92,7 +92,7 @@ public class TacticsEntityBase : MovingObject
 		VoidAction();
 	}
 
-	public IEnumerator FadeDown(float fixedTime) {
+	public virtual IEnumerator FadeDown(float fixedTime) {
 		animationStack++;
 		//
 

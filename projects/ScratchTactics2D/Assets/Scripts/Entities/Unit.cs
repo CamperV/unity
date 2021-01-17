@@ -292,4 +292,20 @@ public abstract class Unit : TacticsEntityBase
 		OverworldEntity oe = battle.GetOverworldEntityFromController(parentController);
 		oe.RemoveUnit(ID);
 	}
+
+	public override IEnumerator FadeDown(float fixedTime) {
+		animationStack++;
+		//
+
+		float timeRatio = 0.0f;
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+			spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
+			unitUI.SetTransparency(1.0f - timeRatio);
+			yield return null;
+		}
+
+		//
+		animationStack--;
+	}
 }
