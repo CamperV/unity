@@ -150,60 +150,65 @@ public class PlayerUnitController : UnitController
 
 				// OUR UNIT:
 				if (activeRegistry.Contains(currentSelection)) {
+					switch(currentSelection.actionState) {
+						case Enum.PlayerUnitState.moveSelection:
+							// if the mouseDown is on a valid square, move to it
+							if (currentSelection.OptionActive("Move")) {
+								if (currentSelection.moveRange.ValidMove(target)) {
+									currentSelection.SetOption("Move", false);
+									currentSelection.OnDeselect();
+									currentSelectionFieldPath?.UnShow(grid);
 
-					// if the mouseDown is on a valid square, move to it
-					if (currentSelection.OptionActive("Move")) {
-						if (currentSelection.moveRange.ValidMove(target)) {
-							currentSelection.SetOption("Move", false);
-							currentSelection.OnDeselect();
-							currentSelectionFieldPath?.UnShow(grid);
+									currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
+									//
 
-							currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
-							//
-
-							// dumb shenanigans: clear then re-select
-							// if there is an enemy in the selection, keep it alive
-							// otherwise, end the turn						
-							if (PossibleValidAttack(currentSelection, GetOpposing())) {
-								StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
-									SelectUnit(currentSelection.gridPosition);
-								})); 
-							} else {
-								EndTurnSelectedUnit();
+									// dumb shenanigans: clear then re-select
+									// if there is an enemy in the selection, keep it alive
+									// otherwise, end the turn						
+									if (PossibleValidAttack(currentSelection, GetOpposing())) {
+										StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
+											SelectUnit(currentSelection.gridPosition);
+										})); 
+									} else {
+										EndTurnSelectedUnit();
+									}
+								}
 							}
 							break;
-						}
-					}
+						case Enum.PlayerUnitState.attackSelection:
+							// if the mouseDown is on a valid attackable are (after moving)
+							if (currentSelection.OptionActive("Attack")) {
 
-					// if the mouseDown is on a valid attackable are (after moving)
-					if (currentSelection.OptionActive("Attack")) {
+								// ON CLICK - target has already been selected
+								// if currentSelection can actually attack the target
+								if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
 
-						// ON CLICK - target has already been selected
-						// if currentSelection can actually attack the target
-						if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
+									// if target is an enemy combatant
+									if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
+										currentSelection.SetOption("Attack", false);
+										//
+										var unitAt = (Unit)grid.OccupantAt(target);
+										
+										var engagement = new Engagement(currentSelection, unitAt);
+										StartCoroutine(engagement.ResolveResults());
 
-							// if target is an enemy combatant
-						    if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
-								currentSelection.SetOption("Attack", false);
-								//
-								var unitAt = (Unit)grid.OccupantAt(target);
-								
-								var engagement = new Engagement(currentSelection, unitAt);
-								StartCoroutine(engagement.ResolveResults());
-
-								// wait until the engagement has ended
-								// once the engagement has processed, resolve the casualties
-								// once the casualties are resolved, EndTurnSelectedUnit()
-								StartCoroutine(engagement.ExecuteAfterResolving(() => {
-									StartCoroutine(engagement.results.ResolveCasualties());
-									StartCoroutine(engagement.results.ExecuteAfterResolving(() => {
-										EndTurnSelectedUnit();
-									}));
-								}));
-								break;
+										// wait until the engagement has ended
+										// once the engagement has processed, resolve the casualties
+										// once the casualties are resolved, EndTurnSelectedUnit()
+										StartCoroutine(engagement.ExecuteAfterResolving(() => {
+											StartCoroutine(engagement.results.ResolveCasualties());
+											StartCoroutine(engagement.results.ExecuteAfterResolving(() => {
+												EndTurnSelectedUnit();
+											}));
+										}));
+									}
+								}
 							}
-						}
-					}
+							break;
+						
+						default:
+							break;
+					}	// end case
 				}
 
 				// NOT OUR UNIT
@@ -215,6 +220,8 @@ public class PlayerUnitController : UnitController
 				SelectUnit(target);
 				break;
 
+			default:
+				break;
 			// endcase
 		}
 	}

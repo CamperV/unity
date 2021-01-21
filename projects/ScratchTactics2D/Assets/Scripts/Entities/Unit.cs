@@ -34,6 +34,9 @@ public abstract class Unit : TacticsEntityBase
 		}
 	}
 
+	//
+	public Enum.PlayerUnitState actionState;
+
 	// Equipment management
 	public Weapon equippedWeapon { get => unitStats.inventory.equippedWeapon; }
 
@@ -160,6 +163,7 @@ public abstract class Unit : TacticsEntityBase
 		optionAvailability.Keys.ToList().ForEach(k => optionAvailability[k] = true);
 		spriteRenderer.color = Color.white;
 		//
+		actionState = Enum.PlayerUnitState.idle;
 		turnActive = true;
 	}
 
@@ -167,6 +171,7 @@ public abstract class Unit : TacticsEntityBase
 		optionAvailability.Keys.ToList().ForEach(k => optionAvailability[k] = false);
 		spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f, spriteRenderer.color.a);
 		//
+		actionState = Enum.PlayerUnitState.idle;
 		turnActive = false;
 	}
 
@@ -194,6 +199,12 @@ public abstract class Unit : TacticsEntityBase
 		// 
 		SetFocus(true);
 		selectionLock = true;
+
+		// enter the first default state for move selection
+		actionState = Enum.PlayerUnitState.moveSelection;
+
+		// finally, display the UnitUI that allows for selecting the coming actions
+		unitUI.DisplayActionOptions(optionAvailability);
 	}
 
 	public void OnDeselect() {
@@ -205,6 +216,9 @@ public abstract class Unit : TacticsEntityBase
 		//
 		SetFocus(false);
 		selectionLock = false;
+
+		actionState = Enum.PlayerUnitState.idle;
+		unitUI.HideActionOptions();
 	}
 
 	public void TraverseTo(Vector3Int target, MovingObjectPath fieldPath = null) {

@@ -45,7 +45,10 @@ public class EngagementPreview : MonoBehaviour
             ep.eDamage.text   = (ep.secondAttack?.damage.ToString() ?? "-") + " DMG";
             ep.eHitRate.text  = (ep.secondAttack?.hitRate.ToString() ?? "-") + "% HIT";
             ep.eCritRate.text = (ep.secondAttack?.critRate.ToString() ?? "-") + "% CRIT";
-        } else {
+        }
+        
+        /* This doesn't really exist yet. Some enemies will ALWAYS attack first, THEN implement this later
+        else {
             ep.banner.sprite = ResourceLoader.GetSprite("engagement_preview_flip");
             ep.playerPortrait.sprite = ep.defender.GetSprite();
             ep.enemyPortrait.sprite = ep.aggressor.GetSprite();
@@ -59,6 +62,7 @@ public class EngagementPreview : MonoBehaviour
             ep.pHitRate.text  = ep.secondAttack.hitRate.ToString() + "% HIT";
             ep.pCritRate.text = ep.secondAttack.critRate.ToString() + "% CRIT";
         }
+        */
 
         return ep;
     }

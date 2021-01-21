@@ -72,4 +72,12 @@ public class UnitUI : MonoBehaviour
         // this will destory the textUI gameObject
         StartCoroutine(textUI.FloatAway(2.0f, boundUnit.spriteHeight * 0.5f));
     }
+
+    public void DisplayActionOptions(Dictionary<string, bool> optionAvailability) {
+        //
+    }
+
+    public void HideActionOptions() {
+        //
+    }
 }
