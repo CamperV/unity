@@ -26,7 +26,6 @@ public class TextUI : UnitUIElement
         textMesh.SetText(message);
     }
 
-
     public void Bold() {
         textMesh.fontStyle = FontStyles.Bold;
     }

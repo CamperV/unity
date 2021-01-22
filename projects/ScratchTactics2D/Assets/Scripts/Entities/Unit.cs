@@ -201,10 +201,12 @@ public abstract class Unit : TacticsEntityBase
 		selectionLock = true;
 
 		// enter the first default state for move selection
-		actionState = Enum.PlayerUnitState.moveSelection;
-
-		// finally, display the UnitUI that allows for selecting the coming actions
-		unitUI.DisplayActionOptions(optionAvailability);
+		if (OptionActive("Move")) {
+			actionState = Enum.PlayerUnitState.moveSelection;
+		} else if (OptionActive("Attack")) {
+			actionState = Enum.PlayerUnitState.attackSelection;
+			unitUI.DisplayActionOptions(optionAvailability);
+		}	
 	}
 
 	public void OnDeselect() {

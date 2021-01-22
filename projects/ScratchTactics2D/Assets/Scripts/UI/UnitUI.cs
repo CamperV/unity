@@ -14,9 +14,11 @@ public class UnitUI : MonoBehaviour
     // UI Elements to collect, scale, etc
     public HealthBar healthBarPrefab;
     public TextUI textUIPrefab;
+    public ActionButton actionButtonPrefab;
     
     [HideInInspector] public HealthBar healthBar;
-    [HideInInspector] public TextUI weaponDisplay;
+    [HideInInspector] public ActionButton attackButton;
+    [HideInInspector] public ActionButton waitButton;
 
     void Awake() {
         boundElements = new List<UnitUIElement>();
@@ -26,9 +28,15 @@ public class UnitUI : MonoBehaviour
         healthBar.BindUI(this);
         boundElements.Add(healthBar);
 
-        //weaponDisplay = Instantiate(textUIPrefab, transform);
-        //weaponDisplay.BindUI(this);
-        //boundElements.Add(weaponDisplay);
+        Sprite attackSprite = ResourceLoader.GetSprite("sword_icon");
+        attackButton = ActionButton.Spawn(transform, actionButtonPrefab, attackSprite, "E");
+        attackButton.BindUI(this);
+        attackButton.UpdateTransparency(0.0f);
+
+        Sprite waitSprite = ResourceLoader.GetSprite("wait_icon");
+        waitButton = ActionButton.Spawn(transform, actionButtonPrefab, waitSprite, "W");
+        waitButton.BindUI(this);
+        waitButton.UpdateTransparency(0.0f);
     }
 
     public void BindUnit(Unit unit) {
@@ -74,10 +82,14 @@ public class UnitUI : MonoBehaviour
     }
 
     public void DisplayActionOptions(Dictionary<string, bool> optionAvailability) {
-        //
+        Debug.Log($"Displaying action buttons");
+        attackButton.UpdateTransparency(1.0f);
+        waitButton.UpdateTransparency(1.0f);
     }
 
     public void HideActionOptions() {
-        //
+        Debug.Log("Hiding action buttons");
+        attackButton.UpdateTransparency(0.0f);
+        waitButton.UpdateTransparency(0.0f);
     }
 }

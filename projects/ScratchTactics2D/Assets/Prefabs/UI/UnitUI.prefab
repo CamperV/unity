@@ -48,4 +48,7 @@ MonoBehaviour:
   persistentAlpha: 0
   healthBarPrefab: {fileID: 8144530758810068113, guid: c51cecea495c9e9478ec6e90ded88e7c, type: 3}
   textUIPrefab: {fileID: 5774386816659334117, guid: d3c95c4415ba7ca48b03b44556327811, type: 3}
+  actionButtonPrefab: {fileID: 3199442691963294156, guid: 502447bb8debeda4f9b389f24a7acd6f, type: 3}
   healthBar: {fileID: 8144530758810068113, guid: c51cecea495c9e9478ec6e90ded88e7c, type: 3}
+  attackButton: {fileID: 0}
+  waitButton: {fileID: 0}
