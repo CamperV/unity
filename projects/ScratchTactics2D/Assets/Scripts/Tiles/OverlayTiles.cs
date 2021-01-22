@@ -37,7 +37,7 @@ public class EndpointOverlayTile : OverlayTile
 public class SelectOverlayIsoTile : OverlayTile
 {
 	public void OnEnable() {
-		sprite = ResourceLoader.GetSprite("select_overlay_iso_tile");
+		sprite = ResourceLoader.GetSprite("blank_iso_tile");
 	}
 }
 

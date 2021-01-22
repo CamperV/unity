@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Extensions;
 
 public class MoveRange : FlowField
 {	
@@ -46,13 +47,15 @@ public class MoveRange : FlowField
 
 	public void Display(GameGrid grid) {
 		foreach (Vector3Int tilePos in field.Keys) {
-			if (ValidMove(tilePos)) grid.SelectAt(tilePos, color: Utils.selectColorBlue);
+			if (ValidMove(tilePos)) {
+				grid.UnderlayAt(tilePos, Utils.selectColorBlue);
+			}
 		}
 	}
 
 	public void ClearDisplay(GameGrid grid) {
 		foreach (Vector3Int tilePos in field.Keys) {
-			grid.ResetSelectionAt(tilePos);
+			grid.ResetUnderlayAt(tilePos);
 		}
 	}
 }

@@ -123,15 +123,10 @@ public abstract class Unit : TacticsEntityBase
 		// force others to drop focus if their Y value is larger (unit is behind)
 		if (takeFocus) {
 			unitUI.SetTransparency(1.0f);
-
-			var overlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
-			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
-			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, overlayTile);
+			GameManager.inst.GetActiveGrid().UnderlayAt(gridPosition, Utils.selectColorWhite);
 		} else {
 			unitUI.SetTransparency(0.0f);
-
-			var overlayPosition = new Vector3Int(gridPosition.x, gridPosition.y, 1);
-			GameManager.inst.GetActiveGrid().baseTilemap.SetTile(overlayPosition, null);
+			GameManager.inst.GetActiveGrid().ResetUnderlayAt(gridPosition);
 		}
 	}
 	

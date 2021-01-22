@@ -49,7 +49,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bfe57d343011464da0f7149cdb5f0a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tacticsCanvas: {fileID: 0}
   defaultControllerPrefab: {fileID: 5007282424744042210, guid: 8f44ac671b19b08478b75c1609a95db8, type: 3}
   defaultController: {fileID: 0}
   worldParticipants: []
@@ -350,6 +349,6 @@ TilemapRenderer:
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 3
-  m_Mode: 0
+  m_Mode: 1
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0

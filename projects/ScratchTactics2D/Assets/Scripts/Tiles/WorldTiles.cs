@@ -32,7 +32,7 @@ public class DirtWorldTile : WorldTile
 public class ForestWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }
-	public override int depth { get { return 2; } }
+	public override int depth { get { return 1; } }
 	public override int cost { get { return 300; } }
 
 	public void OnEnable() {
@@ -59,7 +59,7 @@ public class WaterWorldTile : WorldTile
 public class MountainWorldTile : WorldTile
 {	
 	public override int probability { get { return 13; } }
-	public override int depth { get { return 3; } }
+	public override int depth { get { return 1; } }
 	public override int cost { get { return 500; } }
 	
 	public void OnEnable() {
@@ -113,7 +113,7 @@ public class RoadWorldTile : WorldTile
 
 public class MountainRoadWorldTile : WorldTile
 {
-	public override int depth { get { return 3; } }
+	public override int depth { get { return 1; } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -157,7 +157,7 @@ public class WaterRoadWorldTile : WorldTile
 
 public class ForestRoadWorldTile : WorldTile
 {
-	public override int depth { get { return 2; } }
+	public override int depth { get { return 1; } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {

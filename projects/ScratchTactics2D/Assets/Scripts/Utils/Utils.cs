@@ -13,7 +13,7 @@ public static class Utils
 		VoidAction();
 	}
 
-	public static Color selectColorBlue = new Color(0f, .75f, 1f, 1f);
-	public static Color selectColorRed  = new Color(1f, .75f, 0f, 1f);
-	public static Color threatColorRed  = new Color(1f, 0.50f, 0.50f, 1f);
+	public static Color selectColorWhite = new Color(1.00f, 1.00f, 1.00f, 0.45f);
+	public static Color selectColorBlue  = new Color(0.00f, 0.30f, 0.75f, 0.65f);
+	public static Color threatColorRed   = new Color(0.75f, 0.30f, 0.00f, 0.65f);
 }

@@ -11,6 +11,7 @@ public class TacticsGrid : GameGrid
 	private Dictionary<Vector3Int, TacticsTile> tacticsTileGrid;
 
 	private OverlayTile waypointOverlayTile;
+	private OverlayTile selectionOverlayTile;
 	
     protected override void Awake() {
 		base.Awake();
@@ -35,6 +36,7 @@ public class TacticsGrid : GameGrid
 		tacticsTileGrid = new Dictionary<Vector3Int, TacticsTile>();
 
 		waypointOverlayTile = PathOverlayIsoTile.GetTileWithSprite(1);
+		selectionOverlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
 	}
 	
 	public override bool IsInBounds(Vector3Int tilePos) {
@@ -61,6 +63,18 @@ public class TacticsGrid : GameGrid
 
 	public virtual void ResetSelectionAtAlternate(Vector3Int tilePos, float fadeRate = 0.025f) {
 		ResetOverlayAt(tilePos);
+	}
+
+	public override void UnderlayAt(Vector3Int tilePos, Color color) {
+		var overlayPosition = new Vector3Int(tilePos.x, tilePos.y, 1);
+		baseTilemap.SetTile(overlayPosition, selectionOverlayTile);
+		TintTile(overlayPosition, color);
+	}
+
+	public override void ResetUnderlayAt(Vector3Int tilePos) {
+		var overlayPosition = new Vector3Int(tilePos.x, tilePos.y, 1);
+		baseTilemap.SetTile(overlayPosition, null);
+		ResetTintTile(overlayPosition);
 	}
 
     public void CreateTileMap(Vector3Int offset, WorldTile originTile) {

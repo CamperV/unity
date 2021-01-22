@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Extensions;
 
 public class AttackRange : FlowField
 {	
@@ -55,13 +56,13 @@ public class AttackRange : FlowField
 
 	public void Display(GameGrid grid) {
 		foreach (Vector3Int tilePos in field.Keys) {
-			grid.SelectAt(tilePos, color: Utils.threatColorRed);
+			grid.UnderlayAt(tilePos, Utils.threatColorRed);
 		}
 	}
 
 	public void ClearDisplay(GameGrid grid) {
 		foreach (Vector3Int tilePos in field.Keys) {
-			grid.ResetSelectionAt(tilePos);
+			grid.ResetUnderlayAt(tilePos);
 		}
 	}
 }

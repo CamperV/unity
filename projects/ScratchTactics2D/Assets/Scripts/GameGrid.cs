@@ -102,7 +102,16 @@ public abstract class GameGrid : MonoBehaviour
 	public virtual void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.05f) {
 		ResetTintTile(tilePos);
 	}
-	
+
+	public virtual void UnderlayAt(Vector3Int tilePos, Color color) {
+		Debug.Log("Should never call this");
+		Debug.Assert(false);
+	}
+	public virtual void ResetUnderlayAt(Vector3Int tilePos) {
+		Debug.Log("Should never call this");
+		Debug.Assert(false);
+	}
+
 	public IEnumerator FadeUp(Tilemap tilemap, Vector3Int tilePos) {
 		tilemap.SetTileFlags(tilePos, TileFlags.None);
 		float c = 0.0f;
