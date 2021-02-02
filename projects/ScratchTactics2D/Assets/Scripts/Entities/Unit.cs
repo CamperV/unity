@@ -74,7 +74,7 @@ public abstract class Unit : TacticsEntityBase
 		get => unitStats._HP;
 		set {
 			unitStats._HP = value;
-			unitUI.UpdateHealthBar(unitStats._HP);
+			unitUI.UpdateHealthBarThenFade(unitStats._HP);
 		}
 	}
     public int _CAPACITY {
@@ -90,7 +90,7 @@ public abstract class Unit : TacticsEntityBase
 	public AttackRange attackRange;
 
 	public bool turnActive { get; protected set; }
-	protected Dictionary<string, bool> optionAvailability;
+	public Dictionary<string, bool> optionAvailability;
 
 	protected override void Awake() {
 		base.Awake();
@@ -98,6 +98,13 @@ public abstract class Unit : TacticsEntityBase
 		unitUI = Instantiate(unitUIPrefab, transform);
 		unitUI.healthBar.InitHealthBar(VITALITY);
 		unitUI.SetTransparency(0.0f);
+		//
+		unitUI.actionMenu.BindCallbacks(new Dictionary<string, Action>(){
+			["Move"]   = () => { EnterMoveSelection(); },
+			["Attack"] = () => { EnterAttackSelection(); },
+			["Wait"]   = () => { ((PlayerUnitController)parentController).EndTurnSelectedUnit(); },
+			["Cancel"] = () => { EnterIdleOrClearSelection(); }
+		});
 		//
 		unitUI.BindUnit(this);
 
@@ -111,7 +118,7 @@ public abstract class Unit : TacticsEntityBase
 	void Start() {
 		// scale down to avoid weird parent/child problems w/ UnitUI
 		// apply inverse scale to all children of our transform
-		// Unity Enumerable<Xform> is weird and I wish they'd just use a method for getting children
+		// Unity Enumerable<Transform> is weird and I wish they'd just use a method for getting children
 		transform.localScale *= spriteScaleFactor;
 		foreach (Transform childT in transform) {
 			childT.localScale /= spriteScaleFactor;
@@ -122,10 +129,8 @@ public abstract class Unit : TacticsEntityBase
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
 		if (takeFocus) {
-			unitUI.SetTransparency(1.0f);
 			GameManager.inst.GetActiveGrid().UnderlayAt(gridPosition, Utils.selectColorWhite);
 		} else {
-			unitUI.SetTransparency(0.0f);
 			GameManager.inst.GetActiveGrid().ResetUnderlayAt(gridPosition);
 		}
 	}
@@ -151,6 +156,7 @@ public abstract class Unit : TacticsEntityBase
 	public void ApplyStats(UnitStats stats) {
 		unitStats = stats;
 		unitUI.UpdateHealthBar(_HP);
+		unitUI.SetTransparency(0.0f);
 	}
 
 	// Action zone
@@ -182,41 +188,78 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void OnSelect() {
-		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 		// play "awake" ready animation
 		// enter into "running" or "ready" animation loop
-		// display movement range
-		
-		UpdateThreatRange();
-		attackRange?.Display(grid);
-		moveRange?.Display(grid);
-
 		// 
 		SetFocus(true);
 		selectionLock = true;
+		unitUI.healthBar.Show(true);
 
+		// if you haven't moved yet, enter moveSelection state
+		// otherwise, show the menu
+		// the menu will determine if the unit enters attackSelection or specialSelection (not yet implemented)
 		// enter the first default state for move selection
-		if (OptionActive("Move")) {
-			actionState = Enum.PlayerUnitState.moveSelection;
-		} else if (OptionActive("Attack")) {
-			actionState = Enum.PlayerUnitState.attackSelection;
-			unitUI.DisplayActionOptions(optionAvailability);
-		}	
+		EnterState(Enum.PlayerUnitState.menu);
 	}
 
 	public void OnDeselect() {
-		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
-		//
-		moveRange?.ClearDisplay(grid);
-		attackRange?.ClearDisplay(grid);
-
 		//
 		SetFocus(false);
 		selectionLock = false;
+		unitUI.healthBar.Hide();
 
-		actionState = Enum.PlayerUnitState.idle;
-		unitUI.HideActionOptions();
+		EnterState(Enum.PlayerUnitState.idle);
 	}
+
+	private void EnterState(Enum.PlayerUnitState state) {
+		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
+		actionState = state;
+
+		switch(actionState) {
+			case Enum.PlayerUnitState.idle:
+				unitUI.actionMenu.ClearDisplay();
+				//
+				moveRange?.ClearDisplay(grid);
+				attackRange?.ClearDisplay(grid);
+				break;
+			case Enum.PlayerUnitState.menu:
+				unitUI.actionMenu.Display();
+				//
+				moveRange?.ClearDisplay(grid);
+				attackRange?.ClearDisplay(grid);
+				break;
+			case Enum.PlayerUnitState.moveSelection:
+				//unitUI.actionMenu.ClearDisplay();
+				//
+				UpdateThreatRange();
+				attackRange?.Display(grid);
+				moveRange?.Display(grid);
+				break;
+			case Enum.PlayerUnitState.attackSelection:
+				//unitUI.actionMenu.ClearDisplay();
+				//
+				UpdateThreatRange();
+				attackRange?.Display(grid);
+				moveRange?.Display(grid);
+				break;
+		}
+	}
+	public void EnterIdleOrClearSelection() {
+		switch (actionState) {
+			case Enum.PlayerUnitState.moveSelection:
+			case Enum.PlayerUnitState.attackSelection:
+				EnterState(Enum.PlayerUnitState.idle);
+				break;
+			default:
+				EnterState(Enum.PlayerUnitState.idle);
+				((PlayerUnitController)parentController).ClearSelection();
+				break;
+		}
+	}
+	public void EnterMenu() 		   { EnterState(Enum.PlayerUnitState.menu); }	
+	public void EnterMoveSelection()   { EnterState(Enum.PlayerUnitState.moveSelection); }
+	public void EnterAttackSelection() { EnterState(Enum.PlayerUnitState.attackSelection); }
+	// callbacks
 
 	public void TraverseTo(Vector3Int target, MovingObjectPath fieldPath = null) {
 		GameGrid grid = GameManager.inst.tacticsManager.GetActiveGrid();

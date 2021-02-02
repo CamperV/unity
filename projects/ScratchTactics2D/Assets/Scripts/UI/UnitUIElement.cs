@@ -16,7 +16,9 @@ public abstract class UnitUIElement : MonoBehaviour
 		}
 	}
 
-    [HideInInspector] UnitUI parentUI;
+	protected float standardFadeTime = 0.10f;
+
+    [HideInInspector] public UnitUI parentUI;
     public Unit boundUnit { get => parentUI?.boundUnit ?? null; }
 
     public bool transparencyLock = false;
@@ -38,6 +40,21 @@ public abstract class UnitUIElement : MonoBehaviour
 			yield return null;
 		}
 		VoidAction();
+	}
+	
+    public virtual IEnumerator FadeUpToFull(float fixedTime) {
+        animationStack++;
+		//
+
+		float timeRatio = 0.0f;
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+            UpdateTransparency(timeRatio);
+			yield return null;
+		}
+
+        //
+		animationStack--;
 	}
 
     public virtual IEnumerator FadeDown(float fixedTime) {
@@ -62,7 +79,7 @@ public abstract class UnitUIElement : MonoBehaviour
 
 		var ogPosition = transform.position;
 		for (int i=0; i<3; i++) {
-			transform.position = transform.position + (Vector3)Random.insideUnitCircle*radius;
+			transform.position += (Vector3)Random.insideUnitCircle*radius;
 			radius /= 2f;
 			yield return new WaitForSeconds(0.05f);
 		}

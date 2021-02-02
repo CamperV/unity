@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using Extensions;
 
@@ -7,50 +8,75 @@ public class ActionButton : UnitUIElement
 {
     public string location;
     public SpriteRenderer spriteRenderer;
+    public SpriteRenderer backgroundSpriteRenderer;
+    public float spriteWidth { get => spriteRenderer.bounds.size.x; }
 
-    public static ActionButton Spawn(Transform parent, ActionButton prefab, Sprite sprite, string loc) {
+    private Action callbackAction;
+
+    private bool _active = false;
+    public bool active {
+        get => _active;
+        set {
+            _active = value;
+            spriteRenderer.color = spriteRenderer.color.WithTint( (value) ? 1.0f : 0.5f );
+        }
+    }
+
+    private bool triggerInvoke = false;
+
+    public static ActionButton Spawn(Transform parent, ActionButton prefab, Sprite sprite) {
         var button = Instantiate(prefab, parent);
         button.spriteRenderer.sprite = sprite;
-        button.location = loc;
         return button;
     }
 
     void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    void Start() {
-        transform.localScale *= 0.25f;
-        transform.position += new Vector3(0, spriteRenderer.bounds.size.y*0.75f, 0);
-        //
-        switch (location) {
-            case "N":
-            case "W":
-                transform.position -= new Vector3(spriteRenderer.bounds.size.x*1.25f, 0, 0);
-                break;
-            case "S":
-            case "E":
-                transform.position += new Vector3(spriteRenderer.bounds.size.x*1.25f, 0, 0);
-                break;
-            default:
-                Debug.Log($"{location} is an invalid location setting for ActionButton");
-                break;
-        }
+        backgroundSpriteRenderer = GetComponentsInChildren<SpriteRenderer>()[1]; // [1] b/c this will find its own SR
     }
 
     void OnMouseDown() {
-        Debug.Log($"This is where I'd activate the registered callback");
+        if (!active) return;
+        spriteRenderer.color = spriteRenderer.color.WithTint(0.5f);
+        transform.localScale = Vector3.one;
+        triggerInvoke = true;
+    }
+
+    void OnMouseUp() {
+        if (!active) return;
+        if (triggerInvoke) {
+            spriteRenderer.color = spriteRenderer.color.WithTint(1.0f);
+            transform.localScale = Vector3.one;
+            callbackAction?.Invoke();
+        }
+        triggerInvoke = false;
     }
 
     void OnMouseEnter() {
+        if (!active) return;
         transform.localScale *= 1.2f;
     }
 
     void OnMouseExit() {
-        transform.localScale /= 1.2f;
+        triggerInvoke = false;
+        transform.localScale = Vector3.one;
     }
 
     public override void UpdateTransparency(float alpha) {
-        spriteRenderer.color = spriteRenderer.color.WithAlpha(alpha);
+        Color c = spriteRenderer.color;
+        spriteRenderer.color = c.WithAlpha(alpha);
+
+        // update the background as well
+        // but never let its color be more than  0.5f
+       backgroundSpriteRenderer.color = c.WithAlpha(alpha / 2.0f);
+    }
+
+    public void UpdateTint(float tint) {
+        spriteRenderer.color = spriteRenderer.color.WithTint(tint);
+    }
+
+    // callbacks assigned to these buttons must have no arguments or return values
+    public void BindCallback(Action action) {
+        callbackAction = action;
     }
 }

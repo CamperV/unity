@@ -24,7 +24,9 @@ public class HealthBar : UnitUIElement
 
     void Start() {
         transform.position -= barTilemap.localBounds.center;
-        transform.position += new Vector3(0, (barTilemap.localBounds.center.y)*9.0f, 0);
+        transform.position -= new Vector3(0, (barTilemap.localBounds.center.y)*-8.5f, 0);
+
+        //transparencyLock = true;
     }
 
     public void InitHealthBar(int max) {
@@ -66,5 +68,15 @@ public class HealthBar : UnitUIElement
             barTilemap.SetTileFlags(tilePos, TileFlags.None);
             barTilemap.SetColor(tilePos, currColor);
         }
+    }
+
+    public void Show(bool tLock) {
+        StartCoroutine(FadeUpToFull(standardFadeTime));
+        transparencyLock = tLock;
+    }
+
+    public void Hide() {
+        transparencyLock = false;
+        StartCoroutine(FadeDown(standardFadeTime));
     }
 }

@@ -1,16 +1,7 @@
 fileFormatVersion: 2
-guid: 3fc349af2a28d9441b9fb2f5e16a7e41
+guid: 2dabd0a791b31214a8fe17a50309fd01
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: -1310282805105699020
-    second: path_overlay_iso_tile_0
-  - first:
-      213: -8096794882824412561
-    second: path_overlay_iso_tile_1
-  - first:
-      213: -6928734116366161750
-    second: path_overlay_iso_tile_2
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -50,12 +41,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -110,70 +101,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: path_overlay_iso_tile_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 64
-        width: 72
-        height: 64
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4375f5e1bb0f0dde0800000000000000
-      internalID: -1310282805105699020
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: path_overlay_iso_tile_1
-      rect:
-        serializedVersion: 2
-        x: 72
-        y: 64
-        width: 72
-        height: 64
-      alignment: 9
-      pivot: {x: 0.4861111, y: 0.484375}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f62ec06e3f762af80800000000000000
-      internalID: -8096794882824412561
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: path_overlay_iso_tile_2
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 72
-        height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: aa86ddaf70138df90800000000000000
-      internalID: -6928734116366161750
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []

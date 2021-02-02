@@ -14,11 +14,10 @@ public class UnitUI : MonoBehaviour
     // UI Elements to collect, scale, etc
     public HealthBar healthBarPrefab;
     public TextUI textUIPrefab;
-    public ActionButton actionButtonPrefab;
+    public ActionMenu actionMenuPrefab;
     
     [HideInInspector] public HealthBar healthBar;
-    [HideInInspector] public ActionButton attackButton;
-    [HideInInspector] public ActionButton waitButton;
+    [HideInInspector] public ActionMenu actionMenu;
 
     void Awake() {
         boundElements = new List<UnitUIElement>();
@@ -28,15 +27,9 @@ public class UnitUI : MonoBehaviour
         healthBar.BindUI(this);
         boundElements.Add(healthBar);
 
-        Sprite attackSprite = ResourceLoader.GetSprite("sword_icon");
-        attackButton = ActionButton.Spawn(transform, actionButtonPrefab, attackSprite, "E");
-        attackButton.BindUI(this);
-        attackButton.UpdateTransparency(0.0f);
-
-        Sprite waitSprite = ResourceLoader.GetSprite("wait_icon");
-        waitButton = ActionButton.Spawn(transform, actionButtonPrefab, waitSprite, "W");
-        waitButton.BindUI(this);
-        waitButton.UpdateTransparency(0.0f);
+        actionMenu = Instantiate(actionMenuPrefab, transform);
+        actionMenu.BindUI(this);
+        boundElements.Add(actionMenu);
     }
 
     public void BindUnit(Unit unit) {
@@ -46,6 +39,10 @@ public class UnitUI : MonoBehaviour
     }
 
     public void UpdateHealthBar(int val) {
+        healthBar.UpdateBar(val, persistentAlpha);
+    }
+
+    public void UpdateHealthBarThenFade(int val) {
         healthBar.UpdateBar(val, 1.0f);
 
         // set the transparency for a while, then fade down
@@ -79,17 +76,5 @@ public class UnitUI : MonoBehaviour
         // animate the motion here
         // this will destory the textUI gameObject
         StartCoroutine(textUI.FloatAway(2.0f, boundUnit.spriteHeight * 0.5f));
-    }
-
-    public void DisplayActionOptions(Dictionary<string, bool> optionAvailability) {
-        Debug.Log($"Displaying action buttons");
-        attackButton.UpdateTransparency(1.0f);
-        waitButton.UpdateTransparency(1.0f);
-    }
-
-    public void HideActionOptions() {
-        Debug.Log("Hiding action buttons");
-        attackButton.UpdateTransparency(0.0f);
-        waitButton.UpdateTransparency(0.0f);
     }
 }

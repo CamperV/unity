@@ -84,5 +84,18 @@ namespace Extensions {
         public static Color WithAlpha(this Color c, float alpha) {
             return new Color(c.r, c.g, c.b, alpha);
         }
+
+        public static Color WithTint(this Color c, float tint) {
+            return new Color(tint, tint, tint, 1.0f);
+        }
+
+        // Dict
+        public static TValue GetValueOtherwise<TKey, TValue>(this Dictionary<TKey, TValue> d, TKey k, TValue tv) {
+            if (d.ContainsKey(k)) {
+                return d[k];
+            } else {
+                return tv;
+            }
+        }
     }
 }

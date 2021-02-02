@@ -44,26 +44,34 @@ public class PlayerUnitController : UnitController
 	void Update() {
 		if (!MyPhaseActive()) return;
 		var kc = CheckInput();
+
+		// if the unit's turn was ended some other way, other than through attacking
+		if (currentSelection?.turnActive == false) ClearSelection();
 		
 		switch(phaseActionState) {
 			// always read input in these states
 			case Enum.PhaseActionState.waitingForInput:
-			case Enum.PhaseActionState.acting:
 				if (actionBindings.ContainsKey(kc)) actionBindings[kc]();
 
+				// CURRENT SELECTION STATE
 				// if we've entered this state as a result of selecting a unit:
 				if (activeRegistry.Contains(currentSelection)) {
-					if (currentSelection.OptionActive("Move")) {
-						// overlay tile for movement selections
-						// constantly recalculate the shortest path to mouse via FlowField
-						// on mouse down, start a coroutine to move along the path
-						DrawValidMoveForSelection(currentSelection.moveRange);
+					UIManager.inst.DestroyCurrentEngagementPreview();
+					
+					switch (currentSelection?.actionState) {
+						case Enum.PlayerUnitState.moveSelection:
+							// overlay tile for movement selections
+							// constantly recalculate the shortest path to mouse via FlowField
+							// on mouse down, start a coroutine to move along the path
+							DrawValidMoveForSelection(currentSelection.moveRange);
+							break;
+
+						case Enum.PlayerUnitState.attackSelection:
+							PreviewPossibleEngagement();
+							break;
 					}
 				}
-
-				// MOUSE OVER/PREVIEW ETC
-				UIManager.inst.DestroyCurrentEngagementPreview();
-				if (currentSelection && currentSelection.OptionActive("Attack")) PreviewPossibleEngagement();
+				// CURRENT SELECTION STATE
 
 				// finally, check all unit in registry
 				// if none of them have any moves remaining, end the phase
@@ -122,6 +130,7 @@ public class PlayerUnitController : UnitController
 			}
 		}
 	}
+	// UPDATE ZONE
 
 	// ACTION ZONE
 	private void Interact() {
@@ -143,13 +152,15 @@ public class PlayerUnitController : UnitController
 
 			case Enum.InteractState.unitSelected:
 				// if mouse is down on a current selection - deselect it
-				if (currentSelection.gridPosition == target) {
+				/*if (currentSelection.gridPosition == target) {
 					ClearSelection();
 					break;
-				}
+				}*/
 
 				// OUR UNIT:
 				if (activeRegistry.Contains(currentSelection)) {
+
+					//
 					switch(currentSelection.actionState) {
 						case Enum.PlayerUnitState.moveSelection:
 							// if the mouseDown is on a valid square, move to it
@@ -164,7 +175,8 @@ public class PlayerUnitController : UnitController
 
 									// dumb shenanigans: clear then re-select
 									// if there is an enemy in the selection, keep it alive
-									// otherwise, end the turn						
+									// otherwise, end the turn
+									/*					
 									if (PossibleValidAttack(currentSelection, GetOpposing())) {
 										StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
 											SelectUnit(currentSelection.gridPosition);
@@ -172,9 +184,16 @@ public class PlayerUnitController : UnitController
 									} else {
 										EndTurnSelectedUnit();
 									}
+									*/
+
+									// new take: enter the menu state
+									StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
+											currentSelection.OnSelect();
+									}));
 								}
 							}
 							break;
+
 						case Enum.PlayerUnitState.attackSelection:
 							// if the mouseDown is on a valid attackable are (after moving)
 							if (currentSelection.OptionActive("Attack")) {
@@ -198,14 +217,16 @@ public class PlayerUnitController : UnitController
 										StartCoroutine(engagement.ExecuteAfterResolving(() => {
 											StartCoroutine(engagement.results.ResolveCasualties());
 											StartCoroutine(engagement.results.ExecuteAfterResolving(() => {
-												EndTurnSelectedUnit();
+												currentSelection.OnSelect();
 											}));
 										}));
 									}
 								}
 							}
 							break;
-						
+
+						// don't actually do anything here
+						case Enum.PlayerUnitState.waitSelection:
 						default:
 							break;
 					}	// end case
@@ -216,7 +237,7 @@ public class PlayerUnitController : UnitController
 					Debug.Log("can't really do anything w/ a non-registered unit");
 				}
 
-				// default: Select someone else
+				// default: Select someone else if you click on them
 				SelectUnit(target);
 				break;
 
@@ -230,7 +251,7 @@ public class PlayerUnitController : UnitController
 		// on a certain key, get the currently selected unit
 		// enter a special controller mode
 		var unitAt = (Unit)grid.OccupantAt(target);
-		if (unitAt == null) return false;
+		if (unitAt == null || unitAt == currentSelection) return false;
 
 		// if this is any unit at all:
 		if (unitAt.turnActive) {
@@ -245,7 +266,7 @@ public class PlayerUnitController : UnitController
 		return currentSelection == unitAt;
 	}
 
-	private void ClearSelection() {
+	public void ClearSelection() {
 		if (currentSelection != null) {
 			currentSelection.OnDeselect();
 			currentSelection = null;
@@ -254,7 +275,7 @@ public class PlayerUnitController : UnitController
 		interactState = Enum.InteractState.noSelection;
 	}
 
-	private void EndTurnSelectedUnit() {
+	public void EndTurnSelectedUnit() {
 		currentSelection.OnDeselect();
 		currentSelection.OnEndTurn();
 		currentSelection = null;

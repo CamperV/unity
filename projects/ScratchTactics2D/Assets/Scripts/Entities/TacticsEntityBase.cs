@@ -32,9 +32,7 @@ public class TacticsEntityBase : MovingObject
 	}
 
 	protected SpriteRenderer spriteRenderer;
-	public float spriteHeight {
-		get => spriteRenderer.bounds.size.y;
-	}
+	public float spriteHeight { get => spriteRenderer.bounds.size.y; }
 	
 	// this is higher up, because we should be able to have Entities which are not Units
 	public static TacticsEntityBase Spawn(TacticsEntityBase prefab, Vector3Int tilePos, TacticsGrid grid) {
