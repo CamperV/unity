@@ -8,7 +8,7 @@ public class PlayerUnitController : UnitController
 {
 	private PathOverlayIsoTile pathOverlayTile;
 
-	private Unit currentSelection;
+	private PlayerUnit currentSelection;
 	private MovingObjectPath currentSelectionFieldPath;
 	private TacticsGrid grid;
 
@@ -37,7 +37,7 @@ public class PlayerUnitController : UnitController
 	public override void Register(MovingObject subject) {
 		base.Register(subject);
 		//
-		Unit unit = subject as Unit;
+		PlayerUnit unit = subject as PlayerUnit;
 		unit.parentController = this;
 	}
 	
@@ -161,7 +161,7 @@ public class PlayerUnitController : UnitController
 				if (activeRegistry.Contains(currentSelection)) {
 
 					//
-					switch(currentSelection.actionState) {
+					switch(((PlayerUnit)currentSelection).actionState) {
 						case Enum.PlayerUnitState.moveSelection:
 							// if the mouseDown is on a valid square, move to it
 							if (currentSelection.OptionActive("Move")) {
@@ -250,20 +250,22 @@ public class PlayerUnitController : UnitController
 	private bool SelectUnit(Vector3Int target) {
 		// on a certain key, get the currently selected unit
 		// enter a special controller mode
-		var unitAt = (Unit)grid.OccupantAt(target);
-		if (unitAt == null || unitAt == currentSelection) return false;
+		var unitAt = (PlayerUnit)grid.OccupantAt(target);
+		if (unitAt == null || unitAt == currentSelection || !unitAt.turnActive) return false;
 
-		// if this is any unit at all:
-		if (unitAt.turnActive) {
+		if (unitAt.GetType() == typeof(PlayerUnit)) {
 			// deselect current and select the new
 			if (currentSelection != null) {
 				currentSelection.OnDeselect();
 			}
 			currentSelection = unitAt;
 			currentSelection.OnSelect();
-		}
+			return true;
 
-		return currentSelection == unitAt;
+		// have some polymorphic stuff, like show the movement range or something
+		} else {
+			return false;
+		}
 	}
 
 	public void ClearSelection() {

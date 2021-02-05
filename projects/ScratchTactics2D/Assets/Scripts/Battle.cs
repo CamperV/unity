@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 using Extensions;
 
@@ -112,13 +113,13 @@ public class Battle : MonoBehaviour
 	
 	private void SpawnAllUnits() {
 		// number of spawnZones is equal to the number of worldParticpants (2)
-		List<List<Vector3Int>> spawnZones = GetSpawnZones();
-		var playerSpawnZone = spawnZones[0];
-		var otherSpawnZone  = spawnZones[1];
+		Pair<Zone, Zone> spawnZones = GetSpawnZones();
 		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
-		var playerSpawnPositions = playerSpawnZone.RandomSelections<Vector3Int>(player.barracks.Count);
+		Debug.Log($"Spawn zone for player has the following {spawnZones.first}");
+		Debug.Log($"Spawn zone for player has the following {spawnZones.first.Count}");
+		var playerSpawnPositions = spawnZones.first.GetPositions().RandomSelections<Vector3Int>(player.barracks.Count);
 
 		// the player will maintain a barracks of units
 		// the player has reference to each prefab needed, so we instantiate a prefab here
@@ -126,7 +127,7 @@ public class Battle : MonoBehaviour
 		foreach (UnitStats unitStats in player.barracks.Values) {
 			Debug.Log($"Got {unitStats}, {unitStats.unitTag}/{unitStats.ID}/{unitStats.unitName}");
 			var uPrefab = player.LoadUnitByTag(unitStats.unitTag);
-			Unit unit = (Unit)TacticsEntityBase.Spawn(uPrefab, playerSpawnPositions.PopAt(0), grid);
+			PlayerUnit unit = (PlayerUnit)TacticsEntityBase.Spawn(uPrefab, playerSpawnPositions.PopAt(0), grid);
 			//
 			unit.ApplyStats(unitStats);
 			GetController(player).Register(unit);
@@ -134,7 +135,7 @@ public class Battle : MonoBehaviour
 
 		// LoadUnitsByTag will look up if an appropriate prefab has already been loaded from the Resources folder
 		// if it has, it will instantiate it. If not, it will load first
-		var otherSpawnPositions = otherSpawnZone.RandomSelections<Vector3Int>(other.barracks.Count);
+		var otherSpawnPositions = spawnZones.second.GetPositions().RandomSelections<Vector3Int>(other.barracks.Count);
 
 		foreach (UnitStats unitStats in other.barracks.Values) {
 			Debug.Log($"Got {unitStats}, {unitStats.unitTag}/{unitStats.ID}/{unitStats.unitName}");
@@ -145,8 +146,50 @@ public class Battle : MonoBehaviour
 			GetController(other).Register(unit);
 		}
 	}
+
+	private Pair<Zone, Zone> GetSpawnZones() {
+		Vector3Int playerA = Vector3Int.zero;
+		Vector3Int playerB = Vector3Int.zero;
+		Vector3Int otherA  = Vector3Int.zero;
+		Vector3Int otherB  = Vector3Int.zero;
+		
+		// these are the maximum size in each direction
+		Vector3Int gridDim = grid.GetDimensions() - Vector3Int.one;
+		
+		// boy this is a dumb, stubborn way to do this
+		switch (other.gridPosition - player.gridPosition) {
+			case Vector3Int v when v.Equals(Vector3Int.up):
+				playerA = Vector3Int.zero;
+				playerB = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, 0);
+				otherA  = new Vector3Int(gridDim.x, 0, 0);
+				otherB  = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, 0);
+				break;
+			case Vector3Int v when v.Equals(Vector3Int.right):
+				playerA = new Vector3Int(0, gridDim.y, 0);
+				playerB = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), 0);
+				otherA  = Vector3Int.zero;
+				otherB  = new Vector3Int(gridDim.x, (int)(gridDim.y/4.0f), 0);
+				break;
+			case Vector3Int v when v.Equals(Vector3Int.down):
+				playerA = new Vector3Int(gridDim.x, 0, 0);
+				playerB = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, 0);
+				otherA  = Vector3Int.zero;
+				otherB  = new Vector3Int(0, gridDim.y  - (int)(gridDim.y/4.0f), 0);
+				break;
+			case Vector3Int v when v.Equals(Vector3Int.left):
+				playerA = Vector3Int.zero;
+				playerB = new Vector3Int(gridDim.x, (int)(gridDim.y/4.0f), 0);
+				otherA  = new Vector3Int(0, gridDim.y, 0);
+				otherB  = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), 0);
+				break;
+		}
+
+		// create the zone to spawn units into
+		// randomly select which starting positions happen, for now
+		return new Pair<Zone, Zone>(new Zone(playerA, playerB), new Zone(otherA, otherB));
+	}
 	
-	private List<List<Vector3Int>> GetSpawnZones() {
+	private List<List<Vector3Int>> DEPRECATED_GetSpawnZones() {
 		Vector3Int playerA = Vector3Int.zero;
 		Vector3Int playerB = Vector3Int.zero;
 		Vector3Int otherA  = Vector3Int.zero;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class UnitMercenary : Unit
+public class UnitMercenary : PlayerUnit
 {
     // default unit stats
     public static UnitStats defaultStats {

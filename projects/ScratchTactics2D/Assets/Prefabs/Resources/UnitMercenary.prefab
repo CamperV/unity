@@ -79,12 +79,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7647703855120200096}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3dbbfa05da302945bffe90d61e5ccce, type: 3}
+  m_Script: {fileID: 11500000, guid: c77f8277453ae374ca91f3b44e65eee2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentController: {fileID: 0}
+  parentController: {fileID: 6070387731492201818, guid: 9834c21cc39052d428e08bc9cfc711bb, type: 3}
   unitUIPrefab: {fileID: 54845570200524099, guid: f9b5bd7a4113c2d429bce4b5e790e8ed, type: 3}
   unitUI: {fileID: 0}
+  actionState: 0
 --- !u!1001 &522959950618016496
 PrefabInstance:
   m_ObjectHideFlags: 0

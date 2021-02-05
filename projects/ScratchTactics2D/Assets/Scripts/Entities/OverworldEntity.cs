@@ -14,7 +14,7 @@ public abstract class OverworldEntity : MovingObject
 	// constants
 	protected readonly float timeToDie = 1.0f;
 	
-	public Controller unitControllerPrefab;
+	public UnitController unitControllerPrefab;
 	//
 	public Dictionary<string, Unit> unitPrefabs = new Dictionary<string, Unit>();
 	public virtual List<string> defaultUnitTags { get; }

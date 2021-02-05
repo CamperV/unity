@@ -60,11 +60,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2030106808076709487}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4eb9b2f9fc4c45341917ae37d9473661, type: 3}
+  m_Script: {fileID: 11500000, guid: 44d3d624a1ef22449ac763b9c54c70a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   unitControllerPrefab: {fileID: 5118058475980065873, guid: b3487c465fa1ac24ab899d04f4d62cb9, type: 3}
-  unitController: {fileID: 0}
   state: 0
 --- !u!1001 &233882380493305716
 PrefabInstance:

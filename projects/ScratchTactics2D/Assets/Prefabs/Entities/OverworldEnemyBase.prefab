@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821950885999fca4c994888a32bdf87c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitControllerPrefab: {fileID: 0}
+  unitControllerPrefab: {fileID: 5118058475980065873, guid: b3487c465fa1ac24ab899d04f4d62cb9, type: 3}
   state: 0
 --- !u!95 &3996583895950419961
 Animator:
