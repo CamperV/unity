@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using Extensions;
 
-public class ActionButton : UnitUIElement
+public class ActionButton : MonoBehaviour,
+                            IPointerUpHandler, IPointerDownHandler, IPointerClickHandler,
+                            IPointerEnterHandler, IPointerExitHandler
 {
-    public string location;
-    public SpriteRenderer spriteRenderer;
-    public SpriteRenderer backgroundSpriteRenderer;
-    public float spriteWidth { get => spriteRenderer.bounds.size.x; }
+    [HideInInspector] public Image image;
 
     private Action callbackAction;
 
@@ -18,65 +19,43 @@ public class ActionButton : UnitUIElement
         get => _active;
         set {
             _active = value;
-            spriteRenderer.color = spriteRenderer.color.WithTint( (value) ? 1.0f : 0.5f );
+            image.color = image.color.WithTint( (value) ? 1.0f : 0.5f );
         }
-    }
-
-    private bool triggerInvoke = false;
-
-    public static ActionButton Spawn(Transform parent, ActionButton prefab, Sprite sprite) {
-        var button = Instantiate(prefab, parent);
-        button.spriteRenderer.sprite = sprite;
-        return button;
     }
 
     void Awake() {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        backgroundSpriteRenderer = GetComponentsInChildren<SpriteRenderer>()[1]; // [1] b/c this will find its own SR
+        image = GetComponent<Image>();
     }
 
-    void OnMouseDown() {
-        if (!active) return;
-        spriteRenderer.color = spriteRenderer.color.WithTint(0.5f);
-        transform.localScale = Vector3.one;
-        triggerInvoke = true;
+    public void OnPointerClick(PointerEventData eventData) {
+        callbackAction?.Invoke();
     }
 
-    void OnMouseUp() {
-        if (!active) return;
-        if (triggerInvoke) {
-            spriteRenderer.color = spriteRenderer.color.WithTint(1.0f);
-            transform.localScale = Vector3.one;
-            callbackAction?.Invoke();
-        }
-        triggerInvoke = false;
-    }
-
-    void OnMouseEnter() {
+    public void OnPointerEnter(PointerEventData eventData) {
         if (!active) return;
         transform.localScale *= 1.2f;
     }
+    public void OnPointerDown(PointerEventData eventData) {
+        if (!active) return;
+        image.color = image.color.WithTint(0.5f);
+    }
 
-    void OnMouseExit() {
-        triggerInvoke = false;
+    public void OnPointerExit(PointerEventData eventData) {
+        if (!active) return;
+        image.color = image.color.WithTint(1.0f);
         transform.localScale = Vector3.one;
     }
-
-    public override void UpdateTransparency(float alpha) {
-        Color c = spriteRenderer.color;
-        spriteRenderer.color = c.WithAlpha(alpha);
-
-        // update the background as well
-        // but never let its color be more than  0.5f
-       backgroundSpriteRenderer.color = c.WithAlpha(alpha / 2.0f);
-    }
-
-    public void UpdateTint(float tint) {
-        spriteRenderer.color = spriteRenderer.color.WithTint(tint);
+    public void OnPointerUp(PointerEventData eventData) { 
+        if (!active) return;
+        image.color = image.color.WithTint(1.0f);
     }
 
     // callbacks assigned to these buttons must have no arguments or return values
     public void BindCallback(Action action) {
         callbackAction = action;
+    }
+
+    public void UpdateTint(float tint) {
+        image.color = image.color.WithTint(tint);
     }
 }

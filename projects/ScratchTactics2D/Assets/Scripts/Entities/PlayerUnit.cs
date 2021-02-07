@@ -18,14 +18,7 @@ public abstract class PlayerUnit : Unit
 	protected override void Awake() {
 		base.Awake();
 		//
-
 		actionState = Enum.PlayerUnitState.idle;
-		unitUI.actionMenu.BindCallbacks(new Dictionary<string, Action>(){
-			["Move"]   = () => { EnterMoveSelection(); },
-			["Attack"] = () => { EnterAttackSelection(); },
-			["Wait"]   = () => { ((PlayerUnitController)parentController).EndTurnSelectedUnit(); },
-			["Cancel"] = () => { EnterIdleOrClearSelection(); }
-		});
 	}
 
 	// Action zone
@@ -75,27 +68,29 @@ public abstract class PlayerUnit : Unit
 
 		switch(actionState) {
 			case Enum.PlayerUnitState.idle:
-				unitUI.actionMenu.ClearDisplay();
+				MenuManager.inst.DestroyCurrentActionPane();
 				//
 				moveRange?.ClearDisplay(grid);
 				attackRange?.ClearDisplay(grid);
 				break;
 			case Enum.PlayerUnitState.menu:
-				unitUI.actionMenu.Display();
+				MenuManager.inst.CreateActionPane(this);
+				MenuManager.inst.actionPane.BindCallbacks(new Dictionary<string, Action>(){
+					["MoveButton"]   = () => { EnterMoveSelection(); },
+					["AttackButton"] = () => { EnterAttackSelection(); },
+					["WaitButton"]   = () => { ((PlayerUnitController)parentController).EndTurnSelectedUnit(); },
+					["CancelButton"] = () => { EnterIdleOrClearSelection(); }
+				});
 				//
 				moveRange?.ClearDisplay(grid);
 				attackRange?.ClearDisplay(grid);
 				break;
 			case Enum.PlayerUnitState.moveSelection:
-				//unitUI.actionMenu.ClearDisplay();
-				//
 				UpdateThreatRange();
 				attackRange?.Display(grid);
 				moveRange?.Display(grid);
 				break;
 			case Enum.PlayerUnitState.attackSelection:
-				//unitUI.actionMenu.ClearDisplay();
-				//
 				UpdateThreatRange();
 				attackRange?.Display(grid);
 				moveRange?.Display(grid);

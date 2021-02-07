@@ -7,14 +7,14 @@ using Extensions;
 
 public class ActionMenu : UnitUIElement
 {
-    private Dictionary<string, ActionButton> options;
+    private Dictionary<string, UnitUIActionButton> options;
     private Dictionary<int, string> order;
     private Dictionary<string, bool> optionAvailability { get => parentUI.boundUnit.optionAvailability; }
 
-    public ActionButton actionButtonPrefab;
+    public UnitUIActionButton actionButtonPrefab;
 
     void Awake() {
-        options = new Dictionary<string, ActionButton>();
+        options = new Dictionary<string, UnitUIActionButton>();
         order = new Dictionary<int, string>();
 
         Sprite moveSprite   = ResourceLoader.GetSprite("move_icon");
@@ -43,13 +43,13 @@ public class ActionMenu : UnitUIElement
     }
 
     public override void UpdateTransparency(float alpha) {
-        foreach (ActionButton button in options.Values) {
+        foreach (UnitUIActionButton button in options.Values) {
             button.UpdateTransparency(alpha);
         }
     }
 
     private void AddButton(string name, Sprite sprite, int ord) {
-        ActionButton button = ActionButton.Spawn(transform, actionButtonPrefab, sprite);
+        UnitUIActionButton button = UnitUIActionButton.Spawn(transform, actionButtonPrefab, sprite);
         options[name] = button;
         order[ord] = name;
     }

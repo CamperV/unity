@@ -13,8 +13,8 @@ public class EngagementResults
     public bool aggressorSurvived;
     public bool defenderSurvived;
 
-    public Attack? firstAttack;
-    public Attack? secondAttack;
+    public Attack firstAttack;
+    public Attack secondAttack;
 
     // this class is created for an acutal battle between two Units
     public EngagementResults(Unit a, Unit b, bool aS, bool dS) {

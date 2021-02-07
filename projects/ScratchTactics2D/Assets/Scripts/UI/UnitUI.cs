@@ -14,10 +14,8 @@ public class UnitUI : MonoBehaviour
     // UI Elements to collect, scale, etc
     public HealthBar healthBarPrefab;
     public TextUI textUIPrefab;
-    public ActionMenu actionMenuPrefab;
     
     [HideInInspector] public HealthBar healthBar;
-    [HideInInspector] public ActionMenu actionMenu;
 
     void Awake() {
         boundElements = new List<UnitUIElement>();
@@ -27,9 +25,9 @@ public class UnitUI : MonoBehaviour
         healthBar.BindUI(this);
         boundElements.Add(healthBar);
 
-        actionMenu = Instantiate(actionMenuPrefab, transform);
-        actionMenu.BindUI(this);
-        boundElements.Add(actionMenu);
+        //actionMenu = Instantiate(actionMenuPrefab, transform);
+        //actionMenu.BindUI(this);
+        //boundElements.Add(actionMenu);
     }
 
     public void BindUnit(Unit unit) {

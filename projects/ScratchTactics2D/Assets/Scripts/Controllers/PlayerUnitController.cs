@@ -56,7 +56,7 @@ public class PlayerUnitController : UnitController
 				// CURRENT SELECTION STATE
 				// if we've entered this state as a result of selecting a unit:
 				if (activeRegistry.Contains(currentSelection)) {
-					UIManager.inst.DestroyCurrentEngagementPreview();
+					MenuManager.inst.DestroyCurrentEngagementPreview();
 					
 					switch (currentSelection?.actionState) {
 						case Enum.PlayerUnitState.moveSelection:
@@ -126,7 +126,7 @@ public class PlayerUnitController : UnitController
 				var previewEngagement = new Engagement(currentSelection, unitAt);
 				EngagementResults er = previewEngagement.PreviewResults();
 
-				UIManager.inst.CreateEngagementPreview(er);
+				MenuManager.inst.CreateEngagementPreview(er);
 			}
 		}
 	}
@@ -152,10 +152,10 @@ public class PlayerUnitController : UnitController
 
 			case Enum.InteractState.unitSelected:
 				// if mouse is down on a current selection - deselect it
-				/*if (currentSelection.gridPosition == target) {
+				if (currentSelection.gridPosition == target) {
 					ClearSelection();
 					break;
-				}*/
+				}
 
 				// OUR UNIT:
 				if (activeRegistry.Contains(currentSelection)) {
@@ -188,7 +188,7 @@ public class PlayerUnitController : UnitController
 
 									// new take: enter the menu state
 									StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
-											currentSelection.OnSelect();
+										currentSelection.OnSelect();
 									}));
 								}
 							}
@@ -250,15 +250,15 @@ public class PlayerUnitController : UnitController
 	private bool SelectUnit(Vector3Int target) {
 		// on a certain key, get the currently selected unit
 		// enter a special controller mode
-		var unitAt = (PlayerUnit)grid.OccupantAt(target);
+		var unitAt = (Unit)grid.OccupantAt(target);
 		if (unitAt == null || unitAt == currentSelection || !unitAt.turnActive) return false;
 
-		if (unitAt.GetType() == typeof(PlayerUnit)) {
+		if (activeRegistry.Contains(unitAt)) {
 			// deselect current and select the new
 			if (currentSelection != null) {
 				currentSelection.OnDeselect();
 			}
-			currentSelection = unitAt;
+			currentSelection = unitAt as PlayerUnit;
 			currentSelection.OnSelect();
 			return true;
 

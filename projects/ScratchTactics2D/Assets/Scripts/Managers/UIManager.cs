@@ -10,9 +10,6 @@ public class UIManager : MonoBehaviour
 
 	private Text currentPhaseText;
 	private Text currentTurnText;
-
-    public EngagementPreview engagementPreview;
-    public EngagementPreview engagementPreviewPrefab;
 	
     void Awake() {
         // only allow one UIManager to exist at any time
@@ -34,19 +31,5 @@ public class UIManager : MonoBehaviour
 	
     public void SetTurnText(string text) {
         currentTurnText.text = text;        
-    }
-
-	public void CreateEngagementPreview(EngagementResults engagementResults) {
-		// display the hit percentages for the engagement's actors
-        if (engagementPreview == null) {
-            engagementPreview = EngagementPreview.Spawn(transform, engagementPreviewPrefab, engagementResults);
-        }
-	}
-
-    public void DestroyCurrentEngagementPreview() {
-        if (engagementPreview) {
-            Destroy(engagementPreview.gameObject);
-            engagementPreview = null;
-        }
     }
 }

@@ -23,8 +23,8 @@ public class EngagementPreview : MonoBehaviour
     public Unit aggressor { get => engagementResults.aggressor; }
     public Unit defender { get => engagementResults.defender; }
 
-    public Attack? firstAttack { get => engagementResults.firstAttack ?? null; }
-    public Attack? secondAttack { get => engagementResults.secondAttack ?? null; }
+    public Attack firstAttack { get => engagementResults.firstAttack ?? null; }
+    public Attack secondAttack { get => engagementResults.secondAttack ?? null; }
 
     public static EngagementPreview Spawn(Transform parent, EngagementPreview prefab, EngagementResults engagementResults) {
         EngagementPreview ep = Instantiate(prefab, parent);
@@ -68,7 +68,7 @@ public class EngagementPreview : MonoBehaviour
     }
 
     void Awake() {
-        // DFS ALL children, including grandchildren
+        // DFS ALL children, including grandchildren. Also yourself?
         var images     = GetComponentsInChildren<Image>();
         background     = images[0];
         banner         = images[1];
