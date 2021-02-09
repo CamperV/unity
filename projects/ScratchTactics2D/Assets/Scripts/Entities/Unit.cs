@@ -99,8 +99,8 @@ public abstract class Unit : TacticsEntityBase
 
 		// init keys
 		optionAvailability = new Dictionary<string, bool>() {
-			["Move"]   = false,
-			["Attack"] = false
+			["Move"]   = true,
+			["Attack"] = true
 		};
 	}
 
@@ -118,9 +118,9 @@ public abstract class Unit : TacticsEntityBase
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
 		if (takeFocus) {
-			GameManager.inst.GetActiveGrid().UnderlayAt(gridPosition, Utils.selectColorWhite);
+			DisplayThreatRange();
 		} else {
-			GameManager.inst.GetActiveGrid().ResetUnderlayAt(gridPosition);
+			ClearDisplayThreatRange();
 		}
 	}
 	
@@ -129,16 +129,10 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public bool OptionActive(string optionToCheck) {
-		if (!optionAvailability.ContainsKey(optionToCheck)) {
-			throw new System.Exception($"{optionToCheck} not a valid option to check"); 
-		}
 		return optionAvailability[optionToCheck];
 	}
 
 	public void SetOption(string option, bool setting) {
-		if (!optionAvailability.ContainsKey(option)) {
-			throw new System.Exception($"{option} not a valid option to set"); 
-		}
 		optionAvailability[option] = setting;
 	}
 
@@ -149,15 +143,14 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	// Action zone
-	public virtual void OnStartTurn() {	
-		optionAvailability.Keys.ToList().ForEach(k => optionAvailability[k] = true);
+	public virtual void OnStartTurn() {
 		spriteRenderer.color = Color.white;
 		//
 		turnActive = true;
 	}
 
 	public virtual void OnEndTurn() {
-		optionAvailability.Keys.ToList().ForEach(k => optionAvailability[k] = false);
+		optionAvailability.Keys.ToList().ForEach(k => SetOption(k, true));
 		spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f, spriteRenderer.color.a);
 		//
 		turnActive = false;
@@ -172,6 +165,42 @@ public abstract class Unit : TacticsEntityBase
 		var attackable = (OptionActive("Attack")) ? _RANGE : 0;
 		moveRange = MoveRange.MoveRangeFrom(gridPosition, tiles, range: moveable);
 		attackRange = AttackRange.AttackRangeFrom(moveRange, grid.GetAllTilePos(), range: attackable);
+	}
+
+	public void DisplayThreatRange() {
+		var grid = GameManager.inst.GetActiveGrid();
+		moveRange?.ClearDisplay(grid);
+		attackRange?.ClearDisplay(grid);
+
+		UpdateThreatRange();
+		attackRange.Display(grid);
+		moveRange.Display(grid);
+
+		// add the lil selection square
+		grid.UnderlayAt(gridPosition, Utils.selectColorWhite);
+	}
+
+	public void DisplayStandingThreatRange() {
+		var grid = GameManager.inst.GetActiveGrid();
+		moveRange?.ClearDisplay(grid);
+		attackRange?.ClearDisplay(grid);
+
+		UpdateThreatRange();
+		attackRange.Display(grid);
+
+		// add the lil selection square
+		grid.UnderlayAt(gridPosition, Utils.selectColorWhite);
+	}
+
+	public void ClearDisplayThreatRange() {
+		if (selectionLock) return;
+
+		var grid = GameManager.inst.GetActiveGrid();
+		moveRange?.ClearDisplay(grid);
+		attackRange?.ClearDisplay(grid);
+
+		// just in case
+		grid.ResetUnderlayAt(gridPosition);
 	}
 
 	public virtual void OnSelect() {

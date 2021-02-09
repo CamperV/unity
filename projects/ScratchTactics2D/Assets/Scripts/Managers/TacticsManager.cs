@@ -76,11 +76,13 @@ public class TacticsManager : MonoBehaviour
 			Unit newFocus = GetNewFocus();
 
 			// actually set the focus here
+			// switch focus if the current focusSingleton is null and no selectionLock is in place
 			if (newFocus != focusSingleton) {
-				if (focusSingleton && !focusSingleton.selectionLock)
-					focusSingleton.SetFocus(false);
-				focusSingleton = newFocus;
-				focusSingleton?.SetFocus(true);
+				if (focusSingleton == null || !focusSingleton.selectionLock) {
+					focusSingleton?.SetFocus(false);
+					focusSingleton = newFocus;
+					focusSingleton?.SetFocus(true);
+				}
 			}
 
 			//

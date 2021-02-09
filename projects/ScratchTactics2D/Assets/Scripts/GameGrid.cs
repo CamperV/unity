@@ -103,14 +103,14 @@ public abstract class GameGrid : MonoBehaviour
 		ResetTintTile(tilePos);
 	}
 
-	public virtual void UnderlayAt(Vector3Int tilePos, Color color) {
-		Debug.Log("Should never call this");
-		Debug.Assert(false);
-	}
-	public virtual void ResetUnderlayAt(Vector3Int tilePos) {
-		Debug.Log("Should never call this");
-		Debug.Assert(false);
-	}
+	// These exist because I am too lazy to figure out a better solution
+	// many functions return a GameGrid, and this function should only be called on TacticsGrids
+	// why virtual/override then? Stupid? Well, if I didn't do this, I'd have to go cast every
+	// instance of GameGrid (from GetActiveGrid()) into a TacticsGrid
+	// i'll fix it eventually... I hope
+	public virtual void UnderlayAt(Vector3Int tilePos, Color color) { Debug.Assert(false); }
+	public virtual void ResetUnderlayAt(Vector3Int tilePos) { Debug.Assert(false); }
+	//
 
 	public IEnumerator FadeUp(Tilemap tilemap, Vector3Int tilePos) {
 		tilemap.SetTileFlags(tilePos, TileFlags.None);

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,12 +27,13 @@ public class MenuManager : MonoBehaviour
     }
 
     // for right now, keep this a PlayerUnit only situation
-    public void CreateActionPane(PlayerUnit unit) {
+    public void CreateActionPane(PlayerUnit unit, Dictionary<string, Action> callbacks) {
         if (actionPane == null) {
             actionPane = ActionPane.Spawn(transform, actionPanePrefab, unit);
         } else {
             actionPane.RefreshButtons();
         }
+        actionPane.BindCallbacks(callbacks);
     }
 
     public void DestroyCurrentActionPane() {

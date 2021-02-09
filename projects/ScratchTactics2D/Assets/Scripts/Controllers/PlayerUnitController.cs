@@ -151,9 +151,9 @@ public class PlayerUnitController : UnitController
 				break;
 
 			case Enum.InteractState.unitSelected:
-				// if mouse is down on a current selection - deselect it
+				// if mouse is down on a current selection - bring up the menu and cancel move/attack selection
 				if (currentSelection.gridPosition == target) {
-					ClearSelection();
+					currentSelection.EnterMenu();
 					break;
 				}
 

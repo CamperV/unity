@@ -14,10 +14,17 @@ public abstract class PlayerUnit : Unit
 
 	//
 	public Enum.PlayerUnitState actionState;
+	public Dictionary<string, Action> callbackBindings;
 
 	protected override void Awake() {
 		base.Awake();
 		//
+		callbackBindings = new Dictionary<string, Action>(){
+			["MoveButton"]   = () => { EnterMoveSelection(); },
+			["AttackButton"] = () => { EnterAttackSelection(); },
+			["WaitButton"]   = () => { ((PlayerUnitController)parentController).EndTurnSelectedUnit(); },
+			["CancelButton"] = () => { EnterIdleOrClearSelection(); }
+		};
 		actionState = Enum.PlayerUnitState.idle;
 	}
 
@@ -50,7 +57,7 @@ public abstract class PlayerUnit : Unit
 		// otherwise, show the menu
 		// the menu will determine if the unit enters attackSelection or specialSelection (not yet implemented)
 		// enter the first default state for move selection
-		EnterState(Enum.PlayerUnitState.menu);
+		EnterState(Enum.PlayerUnitState.moveSelection);
 	}
 
 	public override void OnDeselect() {
@@ -63,37 +70,26 @@ public abstract class PlayerUnit : Unit
 	}
 
 	private void EnterState(Enum.PlayerUnitState state) {
-		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 		actionState = state;
 
 		switch(actionState) {
 			case Enum.PlayerUnitState.idle:
 				MenuManager.inst.DestroyCurrentActionPane();
 				//
-				moveRange?.ClearDisplay(grid);
-				attackRange?.ClearDisplay(grid);
+				ClearDisplayThreatRange();
 				break;
 			case Enum.PlayerUnitState.menu:
-				MenuManager.inst.CreateActionPane(this);
-				MenuManager.inst.actionPane.BindCallbacks(new Dictionary<string, Action>(){
-					["MoveButton"]   = () => { EnterMoveSelection(); },
-					["AttackButton"] = () => { EnterAttackSelection(); },
-					["WaitButton"]   = () => { ((PlayerUnitController)parentController).EndTurnSelectedUnit(); },
-					["CancelButton"] = () => { EnterIdleOrClearSelection(); }
-				});
+				MenuManager.inst.CreateActionPane(this, callbackBindings);
 				//
-				moveRange?.ClearDisplay(grid);
-				attackRange?.ClearDisplay(grid);
+				ClearDisplayThreatRange();
 				break;
 			case Enum.PlayerUnitState.moveSelection:
-				UpdateThreatRange();
-				attackRange?.Display(grid);
-				moveRange?.Display(grid);
+				DisplayThreatRange();
 				break;
 			case Enum.PlayerUnitState.attackSelection:
-				UpdateThreatRange();
-				attackRange?.Display(grid);
-				moveRange?.Display(grid);
+				// need to change how attack selection/display works
+				// because right now
+				DisplayStandingThreatRange();
 				break;
 		}
 	}
