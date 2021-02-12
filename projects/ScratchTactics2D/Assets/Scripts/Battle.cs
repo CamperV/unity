@@ -125,7 +125,6 @@ public class Battle : MonoBehaviour
 		// the player has reference to each prefab needed, so we instantiate a prefab here
 		// then apply the actual relevant stats
 		foreach (UnitStats unitStats in player.barracks.Values) {
-			Debug.Log($"Got {unitStats}, {unitStats.unitTag}/{unitStats.ID}/{unitStats.unitName}");
 			var uPrefab = player.LoadUnitByTag(unitStats.unitTag);
 			PlayerUnit unit = (PlayerUnit)TacticsEntityBase.Spawn(uPrefab, playerSpawnPositions.PopAt(0), grid);
 			//
@@ -135,10 +134,11 @@ public class Battle : MonoBehaviour
 
 		// LoadUnitsByTag will look up if an appropriate prefab has already been loaded from the Resources folder
 		// if it has, it will instantiate it. If not, it will load first
+		Debug.Log($"Spawn zone for other has the following {spawnZones.second}");
+		Debug.Log($"Spawn zone for other has the following {spawnZones.second.Count}");
 		var otherSpawnPositions = spawnZones.second.GetPositions().RandomSelections<Vector3Int>(other.barracks.Count);
 
 		foreach (UnitStats unitStats in other.barracks.Values) {
-			Debug.Log($"Got {unitStats}, {unitStats.unitTag}/{unitStats.ID}/{unitStats.unitName}");
 			var uPrefab = other.LoadUnitByTag(unitStats.unitTag);
 			Unit unit = (Unit)TacticsEntityBase.Spawn(uPrefab, otherSpawnPositions.PopAt(0), grid);
 			//
@@ -174,7 +174,7 @@ public class Battle : MonoBehaviour
 				playerA = new Vector3Int(gridDim.x, 0, 0);
 				playerB = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, 0);
 				otherA  = Vector3Int.zero;
-				otherB  = new Vector3Int(0, gridDim.y  - (int)(gridDim.y/4.0f), 0);
+				otherB  = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, 0);
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.left):
 				playerA = Vector3Int.zero;

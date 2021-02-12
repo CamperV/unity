@@ -17,8 +17,6 @@ public class TacticsManager : MonoBehaviour
 	
 	void Awake() {
 		scrollLock = false;
-
-		virtualCamera = new VirtualCamera();
 	}
 
     void Update() {
@@ -30,8 +28,9 @@ public class TacticsManager : MonoBehaviour
 				DestroyActiveBattle();
 			}
 
-			virtualCamera.DragUpdate(activeBattle);
-			virtualCamera.ScrollUpdate(activeBattle);
+			// virtualCamera will have its own battle ref
+			virtualCamera.DragUpdate();
+			virtualCamera.ScrollUpdate();
 
 			// focus control:
 			// move it all into once-per-frame centralized check, because we can't guarantee 
@@ -86,6 +85,8 @@ public class TacticsManager : MonoBehaviour
 									0);		
 		activeBattle = Instantiate(battlePrefab, cameraPos, Quaternion.identity);
 		activeBattle.Init(participants, tiles);
+		//
+		virtualCamera = new VirtualCamera(activeBattle);
 		//
 		activeBattle.StartBattleOnPhase(initiatingPhase);
 	}

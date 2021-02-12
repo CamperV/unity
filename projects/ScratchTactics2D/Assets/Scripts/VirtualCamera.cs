@@ -4,18 +4,31 @@ using UnityEngine;
 
 public class VirtualCamera
 {
-    private bool draggingView;
+    public Battle battle;
 
-    public VirtualCamera() {
+    private Vector3 dragOffset;
+    private bool draggingView;
+    //
+    private Vector3 lockedPosition;
+    private Vector3 lockedScale;
+    private bool viewLock;
+
+    public VirtualCamera(Battle battleToRegister) {
+        battle = battleToRegister;
+
+        dragOffset = Vector3.zero;
         draggingView = false;
+        //
+        lockedPosition = Vector3.zero;
+        lockedScale = Vector3.one;
+        viewLock = false;
     }
 
     //
     // RMB drag view
     //
-    public void DragUpdate(Battle battle) {
-        var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 dragOffset = Vector3.zero;
+    public void DragUpdate() {
+        /*var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (Input.GetMouseButtonDown(1) && !draggingView) {
             dragOffset = battle.transform.position - mouseWorldPos;
@@ -27,14 +40,21 @@ public class VirtualCamera
         }
 
         // make sure we can drop out of the dragging mode
-        if (draggingView && (!Input.GetMouseButton(1)))
+        if (draggingView && !Input.GetMouseButton(1)) {
             draggingView = false;
+        }*/
+        /*
+        if (Input.GetMouseButton(1)) {
+            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            dragOffset = battle.transform.position - mouseWorldPos;
+            battle.transform.position = mouseWorldPos + dragOffset;
+        }*/
     }
 
     //
     // mouse view control
     //
-    public void ScrollUpdate(Battle battle) {
+    public void ScrollUpdate() {
         if (!draggingView) {
             var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -53,14 +73,44 @@ public class VirtualCamera
         }
     }
 
-    public void ZoomToAndLock(Battle battle, Vector3 target) {
-        Vector3 screenPoint = Camera.main.transform.position;
+    // NOTE this only works truly properly when battle.transform.position == Camera.main.transform.position
+    public void ZoomToAndLock(Vector3 target, float zoomLevel) {
+        lockedPosition = battle.transform.position;
+        lockedScale = battle.transform.localScale;
+        viewLock = true;
 
-        battle.transform.localScale = new Vector3(2f, 2f, 2f);
+        Vector3 screenPoint = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0f);
+        Vector3 updatedScale = zoomLevel * Vector3.one;
+        float scaleRatio = updatedScale.x / lockedScale.x;
+        
+        // move the selected target position to Camera.main.x/y position
+        Vector3 toPosition = battle.transform.position + (screenPoint - target) * scaleRatio;
+        battle.StartCoroutine( SmoothCameraMovement(0.15f, toPosition, updatedScale) );
     }
 
-    public void ReleaseLock(Battle battle) {
-        battle.transform.localScale = Vector3.one;
-        battle.transform.position = Camera.main.transform.position;
+    public void ReleaseLock() {
+        if (viewLock) {
+            battle.StartCoroutine( SmoothCameraMovement(0.15f, lockedPosition, lockedScale) );
+            lockedPosition = battle.transform.position;
+            lockedScale = battle.transform.localScale;
+            viewLock = false;
+        }
+    }
+
+    private IEnumerator SmoothCameraMovement(float fixedTime, Vector3 toPosition, Vector3 toScale) {
+		float timeRatio = 0.0f;
+        Vector3 startPos = battle.transform.position;
+        Vector3 startScale = battle.transform.localScale;
+
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+			battle.transform.position = Vector3.Lerp(startPos, toPosition, timeRatio);
+            battle.transform.localScale = Vector3.Lerp(startScale, toScale, timeRatio);
+			yield return null;
+		}
+		
+		// after the while loop is broken:
+		battle.transform.position = toPosition;
+        battle.transform.localScale = toScale;
     }
 }
