@@ -137,19 +137,33 @@ public class TacticsEntityBase : MovingObject
 		animationStack++;
 		//
 
+		// I would love to do this in a one-liner...
+		// (Select, etc) but due to Unity's choices, you cant' ToList a transform for its enumerated children
+		// this should preserve order...?
 		var ogPosition = transform.position;
+		var childOgPositions = new List<Vector3>();
+		foreach (Transform child in transform) childOgPositions.Add(child.position);
+		int index;
+
 		for (int i=0; i<3; i++) {
 			Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
-			transform.position += offset;
+			transform.position = ogPosition + offset;
 
 			// reverse offset all children, so only the main Unit shakes
+			index = 0;
 			foreach (Transform child in transform) {
-				child.position -= offset;
+				child.position = childOgPositions[index] - offset;
+				index++;
 			}
 			radius /= 2f;
 			yield return new WaitForSeconds(0.05f);
 		}
 		transform.position = ogPosition;
+		index = 0;
+		foreach (Transform child in transform) {
+			child.position = childOgPositions[index];
+			index++;
+		}
 
 		//
 		animationStack--;

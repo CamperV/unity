@@ -27,7 +27,7 @@ public class Battle : MonoBehaviour
 		//
 		activeControllers = new Dictionary<OverworldEntity, Controller>();
 		defaultController = Instantiate(defaultControllerPrefab);
-		defaultController.transform.parent = this.transform;
+		defaultController.transform.SetParent(transform);
 
 		activeParticipants = new Dictionary<Controller, OverworldEntity>();
 	}
@@ -45,7 +45,7 @@ public class Battle : MonoBehaviour
 			var prefab = participant.unitControllerPrefab;
 			if (prefab != null) {
 				var controller = Instantiate(prefab);
-				controller.transform.parent = this.transform;
+				controller.transform.SetParent(transform);
 
 				activeControllers[participant] = controller;
 				activeParticipants[controller] = participant;

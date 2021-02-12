@@ -7,7 +7,6 @@ public class EngagementPreview : MonoBehaviour
 {
     // UI elements
     Image background;           // under GameObject "Background"
-    Image banner;               // under GameObject "Banner"
     Image playerPortrait;       // under GameObject "PlayerPortrait"
     Image enemyPortrait;        // under GameObject "EnemyPortrait"
 
@@ -30,10 +29,8 @@ public class EngagementPreview : MonoBehaviour
         EngagementPreview ep = Instantiate(prefab, parent);
         ep.engagementResults = engagementResults;
 
-        // set banner sprite based on who is aggressing
         // set potraits based on units that are in the combat preview
         if (ep.aggressor.isPlayerControlled) {
-            ep.banner.sprite = ResourceLoader.GetSprite("engagement_preview");
             ep.playerPortrait.sprite = ep.aggressor.GetSprite();
             ep.enemyPortrait.sprite = ep.defender.GetSprite();
 
@@ -49,7 +46,6 @@ public class EngagementPreview : MonoBehaviour
         
         /* This doesn't really exist yet. Some enemies will ALWAYS attack first, THEN implement this later
         else {
-            ep.banner.sprite = ResourceLoader.GetSprite("engagement_preview_flip");
             ep.playerPortrait.sprite = ep.defender.GetSprite();
             ep.enemyPortrait.sprite = ep.aggressor.GetSprite();
 
@@ -71,9 +67,8 @@ public class EngagementPreview : MonoBehaviour
         // DFS ALL children, including grandchildren. Also yourself?
         var images     = GetComponentsInChildren<Image>();
         background     = images[0];
-        banner         = images[1];
-        playerPortrait = images[2];
-        enemyPortrait  = images[3];
+        playerPortrait = images[1];
+        enemyPortrait  = images[2];
 
         var texts = GetComponentsInChildren<Text>();
         pDamage   = texts[0];
@@ -82,8 +77,5 @@ public class EngagementPreview : MonoBehaviour
         eDamage   = texts[3];
         eHitRate  = texts[4];
         eCritRate = texts[5];
-
-        // debug
-        banner.gameObject.SetActive(false);
     }
 }

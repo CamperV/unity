@@ -73,7 +73,7 @@ public class ActionButton : UIElement,
         
         Vector3 pos = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1f);
 		Image copy = Instantiate(GetComponent<Image>(), pos, Quaternion.identity) as Image;
-        copy.transform.parent = transform;
+        copy.transform.SetParent(transform);
         copy.raycastTarget = false;
 
 		float timeRatio = 0.0f;

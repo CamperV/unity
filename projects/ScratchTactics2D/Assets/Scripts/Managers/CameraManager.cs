@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
 	private static Transform trackingTarget;
+	private static Transform prevTrackingTarget;
 	private static Vector2 minBounds;
 	private static Vector2 maxBounds;
 	
@@ -24,6 +25,17 @@ public class CameraManager : MonoBehaviour
 	
 	public static void SetTracking(Transform toTrack) {
 		trackingTarget = toTrack;
+	}
+
+	public static void SetTemporaryTracking(Transform toTrack) {
+		prevTrackingTarget = trackingTarget;
+		trackingTarget = toTrack;
+	}
+
+	public static void ResetTracking() {
+		if (prevTrackingTarget != null) {
+			trackingTarget = prevTrackingTarget;
+		}
 	}
 	
 	// performs constant tracking

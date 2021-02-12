@@ -23,6 +23,6 @@ public class Controller : PhasedObject
 		if (subject.transform.parent != null) {
 			throw new System.InvalidOperationException($"{subject} is already registered to Controller {subject.transform.parent}, unassign and try again");
 		}
-		subject.transform.parent = transform;
+		subject.transform.SetParent(transform);
 	}
 }

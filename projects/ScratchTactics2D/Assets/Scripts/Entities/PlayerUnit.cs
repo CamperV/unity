@@ -76,6 +76,8 @@ public abstract class PlayerUnit : Unit
 	}
 
 	private void EnterState(Enum.PlayerUnitState state) {
+		var ab = GameManager.inst.tacticsManager.activeBattle;
+		GameManager.inst.tacticsManager.virtualCamera.ReleaseLock(ab);
 		actionState = state;
 
 		switch(actionState) {
@@ -103,6 +105,8 @@ public abstract class PlayerUnit : Unit
 				// need to change how attack selection/display works
 				// because right now
 				DisplayStandingThreatRange();
+
+				GameManager.inst.tacticsManager.virtualCamera.ZoomToAndLock(ab, transform.position);
 				break;
 		}
 	}

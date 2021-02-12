@@ -32,7 +32,7 @@ public class UnitUI : MonoBehaviour
 
     public void BindUnit(Unit unit) {
         Debug.Assert(boundUnit == null);
-		transform.parent = unit.transform;
+		transform.SetParent(unit.transform);
         boundUnit = unit;
     }
 

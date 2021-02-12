@@ -6,22 +6,19 @@ using UnityEngine;
 
 public class TacticsManager : MonoBehaviour
 {
-	private Vector3 screenPoint;
-	private Vector3 dragOffset;
-	private bool draggingView;
-	
 	public Battle battlePrefab;
 	[HideInInspector] public Battle activeBattle;
 
+	public VirtualCamera virtualCamera;
 	public bool scrollLock;
 
 	// only one Unit can be in focus at any given time
 	public Unit focusSingleton { get; private set; }
 	
 	void Awake() {
-		dragOffset = Vector3.zero;
-		draggingView = false;
 		scrollLock = false;
+
+		virtualCamera = new VirtualCamera();
 	}
 
     void Update() {
@@ -32,43 +29,9 @@ public class TacticsManager : MonoBehaviour
 				
 				DestroyActiveBattle();
 			}
-			
-			if (!scrollLock) {
-				var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				//
-				// RMB drag view
-				//
-				if (Input.GetMouseButtonDown(1) && !draggingView) {
-					dragOffset = activeBattle.transform.position - mouseWorldPos;
-					draggingView = true;
-				}
-				// update pos by offset, release drag when mouse goes up
-				if (draggingView) {
-					activeBattle.transform.position = mouseWorldPos + dragOffset;
-				}
 
-				// make sure we can drop out of the dragging mode
-				if (draggingView && (!Input.GetMouseButton(1)))
-					draggingView = false;
-				
-				//
-				// mouse view control
-				//
-				if (!draggingView) {
-					// calculate what the new scale WILL been
-					// and calculate the scale ratio. Just use X, because our scale is uniform on all axes
-					var updatedScale = activeBattle.transform.localScale + (Input.GetAxis("Mouse ScrollWheel") * 0.75f) * Vector3.one;
-					float scaleRatio = updatedScale.x / activeBattle.transform.localScale.x;
-
-					if (scaleRatio != 1.0f) {
-						Vector3 localToMouse = activeBattle.transform.position - mouseWorldPos;
-						
-						//update the scale, and position based on the new scale
-						activeBattle.transform.localScale = updatedScale;
-						activeBattle.transform.position = mouseWorldPos + (localToMouse * scaleRatio);
-					}
-				}
-			}
+			virtualCamera.DragUpdate(activeBattle);
+			virtualCamera.ScrollUpdate(activeBattle);
 
 			// focus control:
 			// move it all into once-per-frame centralized check, because we can't guarantee 
