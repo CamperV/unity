@@ -94,4 +94,16 @@ public class FlowField
 			GameManager.inst.worldGrid.HighlightTiles(toHighlight[mag], color);
 		}
 	}
+
+	public virtual void Display(GameGrid grid) {
+		foreach (Vector3Int tilePos in field.Keys) {
+			grid.UnderlayAt(tilePos, Utils.threatColorRed);
+		}
+	}
+
+	public virtual void ClearDisplay(GameGrid grid) {
+		foreach (Vector3Int tilePos in field.Keys) {
+			grid.ResetUnderlayAt(tilePos);
+		}
+	}
 }

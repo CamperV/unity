@@ -57,7 +57,13 @@ public abstract class PlayerUnit : Unit
 		// otherwise, show the menu
 		// the menu will determine if the unit enters attackSelection or specialSelection (not yet implemented)
 		// enter the first default state for move selection
-		EnterState(Enum.PlayerUnitState.moveSelection);
+		if (OptionActive("Move")) {
+			EnterState(Enum.PlayerUnitState.moveSelection);
+		} else if (OptionActive("Attack")) {
+			EnterState(Enum.PlayerUnitState.attackSelection);
+		} else {
+			EnterMenu();
+		}
 	}
 
 	public override void OnDeselect() {
@@ -80,13 +86,20 @@ public abstract class PlayerUnit : Unit
 				break;
 			case Enum.PlayerUnitState.menu:
 				MenuManager.inst.CreateActionPane(this, callbackBindings);
+				MenuManager.inst.actionPane.StopAllButtonPulse();
 				//
 				ClearDisplayThreatRange();
 				break;
 			case Enum.PlayerUnitState.moveSelection:
+				MenuManager.inst.CreateActionPane(this, callbackBindings);
+				MenuManager.inst.actionPane.PulseButton("MoveButton", true);
+				//
 				DisplayThreatRange();
 				break;
 			case Enum.PlayerUnitState.attackSelection:
+				MenuManager.inst.CreateActionPane(this, callbackBindings);
+				MenuManager.inst.actionPane.PulseButton("AttackButton", true);
+
 				// need to change how attack selection/display works
 				// because right now
 				DisplayStandingThreatRange();
@@ -95,10 +108,6 @@ public abstract class PlayerUnit : Unit
 	}
 	public void EnterIdleOrClearSelection() {
 		switch (actionState) {
-			case Enum.PlayerUnitState.moveSelection:
-			case Enum.PlayerUnitState.attackSelection:
-				EnterState(Enum.PlayerUnitState.idle);
-				break;
 			default:
 				EnterState(Enum.PlayerUnitState.idle);
 				((PlayerUnitController)parentController).ClearSelection();

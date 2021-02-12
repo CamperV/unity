@@ -53,16 +53,4 @@ public class AttackRange : FlowField
 		bool withinRange = (tilePos - currentSelection.gridPosition).magnitude <= currentSelection._RANGE;
 		return field.ContainsKey(tilePos) && withinRange;
 	}
-
-	public void Display(GameGrid grid) {
-		foreach (Vector3Int tilePos in field.Keys) {
-			grid.UnderlayAt(tilePos, Utils.threatColorRed);
-		}
-	}
-
-	public void ClearDisplay(GameGrid grid) {
-		foreach (Vector3Int tilePos in field.Keys) {
-			grid.ResetUnderlayAt(tilePos);
-		}
-	}
 }

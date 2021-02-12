@@ -72,7 +72,9 @@ public class HealthBar : UnitUIElement
 
     public void Show(bool tLock) {
         StartCoroutine(FadeUpToFull(standardFadeTime));
-        transparencyLock = tLock;
+    	StartCoroutine(ExecuteAfterAnimating(() => {
+            transparencyLock = tLock;
+		}));
     }
 
     public void Hide() {

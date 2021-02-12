@@ -153,13 +153,12 @@ public class PlayerUnitController : UnitController
 			case Enum.InteractState.unitSelected:
 				// if mouse is down on a current selection - bring up the menu and cancel move/attack selection
 				if (currentSelection.gridPosition == target) {
-					currentSelection.EnterMenu();
+					ClearSelection();
 					break;
 				}
 
 				// OUR UNIT:
 				if (activeRegistry.Contains(currentSelection)) {
-
 					//
 					switch(((PlayerUnit)currentSelection).actionState) {
 						case Enum.PlayerUnitState.moveSelection:
@@ -171,22 +170,8 @@ public class PlayerUnitController : UnitController
 									currentSelectionFieldPath?.UnShow(grid);
 
 									currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
-									//
 
-									// dumb shenanigans: clear then re-select
-									// if there is an enemy in the selection, keep it alive
-									// otherwise, end the turn
-									/*					
-									if (PossibleValidAttack(currentSelection, GetOpposing())) {
-										StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
-											SelectUnit(currentSelection.gridPosition);
-										})); 
-									} else {
-										EndTurnSelectedUnit();
-									}
-									*/
-
-									// new take: enter the menu state
+									// enter the menu state
 									StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
 										currentSelection.OnSelect();
 									}));

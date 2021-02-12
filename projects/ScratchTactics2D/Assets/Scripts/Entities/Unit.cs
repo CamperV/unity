@@ -185,7 +185,8 @@ public abstract class Unit : TacticsEntityBase
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
-		UpdateThreatRange();
+		MoveRange zero = MoveRange.MoveRangeFrom(gridPosition, grid.GetAllTilePos(), range: 0);
+		attackRange = AttackRange.AttackRangeFrom(zero, grid.GetAllTilePos(), range: _RANGE);
 		attackRange.Display(grid);
 
 		// add the lil selection square

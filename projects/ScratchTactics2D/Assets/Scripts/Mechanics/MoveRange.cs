@@ -45,17 +45,11 @@ public class MoveRange : FlowField
 		return field.ContainsKey(tilePos) && GameManager.inst.tacticsManager.GetActiveGrid().VacantAt(tilePos);
 	}
 
-	public void Display(GameGrid grid) {
+	public override void Display(GameGrid grid) {
 		foreach (Vector3Int tilePos in field.Keys) {
 			if (ValidMove(tilePos)) {
 				grid.UnderlayAt(tilePos, Utils.selectColorBlue);
 			}
-		}
-	}
-
-	public void ClearDisplay(GameGrid grid) {
-		foreach (Vector3Int tilePos in field.Keys) {
-			grid.ResetUnderlayAt(tilePos);
 		}
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Extensions;
 
-public class ActionButton : MonoBehaviour,
+public class ActionButton : UIElement,
                             IPointerUpHandler, IPointerDownHandler, IPointerClickHandler,
                             IPointerEnterHandler, IPointerExitHandler
 {
@@ -19,15 +19,18 @@ public class ActionButton : MonoBehaviour,
         get => _active;
         set {
             _active = value;
-            image.color = image.color.WithTint( (value) ? 1.0f : 0.5f );
+            UpdateTint( (value) ? 1.0f : 0.5f );
         }
     }
+
+    private bool pulse = false;
 
     void Awake() {
         image = GetComponent<Image>();
     }
 
     public void OnPointerClick(PointerEventData eventData) {
+        if (!active) return;
         callbackAction?.Invoke();
     }
 
@@ -57,5 +60,44 @@ public class ActionButton : MonoBehaviour,
 
     public void UpdateTint(float tint) {
         image.color = image.color.WithTint(tint);
+    }
+
+    public override void UpdateTransparency(float alpha) {
+        image.color = image.color.WithAlpha(alpha);
+    }
+
+    // copy yourself, and scale/fade out, then destroy, and do it again
+	public IEnumerator Pulse(float fixedTime) {
+		animationStack++;
+		//
+        
+        Vector3 pos = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1f);
+		Image copy = Instantiate(GetComponent<Image>(), pos, Quaternion.identity) as Image;
+        copy.transform.parent = transform;
+        copy.raycastTarget = false;
+
+		float timeRatio = 0.0f;
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+            copy.color = copy.color.WithAlpha(1.0f - timeRatio);
+			copy.transform.localScale = new Vector3(1f + timeRatio*0.5f, 1f + timeRatio*0.5f, 0);
+			yield return null;
+		}
+
+		Destroy(copy.gameObject);
+        //
+		animationStack--;
+	}
+
+    public IEnumerator StartInfinitePulse() {
+        pulse = true;
+        while (pulse) {
+            StartCoroutine(Pulse(0.35f));
+            yield return new WaitForSeconds(1.0f);
+        }
+    }
+
+    public void StopInfinitePulse() {
+        pulse = false;
     }
 }

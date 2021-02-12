@@ -37,4 +37,21 @@ public class ActionPane : MonoBehaviour
     private ActionButton ButtonFromName(string name) {
         return transform.Find(name).gameObject.GetComponent<ActionButton>();
     }
+
+    public void PulseButton(string button, bool start) {
+        StopAllButtonPulse();
+        
+        if (start) {
+            StartCoroutine(ButtonFromName(button).StartInfinitePulse());
+        } else {
+            ButtonFromName(button).StopInfinitePulse();
+        }
+    }
+
+    public void StopAllButtonPulse() {
+        ButtonFromName("MoveButton").StopInfinitePulse();
+        ButtonFromName("AttackButton").StopInfinitePulse();
+        // ButtonFromName("WaitButton").StopInfinitePulse();
+        // ButtonFromName("CancelButton").StopInfinitePulse();
+    }
 }
