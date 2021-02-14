@@ -117,15 +117,21 @@ public class PlayerUnitController : UnitController
 
 	private void PreviewPossibleEngagement() {
 		Vector3Int target = GetMouseTarget();
+		GetOpposing().ForEach(it => ((Unit)it).SetMildFocus(false));
+
+		// TODO: I hate this
+		// we are re-displaying the red EVERY FRAME THAT WE ARE IN ATTACK SELECTION
+		currentSelection.DisplayStandingThreatRange();
 
 		// if target is an enemy combatant & we are about to attack it
 		if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
 			if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
 				// preview the potential engagement here
 				var unitAt = (Unit)grid.OccupantAt(target);	
+				unitAt.SetMildFocus(true);	// for how many frames? What a stupid way to do this
+
 				var previewEngagement = new Engagement(currentSelection, unitAt);
 				EngagementResults er = previewEngagement.PreviewResults();
-
 				MenuManager.inst.CreateEngagementPreview(er);
 			}
 		}

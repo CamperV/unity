@@ -54,7 +54,7 @@ public class TacticsManager : MonoBehaviour
 
 			foreach (Unit u in descendingInBattle) {
 				u.ghosted = false;
-				if (!u.inFocus) {
+				if (!u.inFocus && !u.inMildFocus) {
 					// each unit will check its own processes to see if it should be ghosted
 					// having multiple senders, i.e. PathOverlayIso tiles and other Units, is difficult to keep track of
 
@@ -87,7 +87,6 @@ public class TacticsManager : MonoBehaviour
 		activeBattle.Init(participants, tiles);
 		//
 		virtualCamera = new VirtualCamera(activeBattle);
-		//
 		activeBattle.StartBattleOnPhase(initiatingPhase);
 	}
 

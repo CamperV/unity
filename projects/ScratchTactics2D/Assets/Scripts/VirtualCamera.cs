@@ -28,7 +28,7 @@ public class VirtualCamera
     // RMB drag view
     //
     public void DragUpdate() {
-        /*var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (Input.GetMouseButtonDown(1) && !draggingView) {
             dragOffset = battle.transform.position - mouseWorldPos;
@@ -42,13 +42,7 @@ public class VirtualCamera
         // make sure we can drop out of the dragging mode
         if (draggingView && !Input.GetMouseButton(1)) {
             draggingView = false;
-        }*/
-        /*
-        if (Input.GetMouseButton(1)) {
-            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            dragOffset = battle.transform.position - mouseWorldPos;
-            battle.transform.position = mouseWorldPos + dragOffset;
-        }*/
+        }
     }
 
     //
@@ -73,7 +67,6 @@ public class VirtualCamera
         }
     }
 
-    // NOTE this only works truly properly when battle.transform.position == Camera.main.transform.position
     public void ZoomToAndLock(Vector3 target, float zoomLevel) {
         lockedPosition = battle.transform.position;
         lockedScale = battle.transform.localScale;
@@ -84,13 +77,13 @@ public class VirtualCamera
         float scaleRatio = updatedScale.x / lockedScale.x;
         
         // move the selected target position to Camera.main.x/y position
-        Vector3 toPosition = battle.transform.position + (screenPoint - target) * scaleRatio;
-        battle.StartCoroutine( SmoothCameraMovement(0.15f, toPosition, updatedScale) );
+        Vector3 toPosition = screenPoint - (target - battle.transform.position)*scaleRatio;
+        battle.StartCoroutine( SmoothCameraMovement(0.10f, toPosition, updatedScale) );
     }
 
     public void ReleaseLock() {
         if (viewLock) {
-            battle.StartCoroutine( SmoothCameraMovement(0.15f, lockedPosition, lockedScale) );
+            battle.StartCoroutine( SmoothCameraMovement(0.10f, lockedPosition, lockedScale) );
             lockedPosition = battle.transform.position;
             lockedScale = battle.transform.localScale;
             viewLock = false;

@@ -58,9 +58,9 @@ public abstract class PlayerUnit : Unit
 		// the menu will determine if the unit enters attackSelection or specialSelection (not yet implemented)
 		// enter the first default state for move selection
 		if (OptionActive("Move")) {
-			EnterState(Enum.PlayerUnitState.moveSelection);
+			EnterMoveSelection();
 		} else if (OptionActive("Attack")) {
-			EnterState(Enum.PlayerUnitState.attackSelection);
+			EnterAttackSelection();
 		} else {
 			EnterMenu();
 		}
@@ -105,7 +105,7 @@ public abstract class PlayerUnit : Unit
 				// because right now
 				DisplayStandingThreatRange();
 
-				GameManager.inst.tacticsManager.virtualCamera.ZoomToAndLock(transform.position, 1.35f);
+				GameManager.inst.tacticsManager.virtualCamera.ZoomToAndLock(transform.position, 1.40f);
 				break;
 		}
 	}
@@ -117,8 +117,20 @@ public abstract class PlayerUnit : Unit
 				break;
 		}
 	}
-	public void EnterMenu() 		   { EnterState(Enum.PlayerUnitState.menu); }	
-	public void EnterMoveSelection()   { EnterState(Enum.PlayerUnitState.moveSelection); }
-	public void EnterAttackSelection() { EnterState(Enum.PlayerUnitState.attackSelection); }
+	public void EnterMenu() {
+		if (actionState != Enum.PlayerUnitState.menu) {
+			EnterState(Enum.PlayerUnitState.menu);
+		}
+	}
+	public void EnterMoveSelection() {
+		if (actionState != Enum.PlayerUnitState.moveSelection) {
+			EnterState(Enum.PlayerUnitState.moveSelection);
+		}
+	}
+	public void EnterAttackSelection() {
+		if (actionState != Enum.PlayerUnitState.attackSelection) {
+			EnterState(Enum.PlayerUnitState.attackSelection);
+		}
+	}
 	// callbacks
 }

@@ -12,8 +12,17 @@ public static class Utils
 		yield return new WaitForSeconds(delay);
 		VoidAction();
 	}
+	public static IEnumerator DelayedExecuteTicks(int delayTicks, Action VoidAction) {
+		int count = 0;
+		while (count < delayTicks) {
+			count++;
+			yield return null;
+		}
+		VoidAction();
+	}
 
-	public static Color selectColorWhite = new Color(1.00f, 1.00f, 1.00f, 0.45f);
-	public static Color selectColorBlue  = new Color(0.00f, 0.30f, 0.75f, 0.65f);
-	public static Color threatColorRed   = new Color(0.75f, 0.30f, 0.00f, 0.65f);
+	public static Color selectColorWhite  = new Color(1.00f, 1.00f, 1.00f, 0.45f);
+	public static Color selectColorBlue   = new Color(0.00f, 0.30f, 0.75f, 0.75f);
+	public static Color threatColorRed    = new Color(0.75f, 0.30f, 0.00f, 0.75f);
+	public static Color threatColorYellow = new Color(0.75f, 0.75f, 0.00f, 0.75f);
 }

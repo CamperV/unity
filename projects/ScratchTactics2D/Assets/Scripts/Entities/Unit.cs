@@ -15,6 +15,8 @@ public abstract class Unit : TacticsEntityBase
 		get => GameManager.inst.tacticsManager.focusSingleton == this;
 	}
 
+	public bool inMildFocus = false;
+
 	// NOTE this is set by a Controller during registration
 	public UnitController parentController;
 	public bool isPlayerControlled {
@@ -118,9 +120,28 @@ public abstract class Unit : TacticsEntityBase
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
 		if (takeFocus) {
+			unitUI.healthBar.Show(false);
 			DisplayThreatRange();
 		} else {
+			unitUI.healthBar.Hide();
 			ClearDisplayThreatRange();
+		}
+	}
+
+	// self terminating
+	public void SetMildFocus(bool takeFocus) {
+		if (takeFocus) {
+			inMildFocus = true;	// prevents ghosting
+			unitUI.healthBar.Show(false);
+
+			// add the lil selection square
+			GameManager.inst.GetActiveGrid().UnderlayAt(gridPosition, Utils.threatColorYellow);
+		} else {
+			inMildFocus = false;
+			unitUI.healthBar.Hide();
+
+			// just in case
+			GameManager.inst.GetActiveGrid().ResetUnderlayAt(gridPosition);
 		}
 	}
 	
