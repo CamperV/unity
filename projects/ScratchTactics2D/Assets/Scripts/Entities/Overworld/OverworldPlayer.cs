@@ -40,6 +40,7 @@ public class OverworldPlayer : OverworldEntity
 	}
 	
 	// this method is run when the Player moves INTO an Enemy
+	// this will always create a battle, and never enter into an already in-progress one
 	public override void OnBlocked<T>(T component) {
 		OverworldEnemyBase hitEnemy = component as OverworldEnemyBase;
 		hitEnemy.OnHit(); // play hit animation
@@ -49,8 +50,6 @@ public class OverworldPlayer : OverworldEntity
 		var enemyTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(hitEnemy.gridPosition);
 		
 		GameManager.inst.EnterBattleState();
-		var battleParticipants = new List<OverworldEntity>() { this, hitEnemy };
-		var battleTiles = new List<WorldTile>(){ playerTile, enemyTile };
-		GameManager.inst.tacticsManager.CreateActiveBattle(battleParticipants, battleTiles, Enum.Phase.player);
+		GameManager.inst.tacticsManager.CreateActiveBattle(this, hitEnemy, playerTile, enemyTile, Enum.Phase.player);
 	}
 }

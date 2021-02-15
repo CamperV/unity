@@ -13,16 +13,13 @@ public class Battle : MonoBehaviour
 	public Controller defaultControllerPrefab;
 	[HideInInspector] public Controller defaultController;
 	//
-	[HideInInspector] public List<OverworldEntity> worldParticipants;
 	[HideInInspector] public TacticsGrid grid;
-	//
 	[HideInInspector] public int currentTurn;
 	
-	public OverworldEntity player { get { return worldParticipants[0]; } }
-	public OverworldEntity other  { get { return worldParticipants[1]; } }
+	public OverworldPlayer player;
+	public OverworldEntity other;
 	
 	void Awake() {
-		worldParticipants = new List<OverworldEntity>();
 		grid = GetComponentsInChildren<TacticsGrid>()[0];
 		//
 		activeControllers = new Dictionary<OverworldEntity, Controller>();
@@ -32,21 +29,23 @@ public class Battle : MonoBehaviour
 		activeParticipants = new Dictionary<Controller, OverworldEntity>();
 	}
 	
-	public void Init(List<OverworldEntity> participants, List<WorldTile> tiles) {
-		worldParticipants = participants;
+	public void Init(OverworldPlayer playerEntity, OverworldEntity otherEntity, WorldTile playerTile, WorldTile otherTile) {
+		player = playerEntity;
+		other = otherEntity;
 		//
-		PopulateGridAndReposition(tiles);
+		PopulateGridAndReposition(playerTile, otherTile);
 		//
 		// register controllers for units to be registered to
 		// we fully re-instantiate controllers each time. Including the player
 		// we don't necessarily want OverworldEntities to have unit controllers outside of a battle
 		// we do, however, need to keep track of the current units available to each entity better
-		foreach (OverworldEntity participant in worldParticipants) {
+		foreach (OverworldEntity participant in new List<OverworldEntity>{ player, other }) {
 			var prefab = participant.unitControllerPrefab;
 			if (prefab != null) {
 				var controller = Instantiate(prefab);
 				controller.transform.SetParent(transform);
 
+				// TODO: this might not need to exist
 				activeControllers[participant] = controller;
 				activeParticipants[controller] = participant;
 			}
@@ -62,11 +61,7 @@ public class Battle : MonoBehaviour
 	
 	// we can only start a Battle with two participants
 	// however, others can join(?)
-	private void PopulateGridAndReposition(List<WorldTile> tiles) {		
-		// player is always index 0
-		WorldTile playerTile = tiles[0];
-		WorldTile otherTile = tiles[1];
-		
+	private void PopulateGridAndReposition(WorldTile playerTile, WorldTile otherTile) {				
 		// determine orientations
 		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
 			[Vector3Int.up] = new List<Vector3Int>() {
@@ -88,18 +83,12 @@ public class Battle : MonoBehaviour
 		};
 		var orientation = orientationDict[(other.gridPosition - player.gridPosition)];
 		
-		// setup up each side
-		int participantIndex;
-		for (participantIndex = 0; participantIndex < worldParticipants.Count; participantIndex++) {
-			OverworldEntity participant = worldParticipants[participantIndex];
-			WorldTile participantTile = tiles[participantIndex];
-			Vector3Int orientationOffset = orientation[participantIndex];
-			
-			// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
-			grid.CreateTileMap(orientationOffset, participantTile);
-		}
+		// setup up each side	
+		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
+		grid.CreateTileMap(orientation[0], playerTile);
+		grid.CreateTileMap(orientation[1], otherTile);
 		
-		// after all worldParticipants have generated their TileMaps, apply the contents of the tacticsTileGrid to the baseTilemap
+		// after all battle participants have generated their TileMaps, apply the contents of the tacticsTileGrid to the baseTilemap
 		// then compress the bounds afterwards
 		grid.ApplyTileMap();
 		
@@ -117,8 +106,6 @@ public class Battle : MonoBehaviour
 		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
-		Debug.Log($"Spawn zone for player has the following {spawnZones.first}");
-		Debug.Log($"Spawn zone for player has the following {spawnZones.first.Count}");
 		var playerSpawnPositions = spawnZones.first.GetPositions().RandomSelections<Vector3Int>(player.barracks.Count);
 
 		// the player will maintain a barracks of units
@@ -134,8 +121,6 @@ public class Battle : MonoBehaviour
 
 		// LoadUnitsByTag will look up if an appropriate prefab has already been loaded from the Resources folder
 		// if it has, it will instantiate it. If not, it will load first
-		Debug.Log($"Spawn zone for other has the following {spawnZones.second}");
-		Debug.Log($"Spawn zone for other has the following {spawnZones.second.Count}");
 		var otherSpawnPositions = spawnZones.second.GetPositions().RandomSelections<Vector3Int>(other.barracks.Count);
 
 		foreach (UnitStats unitStats in other.barracks.Values) {
@@ -187,65 +172,6 @@ public class Battle : MonoBehaviour
 		// create the zone to spawn units into
 		// randomly select which starting positions happen, for now
 		return new Pair<Zone, Zone>(new Zone(playerA, playerB), new Zone(otherA, otherB));
-	}
-	
-	private List<List<Vector3Int>> DEPRECATED_GetSpawnZones() {
-		Vector3Int playerA = Vector3Int.zero;
-		Vector3Int playerB = Vector3Int.zero;
-		Vector3Int otherA  = Vector3Int.zero;
-		Vector3Int otherB  = Vector3Int.zero;
-		
-		// these are the maximum size in each direction
-		Vector3Int gridDim = grid.GetDimensions() - Vector3Int.one;
-		
-		// boy this is a dumb, stubborn way to do this
-		switch (other.gridPosition - player.gridPosition) {
-			case Vector3Int v when v.Equals(Vector3Int.up):
-				playerA = Vector3Int.zero;
-				playerB = new Vector3Int(0, gridDim.y, 0);
-				otherA  = new Vector3Int(gridDim.x, 0, 0);
-				otherB  = new Vector3Int(gridDim.x, gridDim.y, 0);
-				break;
-			case Vector3Int v when v.Equals(Vector3Int.right):
-				playerA = new Vector3Int(0, gridDim.y, 0);
-				playerB = new Vector3Int(gridDim.x, gridDim.y, 0);
-				otherA  = Vector3Int.zero;
-				otherB  = new Vector3Int(gridDim.x, 0, 0);
-				break;
-			case Vector3Int v when v.Equals(Vector3Int.down):
-				playerA = new Vector3Int(gridDim.x, 0, 0);
-				playerB = new Vector3Int(gridDim.x, gridDim.y, 0);
-				otherA  = Vector3Int.zero;
-				otherB  = new Vector3Int(0, gridDim.y, 0);
-				break;
-			case Vector3Int v when v.Equals(Vector3Int.left):
-				playerA = Vector3Int.zero;
-				playerB = new Vector3Int(gridDim.x, 0, 0);
-				otherA  = new Vector3Int(0, gridDim.y, 0);
-				otherB  = new Vector3Int(gridDim.x, gridDim.y, 0);
-				break;
-		}
-
-		// create the zone to spawn units into
-		// randomly select which starting positions happen, for now
-		return new List<List<Vector3Int>>() {
-			LineBetweenInclusive(playerA, playerB),
-			LineBetweenInclusive(otherA, otherB)
-		};
-	}
-	
-	// this is super stupid
-	private List<Vector3Int> LineBetweenInclusive(Vector3Int a, Vector3Int b) {
-		List<Vector3Int> retVal = new List<Vector3Int>();
-		Vector3Int curr = a;
-		while (curr != b) {
-			retVal.Add(curr);
-			Vector3 vcurr = new Vector3(curr.x, curr.y, curr.z);
-			Vector3 vb 	  = new Vector3(b.x, b.y, b.z);
-			vcurr = Vector3.MoveTowards(vcurr, vb, 1.0f);
-			curr = new Vector3Int((int)vcurr.x, (int)vcurr.y, (int)vcurr.z);
-		}
-		return retVal;
 	}
 
 	private Controller GetController(OverworldEntity oe) {

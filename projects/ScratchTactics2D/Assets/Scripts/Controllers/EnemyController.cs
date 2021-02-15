@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyController : Controller
@@ -90,9 +91,10 @@ public class EnemyController : Controller
 		keepPhaseAlive = false;
 		crtActing = true;
 
-		for (int i = 0; i < activeRegistry.Count; i++) {
-			OverworldEnemyBase subject = (OverworldEnemyBase)activeRegistry[i];
-			
+		List<MovingObject> orderedRegistry = activeRegistry.OrderBy(it => (it as OverworldEnemyBase).CalculateInitiative()).ToList();
+		for (int i = 0; i < orderedRegistry.Count; i++) {
+			OverworldEnemyBase subject = orderedRegistry[i] as OverworldEnemyBase;
+
 			switch(subject.state) {
 				case Enum.EnemyState.idle:
 					// alert! animation

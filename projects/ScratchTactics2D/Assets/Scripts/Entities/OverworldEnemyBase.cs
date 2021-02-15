@@ -55,13 +55,6 @@ public class OverworldEnemyBase : OverworldEntity
 	}
 	
 	public bool InDetectionRange(FlowField flowField) {
-		/*
-		if (flowField.field.ContainsKey(gridPosition)) {
-			return flowField.field[gridPosition] <= (detectionRange * WorldTile.baseTileCost);
-		} else {
-			return false;
-		}
-		*/
 		return gridPosition.ManhattanDistance(flowField.origin) <= detectionRange;
 	}
 
@@ -73,6 +66,31 @@ public class OverworldEnemyBase : OverworldEntity
 	protected void SpendTicks(int ticks) {
 		tickPool -= (int)(ticks / moveSpeed);
 		Debug.Log($"{this} spent {ticks} [{tickPool}]");
+	}
+
+	// for future expandability:
+	// right now, the closest enemy acts first
+	// but in the future, maybe stamina effects will happen
+	public float CalculateInitiative() {
+		int md = gridPosition.ManhattanDistance(GameManager.inst.player.gridPosition);
+
+		float directionScore = 0.0f;
+		switch (gridPosition - GameManager.inst.player.gridPosition) {
+			case Vector3Int v when v.Equals(Vector3Int.up):
+				directionScore = 0.0f;
+				break;
+			case Vector3Int v when v.Equals(Vector3Int.right):
+				directionScore = 0.1f;
+				break;
+			case Vector3Int v when v.Equals(Vector3Int.down):
+				directionScore = 0.2f;
+				break;
+			case Vector3Int v when v.Equals(Vector3Int.left):
+				directionScore = 0.3f;
+				break;
+		}
+
+		return (float)md + directionScore;
 	}
 	
 	public bool FollowField(FlowField flowField, Component target) {		
@@ -139,9 +157,7 @@ public class OverworldEnemyBase : OverworldEntity
 		transform.position = GameManager.inst.worldGrid.Grid2RealPos(gridPosition);
 	}
 		
-	public void OnHit() {
-		animator.SetTrigger("SkeletonAlert");
-	}
+	public void OnHit() { return; }
 	
 	public void Alert() {
 		animator.SetTrigger("SkeletonAlert");
@@ -155,18 +171,13 @@ public class OverworldEnemyBase : OverworldEntity
 	// in the future, I'd like to be able to orchestrate battles b/w NPCs
 	// but that's in the future. Change terminology now, to confuse less
 	public override void OnBlocked<T>(T component) {
-		OverworldEntity player = component as OverworldEntity;
-		if (player.GetType() == typeof(OverworldEnemyBase)) {
-			return;
-		}
+		OverworldPlayer player = component as OverworldPlayer;
 		
 		// programmatically load in a TacticsGrid that matches what we need
 		var thisTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(gridPosition);
 		var playerTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(player.gridPosition);
 		
 		GameManager.inst.EnterBattleState();
-		var battleParticipants = new List<OverworldEntity>() { player, this };
-		var battleTiles = new List<WorldTile>(){ playerTile, thisTile };
-		GameManager.inst.tacticsManager.CreateActiveBattle(battleParticipants, battleTiles, Enum.Phase.enemy);
+		GameManager.inst.tacticsManager.CreateActiveBattle(player, this, playerTile, thisTile, Enum.Phase.enemy);
 	}
 }
