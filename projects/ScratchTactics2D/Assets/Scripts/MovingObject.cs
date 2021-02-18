@@ -128,7 +128,7 @@ public abstract class MovingObject : MonoBehaviour
 
 	protected IEnumerator SmoothMovementPath(MovingObjectPath path, GameGrid grid) {
 		crtMovingFlag = true;
-		GameManager.inst.tacticsManager.scrollLock = true;
+		GameManager.inst.tacticsManager.resizeLock = true;
 
 		// we want it to take X seconds to go over one tile
 		float fixedTimePerTile = 0.10f;
@@ -149,7 +149,7 @@ public abstract class MovingObject : MonoBehaviour
 		transform.position = realNextPos;
 
 		crtMovingFlag = false;
-		GameManager.inst.tacticsManager.scrollLock = false;
+		GameManager.inst.tacticsManager.resizeLock = false;
 	}
 
 	public IEnumerator ExecuteAfterMoving(Action VoidAction) {

@@ -57,6 +57,8 @@ public class Battle : MonoBehaviour
 	public void StartBattleOnPhase(Enum.Phase startingPhase) {
 		GameManager.inst.phaseManager.StartPhase(startingPhase);
 		GetControllerFromPhase(startingPhase).TriggerPhase();
+
+		//UIManager.inst.
 	}
 	
 	// we can only start a Battle with two participants

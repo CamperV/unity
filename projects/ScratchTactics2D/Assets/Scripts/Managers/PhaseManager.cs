@@ -6,9 +6,23 @@ using Extensions;
 
 public class PhaseManager : MonoBehaviour
 {
-	[HideInInspector] public Enum.Phase currentPhase { get; private set;	}
-	[HideInInspector] public int currentTurn { get; private set; }
-	[HideInInspector] public int currentPhaseCount { get; private set; }
+	private Dictionary<Enum.GameState, Enum.Phase> currentPhaseByState;
+	[HideInInspector] public Enum.Phase currentPhase {
+		get => currentPhaseByState[GameManager.inst.gameState];
+		set => currentPhaseByState[GameManager.inst.gameState] = value;
+	}
+
+	private Dictionary<Enum.GameState, int> currentTurnByState;
+	[HideInInspector] public int currentTurn {
+		get => currentTurnByState[GameManager.inst.gameState];
+		set => currentTurnByState[GameManager.inst.gameState] = value;
+	}
+
+	private Dictionary<Enum.GameState, int> currentPhaseCountByState;
+	[HideInInspector] public int currentPhaseCount {
+		get => currentPhaseCountByState[GameManager.inst.gameState];
+		set => currentPhaseCountByState[GameManager.inst.gameState] = value;
+	}
 
 	private PlayerController playerControllerInst;
 	private EnemyController enemyControllerInst;
@@ -19,12 +33,25 @@ public class PhaseManager : MonoBehaviour
 	};
 	
 	void Awake() {
+		currentPhaseByState = new Dictionary<Enum.GameState, Enum.Phase>() {
+			[Enum.GameState.overworld] = Enum.Phase.none,
+			[Enum.GameState.battle] = Enum.Phase.none
+		};
+		currentTurnByState = new Dictionary<Enum.GameState, int>() {
+			[Enum.GameState.overworld] = 0,
+			[Enum.GameState.battle] = 0
+		};
+		currentPhaseCountByState = new Dictionary<Enum.GameState, int>() {
+			[Enum.GameState.overworld] = 0,
+			[Enum.GameState.battle] = 0
+		};
+
 		currentPhase = Enum.Phase.none;
 		currentPhaseCount = 0;
 		currentTurn = 1;
 	}
 	
-	// dont' use Awake here, to avoid bootstrapping issues
+	// don't use Awake here, to avoid bootstrapping issues
     void Start() {
 		playerControllerInst = GameManager.inst.playerController;
 		enemyControllerInst = GameManager.inst.enemyController;
@@ -80,6 +107,7 @@ public class PhaseManager : MonoBehaviour
 	public void StartPhase(Enum.Phase phase) {
 		currentPhase = phase;
 		UIManager.inst.SetPhaseText("Current Phase: " + phaseStringRepr[currentPhase]);
+		UIManager.inst.SetTurnText("Turn " + currentTurn);
 	}
 	
 	public void OnPhaseEnd(Enum.Phase phase) {

@@ -117,18 +117,19 @@ public class PlayerUnitController : UnitController
 
 	private void PreviewPossibleEngagement() {
 		Vector3Int target = GetMouseTarget();
-		GetOpposing().ForEach(it => ((Unit)it).SetMildFocus(false));
+		GetOpposing().ForEach( it => (it as Unit).SetMildFocus(false) );
 
 		// TODO: I hate this
-		// we are re-displaying the red EVERY FRAME THAT WE ARE IN ATTACK SELECTION
+		// we are re-drawing the red squares EVERY FRAME THAT WE ARE IN ATTACK SELECTION
+		// while it's not really a big deal, I just don't like it
 		currentSelection.DisplayStandingThreatRange();
 
 		// if target is an enemy combatant & we are about to attack it
 		if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
 			if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
 				// preview the potential engagement here
-				var unitAt = (Unit)grid.OccupantAt(target);	
-				unitAt.SetMildFocus(true);	// for how many frames? What a stupid way to do this
+				var unitAt = grid.OccupantAt(target) as Unit;
+				unitAt.SetMildFocus(true);
 
 				var previewEngagement = new Engagement(currentSelection, unitAt);
 				EngagementResults er = previewEngagement.PreviewResults();
@@ -169,55 +170,50 @@ public class PlayerUnitController : UnitController
 					switch(((PlayerUnit)currentSelection).actionState) {
 						case Enum.PlayerUnitState.moveSelection:
 							// if the mouseDown is on a valid square, move to it
-							if (currentSelection.OptionActive("Move")) {
-								if (currentSelection.moveRange.ValidMove(target)) {
-									currentSelection.SetOption("Move", false);
-									currentSelection.OnDeselect();
-									currentSelectionFieldPath?.UnShow(grid);
+							if (currentSelection.moveRange.ValidMove(target)) {
+								currentSelection.SetOption("Move", false);
 
-									currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
+								// unshow some ugly bits as we travel
+								currentSelection.UnlockSelection();
+								currentSelectionFieldPath?.UnShow(grid);
 
-									// enter the menu state
-									StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
-										currentSelection.OnSelect();
+								currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
+
+								// on end
+								StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
+									currentSelection.LockSelection();
+									currentSelection.EnterNextState(orEndTurn: true);
+								}));
+							}
+							break;
+
+						case Enum.PlayerUnitState.attackSelection:
+							// ON CLICK - target has already been selected
+							// if currentSelection can actually attack the target
+							if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
+
+								// if target is an enemy combatant
+								if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
+									currentSelection.SetOption("Attack", false);
+									//									
+									var engagement = new Engagement(currentSelection, (grid.OccupantAt(target) as Unit));
+									StartCoroutine(engagement.ResolveResults());
+
+									// wait until the engagement has ended
+									// once the engagement has processed, resolve the casualties
+									// once the casualties are resolved, EndTurnSelectedUnit()
+									StartCoroutine(engagement.ExecuteAfterResolving(() => {
+										StartCoroutine(engagement.results.ResolveCasualties());
+
+										// on end
+										StartCoroutine(engagement.results.ExecuteAfterResolving(() => {
+											EndTurnSelectedUnit();
+										}));
 									}));
 								}
 							}
 							break;
 
-						case Enum.PlayerUnitState.attackSelection:
-							// if the mouseDown is on a valid attackable are (after moving)
-							if (currentSelection.OptionActive("Attack")) {
-
-								// ON CLICK - target has already been selected
-								// if currentSelection can actually attack the target
-								if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
-
-									// if target is an enemy combatant
-									if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
-										currentSelection.SetOption("Attack", false);
-										//
-										var unitAt = (Unit)grid.OccupantAt(target);
-										
-										var engagement = new Engagement(currentSelection, unitAt);
-										StartCoroutine(engagement.ResolveResults());
-
-										// wait until the engagement has ended
-										// once the engagement has processed, resolve the casualties
-										// once the casualties are resolved, EndTurnSelectedUnit()
-										StartCoroutine(engagement.ExecuteAfterResolving(() => {
-											StartCoroutine(engagement.results.ResolveCasualties());
-											StartCoroutine(engagement.results.ExecuteAfterResolving(() => {
-												currentSelection.OnSelect();
-											}));
-										}));
-									}
-								}
-							}
-							break;
-
-						// don't actually do anything here
-						case Enum.PlayerUnitState.waitSelection:
 						default:
 							break;
 					}	// end case

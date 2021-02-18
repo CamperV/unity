@@ -22,7 +22,7 @@ public abstract class PlayerUnit : Unit
 		callbackBindings = new Dictionary<string, Action>(){
 			["MoveButton"]   = () => { EnterMoveSelection(); },
 			["AttackButton"] = () => { EnterAttackSelection(); },
-			["WaitButton"]   = () => { ((PlayerUnitController)parentController).EndTurnSelectedUnit(); },
+			["WaitButton"]   = () => { Wait(); },
 			["CancelButton"] = () => { EnterIdleOrClearSelection(); }
 		};
 		actionState = Enum.PlayerUnitState.idle;
@@ -46,33 +46,27 @@ public abstract class PlayerUnit : Unit
 	}
 
 	public override void OnSelect() {
-		// play "awake" ready animation
-		// enter into "running" or "ready" animation loop
-		// 
-		SetFocus(true);
-		selectionLock = true;
-		unitUI.healthBar.Show(true);
-
-		// if you haven't moved yet, enter moveSelection state
-		// otherwise, show the menu
-		// the menu will determine if the unit enters attackSelection or specialSelection (not yet implemented)
-		// enter the first default state for move selection
-		if (OptionActive("Move")) {
-			EnterMoveSelection();
-		} else if (OptionActive("Attack")) {
-			EnterAttackSelection();
-		} else {
-			EnterMenu();
-		}
+		LockSelection();
+		EnterNextState();
 	}
 
 	public override void OnDeselect() {
-		//
+		UnlockSelection();
+		EnterState(Enum.PlayerUnitState.idle);
+	}
+
+	public void LockSelection() {
+		// play "awake" ready animation
+		// enter into "running" or "ready" animation loop
+		SetFocus(true);
+		selectionLock = true;
+		unitUI.healthBar.Show(true);
+	}
+	
+	public void UnlockSelection() {
 		SetFocus(false);
 		selectionLock = false;
 		unitUI.healthBar.Hide();
-
-		EnterState(Enum.PlayerUnitState.idle);
 	}
 
 	private void EnterState(Enum.PlayerUnitState state) {
@@ -109,11 +103,13 @@ public abstract class PlayerUnit : Unit
 				break;
 		}
 	}
+
+	// callbacks
 	public void EnterIdleOrClearSelection() {
 		switch (actionState) {
 			default:
 				EnterState(Enum.PlayerUnitState.idle);
-				((PlayerUnitController)parentController).ClearSelection();
+				(parentController as PlayerUnitController).ClearSelection();
 				break;
 		}
 	}
@@ -132,5 +128,33 @@ public abstract class PlayerUnit : Unit
 			EnterState(Enum.PlayerUnitState.attackSelection);
 		}
 	}
+	public void Wait() {
+		(parentController as PlayerUnitController).EndTurnSelectedUnit();
+	}
 	// callbacks
+
+	public void EnterNextState(bool orEndTurn = false) {
+		// STATE FLOWCHART
+		// if you haven't moved yet, enter moveSelection state
+		// otherwise, show the menu
+		// the menu will determine if the unit enters attackSelection or specialSelection (not yet implemented)
+		// enter the first default state for move selection
+		if (OptionActive("Move")) {
+			EnterMoveSelection();
+
+		} else if (OptionActive("Attack") && ValidAttackExists()) {
+			EnterAttackSelection();
+
+		} else {
+			if (orEndTurn) {
+				Wait();
+			} else {
+				EnterMenu();
+			}
+		}
+	}
+
+	public bool ValidAttackExists() {
+		return (parentController as PlayerUnitController).GetOpposing().Where( it => InStandingAttackRange(it.gridPosition) ).Any();
+	}
 }

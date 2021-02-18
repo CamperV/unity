@@ -8,8 +8,10 @@ public class UIManager : MonoBehaviour
 	// singleton
 	public static UIManager inst = null; // enforces singleton behavior
 
-	private Text currentPhaseText;
-	private Text currentTurnText;
+	private Text currentOverworldPhaseText;
+	private Text currentOverworldTurnText;
+	private Text currentBattlePhaseText;
+	private Text currentBattleTurnText;
 	
     void Awake() {
         // only allow one UIManager to exist at any time
@@ -21,15 +23,25 @@ public class UIManager : MonoBehaviour
 		}
 		DontDestroyOnLoad(gameObject);
 
-        currentPhaseText = GameObject.Find("CurrentPhaseText").GetComponent<Text>();
-		currentTurnText = GameObject.Find("CurrentTurnText").GetComponent<Text>();
+        currentOverworldPhaseText = GameObject.Find("CurrentOverworldPhaseText").GetComponent<Text>();
+		currentOverworldTurnText  = GameObject.Find("CurrentOverworldTurnText").GetComponent<Text>();
+	    currentBattlePhaseText 	  = GameObject.Find("CurrentBattlePhaseText").GetComponent<Text>();
+		currentBattleTurnText 	  = GameObject.Find("CurrentBattleTurnText").GetComponent<Text>();
     }
 
     public void SetPhaseText(string text) {
-		  currentPhaseText.text = text;        
+		if (GameManager.inst.gameState == Enum.GameState.overworld) {
+			currentOverworldPhaseText.text = text;  
+		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
+			currentBattlePhaseText.text = text;
+		}
     }
 	
     public void SetTurnText(string text) {
-        currentTurnText.text = text;        
+		if (GameManager.inst.gameState == Enum.GameState.overworld) {
+			currentOverworldTurnText.text = text;  
+		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
+			currentBattleTurnText.text = text;
+		}      
     }
 }

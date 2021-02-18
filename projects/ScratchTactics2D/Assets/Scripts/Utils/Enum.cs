@@ -12,7 +12,7 @@ namespace Enum {
 	public enum PhaseActionState {waitingForInput, acting, complete, postPhaseDelay, postPhase};
 	//
 	public enum EnemyState {idle, followField};
-	public enum PlayerUnitState {idle, menu, moveSelection, attackSelection, waitSelection};
+	public enum PlayerUnitState {idle, menu, moveSelection, attackSelection};
 
 	// Contextual Interaction states
 	public enum InteractState {noSelection, unitSelected};

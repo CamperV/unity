@@ -10,27 +10,29 @@ public class TacticsManager : MonoBehaviour
 	[HideInInspector] public Battle activeBattle;
 
 	public VirtualCamera virtualCamera;
-	public bool scrollLock;
+	public bool resizeLock;
 
 	// only one Unit can be in focus at any given time
 	public Unit focusSingleton { get; private set; }
 	
 	void Awake() {
-		scrollLock = false;
+		resizeLock = false;
 	}
 
     void Update() {
 		// while "in-battle" wait for key commands to exit state
 		if (GameManager.inst.gameState == Enum.GameState.battle) {
-			if (Input.GetKeyDown("space")) {
+			if (Input.GetKeyDown(KeyCode.Space)) {
 				Debug.Log("Exiting Battle...");
 				
 				DestroyActiveBattle();
 			}
 
 			// virtualCamera will have its own battle ref
-			virtualCamera.DragUpdate();
-			virtualCamera.ScrollUpdate();
+			if (Input.GetKey(KeyCode.R) && GameManager.inst.phaseManager.currentPhase == Enum.Phase.player && !resizeLock) {
+				virtualCamera.DragUpdate();
+				virtualCamera.ScrollUpdate();
+			}
 
 			// focus control:
 			// move it all into once-per-frame centralized check, because we can't guarantee 
