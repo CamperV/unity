@@ -69,3 +69,14 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+*.exe
+*.ulf
+*.alf
+Library/
+Logs
+Temp/
+
+# hyper-specific files, to annoy me less
+/demos
+/projects/*/Packages/packages-lock.json
