@@ -55,8 +55,8 @@ public class GameManager : MonoBehaviour
 	}
 	
 	void Start() {
-		// initial phase
-		phaseManager.StartPhase(Enum.Phase.player);
+		// now, "enable"
+		EnterOverworldState();
 	}
 	
 	void Init() {
@@ -82,9 +82,6 @@ public class GameManager : MonoBehaviour
 		
 		enemyController.SetTraversableTiles();
 		enemyController.InitFlowField(player.gridPosition);
-		
-		// now, "enable"
-		EnterOverworldState();
 	}
 	
 	public void EnterOverworldState() {
@@ -95,6 +92,7 @@ public class GameManager : MonoBehaviour
 		worldGrid.DisableTint();
 		
 		gameState = Enum.GameState.overworld;
+		phaseManager.StartPhase(Enum.Phase.player);
 	}
 	
 	public void EnterBattleState() {

@@ -18,12 +18,6 @@ public class PhaseManager : MonoBehaviour
 		set => currentTurnByState[GameManager.inst.gameState] = value;
 	}
 
-	private Dictionary<Enum.GameState, int> currentPhaseCountByState;
-	[HideInInspector] public int currentPhaseCount {
-		get => currentPhaseCountByState[GameManager.inst.gameState];
-		set => currentPhaseCountByState[GameManager.inst.gameState] = value;
-	}
-
 	private PlayerController playerControllerInst;
 	private EnemyController enemyControllerInst;
 	private Dictionary<Enum.Phase, string> phaseStringRepr = new Dictionary<Enum.Phase, string>() {
@@ -34,29 +28,22 @@ public class PhaseManager : MonoBehaviour
 	
 	void Awake() {
 		currentPhaseByState = new Dictionary<Enum.GameState, Enum.Phase>() {
-			[Enum.GameState.overworld] = Enum.Phase.none,
+			[Enum.GameState.overworld] = Enum.Phase.player,
 			[Enum.GameState.battle] = Enum.Phase.none
 		};
 		currentTurnByState = new Dictionary<Enum.GameState, int>() {
-			[Enum.GameState.overworld] = 0,
-			[Enum.GameState.battle] = 0
+			[Enum.GameState.overworld] = 1,
+			[Enum.GameState.battle] = 1
 		};
-		currentPhaseCountByState = new Dictionary<Enum.GameState, int>() {
-			[Enum.GameState.overworld] = 0,
-			[Enum.GameState.battle] = 0
-		};
-
-		currentPhase = Enum.Phase.none;
-		currentPhaseCount = 0;
-		currentTurn = 1;
 	}
 	
 	// don't use Awake here, to avoid bootstrapping issues
     void Start() {
 		playerControllerInst = GameManager.inst.playerController;
 		enemyControllerInst = GameManager.inst.enemyController;
-		
-		UIManager.inst.SetTurnText("Turn " + currentTurn);
+
+		currentPhase = Enum.Phase.player;
+		currentTurn = 1;
     }
 
     void Update() {
@@ -106,18 +93,14 @@ public class PhaseManager : MonoBehaviour
 	
 	public void StartPhase(Enum.Phase phase) {
 		currentPhase = phase;
-		UIManager.inst.SetPhaseText("Current Phase: " + phaseStringRepr[currentPhase]);
+
+		UIManager.inst.SetPhaseText("Current Phase: " + phaseStringRepr[phase]);
 		UIManager.inst.SetTurnText("Turn " + currentTurn);
 	}
 	
 	public void OnPhaseEnd(Enum.Phase phase) {
-		currentPhaseCount++;
-		
-		// update turn counter, start a new turn after two phases have completed
-		if (currentPhaseCount % 2 == 0) {
+		if (phase.NextPhase() == Enum.Phase.player)
 			currentTurn++;
-			UIManager.inst.SetTurnText("Turn " + currentTurn);
-		}
 	}
 	
 	public void DisablePhase() {

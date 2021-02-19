@@ -12,6 +12,9 @@ public class UIManager : MonoBehaviour
 	private Text currentOverworldTurnText;
 	private Text currentBattlePhaseText;
 	private Text currentBattleTurnText;
+
+	private GameObject overworldPhaseDisplay;
+	private GameObject battlePhaseDisplay;
 	
     void Awake() {
         // only allow one UIManager to exist at any time
@@ -27,21 +30,35 @@ public class UIManager : MonoBehaviour
 		currentOverworldTurnText  = GameObject.Find("CurrentOverworldTurnText").GetComponent<Text>();
 	    currentBattlePhaseText 	  = GameObject.Find("CurrentBattlePhaseText").GetComponent<Text>();
 		currentBattleTurnText 	  = GameObject.Find("CurrentBattleTurnText").GetComponent<Text>();
+
+		overworldPhaseDisplay = GameObject.Find("OverworldPhaseDisplay");
+		battlePhaseDisplay = GameObject.Find("BattlePhaseDisplay");
+		EnableBattlePhaseDisplay(false);
     }
 
-    public void SetPhaseText(string text) {
-		if (GameManager.inst.gameState == Enum.GameState.overworld) {
+    public void SetPhaseText(string text, bool mirror = false) {
+		if (mirror || GameManager.inst.gameState == Enum.GameState.overworld)
 			currentOverworldPhaseText.text = text;  
-		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
+		else if (mirror || GameManager.inst.gameState == Enum.GameState.battle)
 			currentBattlePhaseText.text = text;
-		}
     }
 	
-    public void SetTurnText(string text) {
-		if (GameManager.inst.gameState == Enum.GameState.overworld) {
+    public void SetTurnText(string text, bool mirror = false) {
+		if (mirror || GameManager.inst.gameState == Enum.GameState.overworld)
 			currentOverworldTurnText.text = text;  
-		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
-			currentBattleTurnText.text = text;
-		}      
+		else if (mirror || GameManager.inst.gameState == Enum.GameState.battle)
+			currentBattleTurnText.text = text; 
     }
+
+	public void EnableBattlePhaseDisplay(bool enable) {
+		battlePhaseDisplay.SetActive(enable);
+
+		if (enable) {
+			overworldPhaseDisplay.transform.localScale = 0.85f * Vector3.one;
+			battlePhaseDisplay.transform.localScale = Vector3.one;
+		} else {
+			overworldPhaseDisplay.transform.localScale = Vector3.one;
+			battlePhaseDisplay.transform.localScale = 0.85f * Vector3.one;
+		}
+	}
 }
