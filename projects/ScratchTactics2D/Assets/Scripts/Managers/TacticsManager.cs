@@ -93,6 +93,9 @@ public class TacticsManager : MonoBehaviour
 		//
 		virtualCamera = new VirtualCamera(activeBattle);
 		activeBattle.StartBattleOnPhase(initiatingPhase);
+
+		// DEBUG
+		//activeBattle.transform.localScale = 1.5f * Vector3.one;
 	}
 
 	public void ResolveActiveBattle(OverworldEntity defeatedEntity) {

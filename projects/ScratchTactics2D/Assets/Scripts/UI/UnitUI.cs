@@ -14,8 +14,10 @@ public class UnitUI : MonoBehaviour
     // UI Elements to collect, scale, etc
     public HealthBar healthBarPrefab;
     public TextUI textUIPrefab;
+    public Emblem weaponTypeEmblemPrefab;
     
     [HideInInspector] public HealthBar healthBar;
+    [HideInInspector] public Emblem weaponTypeEmblem;
 
     void Awake() {
         boundElements = new List<UnitUIElement>();
@@ -24,6 +26,10 @@ public class UnitUI : MonoBehaviour
         healthBar = Instantiate(healthBarPrefab, transform);
         healthBar.BindUI(this);
         boundElements.Add(healthBar);
+
+        weaponTypeEmblem = Instantiate(weaponTypeEmblemPrefab, transform);
+        weaponTypeEmblem.BindUI(this);
+        boundElements.Add(weaponTypeEmblem);
 
         //actionMenu = Instantiate(actionMenuPrefab, transform);
         //actionMenu.BindUI(this);
@@ -47,6 +53,24 @@ public class UnitUI : MonoBehaviour
         StartCoroutine(Utils.DelayedExecute(3.0f, () => {
 			StartCoroutine(healthBar.FadeDown(1.0f));
 		}));
+    }
+
+    public void UpdateWeaponEmblem(Weapon weapon) {
+        switch (weapon.tag) {
+            case "WeaponSlash":
+                weaponTypeEmblem.SetSprite(ResourceLoader.GetSprite("slash_emblem"));
+                break;
+            case "WeaponPierce":
+                weaponTypeEmblem.SetSprite(ResourceLoader.GetSprite("pierce_emblem"));
+                break;
+            case "WeaponBlunt":
+                weaponTypeEmblem.SetSprite(ResourceLoader.GetSprite("strike_emblem"));
+                break;
+            default:
+                Debug.Log($"No valid weapon tag named {weapon.tag}");
+                Debug.Assert(false);
+                break;
+        }
     }
 
     public void SetTransparency(float alpha) {

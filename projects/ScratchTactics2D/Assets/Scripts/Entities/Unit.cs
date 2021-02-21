@@ -121,9 +121,11 @@ public abstract class Unit : TacticsEntityBase
 		// force others to drop focus if their Y value is larger (unit is behind)
 		if (takeFocus) {
 			unitUI.healthBar.Show(false);
+			unitUI.weaponTypeEmblem.Show(false);
 			DisplayThreatRange();
 		} else {
 			unitUI.healthBar.Hide();
+			unitUI.weaponTypeEmblem.Hide();
 			ClearDisplayThreatRange();
 		}
 	}
@@ -159,6 +161,8 @@ public abstract class Unit : TacticsEntityBase
 
 	public void ApplyStats(UnitStats stats) {
 		unitStats = stats;
+
+		unitUI.UpdateWeaponEmblem(equippedWeapon);
 		unitUI.UpdateHealthBar(_HP);
 		unitUI.SetTransparency(0.0f);
 	}

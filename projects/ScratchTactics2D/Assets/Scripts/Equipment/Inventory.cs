@@ -36,6 +36,7 @@ public class Inventory
         if (!weapons.Contains(w)) weapons.Add(w);
         weapons.ForEach(it => it.Unequip());
 
+        //
         w.Equip();
     }
 }
