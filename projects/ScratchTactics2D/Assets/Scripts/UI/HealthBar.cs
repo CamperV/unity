@@ -26,7 +26,7 @@ public class HealthBar : UnitUIElement
         transform.position -= barTilemap.localBounds.center;
         transform.position -= new Vector3(0, (barTilemap.localBounds.center.y)*-8.5f, 0);
 
-        //transparencyLock = true;
+        transparencyLock = true;
     }
 
     public void InitHealthBar(int max) {

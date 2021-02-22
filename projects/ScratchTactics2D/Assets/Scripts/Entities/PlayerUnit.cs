@@ -60,13 +60,13 @@ public abstract class PlayerUnit : Unit
 		// enter into "running" or "ready" animation loop
 		SetFocus(true);
 		selectionLock = true;
-		unitUI.healthBar.Show(true);
+		//unitUI.healthBar.Show(true);
 	}
 	
 	public void UnlockSelection() {
 		SetFocus(false);
 		selectionLock = false;
-		unitUI.healthBar.Hide();
+		//unitUI.healthBar.Hide();
 	}
 
 	private void EnterState(Enum.PlayerUnitState state) {

@@ -120,11 +120,11 @@ public abstract class Unit : TacticsEntityBase
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
 		if (takeFocus) {
-			unitUI.healthBar.Show(false);
+			//unitUI.healthBar.Show(false);
 			unitUI.weaponTypeEmblem.Show(false);
 			DisplayThreatRange();
 		} else {
-			unitUI.healthBar.Hide();
+			//unitUI.healthBar.Hide();
 			unitUI.weaponTypeEmblem.Hide();
 			ClearDisplayThreatRange();
 		}
@@ -134,13 +134,13 @@ public abstract class Unit : TacticsEntityBase
 	public void SetMildFocus(bool takeFocus) {
 		if (takeFocus) {
 			inMildFocus = true;	// prevents ghosting
-			unitUI.healthBar.Show(false);
+			//unitUI.healthBar.Show(false);
 
 			// add the lil selection square
 			GameManager.inst.GetActiveGrid().UnderlayAt(gridPosition, Utils.threatColorYellow);
 		} else {
 			inMildFocus = false;
-			unitUI.healthBar.Hide();
+			//unitUI.healthBar.Hide();
 
 			// just in case
 			GameManager.inst.GetActiveGrid().ResetUnderlayAt(gridPosition);
@@ -235,14 +235,14 @@ public abstract class Unit : TacticsEntityBase
 		// 
 		SetFocus(true);
 		selectionLock = true;
-		unitUI.healthBar.Show(true);
+		//unitUI.healthBar.Show(true);
 	}
 
 	public virtual void OnDeselect() {
 		//
 		SetFocus(false);
 		selectionLock = false;
-		unitUI.healthBar.Hide();
+		//unitUI.healthBar.Hide();
 	}
 
 	public void TraverseTo(Vector3Int target, MovingObjectPath fieldPath = null) {

@@ -16,16 +16,21 @@ public class UnitUI : MonoBehaviour
     public TextUI textUIPrefab;
     public Emblem weaponTypeEmblemPrefab;
     
-    [HideInInspector] public HealthBar healthBar;
+    //[HideInInspector] public HealthBar healthBar;
+    [HideInInspector] public MiniHealthBar healthBar;
     [HideInInspector] public Emblem weaponTypeEmblem;
 
     void Awake() {
         boundElements = new List<UnitUIElement>();
 
         // spawn UnitUIElements
-        healthBar = Instantiate(healthBarPrefab, transform);
+        //healthBar = Instantiate(healthBarPrefab, transform);
+        //healthBar.BindUI(this);
+        //boundElements.Add(healthBar);
+
+        healthBar = GetComponentsInChildren<MiniHealthBar>()[0];
         healthBar.BindUI(this);
-        boundElements.Add(healthBar);
+        //boundElements.Add(healthBar);
 
         weaponTypeEmblem = Instantiate(weaponTypeEmblemPrefab, transform);
         weaponTypeEmblem.BindUI(this);
