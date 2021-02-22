@@ -24,13 +24,18 @@ public class MiniHealthBar : UnitUIElement
 	void Awake() {
         // I don't like how these are implemented, but c'est la Unity
         // this vvv is the first CHILD Transform, b/c GetCom... gets the parent too
-        barLevel = GetComponentsInChildren<Transform>()[1];
+        Transform background = GetComponentsInChildren<Transform>()[1];
+        background.position += new Vector3(0, 0, -1.0f);
+
+        barLevel = GetComponentsInChildren<Transform>()[2];
         renderers = GetComponentsInChildren<SpriteRenderer>();
+
+        //
+        transform.localScale = new Vector3(0.45f, 0.75f, 1.0f);
     }
 
     void Start() {
-        transform.localScale = new Vector3(0.45f, 0.75f, 1.0f);
-        transform.position -= new Vector3(0, spriteHeight*1.75f, 0);
+        transform.position -= new Vector3(spriteWidth * -0.05f, spriteHeight * 1.75f, 0);
     }
 
     public void InitHealthBar(int m) {
@@ -41,15 +46,11 @@ public class MiniHealthBar : UnitUIElement
     }
 
     public void UpdateBar(int val, float alpha) {
-        Debug.Log($"From {currVal} to {val}");
-        float scaleRatio = (float)currVal/(float)val;
         currVal = val;
         healthRatio = (float)currVal/(float)maxPips;
 
+        barLevel.transform.position -= new Vector3( (spriteWidth * (1.0f - healthRatio)) / 2.0f, 0, 0);
         barLevel.transform.localScale = new Vector3(0.01f + healthRatio, 1.0f, 1.0f);
-        Debug.Log($"Updated ratio: {healthRatio} ({barLevel.transform.localScale})");
-
-        //barLevel.transform.position -= new Vector3(spriteWidth * scaleRatio, 0, 0);
 
         UpdateTransparency(alpha);
     }

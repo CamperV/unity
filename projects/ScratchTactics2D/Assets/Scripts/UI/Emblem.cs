@@ -14,15 +14,18 @@ public class Emblem : UnitUIElement
         // set renderer properties
 		spriteRenderer.sortingLayerName = "Tactics UI";
 		spriteRenderer.sortingOrder = 0;
+
+        //
+        transform.localScale = 0.15f * Vector3.one;
     }
 
     void Start() {
-        transform.localScale = 0.30f * Vector3.one;
-        transform.position -= new Vector3(0, spriteHeight * 0.75f, 0);
+        // scale based on healthBar
+        transform.position -= new Vector3(parentUI.healthBar.spriteWidth * 0.5f * 1.05f, parentUI.healthBar.spriteHeight * 1.75f, 0);
     }
 
     public override void UpdateTransparency(float alpha) {
-        spriteRenderer.color = spriteRenderer.color.WithAlpha(alpha);
+        spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f);
     }
 
     public void SetSprite(Sprite sp) {
