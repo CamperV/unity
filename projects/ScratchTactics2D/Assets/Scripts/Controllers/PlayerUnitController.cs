@@ -55,9 +55,7 @@ public class PlayerUnitController : UnitController
 
 				// CURRENT SELECTION STATE
 				// if we've entered this state as a result of selecting a unit:
-				if (activeRegistry.Contains(currentSelection)) {
-					MenuManager.inst.DestroyCurrentEngagementPreview();
-					
+				if (activeRegistry.Contains(currentSelection)) {					
 					switch (currentSelection?.actionState) {
 						case Enum.PlayerUnitState.moveSelection:
 							// overlay tile for movement selections
@@ -127,15 +125,21 @@ public class PlayerUnitController : UnitController
 		// if target is an enemy combatant & we are about to attack it
 		if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
 			if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
-				// preview the potential engagement here
-				var unitAt = grid.OccupantAt(target) as Unit;
-				unitAt.SetMildFocus(true);
+				if (MenuManager.inst.engagementPreview == null) {	
+					// preview the potential engagement here
+					var unitAt = grid.OccupantAt(target) as Unit;
+					unitAt.SetMildFocus(true);
 
-				var previewEngagement = new Engagement(currentSelection, unitAt);
-				EngagementResults er = previewEngagement.PreviewResults();
-				MenuManager.inst.CreateEngagementPreview(er);
+					var previewEngagement = new Engagement(currentSelection, unitAt);
+					EngagementResults er = previewEngagement.PreviewResults();
+					MenuManager.inst.CreateEngagementPreview(er);
+				}
+				return;
 			}
 		}
+
+		// if didn't return
+		MenuManager.inst.DestroyCurrentEngagementPreview();
 	}
 	// UPDATE ZONE
 

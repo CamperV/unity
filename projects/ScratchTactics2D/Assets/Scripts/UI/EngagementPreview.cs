@@ -6,16 +6,18 @@ using UnityEngine.UI;
 public class EngagementPreview : MonoBehaviour
 {
     // UI elements
-    Image background;           // under GameObject "Background"
-    Image playerPortrait;       // under GameObject "PlayerPortrait"
-    Image enemyPortrait;        // under GameObject "EnemyPortrait"
+    private Image background;           // under GameObject "Background"
+    private Image playerPortrait;       // under GameObject "PlayerPortrait"
+    private Image enemyPortrait;        // under GameObject "EnemyPortrait"
+    private Image playerEmblem;         // under GameObject "PlayerEmblem"
+    private Image enemyEmblem;          // under GameObject "EnemyEmblem"
 
-    Text pDamage;
-    Text pHitRate;
-    Text pCritRate;
-    Text eDamage;
-    Text eHitRate;
-    Text eCritRate;
+    private Text pDamage;
+    private Text pHitRate;
+    private Text pCritRate;
+    private Text eDamage;
+    private Text eHitRate;
+    private Text eCritRate;
 
     public EngagementResults engagementResults { get; private set; }
     
@@ -31,8 +33,11 @@ public class EngagementPreview : MonoBehaviour
 
         // set potraits based on units that are in the combat preview
         if (ep.aggressor.isPlayerControlled) {
-            ep.playerPortrait.sprite = ep.aggressor.GetSprite();
-            ep.enemyPortrait.sprite = ep.defender.GetSprite();
+            ep.playerPortrait.sprite = ep.aggressor.portrait;
+            ep.enemyPortrait.sprite = ep.defender.portrait;
+
+            ep.playerEmblem.sprite = Emblem.FromWeapon(ep.aggressor.equippedWeapon);
+            ep.enemyEmblem.sprite = Emblem.FromWeapon(ep.defender.equippedWeapon);
 
             // there must always be a firstAttack
             ep.pDamage.text   = ep.firstAttack.damage.ToString() + " DMG";
@@ -68,7 +73,9 @@ public class EngagementPreview : MonoBehaviour
         var images     = GetComponentsInChildren<Image>();
         background     = images[0];
         playerPortrait = images[1];
-        enemyPortrait  = images[2];
+        playerEmblem   = images[2];
+        enemyPortrait  = images[3];
+        enemyEmblem    = images[4];
 
         var texts = GetComponentsInChildren<Text>();
         pDamage   = texts[0];

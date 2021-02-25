@@ -29,7 +29,7 @@ public class TacticsManager : MonoBehaviour
 			}
 
 			// virtualCamera will have its own battle ref
-			if (Input.GetKey(KeyCode.R) && GameManager.inst.phaseManager.currentPhase == Enum.Phase.player && !resizeLock) {
+			if (GameManager.inst.phaseManager.currentPhase == Enum.Phase.player && !resizeLock) {
 				virtualCamera.DragUpdate();
 				virtualCamera.ScrollUpdate();
 			}

@@ -41,6 +41,7 @@ public abstract class Unit : TacticsEntityBase
 
 	// Attribute Area
 	// defaultStats is static, and will be defined by the final class
+	public abstract Sprite portrait { get; }
 	public abstract UnitStats unitStats { get; set; }
 	public Guid ID { get => unitStats.ID; }
 

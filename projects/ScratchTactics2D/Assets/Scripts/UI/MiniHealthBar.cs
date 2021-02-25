@@ -23,15 +23,17 @@ public class MiniHealthBar : UnitUIElement
 
 	void Awake() {
         // I don't like how these are implemented, but c'est la Unity
-        // this vvv is the first CHILD Transform, b/c GetCom... gets the parent too
+        // this vvv is the first CHILD Transform, b/c GetComp... gets the parent too
         Transform background = GetComponentsInChildren<Transform>()[1];
         background.position += new Vector3(0, 0, -1.0f);
+
 
         barLevel = GetComponentsInChildren<Transform>()[2];
         renderers = GetComponentsInChildren<SpriteRenderer>();
 
         //
-        transform.localScale = new Vector3(0.45f, 0.75f, 1.0f);
+        transform.localScale = new Vector3(0.45f, 0.45f, 1.0f);
+        transform.position += new Vector3(0, 0, 1.0f);
     }
 
     void Start() {

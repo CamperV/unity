@@ -61,21 +61,7 @@ public class UnitUI : MonoBehaviour
     }
 
     public void UpdateWeaponEmblem(Weapon weapon) {
-        switch (weapon.tag) {
-            case "WeaponSlash":
-                weaponTypeEmblem.SetSprite(ResourceLoader.GetSprite("slash_emblem"));
-                break;
-            case "WeaponPierce":
-                weaponTypeEmblem.SetSprite(ResourceLoader.GetSprite("pierce_emblem"));
-                break;
-            case "WeaponBlunt":
-                weaponTypeEmblem.SetSprite(ResourceLoader.GetSprite("strike_emblem"));
-                break;
-            default:
-                Debug.Log($"No valid weapon tag named {weapon.tag}");
-                Debug.Assert(false);
-                break;
-        }
+        weaponTypeEmblem.SetSprite( Emblem.FromWeapon(weapon) );
     }
 
     public void SetTransparency(float alpha) {

@@ -32,4 +32,9 @@ public class UnitMercenary : PlayerUnit
         get => _unitStats ?? UnitMercenary.defaultStats;
         set => _unitStats = value;
     }
+
+    private Sprite _portrait;
+    public override Sprite portrait {
+        get => ResourceLoader.GetSprite("rogue_portrait");
+    }
 }

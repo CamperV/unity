@@ -31,4 +31,9 @@ public class UnitSkeleton : Unit
         get => _unitStats ?? UnitSkeleton.defaultStats;
         set => _unitStats = value;
     }
+
+    private Sprite _portrait;
+    public override Sprite portrait {
+        get => ResourceLoader.GetSprite("skeleton_portrait");
+    }
 }
