@@ -11,7 +11,7 @@ public class UnitMercenary : PlayerUnit
             return new UnitStats {
                 unitTag = "UnitMercenary",
 
-                VITALITY  = 10,
+                VITALITY  = 18,
                 STRENGTH  = 3,
                 DEXTERITY = 3,
                 REFLEX    = 5,

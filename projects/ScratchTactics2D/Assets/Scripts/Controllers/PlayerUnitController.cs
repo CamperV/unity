@@ -125,11 +125,11 @@ public class PlayerUnitController : UnitController
 		// if target is an enemy combatant & we are about to attack it
 		if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
 			if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
-				if (MenuManager.inst.engagementPreview == null) {	
-					// preview the potential engagement here
-					var unitAt = grid.OccupantAt(target) as Unit;
-					unitAt.SetMildFocus(true);
+				// preview the potential engagement here
+				var unitAt = grid.OccupantAt(target) as Unit;
+				unitAt.SetMildFocus(true);
 
+				if (MenuManager.inst.engagementPreview == null || MenuManager.inst.engagementPreview.defender != unitAt) {	
 					var previewEngagement = new Engagement(currentSelection, unitAt);
 					EngagementResults er = previewEngagement.PreviewResults();
 					MenuManager.inst.CreateEngagementPreview(er);

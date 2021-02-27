@@ -19,6 +19,11 @@ public class EngagementPreview : MonoBehaviour
     private Text eHitRate;
     private Text eCritRate;
 
+    private Text playerHealthValue;
+    private Text enemyHealthValue;
+    private UIHealthBar playerHealthBar;
+    private UIHealthBar enemyHealthBar;
+
     public EngagementResults engagementResults { get; private set; }
     
     public Unit aggressor { get => engagementResults.aggressor; }
@@ -40,13 +45,22 @@ public class EngagementPreview : MonoBehaviour
             ep.enemyEmblem.sprite = Emblem.FromWeapon(ep.defender.equippedWeapon);
 
             // there must always be a firstAttack
-            ep.pDamage.text   = ep.firstAttack.damage.ToString() + " DMG";
-            ep.pHitRate.text  = ep.firstAttack.hitRate.ToString() + "% HIT";
-            ep.pCritRate.text = ep.firstAttack.critRate.ToString() + "% CRIT";
+            ep.pDamage.text   = ep.firstAttack.damage.ToString();
+            ep.pHitRate.text  = ep.firstAttack.hitRate.ToString();
+            ep.pCritRate.text = ep.firstAttack.critRate.ToString();
 
-            ep.eDamage.text   = (ep.secondAttack?.damage.ToString() ?? "-") + " DMG";
-            ep.eHitRate.text  = (ep.secondAttack?.hitRate.ToString() ?? "-") + "% HIT";
-            ep.eCritRate.text = (ep.secondAttack?.critRate.ToString() ?? "-") + "% CRIT";
+            ep.eDamage.text   = (ep.secondAttack?.damage.ToString() ?? "-");
+            ep.eHitRate.text  = (ep.secondAttack?.hitRate.ToString() ?? "-");
+            ep.eCritRate.text = (ep.secondAttack?.critRate.ToString() ?? "-");
+
+            ep.playerHealthValue.text = $"{ep.aggressor._HP}";
+            ep.enemyHealthValue.text = $"{ep.defender._HP}";
+
+            ep.playerHealthBar.Init(ep.aggressor.VITALITY, ep.aggressor._HP);
+            ep.enemyHealthBar.Init(ep.defender.VITALITY, ep.defender._HP);
+
+            ep.playerHealthBar.FlashPotentialDamage(ep.secondAttack?.damage ?? 0);
+            ep.enemyHealthBar.FlashPotentialDamage(ep.firstAttack.damage);
         }
         
         /* This doesn't really exist yet. Some enemies will ALWAYS attack first, THEN implement this later
@@ -84,5 +98,12 @@ public class EngagementPreview : MonoBehaviour
         eDamage   = texts[3];
         eHitRate  = texts[4];
         eCritRate = texts[5];
+        //
+        playerHealthValue = texts[6];
+        enemyHealthValue  = texts[7];
+
+        var healthBars = GetComponentsInChildren<UIHealthBar>();
+        playerHealthBar = healthBars[0];
+        enemyHealthBar  = healthBars[1];
     }
 }
