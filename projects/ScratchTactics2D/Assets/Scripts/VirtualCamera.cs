@@ -13,6 +13,8 @@ public class VirtualCamera
     private Vector3 lockedScale;
     private bool viewLock;
 
+    public float currentZoomLevel { get => battle.transform.localScale.x; }
+
     public VirtualCamera(Battle battleToRegister) {
         battle = battleToRegister;
 
@@ -78,12 +80,12 @@ public class VirtualCamera
         
         // move the selected target position to Camera.main.x/y position
         Vector3 toPosition = screenPoint - (target - battle.transform.position)*scaleRatio;
-        battle.StartCoroutine( SmoothCameraMovement(0.10f, toPosition, updatedScale) );
+        battle.StartCoroutine( SmoothCameraMovement(0.15f, toPosition, updatedScale) );
     }
 
     public void ReleaseLock() {
         if (viewLock) {
-            battle.StartCoroutine( SmoothCameraMovement(0.10f, lockedPosition, lockedScale) );
+            battle.StartCoroutine( SmoothCameraMovement(0.15f, lockedPosition, lockedScale) );
             lockedPosition = battle.transform.position;
             lockedScale = battle.transform.localScale;
             viewLock = false;

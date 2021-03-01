@@ -20,6 +20,8 @@ public abstract class MovingObject : MonoBehaviour
 	protected bool crtMovingFlag = false;
 	protected Coroutine crtMovement;
 
+	public bool isMoving { get => crtMovingFlag; }
+
 	public virtual bool IsActive() {
 		return gameObject.activeInHierarchy;
 	}

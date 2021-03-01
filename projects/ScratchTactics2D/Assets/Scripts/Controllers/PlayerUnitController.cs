@@ -61,7 +61,8 @@ public class PlayerUnitController : UnitController
 							// overlay tile for movement selections
 							// constantly recalculate the shortest path to mouse via FlowField
 							// on mouse down, start a coroutine to move along the path
-							DrawValidMoveForSelection(currentSelection.moveRange);
+							if (!currentSelection.isMoving)
+								DrawValidMoveForSelection(currentSelection.moveRange);
 							break;
 
 						case Enum.PlayerUnitState.attackSelection:
@@ -194,27 +195,24 @@ public class PlayerUnitController : UnitController
 						case Enum.PlayerUnitState.attackSelection:
 							// ON CLICK - target has already been selected
 							// if currentSelection can actually attack the target
-							if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
+							if (CanAttackTarget(currentSelection, target)) {
+								currentSelection.SetOption("Attack", false);
+								//									
+								var engagement = new Engagement(currentSelection, (grid.OccupantAt(target) as Unit));
+								StartCoroutine(engagement.ResolveResults());
 
-								// if target is an enemy combatant
-								if (GetOpposing().Select(it => it.gridPosition).Contains(target)) {
-									currentSelection.SetOption("Attack", false);
-									//									
-									var engagement = new Engagement(currentSelection, (grid.OccupantAt(target) as Unit));
-									StartCoroutine(engagement.ResolveResults());
+								// wait until the engagement has ended
+								// once the engagement has processed, resolve the casualties
+								// once the casualties are resolved, EndTurnSelectedUnit()
+								StartCoroutine(engagement.ExecuteAfterResolving(() => {
+									StartCoroutine(engagement.results.ResolveCasualties());
 
-									// wait until the engagement has ended
-									// once the engagement has processed, resolve the casualties
-									// once the casualties are resolved, EndTurnSelectedUnit()
-									StartCoroutine(engagement.ExecuteAfterResolving(() => {
-										StartCoroutine(engagement.results.ResolveCasualties());
-
-										// on end
-										StartCoroutine(engagement.results.ExecuteAfterResolving(() => {
-											EndTurnSelectedUnit();
-										}));
+									// on end
+									StartCoroutine(engagement.results.ExecuteAfterResolving(() => {
+										EndTurnSelectedUnit();
+										MenuManager.inst.DestroyCurrentEngagementPreview();
 									}));
-								}
+								}));
 							}
 							break;
 
@@ -285,6 +283,10 @@ public class PlayerUnitController : UnitController
 		return potentialTargets.FindAll(
 			it => it != subject && subject.attackRange.field.ContainsKey(it.gridPosition)
 		).Any();
+	}
+
+	private bool CanAttackTarget(PlayerUnit s, Vector3Int target) {
+		return s.OptionActive("Attack") && s.attackRange.ValidAttack(s, target) && GetOpposing().Select(it => it.gridPosition).Contains(target);
 	}
 
 	private Vector3Int GetMouseTarget() {
