@@ -121,12 +121,8 @@ public abstract class Unit : TacticsEntityBase
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
 		if (takeFocus) {
-			//unitUI.healthBar.Show(false);
-			unitUI.weaponTypeEmblem.Show(false);
 			DisplayThreatRange();
 		} else {
-			//unitUI.healthBar.Hide();
-			unitUI.weaponTypeEmblem.Hide();
 			ClearDisplayThreatRange();
 		}
 	}

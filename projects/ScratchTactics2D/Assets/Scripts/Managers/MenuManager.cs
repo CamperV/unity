@@ -56,4 +56,9 @@ public class MenuManager : MonoBehaviour
             engagementPreview = null;
         }
     }
+
+    public void CleanUpBattleMenus() {
+        DestroyCurrentActionPane();
+        DestroyCurrentEngagementPreview();
+    }
 }

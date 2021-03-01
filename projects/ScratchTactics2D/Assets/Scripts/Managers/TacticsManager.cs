@@ -107,6 +107,8 @@ public class TacticsManager : MonoBehaviour
 		Destroy(activeBattle.grid.gameObject);
 		Destroy(activeBattle.gameObject);
 		//
+		MenuManager.inst.CleanUpBattleMenus();
+		//
 		UIManager.inst.EnableBattlePhaseDisplay(false);
 		GameManager.inst.EnterOverworldState();
 	}

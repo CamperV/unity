@@ -15,7 +15,7 @@ public class UnitMercenary : PlayerUnit
                 STRENGTH  = 3,
                 DEXTERITY = 3,
                 REFLEX    = 5,
-                MOVE      = 5,
+                MOVE      = 7,
 
                 inventoryPool = new List<Equipment>{
                     new Shortsword(),

@@ -49,7 +49,7 @@ public class TextUI : UnitUIElement
         Vector3 endPos = startPos + new Vector3(0, fixedDistance, 0);
 
         // sine values
-        float amplitude = fixedDistance / 8.0f;
+        float amplitude = fixedDistance / 10.0f;
         float freq = 4.0f;
 
         // calculate to offset the starting position of the sine

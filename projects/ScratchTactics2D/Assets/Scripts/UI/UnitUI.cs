@@ -24,21 +24,11 @@ public class UnitUI : MonoBehaviour
         boundElements = new List<UnitUIElement>();
 
         // spawn UnitUIElements
-        //healthBar = Instantiate(healthBarPrefab, transform);
-        //healthBar.BindUI(this);
-        //boundElements.Add(healthBar);
-
         healthBar = GetComponentsInChildren<MiniHealthBar>()[0];
         healthBar.BindUI(this);
-        //boundElements.Add(healthBar);
 
         weaponTypeEmblem = Instantiate(weaponTypeEmblemPrefab, transform);
         weaponTypeEmblem.BindUI(this);
-        boundElements.Add(weaponTypeEmblem);
-
-        //actionMenu = Instantiate(actionMenuPrefab, transform);
-        //actionMenu.BindUI(this);
-        //boundElements.Add(actionMenu);
     }
 
     public void BindUnit(Unit unit) {
@@ -75,7 +65,7 @@ public class UnitUI : MonoBehaviour
     public void DisplayDamageMessage(string message, bool emphasize = false) {
         // valid options are: damage taken, damage done? miss, crit
         TextUI textUI = Instantiate(textUIPrefab, transform);
-        textUI.transform.position += new Vector3(0, boundUnit.spriteHeight*0.5f, 0);
+        textUI.transform.position += new Vector3(0, boundUnit.spriteHeight*1.0f, 0);
 
         // determine if emphasis is necessary
         if (emphasize) {

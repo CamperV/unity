@@ -14,7 +14,6 @@ public class Battle : MonoBehaviour
 	[HideInInspector] public Controller defaultController;
 	//
 	[HideInInspector] public TacticsGrid grid;
-	[HideInInspector] public int currentTurn;
 	
 	public OverworldPlayer player;
 	public OverworldEntity other;
@@ -58,6 +57,7 @@ public class Battle : MonoBehaviour
 		GameManager.inst.phaseManager.StartPhase(startingPhase);
 		
 		UIManager.inst.EnableBattlePhaseDisplay(true);
+		GameManager.inst.phaseManager.currentTurn = 1;
 		GetControllerFromPhase(startingPhase).TriggerPhase();
 	}
 	
