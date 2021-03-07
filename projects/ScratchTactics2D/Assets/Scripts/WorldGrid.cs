@@ -107,13 +107,19 @@ public class WorldGrid : GameGrid
 	
 	public void HighlightTiles(HashSet<Vector3Int> tilePosSet, Color color) {
 		foreach (var tilePos in tilePosSet) {
-			TintTile(tilePos, color);
+			for (int z = 0; z < 2; z++) {
+				var v = new Vector3Int(tilePos.x, tilePos.y, z);
+				TintTile(v, color);
+			}
 		}
 	}
 	
 	public void ResetHighlightTiles(HashSet<Vector3Int> tilePosSet) {
 		foreach (var tilePos in tilePosSet) {
-			ResetTintTile(tilePos);
+			for (int z = 0; z < 2; z++) {
+				var v = new Vector3Int(tilePos.x, tilePos.y, z);
+				ResetTintTile(v);
+			}
 		}
 	}
 	
@@ -131,8 +137,8 @@ public class WorldGrid : GameGrid
 			baseTilemap.SetColor(tilePos, color);
 			return;
 		} else {
-			Debug.Log("Not a valid Tint target");
-			Debug.Assert(false);
+			//Debug.Log("Not a valid Tint target");
+			//Debug.Assert(false);
 		}
 	}
 	

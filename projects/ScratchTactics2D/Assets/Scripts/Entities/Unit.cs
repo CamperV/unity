@@ -30,11 +30,7 @@ public abstract class Unit : TacticsEntityBase
 
 	//
 	// what can't I run through?
-	public HashSet<Vector3Int> obstacles {
-		get {
-			return parentController.GetObstacles();
-		}
-	}
+	public HashSet<Vector3Int> obstacles { get => parentController.GetObstacles(); }
 
 	// Equipment management
 	public Weapon equippedWeapon { get => unitStats.inventory.equippedWeapon; }

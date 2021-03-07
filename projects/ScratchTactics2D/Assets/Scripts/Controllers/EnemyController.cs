@@ -15,8 +15,10 @@ public class EnemyController : Controller
 	public Vector3Int playerPosLastTurn;
 	public FlowField flowFieldToPlayer;
 	
-	public HashSet<Vector3Int> traversable = new HashSet<Vector3Int>();
-	public HashSet<Vector3Int> currentEnemyPositions = new HashSet<Vector3Int>();
+	public HashSet<Vector3Int> traversablePositions = new HashSet<Vector3Int>();
+	public HashSet<Vector3Int> currentEnemyPositions {
+		get => GameManager.inst.worldGrid.CurrentOccupantPositions<OverworldEnemyBase>();
+	}
 
 	protected override void Awake() {
 		base.Awake();
@@ -47,8 +49,12 @@ public class EnemyController : Controller
 					// update player position
 					playerPosLastTurn = lastKnownPlayerPos;
 					lastKnownPlayerPos = GameManager.inst.player.gridPosition;
-					UpdateFlowField();
-
+					
+					// update the field once for all
+					// and then, we'll update them again every time a subject moves
+					if (HasPlayerMoved() && Reachable(lastKnownPlayerPos)) {
+						UpdateFlowField();
+					}
 					StartCoroutine(SubjectsTakeAction());
 				}
 				break;
@@ -109,15 +115,29 @@ public class EnemyController : Controller
 				// this state requires ticks to function
 				// tickpool is managed in the subject class, but we can tell it to keep moving here
 				case Enum.EnemyState.followField:
-					keepPhaseAlive |= subject.FollowField(flowFieldToPlayer, GameManager.inst.player);
-					break;
+					// if we can attack, do that with a higher priority
+					if (subject.CanAttackPlayer()) {
+						subject.InitiateBattle();
+
+						// since initing a battle takes all ticks:
+						// (does nothing of course)
+						keepPhaseAlive |= false;
+						break;
+
+					// otherwise, move via FlowField
+					} else {
+						keepPhaseAlive |= subject.FollowField(flowFieldToPlayer, GameManager.inst.player);
+						break;
+					}
+					
+				// end case
 			}
 			
 			// don't delay if you're the last/idle
 			if (i == activeRegistry.Count-1 || subject.state == Enum.EnemyState.idle) {
 				yield return null;
 			} else {
-				yield return new WaitForSeconds(phaseDelayTime);
+				yield return new WaitForSeconds(phaseDelayTime*10);
 			}
 		}
 
@@ -134,7 +154,7 @@ public class EnemyController : Controller
 		// this method will check tile types to see if they're traversable
 		// it will also grow the tiles from subject placements, such that any
 		// "island" that is unspawnable around, but traversable inside, will be eliminated
-		traversable.Clear();
+		traversablePositions.Clear();
 		
 		// for each subject, grow a region to create traversable
 		foreach (var subject in activeRegistry) {
@@ -152,10 +172,10 @@ public class EnemyController : Controller
 				// if: we've never seen them before
 				// if: they are not unspawnable
 				foreach (Vector3Int adjacent in GameManager.inst.worldGrid.GetNeighbors(currentPos)) {
-					if (traversable.Contains(adjacent))
+					if (traversablePositions.Contains(adjacent))
 						continue;
 
-					traversable.Add(adjacent);
+					traversablePositions.Add(adjacent);
 					queue.Enqueue(adjacent);
 				}
 			}
@@ -163,22 +183,16 @@ public class EnemyController : Controller
 	}
 	
 	public void InitFlowField(Vector3Int initOrigin) {
-		flowFieldToPlayer = FlowField.FlowFieldFrom(initOrigin, traversable);
-		//flowFieldToPlayer.Display();
+		flowFieldToPlayer = FlowField.FlowFieldFrom(initOrigin, traversablePositions);
 	}
 	
-	public void UpdateFlowField() {
-		if (HasPlayerMoved() && Reachable(lastKnownPlayerPos)) {
-			FlowField prevFlowFieldToPlayer = flowFieldToPlayer;
-			
-			flowFieldToPlayer = FlowField.FlowFieldFrom(lastKnownPlayerPos, traversable);
-			flowFieldToPlayer.Absorb(prevFlowFieldToPlayer);
-			//flowFieldToPlayer.Display();
-		}
-	}
-	
-	public void UpdateCurrentEnemyPositions() {
-		currentEnemyPositions = GameManager.inst.worldGrid.CurrentOccupantPositions<OverworldEnemyBase>();
+	private void UpdateFlowField() {
+		FlowField prevFlowFieldToPlayer = flowFieldToPlayer;
+		
+		flowFieldToPlayer = FlowField.FlowFieldFrom(lastKnownPlayerPos, traversablePositions);
+		flowFieldToPlayer.Absorb(prevFlowFieldToPlayer);
+
+		flowFieldToPlayer.DebugDisplay();
 	}
 	
 	public bool Reachable(Vector3Int pos) {
@@ -191,7 +205,7 @@ public class EnemyController : Controller
 		
 		// break out early and confirm true if any neighbors to this position are traversable
 		foreach(Vector3Int neighbor in neighbors) {
-			if (traversable.Contains(neighbor)) {
+			if (traversablePositions.Contains(neighbor)) {
 				return true;
 			}
 		}

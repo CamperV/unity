@@ -52,6 +52,11 @@ namespace Extensions {
             return Mathf.Abs(v.x-o.x) + Mathf.Abs(v.y-o.y) + Mathf.Abs(v.z-o.z);
         }
 
+        // Vector3Int
+        public static bool AdjacentTo(this Vector3Int v, Vector3Int o) {
+            return v.ManhattanDistance(o) == 1;
+        }
+
         // Vector3
         public static Vector3 SafeScale(this Vector3 v, Vector3 o) {
             return new Vector3((o.x > 0) ? v.x/o.x : 1,

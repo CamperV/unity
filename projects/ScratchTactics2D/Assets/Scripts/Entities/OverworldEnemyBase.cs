@@ -108,21 +108,13 @@ public class OverworldEnemyBase : OverworldEntity
 		
 		// select your next move
 		// if move remains unselected, remain still (.zero)
-		foreach(Vector3Int move in potentialMoves) {
-			// either check the tag or type of occupant
-			// this check allows enemies to "move" into unspawnables
-			// only if they have a Player in them
-			var occupant = grid.OccupantAt(move);
-			if (occupant != null) {
-				if(occupant.GetType() == target.GetType()) {
-					selectedMove = move;
-					break; // early
-				} else continue;
-			}
-			
+		foreach(Vector3Int move in potentialMoves) {		
 			// otherwise, we must
 			// a) make sure the move is in the flowfield
-			if (flowField.field.ContainsKey(move)) {			
+			if (flowField.field.ContainsKey(move)) {	
+				if (grid.OccupantAt(move) != null) {
+					break;
+				}
 				//
 				if(flowField.field[move] < minCost) {
 					minCost = flowField.field[move];
@@ -171,8 +163,11 @@ public class OverworldEnemyBase : OverworldEntity
 	// in the future, I'd like to be able to orchestrate battles b/w NPCs
 	// but that's in the future. Change terminology now, to confuse less
 	public override void OnBlocked<T>(T component) {
-		Debug.Log($"strode right into type {component.GetType()}");
+		Debug.Log($"{gridPosition} strode right into type {component.GetType()}");
+		/*
 		OverworldPlayer player = component as OverworldPlayer;
+		
+		Debug.Log($"{this}/{this.gridPosition} v. {component}/{component.gridPosition}");
 		
 		// programmatically load in a TacticsGrid that matches what we need
 		var thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;
@@ -180,5 +175,21 @@ public class OverworldEnemyBase : OverworldEntity
 		
 		GameManager.inst.EnterBattleState();
 		GameManager.inst.tacticsManager.CreateActiveBattle(player, this, playerTile, thisTile, Enum.Phase.enemy);
+		*/
+	}
+
+	public virtual bool CanAttackPlayer() {
+		// right now, this is a simple condition check
+		// however, base classes sdhould be able to override this
+		return gridPosition.AdjacentTo(GameManager.inst.player.gridPosition);
+	}
+
+	public void InitiateBattle() {
+		// programmatically load in a TacticsGrid that matches what we need
+		var thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;
+		var playerTile = GameManager.inst.worldGrid.GetTileAt(GameManager.inst.player.gridPosition) as WorldTile;
+		
+		GameManager.inst.EnterBattleState();
+		GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTile, thisTile, Enum.Phase.enemy);
 	}
 }

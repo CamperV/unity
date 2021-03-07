@@ -187,7 +187,7 @@ public abstract class GameGrid : MonoBehaviour
 		HashSet<Vector3Int> allPositions = new HashSet<Vector3Int>();
 		foreach (Vector3Int k in occupancyGrid.Keys) {
 			var occupantAt = OccupantAt(k);
-			if (occupantAt != null && occupantAt.GetType() == typeof(T)) {
+			if (occupantAt != null && occupantAt.GetType().IsSubclassOf(typeof(T)) ) {
 				allPositions.Add(k);
 			}
 		}

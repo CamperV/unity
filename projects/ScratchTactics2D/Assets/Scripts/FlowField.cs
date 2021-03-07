@@ -78,17 +78,17 @@ public class FlowField
 	public void DebugDisplay() {
 		GameManager.inst.worldGrid.ResetHighlightTiles(new HashSet<Vector3Int>(field.Keys));
 		
-		Dictionary<int, HashSet<Vector3Int>> toHighlight = new Dictionary<int, HashSet<Vector3Int>>();
+		Dictionary<float, HashSet<Vector3Int>> toHighlight = new Dictionary<float, HashSet<Vector3Int>>();
 		
 		foreach(Vector3Int pos in field.Keys) {
-			int mag = field[pos];
+			float mag = field[pos] / 100.0f;
 			if (!toHighlight.ContainsKey(mag)) {
 				toHighlight[mag] = new HashSet<Vector3Int>();
 			}
 			toHighlight[mag].Add(pos);
 		}
-		foreach(int mag in toHighlight.Keys) {
-			float scale = .05f;
+		foreach(float mag in toHighlight.Keys) {
+			float scale = 0.05f;
 			Color color = new Color(1f-(scale*mag), 1f-(scale*mag), 1f-(scale*mag));
 			
 			GameManager.inst.worldGrid.HighlightTiles(toHighlight[mag], color);

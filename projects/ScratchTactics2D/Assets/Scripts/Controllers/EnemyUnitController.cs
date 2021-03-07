@@ -78,7 +78,7 @@ public class EnemyUnitController : UnitController
 			// determine some order in which the enemies act
 			// target selection
 			// if outside of range, just move towards the closest adversary
-			// if multiple adversaries in range, pick the adversary to which you can do the most damage
+			// TODO: if multiple adversaries in range, pick the adversary to which you can do the most damage
 			subject.UpdateThreatRange();
 
 			var targetPosition = GetTargetInAttackRange(subject, playerController.activeRegistry);
@@ -138,13 +138,15 @@ public class EnemyUnitController : UnitController
 	}
 
 	private Vector3Int GetOptimalToAttack(Unit subject, Vector3Int targetPosition) {
-		bool Traversable(Vector3Int v) { return grid.IsInBounds(v) && (grid.VacantAt(v) || v == subject.gridPosition); }
+		bool SubjectCanStand(Vector3Int v) {
+			return grid.IsInBounds(v) && (grid.VacantAt(v) || v == subject.gridPosition);
+		}
 		float DistToTarget(Vector3Int v) { return targetPosition.ManhattanDistance(v); }
 		float DistToSubject(Vector3Int v) { return subject.gridPosition.ManhattanDistance(v); }
 		// util
 
 		// max allowable attack positions (max range/reach)
-		var targetable = targetPosition.Radiate(subject._RANGE).Where(it => Traversable(it));
+		var targetable = targetPosition.Radiate(subject._RANGE).Where(it => SubjectCanStand(it));
 		float maxDistWithin = targetable.Max(it => DistToTarget(it));
 		var atMaxDist = targetable.Where(it => DistToTarget(it) == maxDistWithin);
 
