@@ -131,13 +131,11 @@ public abstract class Unit : TacticsEntityBase
 	public void SetMildFocus(bool takeFocus) {
 		if (takeFocus) {
 			inMildFocus = true;	// prevents ghosting
-			//unitUI.healthBar.Show(false);
 
 			// add the lil selection square
 			GameManager.inst.GetActiveGrid().UnderlayAt(gridPosition, Utils.threatColorYellow);
 		} else {
 			inMildFocus = false;
-			//unitUI.healthBar.Hide();
 
 			// just in case
 			GameManager.inst.GetActiveGrid().ResetUnderlayAt(gridPosition);

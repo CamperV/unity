@@ -99,6 +99,14 @@ public class PhaseManager : MonoBehaviour
 	}
 	
 	public void OnPhaseEnd(Enum.Phase phase) {
+		// here is where we tick overworldTurns while in the tactics interface
+		if (GameManager.inst.gameState == Enum.GameState.battle) {
+			if (currentTurn % 2 == 0) {
+				//currentTurnByState[Enum.GameState.overworld]++;
+				Debug.Log($"Pausing and entering shadow overworld state");
+			}
+		}
+
 		if (phase.NextPhase() == Enum.Phase.player)
 			currentTurn++;
 	}
