@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class GrassWorldTile : WorldTile
 {
-	public override int cost { get { return 150; } }
+	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
 	public override int probability { get { return 74; } }
 	
 	public void OnEnable() {
@@ -19,7 +19,7 @@ public class GrassWorldTile : WorldTile
 
 public class DirtWorldTile : WorldTile
 {
-	public override int cost { get { return 150; } }
+	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -33,7 +33,7 @@ public class ForestWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }
 	public override int depth { get { return 1; } }
-	public override int cost { get { return 300; } }
+	public override int cost { get { return (int)(Constants.standardTickCost * 2.0f); } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -46,7 +46,7 @@ public class ForestWorldTile : WorldTile
 public class WaterWorldTile : WorldTile
 {
 	public override int probability { get { return 5; } }
-	public override int cost { get { return 500; } }
+	public override int cost { get { return (int)(Constants.standardTickCost * 5.0f); } }
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -60,7 +60,7 @@ public class MountainWorldTile : WorldTile
 {	
 	public override int probability { get { return 13; } }
 	public override int depth { get { return 1; } }
-	public override int cost { get { return 500; } }
+	public override int cost { get { return (int)(Constants.standardTickCost * 5.0f); } }
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -90,7 +90,7 @@ public class CloudWorldTile : WorldTile
 
 public class RoadWorldTile : WorldTile
 {
-	public override int cost { get { return 100; } }
+	public override int cost { get { return Constants.standardTickCost; } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {

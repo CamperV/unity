@@ -94,8 +94,8 @@ public class PhaseManager : MonoBehaviour
 	public void StartPhase(Enum.Phase phase) {
 		currentPhase = phase;
 
-		UIManager.inst.SetPhaseText("Current Phase: " + phaseStringRepr[phase]);
-		UIManager.inst.SetTurnText("Turn " + currentTurn);
+		UIManager.inst.SetPhaseText(phaseStringRepr[phase]);
+		UIManager.inst.SetTurnText(currentTurn.ToString());
 	}
 	
 	public void OnPhaseEnd(Enum.Phase phase) {

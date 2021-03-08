@@ -36,18 +36,18 @@ public class UIManager : MonoBehaviour
 		EnableBattlePhaseDisplay(false);
     }
 
-    public void SetPhaseText(string text, bool mirror = false) {
-		if (mirror || GameManager.inst.gameState == Enum.GameState.overworld)
-			currentOverworldPhaseText.text = text;  
-		else if (mirror || GameManager.inst.gameState == Enum.GameState.battle)
-			currentBattlePhaseText.text = text;
+    public void SetPhaseText(string text) {
+		if (GameManager.inst.gameState == Enum.GameState.overworld)
+			currentOverworldPhaseText.text = $"Current Overworld Phase: {text}";  
+		else if (GameManager.inst.gameState == Enum.GameState.battle)
+			currentBattlePhaseText.text = $"Current Battle Phase: {text}";
     }
 	
-    public void SetTurnText(string text, bool mirror = false) {
-		if (mirror || GameManager.inst.gameState == Enum.GameState.overworld)
-			currentOverworldTurnText.text = text;  
-		else if (mirror || GameManager.inst.gameState == Enum.GameState.battle)
-			currentBattleTurnText.text = text; 
+    public void SetTurnText(string text) {
+		if (GameManager.inst.gameState == Enum.GameState.overworld)
+			currentOverworldTurnText.text = $"Turn {text}";  
+		else if (GameManager.inst.gameState == Enum.GameState.battle)
+			currentBattleTurnText.text = $"Turn {text}";  
     }
 
 	public void EnableBattlePhaseDisplay(bool enable) {

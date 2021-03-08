@@ -25,7 +25,9 @@ public class OverworldEnemyBase : OverworldEntity
 	private int tickPool { get; set; }
 	
 	public Enum.EnemyState state;
-	public MovingObjectPath pathToPlayer; // use to cache and not recalculate every frame	
+	public MovingObjectPath pathToPlayer; // use to cache and not recalculate every frame
+
+	private EnemyController parentController { get => GameManager.inst.enemyController; }
 	
 	// will never spawn into an unspawnable tile
 	public static OverworldEnemyBase Spawn(OverworldEnemyBase prefab) {
@@ -111,11 +113,10 @@ public class OverworldEnemyBase : OverworldEntity
 		foreach(Vector3Int move in potentialMoves) {		
 			// otherwise, we must
 			// a) make sure the move is in the flowfield
-			if (flowField.field.ContainsKey(move)) {	
-				if (grid.OccupantAt(move) != null) {
-					break;
-				}
-				//
+			if (flowField.field.ContainsKey(move)) {
+				if (parentController.currentEnemyPositions.Contains(move))
+					continue;
+				
 				if(flowField.field[move] < minCost) {
 					minCost = flowField.field[move];
 					selectedMove = move;
@@ -129,7 +130,7 @@ public class OverworldEnemyBase : OverworldEntity
 		//
 		// Also, standardize the "attack" bump. Don't make them move into a square
 		bool moveSuccess = false;
-		var tickCost = (selectedMove == flowField.origin) ? 100 : grid.GetTileAt(selectedMove).cost;
+		var tickCost = (selectedMove == flowField.origin) ? Constants.standardTickCost : grid.GetTileAt(selectedMove).cost;
 		
 		if (tickPool > 0 && tickCost <= tickPool) {
 			Vector3Int nextStep = ToPosition(selectedMove, 1);
@@ -163,7 +164,7 @@ public class OverworldEnemyBase : OverworldEntity
 	// in the future, I'd like to be able to orchestrate battles b/w NPCs
 	// but that's in the future. Change terminology now, to confuse less
 	public override void OnBlocked<T>(T component) {
-		Debug.Log($"{gridPosition} strode right into type {component.GetType()}");
+		Debug.Log($"{gridPosition} would have strode right into type {component.GetType()}");
 		/*
 		OverworldPlayer player = component as OverworldPlayer;
 		
@@ -179,17 +180,21 @@ public class OverworldEnemyBase : OverworldEntity
 	}
 
 	public virtual bool CanAttackPlayer() {
-		// right now, this is a simple condition check
-		// however, base classes sdhould be able to override this
-		return gridPosition.AdjacentTo(GameManager.inst.player.gridPosition);
+		return tickPool >= Constants.standardTickCost && gridPosition.AdjacentTo(GameManager.inst.player.gridPosition);
 	}
 
 	public void InitiateBattle() {
-		// programmatically load in a TacticsGrid that matches what we need
-		var thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;
-		var playerTile = GameManager.inst.worldGrid.GetTileAt(GameManager.inst.player.gridPosition) as WorldTile;
-		
-		GameManager.inst.EnterBattleState();
-		GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTile, thisTile, Enum.Phase.enemy);
+		// entities can spend their entire remaining tickPool to attack a player
+		SpendTicks(tickPool);
+		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.worldGrid);
+
+		StartCoroutine(ExecuteAfterMoving(() => {
+			// programmatically load in a TacticsGrid that matches what we need
+			WorldTile thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;
+			WorldTile playerTile = GameManager.inst.worldGrid.GetTileAt(GameManager.inst.player.gridPosition) as WorldTile;
+			
+			GameManager.inst.EnterBattleState();
+			GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTile, thisTile, Enum.Phase.enemy);
+		}));
 	}
 }

@@ -104,18 +104,31 @@ public class WorldGrid : GameGrid
 	public Vector3 RandomTileExceptTypeReal(HashSet<Type> except) {
 		return Grid2RealPos(RandomTileExceptType(except));
 	}
+
+	public void HighlightTile(Vector3Int tilePos, Color color) {
+		for (int z = 0; z < 2; z++) {
+			var v = new Vector3Int(tilePos.x, tilePos.y, z);
+			TintTile(v, color);
+		}	
+	}
 	
 	public void HighlightTiles(HashSet<Vector3Int> tilePosSet, Color color) {
 		foreach (var tilePos in tilePosSet) {
-			for (int z = 0; z < 2; z++) {
-				var v = new Vector3Int(tilePos.x, tilePos.y, z);
-				TintTile(v, color);
-			}
+			HighlightTile(tilePos, color);
 		}
 	}
 	
 	public void ResetHighlightTiles(HashSet<Vector3Int> tilePosSet) {
 		foreach (var tilePos in tilePosSet) {
+			for (int z = 0; z < 2; z++) {
+				var v = new Vector3Int(tilePos.x, tilePos.y, z);
+				ResetTintTile(v);
+			}
+		}
+	}
+
+	public void ResetAllHighlightTiles() {
+		foreach (var tilePos in worldTileGrid.Keys) {
 			for (int z = 0; z < 2; z++) {
 				var v = new Vector3Int(tilePos.x, tilePos.y, z);
 				ResetTintTile(v);

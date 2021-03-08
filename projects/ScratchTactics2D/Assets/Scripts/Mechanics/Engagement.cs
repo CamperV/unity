@@ -31,7 +31,8 @@ public class Engagement
         firstAttack.Modify(aggressor, defender);
         defenderSurvived = defender.ReceiveAttack(firstAttack);
 
-        // create a little pause before counterattacking
+        // animate, then create a little pause before counterattacking
+        aggressor.BumpTowards(defender.gridPosition, GameManager.inst.GetActiveGrid(), distanceScale: 7.0f);
         yield return new WaitForSeconds(1.0f);
 
         // if we can counterattack:
@@ -42,6 +43,7 @@ public class Engagement
             aggressorSurvived = aggressor.ReceiveAttack(counterAttack);
 
             // pause again to let the animation finish
+            defender.BumpTowards(aggressor.gridPosition, GameManager.inst.GetActiveGrid());
             yield return new WaitForSeconds(1.0f);
         }
 

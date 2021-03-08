@@ -18,8 +18,8 @@ public class OverworldEnemySkeleton : OverworldEnemyBase
 		get {
 			return new List<string>() {
 				"UnitSkeleton",
-				//"UnitSkeleton",
-				//"UnitSkeleton",
+				"UnitSkeleton",
+				"UnitSkeleton",
 				//"UnitSkeleton",
 				//"UnitSkeleton"
 			};

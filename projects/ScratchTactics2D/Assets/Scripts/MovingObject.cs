@@ -45,6 +45,10 @@ public abstract class MovingObject : MonoBehaviour
 		}
 		return canMove;
 	}
+
+	public void BumpTowards(Vector3Int target, GameGrid grid, float distanceScale = 5.0f) {
+		StartCoroutine( SmoothBump(grid.Grid2RealPos(target), distanceScale) );
+	}
 	
 	private bool CrtMove(int xdir, int ydir, GameGrid grid, out Component occupant) {
 		// need to always be a cell/Tile coordinate
@@ -66,7 +70,7 @@ public abstract class MovingObject : MonoBehaviour
 				
 				// always interrupt a moving crt to change the destination of the SmoothMovement slide
 				if (crtMovingFlag) StopCoroutine(crtMovement);
-				crtMovement = StartCoroutine(SmoothMovement(endpoint));
+				crtMovement = StartCoroutine( SmoothMovement(endpoint) );
 				return true;
 			}
 		}
@@ -74,7 +78,7 @@ public abstract class MovingObject : MonoBehaviour
 		// Can't move?
 		// always interrupt a moving crt to change the destination of the SmoothMovement slide
 		if (crtMovingFlag) StopCoroutine(crtMovement);
-		crtMovement = StartCoroutine(SmoothBump(endpoint));
+		crtMovement = StartCoroutine( SmoothBump(endpoint, 5.0f) );
 		return false;
 	}
 	
@@ -99,14 +103,14 @@ public abstract class MovingObject : MonoBehaviour
 	}
 	
 	// this coroutine performs a little 'bump' when you can't move
-	protected IEnumerator SmoothBump(Vector3 endpoint) {
+	protected IEnumerator SmoothBump(Vector3 endpoint, float distanceScale) {
 		crtMovingFlag = true;
 
 		// we want it to take X seconds to go over one tile
 		float fixedTime = 0.05f;
 
 		Vector3 startPos = transform.position;
-		Vector3 peakPos = startPos + (endpoint - transform.position)/5.0f;
+		Vector3 peakPos = startPos + (endpoint - transform.position)/distanceScale;
 		
 		float timeStep = 0.0f;
 		while (timeStep < 1.0f) {

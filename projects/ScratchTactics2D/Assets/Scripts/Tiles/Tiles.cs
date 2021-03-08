@@ -12,8 +12,7 @@ public abstract class GameTile : Tile
 
 public abstract class WorldTile : GameTile
 {
-	public static readonly int baseTileCost = 100;
-	public override int cost { get { return 100; } }
+	public override int cost { get { return Constants.standardTickCost; } }
 
 	// returns a probability from 0-99 that this tile is generated
 	public virtual int probability { get { return 0; } }

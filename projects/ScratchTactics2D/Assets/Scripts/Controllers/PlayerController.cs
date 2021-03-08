@@ -81,24 +81,24 @@ public class PlayerController : Controller
 	private int MoveLeft(MovingObject subject) {
 		var success = subject.GridMove(-1, 0);
 		var tickCost = GameManager.inst.worldGrid.GetTileAt(subject.gridPosition).cost;
-		return (success) ? (int)(tickCost / subject.moveSpeed) : 100;
+		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
 	private int MoveRight(MovingObject subject) {
 		var success = subject.GridMove(1, 0);
 		var tickCost = GameManager.inst.worldGrid.GetTileAt(subject.gridPosition).cost;
-		return (success) ? (int)(tickCost / subject.moveSpeed) : 100;
+		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
 	private int MoveUp(MovingObject subject) {
 		var success = subject.GridMove(0, 1);
 		var tickCost = GameManager.inst.worldGrid.GetTileAt(subject.gridPosition).cost;
-		return (success) ? (int)(tickCost / subject.moveSpeed) : 100;
+		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
 	private int MoveDown(MovingObject subject) {
 		var success = subject.GridMove(0, -1);
 		var tickCost = GameManager.inst.worldGrid.GetTileAt(subject.gridPosition).cost;
-		return (success) ? (int)(tickCost / subject.moveSpeed) : 100;
+		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
 	private int Pass(MovingObject subject) {
-		return 100;
+		return Constants.standardTickCost;
 	}
 }

@@ -55,7 +55,7 @@ public class EnemyController : Controller
 					if (HasPlayerMoved() && Reachable(lastKnownPlayerPos)) {
 						UpdateFlowField();
 					}
-					StartCoroutine(SubjectsTakeAction());
+					StartCoroutine( SubjectsTakeAction() );
 				}
 				break;
 				
@@ -116,8 +116,8 @@ public class EnemyController : Controller
 				// tickpool is managed in the subject class, but we can tell it to keep moving here
 				case Enum.EnemyState.followField:
 					// if we can attack, do that with a higher priority
-					if (subject.CanAttackPlayer()) {
-						subject.InitiateBattle();
+					if (subject.CanAttackPlayer()) {	// checks ticks
+						subject.InitiateBattle();		// spends ticks
 
 						// since initing a battle takes all ticks:
 						// (does nothing of course)
@@ -125,6 +125,7 @@ public class EnemyController : Controller
 						break;
 
 					// otherwise, move via FlowField
+					// checks and spends ticks
 					} else {
 						keepPhaseAlive |= subject.FollowField(flowFieldToPlayer, GameManager.inst.player);
 						break;
@@ -137,7 +138,7 @@ public class EnemyController : Controller
 			if (i == activeRegistry.Count-1 || subject.state == Enum.EnemyState.idle) {
 				yield return null;
 			} else {
-				yield return new WaitForSeconds(phaseDelayTime*10);
+				yield return new WaitForSeconds(phaseDelayTime);
 			}
 		}
 
@@ -191,8 +192,6 @@ public class EnemyController : Controller
 		
 		flowFieldToPlayer = FlowField.FlowFieldFrom(lastKnownPlayerPos, traversablePositions);
 		flowFieldToPlayer.Absorb(prevFlowFieldToPlayer);
-
-		flowFieldToPlayer.DebugDisplay();
 	}
 	
 	public bool Reachable(Vector3Int pos) {
