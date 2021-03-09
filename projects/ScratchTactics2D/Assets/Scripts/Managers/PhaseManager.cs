@@ -61,9 +61,19 @@ public class PhaseManager : MonoBehaviour
 			}
 			else if (currentPhase == Enum.Phase.enemy) {
 				if (enemyControllerInst.phaseActionState == Enum.PhaseActionState.postPhase) {
-					OnPhaseEnd(currentPhase);
-					StartPhase(Enum.Phase.player);
-					playerControllerInst.TriggerPhase();
+
+					// if there's already a battle in progress, rejoin it
+					var battle = GameManager.inst.tacticsManager.activeBattle;
+					if (battle?.isPaused ?? false) {
+						OnPhaseEnd(currentPhase);
+						GameManager.inst.tacticsManager.activeBattle.Resume();
+
+					// otherwise, give control back to the player
+					} else {					
+						OnPhaseEnd(currentPhase);
+						StartPhase(Enum.Phase.player);
+						playerControllerInst.TriggerPhase();
+					}
 				}
 				//
 				// code spins here until all enemies takes their phaseAction
@@ -102,8 +112,12 @@ public class PhaseManager : MonoBehaviour
 		// here is where we tick overworldTurns while in the tactics interface
 		if (GameManager.inst.gameState == Enum.GameState.battle) {
 			if (currentTurn % 2 == 0) {
-				//currentTurnByState[Enum.GameState.overworld]++;
 				Debug.Log($"Pausing and entering shadow overworld state");
+				GameManager.inst.tacticsManager.activeBattle.Pause();
+				
+				// have every two turns equal standardTickCost ticks
+				GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
+				StartPhase(Enum.Phase.enemy);
 			}
 		}
 

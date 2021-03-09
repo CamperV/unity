@@ -130,6 +130,10 @@ public class EnemyController : Controller
 						keepPhaseAlive |= subject.FollowField(flowFieldToPlayer, GameManager.inst.player);
 						break;
 					}
+
+				case Enum.EnemyState.inBattle:
+					Debug.Log($"{this} will not do anything other than fight for its life, as it is currently.");
+					break;
 					
 				// end case
 			}

@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
 {
 	// singleton
 	public static GameManager inst = null; // enforces singleton behavior
-	public Enum.GameState gameState { get; private set; }
+	public Enum.GameState gameState { get; set; }
 
 	// accessed by children via singleton
 	public int maxEnemies;

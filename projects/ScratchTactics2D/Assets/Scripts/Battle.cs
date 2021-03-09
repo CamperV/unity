@@ -17,6 +17,11 @@ public class Battle : MonoBehaviour
 	
 	public OverworldPlayer player;
 	public OverworldEntity other;
+
+	// used for pausing the battle
+	private Enum.Phase savedPhase;
+	private int savedTurn;
+	public bool isPaused = false;
 	
 	void Awake() {
 		grid = GetComponentsInChildren<TacticsGrid>()[0];
@@ -31,6 +36,9 @@ public class Battle : MonoBehaviour
 	public void Init(OverworldPlayer playerEntity, OverworldEntity otherEntity, WorldTile playerTile, WorldTile otherTile) {
 		player = playerEntity;
 		other = otherEntity;
+
+		(other as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
+
 		//
 		PopulateGridAndReposition(playerTile, otherTile);
 		//
@@ -243,5 +251,34 @@ public class Battle : MonoBehaviour
 		// this should be unreachable code
 		Debug.Assert(false);
 		return player; // battle continues		
+	}
+
+	// pause, hand control off to the GameManager.overworld state
+	public void Pause() {
+		savedPhase = GameManager.inst.phaseManager.currentPhase;
+		savedTurn = GameManager.inst.phaseManager.currentTurn;
+		isPaused = true;
+
+		gameObject.SetActive(false);
+
+		GameManager.inst.worldGrid.DisableTint();
+		GameManager.inst.gameState = Enum.GameState.overworld;
+	}
+
+	public void Resume() {
+		// tint overworld to give focus to battle
+		GameManager.inst.worldGrid.EnableTint();
+		GameManager.inst.worldGrid.ClearOverlayTiles();
+		
+		// give all control to TacticsManager
+		GameManager.inst.gameState = Enum.GameState.battle;
+		GameManager.inst.phaseManager.currentPhase = savedPhase;
+		GameManager.inst.phaseManager.currentTurn = savedTurn;
+		isPaused = false;
+
+		gameObject.SetActive(true);
+		
+		GameManager.inst.phaseManager.StartPhase(Enum.Phase.player);
+		GetControllerFromPhase(Enum.Phase.player).TriggerPhase();
 	}
 }
