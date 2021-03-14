@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
 		
 		// now, spawn the enemies
 		for (int i = 0; i < Random.Range(minEnemies, maxEnemies); i++) {
-			var enemy = OverworldEnemyBase.Spawn(enemyPrefab);
+			var enemy = OverworldEnemyBase.Spawn(enemyPrefab, ID: i+1);
 			enemyController.Register(enemy);
 		}
 		

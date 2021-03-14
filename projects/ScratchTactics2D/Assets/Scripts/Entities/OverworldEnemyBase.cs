@@ -5,15 +5,30 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Extensions;
+using TMPro;
 
 public class OverworldEnemyBase : OverworldEntity
 {
+	// for visualization debug
+	private int _ID = -1;
+	public int ID {
+		get => _ID;
+		set {
+	    	GetComponentsInChildren<TextMeshPro>()[0].SetText(value.ToString());
+			_ID = value;
+		}
+	}
+
 	// OVERRIDABLES
 	public virtual int detectionRange { get { return 5; } }
 	public virtual HashSet<Type> unspawnable {
 		get {
 			return new HashSet<Type>() { typeof(MountainWorldTile) };
 		}
+	}
+
+	public override String ToString() {
+		return base.ToString() + $" [{ID}]";
 	}
 	// OVERRIDABLES
 
@@ -30,7 +45,7 @@ public class OverworldEnemyBase : OverworldEntity
 	private EnemyController parentController { get => GameManager.inst.enemyController; }
 	
 	// will never spawn into an unspawnable tile
-	public static OverworldEnemyBase Spawn(OverworldEnemyBase prefab) {
+	public static OverworldEnemyBase Spawn(OverworldEnemyBase prefab, int ID = -1) {
 		OverworldEnemyBase enemy = Instantiate(prefab, Vector3.zero, Quaternion.identity);
 		var grid = GameManager.inst.worldGrid;
 		
@@ -39,6 +54,8 @@ public class OverworldEnemyBase : OverworldEntity
 		//
 		enemy.ResetPosition(grid.Real2GridPos(spawnLoc));
 		grid.UpdateOccupantAt(enemy.gridPosition, enemy);
+
+		enemy.ID = ID;
 		return enemy;
 	}
 	
@@ -46,6 +63,10 @@ public class OverworldEnemyBase : OverworldEntity
 		base.Awake();
 		//
 		tickPool = 0;
+
+		// devug visualization
+		GetComponentsInChildren<MeshRenderer>()[0].sortingLayerName = "Overworld Entities";
+		GetComponentsInChildren<MeshRenderer>()[0].sortingOrder = 0;
     }
 	
     protected void Start() {
@@ -187,6 +208,12 @@ public class OverworldEnemyBase : OverworldEntity
 		// entities can spend their entire remaining tickPool to attack a player
 		SpendTicks(tickPool);
 		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.worldGrid);
+
+		if (GameManager.inst.tacticsManager.activeBattle) {
+			Alert();
+			Debug.Log($"{this} would be joining an active battle");
+			return;
+		}
 
 		StartCoroutine(ExecuteAfterMoving(() => {
 			// programmatically load in a TacticsGrid that matches what we need
