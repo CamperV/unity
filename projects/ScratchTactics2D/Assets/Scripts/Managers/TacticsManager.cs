@@ -15,6 +15,9 @@ public class TacticsManager : MonoBehaviour
 	// only one Unit can be in focus at any given time
 	public Unit focusSingleton { get; private set; }
 	
+	// for preventing race conditions when starting battles
+	public bool _bFlag = false;
+
 	void Awake() {
 		resizeLock = false;
 	}
@@ -92,7 +95,7 @@ public class TacticsManager : MonoBehaviour
 		activeBattle.Init(player, other, playerTile, enemyTile);
 		//
 		virtualCamera = new VirtualCamera(activeBattle);
-		virtualCamera.Zoom(1.5f);
+		virtualCamera.Zoom(1.0f);
 
 		activeBattle.StartBattleOnPhase(initiatingPhase);
 	}

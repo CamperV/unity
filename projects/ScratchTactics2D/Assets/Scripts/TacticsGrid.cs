@@ -87,12 +87,14 @@ public class TacticsGrid : GameGrid
 		}
 	}
 	
-	public void ApplyTileMap() {
+	public void ApplyTileMap(bool noCompress = false) {
 		Debug.Assert(tacticsTileGrid.Count != 0);
 		
 		foreach(var pair in tacticsTileGrid.OrderBy(k => k.Key.x)) {
 			baseTilemap.SetTile(pair.Key, pair.Value);
 		}
+
+		if (noCompress) return;
 		baseTilemap.CompressBounds();
 		baseTilemap.RefreshAllTiles();
 	}

@@ -18,6 +18,8 @@ public class Battle : MonoBehaviour
 	public OverworldPlayer player;
 	public OverworldEntity other;
 
+	public Vector3Int playerGridOffset;
+
 	// used for pausing the battle
 	public int savedTurn;
 	public bool isPaused = false;
@@ -72,7 +74,7 @@ public class Battle : MonoBehaviour
 	// however, others can join(?)
 	private void PopulateGridAndReposition(WorldTile playerTile, WorldTile otherTile) {				
 		// determine orientations
-		/*Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
+		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
 			[Vector3Int.up] = new List<Vector3Int>() {
 				Vector3Int.zero,
 				new Vector3Int(playerTile.battleGridSize.x, 0, 0)
@@ -89,31 +91,16 @@ public class Battle : MonoBehaviour
 				Vector3Int.zero,
 				new Vector3Int(0, playerTile.battleGridSize.y, 0)
 			}
-		};*/
-		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
-			[Vector3Int.up] = new List<Vector3Int>() {
-				Vector3Int.zero,									// playerOffset
-				new Vector3Int(playerTile.battleGridSize.x, 0, 0)	// otherOffset
-			}, 
-			[Vector3Int.right] = new List<Vector3Int>() {
-				Vector3Int.zero,									// playerOffset
-				new Vector3Int(0, -1*otherTile.battleGridSize.y, 0)	// otherOffset
-			}, 
-			[Vector3Int.down] = new List<Vector3Int>() {
-				Vector3Int.zero,									// playerOffset
-				new Vector3Int(-1*otherTile.battleGridSize.x, 0, 0)	// otherOffset
-			}, 
-			[Vector3Int.left] = new List<Vector3Int>() {
-				Vector3Int.zero,									// playerOffset
-				new Vector3Int(0, playerTile.battleGridSize.y, 0)	// otherOffset
-			}
 		};
-		var orientation = orientationDict[(other.gridPosition - player.gridPosition)];
+		var offsets = orientationDict[(other.gridPosition - player.gridPosition)];
+
+		// store for later
+		playerGridOffset = offsets[0];
 		
 		// setup up each side	
 		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
-		grid.CreateTileMap(orientation[0], playerTile);
-		grid.CreateTileMap(orientation[1], otherTile);
+		grid.CreateTileMap(offsets[0], playerTile);
+		grid.CreateTileMap(offsets[1], otherTile);
 		
 		// after all battle participants have generated their TileMaps, apply the contents of the tacticsTileGrid to the baseTilemap
 		// then compress the bounds afterwards
@@ -159,6 +146,8 @@ public class Battle : MonoBehaviour
 		}
 	}
 
+	// TODO: refactor this into something that is actually modular
+	// right now, I'm too smooth-brain
 	private Pair<Zone, Zone> GetSpawnZones() {
 		Vector3Int playerA = Vector3Int.zero;
 		Vector3Int playerB = Vector3Int.zero;
@@ -173,24 +162,28 @@ public class Battle : MonoBehaviour
 			case Vector3Int v when v.Equals(Vector3Int.up):
 				playerA = Vector3Int.zero;
 				playerB = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, 0);
+				//
 				otherA  = new Vector3Int(gridDim.x, 0, 0);
 				otherB  = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, 0);
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.right):
 				playerA = new Vector3Int(0, gridDim.y, 0);
 				playerB = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), 0);
+				//
 				otherA  = Vector3Int.zero;
 				otherB  = new Vector3Int(gridDim.x, (int)(gridDim.y/4.0f), 0);
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.down):
 				playerA = new Vector3Int(gridDim.x, 0, 0);
 				playerB = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, 0);
+				//
 				otherA  = Vector3Int.zero;
 				otherB  = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, 0);
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.left):
 				playerA = Vector3Int.zero;
 				playerB = new Vector3Int(gridDim.x, (int)(gridDim.y/4.0f), 0);
+				//
 				otherA  = new Vector3Int(0, gridDim.y, 0);
 				otherB  = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), 0);
 				break;
@@ -201,49 +194,78 @@ public class Battle : MonoBehaviour
 		return new Pair<Zone, Zone>(new Zone(playerA, playerB), new Zone(otherA, otherB));
 	}
 
-	public void AddParticipant(OverworldEntity newlyAdded, WorldTile newlyAddedTile) {
-		(newlyAdded as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
-/*
+	public void AddParticipant(OverworldEntity joiningEntity, WorldTile joiningTile) {
+		(joiningEntity as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
+
 		// add to grid and reposition
+		WorldTile playerTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(player.gridPosition);
+		Dictionary<Vector3Int, Vector3Int> orientationDict = new Dictionary<Vector3Int, Vector3Int>() {
+			[Vector3Int.up]    = playerGridOffset + new Vector3Int(playerTile.battleGridSize.x, 0, 0),
+			[Vector3Int.right] = playerGridOffset - new Vector3Int(0, joiningTile.battleGridSize.y, 0),
+			[Vector3Int.down]  = playerGridOffset - new Vector3Int(joiningTile.battleGridSize.x, 0, 0), 
+			[Vector3Int.left]  = playerGridOffset + new Vector3Int(0, playerTile.battleGridSize.y, 0)
+		};
+		var offset = orientationDict[(joiningEntity.gridPosition - player.gridPosition)];
+		
+		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
+		grid.CreateTileMap(offset, joiningTile);
+		grid.ApplyTileMap(noCompress: false);
+		//
+		Vector3 gridCenter = grid.GetGridCenterReal();
+		Vector3 offsetPos = transform.position - (gridCenter - transform.position);
+		transform.position = offsetPos;
+
 		// spawn new units
 		// register new units to existing controller
 		// but... keep tabs, because we need to use this to kill OverworldEntities
 		// TODO: kill overworld entities better, I guess
-
-		// determine orientations
-		WorldTile playerTile = GameManager.inst.worldGrid.GetTileAt(player.gridPosition);
-		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
-			[Vector3Int.up] = new List<Vector3Int>() {
-				Vector3Int.zero,
-				new Vector3Int(playerTile.battleGridSize.x, 0, 0)
-			}, 
-			[Vector3Int.right] = new List<Vector3Int>() {
-				new Vector3Int(0, newlyAddedTile.battleGridSize.y, 0),
-				Vector3Int.zero
-			}, 
-			[Vector3Int.down] = new List<Vector3Int>() {
-				new Vector3Int(newlyAddedTile.battleGridSize.x, 0, 0),
-				Vector3Int.zero
-			}, 
-			[Vector3Int.left] = new List<Vector3Int>() {
-				Vector3Int.zero,
-				new Vector3Int(0, playerTile.battleGridSize.y, 0)
-			}
-		};
-		var orientation = orientationDict[(newlyAdded.gridPosition - player.gridPosition)];
-		
-		// setup up each side	
-		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
-		grid.CreateTileMap(orientation[1], otherTile);
-		existingEnemyController = activeControllers[other];
-		activeControllers[newlyAdded] = existingEnemyController;
-	}
+		Controller existingEnemyController = activeControllers[other];
+		activeControllers[joiningEntity] = existingEnemyController;
+		//
 
 		//
-		PopulateGridAndReposition(playerTile, otherTile);
+		// get SpawnZone
 		//
-		SpawnAllUnits();
-		*/
+		Vector3Int A = Vector3Int.zero;
+		Vector3Int B = Vector3Int.zero;
+
+		// helpers
+		Vector3Int min  = offset;
+		Vector3Int xDim = new Vector3Int(joiningTile.battleGridSize.x-1, 0, 0);
+		Vector3Int yDim = new Vector3Int(0, joiningTile.battleGridSize.y-1, 0); 
+		Vector3Int max  = min + xDim + yDim;
+		switch (joiningEntity.gridPosition - player.gridPosition) {
+			case Vector3Int v when v.Equals(Vector3Int.up):
+				A = max;
+				B = max - yDim - xDim.DivBy(4);
+				break;
+			case Vector3Int v when v.Equals(Vector3Int.right):
+				A = min;
+				B = min + xDim + yDim.DivBy(4);
+				break;
+			case Vector3Int v when v.Equals(Vector3Int.down):
+				A = min;
+				B = min + yDim + xDim.DivBy(4);
+				break;
+			case Vector3Int v when v.Equals(Vector3Int.left):
+				A = max;
+				B = max - xDim - yDim.DivBy(4);
+				break;
+		}
+		Zone spawnZone = new Zone(A, B);
+
+		//
+		// spawn those units
+		// register them 
+		//
+		var spawnPositions = spawnZone.GetPositions().RandomSelections<Vector3Int>(joiningEntity.barracks.Count);
+		foreach (UnitStats unitStats in joiningEntity.barracks.Values) {
+			var uPrefab = joiningEntity.LoadUnitByTag(unitStats.unitTag);
+			Unit unit = (Unit)TacticsEntityBase.Spawn(uPrefab, spawnPositions.PopAt(0), grid);
+			//
+			unit.ApplyStats(unitStats);
+			existingEnemyController.Register(unit);
+		}	
 	}
 
 	private Controller GetController(OverworldEntity oe) {

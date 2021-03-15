@@ -197,14 +197,12 @@ public class OverworldEnemyBase : OverworldEntity
 		SpendTicks(tickPool);
 		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.worldGrid);
 
-		StartCoroutine(ExecuteAfterMoving(() => {
-			// programmatically load in a TacticsGrid that matches what we need
-			WorldTile thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;
-			WorldTile playerTile = GameManager.inst.worldGrid.GetTileAt(GameManager.inst.player.gridPosition) as WorldTile;
-			
-			GameManager.inst.EnterBattleState();
-			GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTile, thisTile, Enum.Phase.enemy);
-		}));
+		// programmatically load in a TacticsGrid that matches what we need
+		WorldTile thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;
+		WorldTile playerTile = GameManager.inst.worldGrid.GetTileAt(GameManager.inst.player.gridPosition) as WorldTile;
+		
+		GameManager.inst.EnterBattleState();
+		GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTile, thisTile, Enum.Phase.enemy);
 	}
 
 	public void JoinBattle() {

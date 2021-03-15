@@ -57,6 +57,12 @@ namespace Extensions {
             return v.ManhattanDistance(o) == 1;
         }
 
+        // Vector3Int
+        public static Vector3Int DivBy(this Vector3Int v, int i) {
+            float s = (float)i;
+            return new Vector3Int((int)(v.x/s), (int)(v.y/s), (int)(v.z/s));
+        }
+
         // Vector3
         public static Vector3 SafeScale(this Vector3 v, Vector3 o) {
             return new Vector3((o.x > 0) ? v.x/o.x : 1,
