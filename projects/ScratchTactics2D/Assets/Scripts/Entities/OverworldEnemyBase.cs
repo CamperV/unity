@@ -185,19 +185,7 @@ public class OverworldEnemyBase : OverworldEntity
 	// in the future, I'd like to be able to orchestrate battles b/w NPCs
 	// but that's in the future. Change terminology now, to confuse less
 	public override void OnBlocked<T>(T component) {
-		Debug.Log($"{gridPosition} would have strode right into type {component.GetType()}");
-		/*
-		OverworldPlayer player = component as OverworldPlayer;
-		
-		Debug.Log($"{this}/{this.gridPosition} v. {component}/{component.gridPosition}");
-		
-		// programmatically load in a TacticsGrid that matches what we need
-		var thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;
-		var playerTile = GameManager.inst.worldGrid.GetTileAt(player.gridPosition) as WorldTile;
-		
-		GameManager.inst.EnterBattleState();
-		GameManager.inst.tacticsManager.CreateActiveBattle(player, this, playerTile, thisTile, Enum.Phase.enemy);
-		*/
+		Debug.Log($"{this} would have strode right into {this}");
 	}
 
 	public virtual bool CanAttackPlayer() {
@@ -209,12 +197,6 @@ public class OverworldEnemyBase : OverworldEntity
 		SpendTicks(tickPool);
 		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.worldGrid);
 
-		if (GameManager.inst.tacticsManager.activeBattle) {
-			Alert();
-			Debug.Log($"{this} would be joining an active battle");
-			return;
-		}
-
 		StartCoroutine(ExecuteAfterMoving(() => {
 			// programmatically load in a TacticsGrid that matches what we need
 			WorldTile thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;
@@ -222,6 +204,19 @@ public class OverworldEnemyBase : OverworldEntity
 			
 			GameManager.inst.EnterBattleState();
 			GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTile, thisTile, Enum.Phase.enemy);
+		}));
+	}
+
+	public void JoinBattle() {
+		// we don't need this function to start the battle phase, let the EnemyController release back and Resume the battle
+		// however, it will now resume with a new enemy joining
+		SpendTicks(tickPool);
+		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.worldGrid);
+
+		StartCoroutine(ExecuteAfterMoving(() => {
+			// programmatically load in a TacticsGrid that matches what we need
+			WorldTile thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;			
+			GameManager.inst.tacticsManager.AddToActiveBattle(this, thisTile);
 		}));
 	}
 }

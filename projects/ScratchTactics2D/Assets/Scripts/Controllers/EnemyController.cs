@@ -117,22 +117,29 @@ public class EnemyController : Controller
 				case Enum.EnemyState.followField:
 					// if we can attack, do that with a higher priority
 					if (subject.CanAttackPlayer()) {	// checks ticks
-						subject.InitiateBattle();		// spends ticks
+						// ...and spends ticks
+						if (GameManager.inst.tacticsManager.activeBattle) {
+							subject.Alert();
+							subject.JoinBattle();
+						} else {
+							subject.InitiateBattle();
+						}
 
-						// since initing a battle takes all ticks:
-						// (does nothing of course)
+						// since initing/joining a battle takes all ticks:
+						// (does nothing of course), just here for clarity
 						keepPhaseAlive |= false;
 						break;
 
 					// otherwise, move via FlowField
 					// checks and spends ticks
 					} else {
-						keepPhaseAlive |= subject.FollowField(flowFieldToPlayer, GameManager.inst.player);
+						FlowField subjectField = IndividualFlowField(subject);
+						keepPhaseAlive |= subject.FollowField(subjectField, GameManager.inst.player);
 						break;
 					}
 
 				case Enum.EnemyState.inBattle:
-					Debug.Log($"{this} will not do anything other than fight for its life, as it is currently.");
+					Debug.Log($"{subject} will not do anything other than fight for its life, as it is currently.");
 					break;
 					
 				// end case
@@ -146,6 +153,7 @@ public class EnemyController : Controller
 			}
 		}
 
+		// suitable pause to see that the units are moving again
 		if (keepPhaseAlive) yield return new WaitForSeconds(phaseDelayTime*10);
 		crtActing = false;
 	}
@@ -197,6 +205,18 @@ public class EnemyController : Controller
 		flowFieldToPlayer = FlowField.FlowFieldFrom(lastKnownPlayerPos, traversablePositions);
 		flowFieldToPlayer.Absorb(prevFlowFieldToPlayer);
 	}
+
+	private FlowField IndividualFlowField(OverworldEnemyBase subject) {
+		// each enemy needs to smartly avoid each other as to not pile up
+		// Do not make a new FlowField, but rather patch the current FlowField to add cost to spots currently occupied by friendlies
+		FlowField patchedFlowField = flowFieldToPlayer;
+
+		foreach (Vector3Int enemyPos in currentEnemyPositions) {
+			if (enemyPos == subject.gridPosition) continue;
+			patchedFlowField.field[enemyPos] += 100;
+		}
+		return patchedFlowField;
+	}
 	
 	public bool Reachable(Vector3Int pos) {
 		List<Vector3Int> neighbors = new List<Vector3Int>() {
@@ -218,8 +238,10 @@ public class EnemyController : Controller
 
 	public void AddTicksAll(int ticks) {
 		// (implicitly re-box cast)
+		// only receive ticks if you are currently activated, and moving
+		// if you're inBattle or idle, do not receive ticks
 		foreach (OverworldEnemyBase en in activeRegistry) {
-			if (en.state != Enum.EnemyState.idle) {
+			if (en.state == Enum.EnemyState.followField) {
 				en.AddTicks(ticks);
 			}
 		}

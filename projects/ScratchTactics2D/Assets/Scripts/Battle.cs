@@ -19,8 +19,7 @@ public class Battle : MonoBehaviour
 	public OverworldEntity other;
 
 	// used for pausing the battle
-	private Enum.Phase savedPhase;
-	private int savedTurn;
+	public int savedTurn;
 	public bool isPaused = false;
 	
 	void Awake() {
@@ -73,7 +72,7 @@ public class Battle : MonoBehaviour
 	// however, others can join(?)
 	private void PopulateGridAndReposition(WorldTile playerTile, WorldTile otherTile) {				
 		// determine orientations
-		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
+		/*Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
 			[Vector3Int.up] = new List<Vector3Int>() {
 				Vector3Int.zero,
 				new Vector3Int(playerTile.battleGridSize.x, 0, 0)
@@ -89,6 +88,24 @@ public class Battle : MonoBehaviour
 			[Vector3Int.left] = new List<Vector3Int>() {
 				Vector3Int.zero,
 				new Vector3Int(0, playerTile.battleGridSize.y, 0)
+			}
+		};*/
+		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
+			[Vector3Int.up] = new List<Vector3Int>() {
+				Vector3Int.zero,									// playerOffset
+				new Vector3Int(playerTile.battleGridSize.x, 0, 0)	// otherOffset
+			}, 
+			[Vector3Int.right] = new List<Vector3Int>() {
+				Vector3Int.zero,									// playerOffset
+				new Vector3Int(0, -1*otherTile.battleGridSize.y, 0)	// otherOffset
+			}, 
+			[Vector3Int.down] = new List<Vector3Int>() {
+				Vector3Int.zero,									// playerOffset
+				new Vector3Int(-1*otherTile.battleGridSize.x, 0, 0)	// otherOffset
+			}, 
+			[Vector3Int.left] = new List<Vector3Int>() {
+				Vector3Int.zero,									// playerOffset
+				new Vector3Int(0, playerTile.battleGridSize.y, 0)	// otherOffset
 			}
 		};
 		var orientation = orientationDict[(other.gridPosition - player.gridPosition)];
@@ -184,6 +201,51 @@ public class Battle : MonoBehaviour
 		return new Pair<Zone, Zone>(new Zone(playerA, playerB), new Zone(otherA, otherB));
 	}
 
+	public void AddParticipant(OverworldEntity newlyAdded, WorldTile newlyAddedTile) {
+		(newlyAdded as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
+/*
+		// add to grid and reposition
+		// spawn new units
+		// register new units to existing controller
+		// but... keep tabs, because we need to use this to kill OverworldEntities
+		// TODO: kill overworld entities better, I guess
+
+		// determine orientations
+		WorldTile playerTile = GameManager.inst.worldGrid.GetTileAt(player.gridPosition);
+		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
+			[Vector3Int.up] = new List<Vector3Int>() {
+				Vector3Int.zero,
+				new Vector3Int(playerTile.battleGridSize.x, 0, 0)
+			}, 
+			[Vector3Int.right] = new List<Vector3Int>() {
+				new Vector3Int(0, newlyAddedTile.battleGridSize.y, 0),
+				Vector3Int.zero
+			}, 
+			[Vector3Int.down] = new List<Vector3Int>() {
+				new Vector3Int(newlyAddedTile.battleGridSize.x, 0, 0),
+				Vector3Int.zero
+			}, 
+			[Vector3Int.left] = new List<Vector3Int>() {
+				Vector3Int.zero,
+				new Vector3Int(0, playerTile.battleGridSize.y, 0)
+			}
+		};
+		var orientation = orientationDict[(newlyAdded.gridPosition - player.gridPosition)];
+		
+		// setup up each side	
+		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
+		grid.CreateTileMap(orientation[1], otherTile);
+		existingEnemyController = activeControllers[other];
+		activeControllers[newlyAdded] = existingEnemyController;
+	}
+
+		//
+		PopulateGridAndReposition(playerTile, otherTile);
+		//
+		SpawnAllUnits();
+		*/
+	}
+
 	private Controller GetController(OverworldEntity oe) {
 		if (activeControllers.ContainsKey(oe)) {
 			return activeControllers[oe];
@@ -255,10 +317,8 @@ public class Battle : MonoBehaviour
 
 	// pause, hand control off to the GameManager.overworld state
 	public void Pause() {
-		savedPhase = GameManager.inst.phaseManager.currentPhase;
 		savedTurn = GameManager.inst.phaseManager.currentTurn;
 		isPaused = true;
-
 		gameObject.SetActive(false);
 
 		GameManager.inst.worldGrid.DisableTint();
@@ -266,19 +326,12 @@ public class Battle : MonoBehaviour
 	}
 
 	public void Resume() {
+		isPaused = false;
+		gameObject.SetActive(true);
+
 		// tint overworld to give focus to battle
 		GameManager.inst.worldGrid.EnableTint();
 		GameManager.inst.worldGrid.ClearOverlayTiles();
-		
-		// give all control to TacticsManager
 		GameManager.inst.gameState = Enum.GameState.battle;
-		GameManager.inst.phaseManager.currentPhase = savedPhase;
-		GameManager.inst.phaseManager.currentTurn = savedTurn;
-		isPaused = false;
-
-		gameObject.SetActive(true);
-		
-		GameManager.inst.phaseManager.StartPhase(Enum.Phase.player);
-		GetControllerFromPhase(Enum.Phase.player).TriggerPhase();
 	}
 }

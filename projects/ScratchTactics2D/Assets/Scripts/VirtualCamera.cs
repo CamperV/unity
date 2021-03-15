@@ -69,6 +69,11 @@ public class VirtualCamera
         }
     }
 
+    public void Zoom(float zoomLevel) {
+        Vector3 updatedScale = zoomLevel * Vector3.one;
+        battle.StartCoroutine( SmoothCameraMovement(0.15f, battle.transform.position, updatedScale) );
+    }
+
     public void ZoomToAndLock(Vector3 target, float zoomLevel) {
         lockedPosition = battle.transform.position;
         lockedScale = battle.transform.localScale;
