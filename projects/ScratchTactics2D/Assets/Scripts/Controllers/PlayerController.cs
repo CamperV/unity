@@ -65,16 +65,21 @@ public class PlayerController : Controller
 		return KeyCode.None;
 	}
 	
-	private IEnumerator SubjectsTakeAction(Func<MovingObject, int> action) {
+	private IEnumerator SubjectsTakeAction(Func<MovingObject, int> Action) {
+		MovingObject lastSubject = activeRegistry[0];
 		foreach (var subject in activeRegistry) {
 			// we've taken an action... but what did it cost
-			int ticksTaken = action(subject);
+			int ticksTaken = Action(subject);
 			//
 			GameManager.inst.enemyController.AddTicksAll(ticksTaken);
+
+			lastSubject = subject;
 			yield return new WaitForSeconds(phaseDelayTime);
 		}
 		
-		phaseActionState = Enum.PhaseActionState.complete;
+		StartCoroutine( lastSubject.ExecuteAfterMoving( () => {
+			phaseActionState = Enum.PhaseActionState.complete;
+		}) );
 	}
 
 	// these Funcs return the cost of taking said actions

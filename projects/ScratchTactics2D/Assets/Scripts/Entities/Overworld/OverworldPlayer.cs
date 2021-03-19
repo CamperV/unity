@@ -44,12 +44,18 @@ public class OverworldPlayer : OverworldEntity
 	public override void OnBlocked<T>(T component) {
 		OverworldEnemyBase hitEnemy = component as OverworldEnemyBase;
 		hitEnemy.OnHit(); // play hit animation
+
+		InitiateBattle(hitEnemy);
+	}
+
+	public void InitiateBattle(OverworldEnemyBase hitEnemy) {
+		StartCoroutine(ExecuteAfterMoving(() => {
+			// programmatically load in a TacticsGrid that matches what we need
+			var playerTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(gridPosition);
+			var enemyTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(hitEnemy.gridPosition);
 		
-		// programmatically load in a TacticsGrid that matches what we need
-		var playerTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(gridPosition);
-		var enemyTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(hitEnemy.gridPosition);
-		
-		GameManager.inst.EnterBattleState();
-		GameManager.inst.tacticsManager.CreateActiveBattle(this, hitEnemy, playerTile, enemyTile, Enum.Phase.player);
+			GameManager.inst.EnterBattleState();
+			GameManager.inst.tacticsManager.CreateActiveBattle(this, hitEnemy, playerTile, enemyTile, Enum.Phase.player);
+		}));
 	}
 }

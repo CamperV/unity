@@ -94,11 +94,25 @@ public class PhaseManager : MonoBehaviour
 			// if the currently active controller has finished its phase
 			var activeController = battle.GetControllerFromPhase(currentPhase);
 			if (activeController.phaseActionState == Enum.PhaseActionState.postPhase) {
-				OnPhaseEnd(currentPhase);
+				if (CheckPause()) {
+					// every other Tactics-turn, we let the Overworld take a turn
+					// here is where we tick overworldTurns while in the tactics interface
+					Debug.Log($"Pausing and entering shadow overworld state");
+					GameManager.inst.tacticsManager.activeBattle.Pause();
+					
+					// delay until activeBattle.isPaused becomes true
+					StartCoroutine( Utils.DelayedFlag(!GameManager.inst.tacticsManager.activeBattle.isPaused, () => {
+						// have every two turns equal standardTickCost ticks
+						GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
+						StartPhase(Enum.Phase.enemy);
+						enemyControllerInst.TriggerPhase();
+					}));
+				} else {
+					OnPhaseEnd(currentPhase);
 
-				// else:
-				StartPhase(currentPhase.NextPhase());
-				battle.GetControllerFromPhase(currentPhase).TriggerPhase();
+					StartPhase(currentPhase.NextPhase());
+					battle.GetControllerFromPhase(currentPhase).TriggerPhase();
+				}
 			}
 		}
 		// else, disable phasing
@@ -112,27 +126,6 @@ public class PhaseManager : MonoBehaviour
 	}
 	
 	public void OnPhaseEnd(Enum.Phase phase) {
-		// every other Tactics-turn, we let the Overworld take a turn
-		// here is where we tick overworldTurns while in the tactics interface
-		if (GameManager.inst.gameState == Enum.GameState.battle) {
-			if (phase == Enum.Phase.enemy && currentTurn % 2 == 0 && GameManager.inst.enemyController.enemiesFollowing) {
-				Debug.Log($"Pausing and entering shadow overworld state");
-				GameManager.inst.tacticsManager.activeBattle.Pause();
-
-				GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
-				StartPhase(Enum.Phase.enemy);
-				enemyControllerInst.TriggerPhase();	/*
-				// delay until activeBattle.isPaused becomes true
-				StartCoroutine( Utils.DelayedFlag(!GameManager.inst.tacticsManager.activeBattle.isPaused, () => {
-					// have every two turns equal standardTickCost ticks
-					GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
-					StartPhase(Enum.Phase.enemy);
-					enemyControllerInst.TriggerPhase();
-				}));*/
-				return;
-			}
-		}
-
 		// normal operation
 		if (phase.NextPhase() == Enum.Phase.player)
 			currentTurn++;
@@ -141,5 +134,12 @@ public class PhaseManager : MonoBehaviour
 	public void DisablePhase() {
 		// don't set the UI text to display anything else
 		currentPhase = Enum.Phase.none;
+	}
+
+	public bool CheckPause() {
+		return GameManager.inst.gameState == Enum.GameState.battle &&
+			   currentPhase == Enum.Phase.enemy &&
+			   currentTurn % 2 == 0 &&
+			   GameManager.inst.enemyController.enemiesFollowing;
 	}
 }
