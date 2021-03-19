@@ -29,6 +29,7 @@ public static class Utils
 
 	public static Color selectColorWhite  = new Color(1.00f, 1.00f, 1.00f, 0.45f);
 	public static Color selectColorBlue   = new Color(0.00f, 0.30f, 0.75f, 0.75f);
-	public static Color threatColorRed    = new Color(0.75f, 0.30f, 0.00f, 0.75f);
+	public static Color threatColorRed    = new Color(0.75f, 0.20f, 0.20f, 0.75f);
 	public static Color threatColorYellow = new Color(0.75f, 0.75f, 0.00f, 0.75f);
+	public static Color threatColorIndigo = new Color(0.30f, 0.30f, 0.75f, 0.75f);
 }

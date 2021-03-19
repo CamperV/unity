@@ -192,6 +192,13 @@ public abstract class Unit : TacticsEntityBase
 		attackRange.Display(grid);
 		moveRange.Display(grid);
 
+		foreach (Vector3Int v in GetThreatenedTiles()) {
+			if (moveRange.field.ContainsKey(v)) {
+				grid.UnderlayAt(v, Utils.threatColorIndigo);
+				continue; // don't highlight the move and the attack
+			}
+		}
+
 		// add the lil selection square
 		grid.UnderlayAt(gridPosition, Utils.selectColorWhite);
 	}
@@ -213,11 +220,19 @@ public abstract class Unit : TacticsEntityBase
 		if (selectionLock) return;
 
 		var grid = GameManager.inst.GetActiveGrid();
-		moveRange?.ClearDisplay(grid);
+		//moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
 		// just in case
-		grid.ResetUnderlayAt(gridPosition);
+		//grid.ResetUnderlayAt(gridPosition);
+	}
+
+	public HashSet<Vector3Int> GetThreatenedTiles() {
+		HashSet<Vector3Int> threatened = new HashSet<Vector3Int>();
+		foreach(Unit u in parentController.GetOpposing()) {
+			threatened.UnionWith(u.attackRange.field.Keys);
+		}
+		return threatened;
 	}
 
 	public virtual void OnSelect() {

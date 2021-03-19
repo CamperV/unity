@@ -39,6 +39,9 @@ public class PlayerUnitController : UnitController
 		//
 		PlayerUnit unit = subject as PlayerUnit;
 		unit.parentController = this;
+		
+		// init threat for other phases
+		unit.UpdateThreatRange();
 	}
 	
 	void Update() {
