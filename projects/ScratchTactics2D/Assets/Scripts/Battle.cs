@@ -17,6 +17,7 @@ public class Battle : MonoBehaviour
 	
 	public OverworldPlayer player;
 	public OverworldEntity other;
+	public List<OverworldEntity> allOther;
 
 	public Vector3Int playerGridOffset;
 
@@ -39,6 +40,7 @@ public class Battle : MonoBehaviour
 		other = otherEntity;
 
 		(other as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
+		allOther = new List<OverworldEntity>{ other };
 
 		//
 		PopulateGridAndReposition(playerTile, otherTile);
@@ -196,6 +198,7 @@ public class Battle : MonoBehaviour
 
 	public void AddParticipant(OverworldEntity joiningEntity, WorldTile joiningTile) {
 		(joiningEntity as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
+		allOther.Add(joiningEntity);
 
 		// add to grid and reposition
 		WorldTile playerTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(player.gridPosition);
@@ -326,25 +329,34 @@ public class Battle : MonoBehaviour
 		return false; // battle continues
 	}
 
-	public OverworldEntity GetDefeated() {
-		foreach (UnitController participantController in activeParticipants.Keys) {
-			bool alive = participantController.activeRegistry.Any();
-			if (!alive) return activeParticipants[participantController];
+	public List<OverworldEntity> GetDefeated() {
+		UnitController playerController = activeControllers[player] as UnitController;
+		if (!playerController.activeRegistry.Any()) {
+			return new List<OverworldEntity>{ (OverworldEntity)player };
+		}
+
+		UnitController enemyController = activeControllers[other] as UnitController;
+		if (!enemyController.activeRegistry.Any()) {
+			return allOther;
 		}
 
 		// this should be unreachable code
 		Debug.Assert(false);
-		return player; // battle continues		
+		return new List<OverworldEntity>(); // battle continues		
 	}
 
 	// pause, hand control off to the GameManager.overworld state
 	public void Pause() {
 		savedTurn = GameManager.inst.phaseManager.currentTurn;
-		isPaused = true;
-		gameObject.SetActive(false);
-
-		GameManager.inst.worldGrid.DisableTint();
 		GameManager.inst.gameState = Enum.GameState.overworld;
+
+		// TODO: when this is above 0, the enemies don't take their turns
+		// leave this for the re-write
+		StartCoroutine( Utils.DelayedExecute(0.0f, () => {
+			isPaused = true;
+			gameObject.SetActive(false);
+			GameManager.inst.worldGrid.DisableTint();
+		}));
 	}
 
 	public void Resume() {

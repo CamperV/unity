@@ -115,14 +115,20 @@ public class PhaseManager : MonoBehaviour
 		// every other Tactics-turn, we let the Overworld take a turn
 		// here is where we tick overworldTurns while in the tactics interface
 		if (GameManager.inst.gameState == Enum.GameState.battle) {
-			if (currentTurn % 2 == 0) {
+			if (phase == Enum.Phase.enemy && currentTurn % 2 == 0 && GameManager.inst.enemyController.enemiesFollowing) {
 				Debug.Log($"Pausing and entering shadow overworld state");
 				GameManager.inst.tacticsManager.activeBattle.Pause();
-				
-				// have every two turns equal standardTickCost ticks
+
 				GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
 				StartPhase(Enum.Phase.enemy);
-				enemyControllerInst.TriggerPhase();
+				enemyControllerInst.TriggerPhase();	/*
+				// delay until activeBattle.isPaused becomes true
+				StartCoroutine( Utils.DelayedFlag(!GameManager.inst.tacticsManager.activeBattle.isPaused, () => {
+					// have every two turns equal standardTickCost ticks
+					GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
+					StartPhase(Enum.Phase.enemy);
+					enemyControllerInst.TriggerPhase();
+				}));*/
 				return;
 			}
 		}

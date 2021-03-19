@@ -20,6 +20,12 @@ public static class Utils
 		}
 		VoidAction();
 	}
+	public static IEnumerator DelayedFlag(bool flag, Action VoidAction) {
+		while (flag) {
+			yield return null;
+		}
+		VoidAction();
+	}
 
 	public static Color selectColorWhite  = new Color(1.00f, 1.00f, 1.00f, 0.45f);
 	public static Color selectColorBlue   = new Color(0.00f, 0.30f, 0.75f, 0.75f);

@@ -20,6 +20,10 @@ public class EnemyController : Controller
 		get => GameManager.inst.worldGrid.CurrentOccupantPositions<OverworldEnemyBase>();
 	}
 
+	public bool enemiesFollowing {
+		get => activeRegistry.Where(it => (it as OverworldEnemyBase).state == Enum.EnemyState.followField).Any();
+	}
+
 	protected override void Awake() {
 		base.Awake();
 		//
