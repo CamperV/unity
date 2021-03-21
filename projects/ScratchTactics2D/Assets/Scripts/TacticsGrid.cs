@@ -4,11 +4,14 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class TacticsGrid : GameGrid
 {
 	private Dictionary<Type, TacticsTile> tileOptions;
 	private Dictionary<Vector3Int, TacticsTile> tacticsTileGrid;
+
+	private Grid baseGrid;
 
 	private OverlayTile waypointOverlayTile;
 	private OverlayTile selectionOverlayTile;
@@ -34,6 +37,7 @@ public class TacticsGrid : GameGrid
 		};
 		
 		tacticsTileGrid = new Dictionary<Vector3Int, TacticsTile>();
+		baseGrid = GetComponent<Grid>();
 
 		waypointOverlayTile = PathOverlayIsoTile.GetTileWithSprite(1);
 		selectionOverlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
@@ -53,6 +57,10 @@ public class TacticsGrid : GameGrid
 	public override HashSet<Vector3Int> GetAllTilePos() {
 		return new HashSet<Vector3Int>(tacticsTileGrid.Keys);
 	}
+	
+	public override Vector3Int Real2GridPos(Vector3 realPos) {
+		return baseGrid.WorldToCell(realPos);
+	}
 	//
 	// END OVERRIDE ZONE
 	//
@@ -66,15 +74,17 @@ public class TacticsGrid : GameGrid
 	}
 
 	public override void UnderlayAt(Vector3Int tilePos, Color color) {
-		var overlayPosition = new Vector3Int(tilePos.x, tilePos.y, 1);
-		baseTilemap.SetTile(overlayPosition, selectionOverlayTile);
-		TintTile(overlayPosition, color);
+		//var overlayPosition = new Vector3Int(tilePos.x, tilePos.y, 1);
+		//baseTilemap.SetTile(overlayPosition, selectionOverlayTile);
+		//TintTile(overlayPosition, color);
+		TintTile(tilePos, color);
 	}
 
 	public override void ResetUnderlayAt(Vector3Int tilePos) {
-		var overlayPosition = new Vector3Int(tilePos.x, tilePos.y, 1);
-		baseTilemap.SetTile(overlayPosition, null);
-		ResetTintTile(overlayPosition);
+		//var overlayPosition = new Vector3Int(tilePos.x, tilePos.y, 1);
+		//baseTilemap.SetTile(overlayPosition, null);
+		//ResetTintTile(overlayPosition);
+		ResetTintTile(tilePos);
 	}
 
     public void CreateTileMap(Vector3Int offset, WorldTile originTile) {
@@ -82,7 +92,8 @@ public class TacticsGrid : GameGrid
 
 		for (int x = 0; x < originTile.battleGridSize.x; x++) {
 			for (int y = 0; y < originTile.battleGridSize.y; y++) {
-				tacticsTileGrid[newOrigin + new Vector3Int(x, y, 0)] = tileOptions[originTile.GetType()];
+				int zval = Random.Range(0, 2);
+				tacticsTileGrid[newOrigin + new Vector3Int(x, y, zval)] = tileOptions[originTile.GetType()];
 			}
 		}
 	}
@@ -91,6 +102,7 @@ public class TacticsGrid : GameGrid
 		Debug.Assert(tacticsTileGrid.Count != 0);
 		
 		foreach(var pair in tacticsTileGrid.OrderBy(k => k.Key.x)) {
+			Debug.Log($"setting {pair.Key}");
 			baseTilemap.SetTile(pair.Key, pair.Value);
 		}
 

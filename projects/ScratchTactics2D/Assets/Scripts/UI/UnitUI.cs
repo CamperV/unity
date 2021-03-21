@@ -70,7 +70,7 @@ public class UnitUI : MonoBehaviour
         // determine if emphasis is necessary
         if (emphasize) {
             textUI.Bold();
-            textUI.SetColor(Utils.threatColorRed);
+            textUI.SetColor(Constants.threatColorRed);
             message = message.ToString() + "!";
             textUI.SetScale(1.5f);
         }

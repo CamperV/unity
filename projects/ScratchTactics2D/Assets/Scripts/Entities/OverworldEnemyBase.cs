@@ -189,7 +189,8 @@ public class OverworldEnemyBase : OverworldEntity
 	}
 
 	public virtual bool CanAttackPlayer() {
-		return tickPool >= Constants.standardTickCost && gridPosition.AdjacentTo(GameManager.inst.player.gridPosition);
+		//return tickPool >= Constants.standardTickCost && gridPosition.AdjacentTo(GameManager.inst.player.gridPosition);
+		return tickPool > 0 && gridPosition.AdjacentTo(GameManager.inst.player.gridPosition);
 	}
 
 	public void InitiateBattle() {

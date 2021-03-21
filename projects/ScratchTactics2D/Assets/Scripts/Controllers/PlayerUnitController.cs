@@ -102,16 +102,17 @@ public class PlayerUnitController : UnitController
 
 	private void DrawValidMoveForSelection(MoveRange mRange) {
 		var mm = GameManager.inst.mouseManager;
+		var placeholder = mm.GetValidIsometricGridPos(grid);
 		//
 		if (mm.HasMouseMovedGrid()) {
 			currentSelectionFieldPath?.UnShow(grid);
 
 			// while the origin is a ValidMove, don't draw it
-			if (mm.currentMouseGridPos != mRange.origin && mRange.ValidMove(mm.currentMouseGridPos)) {
-				grid.SelectAtAlternate(mm.currentMouseGridPos);
+			if (placeholder != mRange.origin && mRange.ValidMove(placeholder)) {
+				grid.SelectAtAlternate(placeholder);
 
 				// update this every time you move the mouse. Run time intensive? But shows path taken
-				currentSelectionFieldPath = MovingObjectPath.GetPathFromField(mm.currentMouseGridPos, mRange);
+				currentSelectionFieldPath = MovingObjectPath.GetPathFromField(placeholder, mRange);
 				currentSelectionFieldPath.Show(grid, pathOverlayTile);
 			}
 		}
@@ -303,6 +304,7 @@ public class PlayerUnitController : UnitController
 				return clickable.gridPosition;
 			}
 		};
-		return GameManager.inst.mouseManager.currentMouseGridPos;
+
+		return GameManager.inst.mouseManager.GetValidIsometricGridPos(grid);
 	}
 }

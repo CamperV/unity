@@ -52,19 +52,17 @@ public class VirtualCamera
     //
     public void ScrollUpdate() {
         if (!draggingView) {
-            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
             // calculate what the new scale WILL be
             // and calculate the scale ratio. Just use X, because our scale is uniform on all axes
             var updatedScale = battle.transform.localScale + (Input.GetAxis("Mouse ScrollWheel") * 0.75f) * Vector3.one;
             float scaleRatio = updatedScale.x / battle.transform.localScale.x;
 
             if (scaleRatio != 1.0f) {
-                Vector3 localToMouse = battle.transform.position - mouseWorldPos;
+                Vector3 localToMouse = battle.transform.position - GameManager.inst.mouseManager.mouseWorldPos;
                 
                 //update the scale, and position based on the new scale
                 battle.transform.localScale = updatedScale;
-                battle.transform.position = mouseWorldPos + (localToMouse * scaleRatio);
+                battle.transform.position = GameManager.inst.mouseManager.mouseWorldPos + (localToMouse * scaleRatio);
             }
         }
     }

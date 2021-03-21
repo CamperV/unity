@@ -34,6 +34,14 @@ public class Zone
         }
     }
 
+    public static Zone WithinGrid(GameGrid grid, Vector3Int bl, Vector3Int tr) {
+        Zone zone = new Zone(bl, tr);
+        zone.allPositions.RemoveWhere((Vector3Int v) => {
+            return !grid.IsInBounds(v);
+        });
+        return zone;
+    }
+
     public int Count { get => allPositions.Count; }
 
     public List<Vector3Int> GetPositions() {

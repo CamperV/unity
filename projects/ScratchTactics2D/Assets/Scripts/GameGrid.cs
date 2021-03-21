@@ -26,11 +26,11 @@ public abstract class GameGrid : MonoBehaviour
 		occupancyGrid = new Dictionary<Vector3Int, Component>();
 	}
 	
-	public Vector3 Grid2RealPos(Vector3Int tilePos) {
+	public virtual Vector3 Grid2RealPos(Vector3Int tilePos) {
 		return baseTilemap.GetCellCenterWorld(tilePos);
 	}
 	
-	public Vector3Int Real2GridPos(Vector3 realPos) {
+	public virtual Vector3Int Real2GridPos(Vector3 realPos) {
 		var toModify = baseTilemap.WorldToCell(realPos);
 		return new Vector3Int(toModify.x, toModify.y, 0);
 	}
@@ -96,7 +96,7 @@ public abstract class GameGrid : MonoBehaviour
 	}
 	
 	public virtual void SelectAt(Vector3Int tilePos, Color? color = null) {
-		TintTile(tilePos, color ?? Utils.selectColorBlue);
+		TintTile(tilePos, color ?? Constants.selectColorBlue);
 	}
 	
 	public virtual void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.05f) {

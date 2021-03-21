@@ -97,7 +97,7 @@ public class FlowField
 
 	public virtual void Display(GameGrid grid) {
 		foreach (Vector3Int tilePos in field.Keys) {
-			grid.UnderlayAt(tilePos, Utils.threatColorRed);
+			grid.UnderlayAt(tilePos, Constants.threatColorRed);
 		}
 	}
 

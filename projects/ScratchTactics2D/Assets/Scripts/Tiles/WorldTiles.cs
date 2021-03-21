@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class GrassWorldTile : WorldTile
 {
-	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
+	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
 	public override int probability { get { return 74; } }
 	
 	public void OnEnable() {

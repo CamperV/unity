@@ -129,7 +129,7 @@ public abstract class Unit : TacticsEntityBase
 			inMildFocus = true;	// prevents ghosting
 
 			// add the lil selection square
-			GameManager.inst.GetActiveGrid().UnderlayAt(gridPosition, Utils.threatColorYellow);
+			GameManager.inst.GetActiveGrid().UnderlayAt(gridPosition, Constants.threatColorYellow);
 		} else {
 			inMildFocus = false;
 
@@ -194,13 +194,13 @@ public abstract class Unit : TacticsEntityBase
 
 		foreach (Vector3Int v in GetThreatenedTiles()) {
 			if (moveRange.field.ContainsKey(v)) {
-				grid.UnderlayAt(v, Utils.threatColorIndigo);
+				grid.UnderlayAt(v, Constants.threatColorIndigo);
 				continue; // don't highlight the move and the attack
 			}
 		}
 
 		// add the lil selection square
-		grid.UnderlayAt(gridPosition, Utils.selectColorWhite);
+		grid.UnderlayAt(gridPosition, Constants.selectColorWhite);
 	}
 
 	public void DisplayStandingThreatRange() {
@@ -213,7 +213,7 @@ public abstract class Unit : TacticsEntityBase
 		attackRange.Display(grid);
 
 		// add the lil selection square
-		grid.UnderlayAt(gridPosition, Utils.selectColorWhite);
+		grid.UnderlayAt(gridPosition, Constants.selectColorWhite);
 	}
 
 	public void ClearDisplayThreatRange() {
@@ -312,7 +312,7 @@ public abstract class Unit : TacticsEntityBase
 	private bool SufferDamage(int incomingDamage, bool isCritical = false) {
 		_HP -= incomingDamage;
 
-		StartCoroutine(FlashColor(Utils.threatColorRed));
+		StartCoroutine(FlashColor(Constants.threatColorRed));
 		StartCoroutine(Shake((isCritical) ? 0.15f : 0.075f));
 
 		unitUI.DisplayDamageMessage(incomingDamage.ToString(), emphasize: isCritical);

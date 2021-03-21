@@ -70,6 +70,22 @@ namespace Extensions {
                                (o.z > 0) ? v.z/o.z : 1);
         }
 
+        // Vector3
+        public static IEnumerable<Vector3> SteppedInterpEx(this Vector3 v, Vector3 f, int numSteps) {
+            Vector3 interpStep = (1.0f / numSteps) * (f - v);
+            for (int i = 1; i <= numSteps; i++) {
+                yield return v + (i * interpStep);
+            }
+        }
+
+        // Vector3
+        public static IEnumerable<Vector3> SteppedInterpInc(this Vector3 v, Vector3 f, int numSteps) {
+            Vector3 interpStep = (1.0f / numSteps) * (f - v);
+            for (int i = 0; i <= numSteps; i++) {
+                yield return v + (i * interpStep);
+            }
+        }
+
         // List
         public static T PopAt<T>(this List<T> list, int index) {
             T r = list[index];

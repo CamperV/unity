@@ -48,7 +48,7 @@ public class MoveRange : FlowField
 	public override void Display(GameGrid grid) {
 		foreach (Vector3Int tilePos in field.Keys) {
 			if (ValidMove(tilePos)) {
-				grid.UnderlayAt(tilePos, Utils.selectColorBlue);
+				grid.UnderlayAt(tilePos, Constants.selectColorBlue);
 			}
 		}
 	}

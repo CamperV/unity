@@ -163,37 +163,37 @@ public class Battle : MonoBehaviour
 		switch (other.gridPosition - player.gridPosition) {
 			case Vector3Int v when v.Equals(Vector3Int.up):
 				playerA = Vector3Int.zero;
-				playerB = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, 0);
+				playerB = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, gridDim.z);
 				//
 				otherA  = new Vector3Int(gridDim.x, 0, 0);
-				otherB  = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, 0);
+				otherB  = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, gridDim.z);
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.right):
 				playerA = new Vector3Int(0, gridDim.y, 0);
-				playerB = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), 0);
+				playerB = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), gridDim.z);
 				//
 				otherA  = Vector3Int.zero;
 				otherB  = new Vector3Int(gridDim.x, (int)(gridDim.y/4.0f), 0);
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.down):
 				playerA = new Vector3Int(gridDim.x, 0, 0);
-				playerB = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, 0);
+				playerB = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, gridDim.z);
 				//
 				otherA  = Vector3Int.zero;
-				otherB  = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, 0);
+				otherB  = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, gridDim.z);
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.left):
 				playerA = Vector3Int.zero;
-				playerB = new Vector3Int(gridDim.x, (int)(gridDim.y/4.0f), 0);
+				playerB = new Vector3Int(gridDim.x, (int)(gridDim.y/4.0f), gridDim.z);
 				//
 				otherA  = new Vector3Int(0, gridDim.y, 0);
-				otherB  = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), 0);
+				otherB  = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), gridDim.z);
 				break;
 		}
 
 		// create the zone to spawn units into
 		// randomly select which starting positions happen, for now
-		return new Pair<Zone, Zone>(new Zone(playerA, playerB), new Zone(otherA, otherB));
+		return new Pair<Zone, Zone>(Zone.WithinGrid(grid, playerA, playerB), Zone.WithinGrid(grid, otherA, otherB));
 	}
 
 	public void AddParticipant(OverworldEntity joiningEntity, WorldTile joiningTile) {

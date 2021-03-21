@@ -51,9 +51,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultControllerPrefab: {fileID: 5007282424744042210, guid: 8f44ac671b19b08478b75c1609a95db8, type: 3}
   defaultController: {fileID: 0}
-  worldParticipants: []
   grid: {fileID: 0}
-  currentTurn: 0
+  player: {fileID: 0}
+  other: {fileID: 0}
+  allOther: []
+  playerGridOffset: {x: 0, y: 0, z: 0}
+  savedTurn: 0
+  isPaused: 0
 --- !u!1 &831110151278361556
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,7 +102,7 @@ Grid:
   m_Enabled: 1
   m_CellSize: {x: 1, y: 0.5, z: 1}
   m_CellGap: {x: 0, y: 0, z: 0}
-  m_CellLayout: 2
+  m_CellLayout: 3
   m_CellSwizzle: 0
 --- !u!114 &5113726490093097474
 MonoBehaviour:
