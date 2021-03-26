@@ -11,6 +11,7 @@ public abstract class GameGrid : MonoBehaviour
 	public int mapDimensionY;
 	
 	[HideInInspector] public Tilemap baseTilemap;
+	[HideInInspector] public Tilemap underlayTilemap;
 	[HideInInspector] public Tilemap overlayTilemap;
 	
 	private Dictionary<Vector3Int, Component> occupancyGrid;
@@ -20,9 +21,10 @@ public abstract class GameGrid : MonoBehaviour
 		// we have a Grid object which is actually attached
 		// the Tilemap is a child of the Grid object
 		var tilemapComponents = GetComponentsInChildren<Tilemap>();
-		baseTilemap    = tilemapComponents[0];
-		overlayTilemap = tilemapComponents[1];
-		
+		baseTilemap     = tilemapComponents[0];
+		underlayTilemap = tilemapComponents[1];
+		overlayTilemap  = tilemapComponents[2];
+
 		occupancyGrid = new Dictionary<Vector3Int, Component>();
 	}
 	
@@ -96,11 +98,11 @@ public abstract class GameGrid : MonoBehaviour
 	}
 	
 	public virtual void SelectAt(Vector3Int tilePos, Color? color = null) {
-		TintTile(tilePos, color ?? Constants.selectColorBlue);
+		TintTile(baseTilemap, tilePos, color ?? Constants.selectColorBlue);
 	}
 	
 	public virtual void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.05f) {
-		ResetTintTile(tilePos);
+		ResetTintTile(baseTilemap, tilePos);
 	}
 
 	// These exist because I am too lazy to figure out a better solution
@@ -133,10 +135,10 @@ public abstract class GameGrid : MonoBehaviour
 		tilemap.SetTile(tilePos, null);
 	}
 	
-	public virtual void TintTile(Vector3Int tilePos, Color color) {
-		if (baseTilemap.GetTile(tilePos) != null) {
-			baseTilemap.SetTileFlags(tilePos, TileFlags.None);
-			baseTilemap.SetColor(tilePos, color);
+	public virtual void TintTile(Tilemap tilemap, Vector3Int tilePos, Color color) {
+		if (tilemap.GetTile(tilePos) != null) {
+			tilemap.SetTileFlags(tilePos, TileFlags.None);
+			tilemap.SetColor(tilePos, color);
 			return;
 		} else {
 			Debug.Log("Not a valid Tint target");
@@ -144,9 +146,9 @@ public abstract class GameGrid : MonoBehaviour
 		}
 	}
 	
-	public virtual void ResetTintTile(Vector3Int tilePos) {
-		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
-		baseTilemap.SetColor(tilePos, Color.white);
+	public virtual void ResetTintTile(Tilemap tilemap, Vector3Int tilePos) {
+		tilemap.SetTileFlags(tilePos, TileFlags.None);
+		tilemap.SetColor(tilePos, Color.white);
 	}
 	
 	public Component OccupantAt(Vector3Int tilePos) {

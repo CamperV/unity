@@ -108,7 +108,7 @@ public class WorldGrid : GameGrid
 	public void HighlightTile(Vector3Int tilePos, Color color) {
 		for (int z = 0; z < 2; z++) {
 			var v = new Vector3Int(tilePos.x, tilePos.y, z);
-			TintTile(v, color);
+			TintTile(baseTilemap, v, color);
 		}	
 	}
 	
@@ -122,7 +122,7 @@ public class WorldGrid : GameGrid
 		foreach (var tilePos in tilePosSet) {
 			for (int z = 0; z < 2; z++) {
 				var v = new Vector3Int(tilePos.x, tilePos.y, z);
-				ResetTintTile(v);
+				ResetTintTile(baseTilemap, v);
 			}
 		}
 	}
@@ -131,12 +131,12 @@ public class WorldGrid : GameGrid
 		foreach (var tilePos in worldTileGrid.Keys) {
 			for (int z = 0; z < 2; z++) {
 				var v = new Vector3Int(tilePos.x, tilePos.y, z);
-				ResetTintTile(v);
+				ResetTintTile(baseTilemap, v);
 			}
 		}
 	}
 	
-	public override void TintTile(Vector3Int tilePos, Color color) {
+	public override void TintTile(Tilemap tilemap, Vector3Int tilePos, Color color) {
 		Vector3Int depthPos;
 		if (worldTileGrid.ContainsKey(tilePos)) {
 			var tile = worldTileGrid[tilePos];
@@ -145,9 +145,9 @@ public class WorldGrid : GameGrid
 			depthPos = tilePos;
 		}
 
-		if (baseTilemap.GetTile(depthPos) != null) {
-			baseTilemap.SetTileFlags(tilePos, TileFlags.None);
-			baseTilemap.SetColor(tilePos, color);
+		if (tilemap.GetTile(depthPos) != null) {
+			tilemap.SetTileFlags(tilePos, TileFlags.None);
+			tilemap.SetColor(tilePos, color);
 			return;
 		} else {
 			//Debug.Log("Not a valid Tint target");
@@ -155,9 +155,9 @@ public class WorldGrid : GameGrid
 		}
 	}
 	
-	public override void ResetTintTile(Vector3Int tilePos) {
-		baseTilemap.SetTileFlags(tilePos, TileFlags.None);
-		baseTilemap.SetColor(tilePos, new Color(1, 1, 1, 1));
+	public override void ResetTintTile(Tilemap tilemap, Vector3Int tilePos) {
+		tilemap.SetTileFlags(tilePos, TileFlags.None);
+		tilemap.SetColor(tilePos, new Color(1, 1, 1, 1));
 	}
 	
 	public void ClearOverlayTiles() {
@@ -384,11 +384,11 @@ public class WorldGrid : GameGrid
 				baseTilemap.SetTile(tilePos, tileOptions[3]);
 
 				if ((x >= -1 && x <= xUpper+1) && (y >= -1 && y <= yUpper+1)) {
-					TintTile(tilePos, new Color(.85f, .85f, .85f));
+					TintTile(baseTilemap, tilePos, new Color(.85f, .85f, .85f));
 				} else if ((x >= -2 && x <= xUpper+2) && (y >= -2 && y <= yUpper+2)) {
-					TintTile(tilePos, new Color(.55f, .55f, .55f));
+					TintTile(baseTilemap, tilePos, new Color(.55f, .55f, .55f));
 				} else {
-					TintTile(tilePos, new Color(.3f, .3f, .3f));
+					TintTile(baseTilemap, tilePos, new Color(.3f, .3f, .3f));
 				}
 			}
 		}

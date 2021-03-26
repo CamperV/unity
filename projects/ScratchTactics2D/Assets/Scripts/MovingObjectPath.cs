@@ -53,22 +53,17 @@ public class MovingObjectPath
 	}
 
 	public IEnumerable<Vector3Int> Unwind(int slice = 0) {
-		Vector3Int pos = start;
+		Vector3Int position = start;
 		do {
-			pos = path[pos];
+			position = path[position];
 			
 			// skip a certain number of tiles when unwinding
 			if (slice > 0) {
 				slice--;
 				continue;
 			}
-			yield return pos;
-		} while (pos != end);
-	}
-	
-	public void Consume(Vector3Int position) {
-		path.Remove(position);
-		GameManager.inst.worldGrid.ClearOverlayTiles();
+			yield return position;
+		} while (position != end);
 	}
 	
 	public List<Vector3Int> GetPathEdges() {
@@ -177,7 +172,7 @@ public class MovingObjectPath
 
 				// units can move through units of similar types, but not enemy types
 				int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;
-				var updatedCost = distSoFar + Cost(currentPos, adjacent);
+				var updatedCost = distSoFar + FlowField.Cost(currentPos, adjacent);
 				
 				if (!distance.ContainsKey(adjacent) || updatedCost < distance[adjacent]) {
 					distance[adjacent] = updatedCost;
@@ -217,12 +212,7 @@ public class MovingObjectPath
 
 	public static MovingObjectPath GetPathFromField(Vector3Int targetPosition, FlowField ffield) {
 		IEnumerable<Vector3Int> GetFieldOptions(Vector3Int pos) {
-			List<Vector3Int> options = new List<Vector3Int>() {
-				pos + Vector3Int.up,
-				pos + Vector3Int.right,
-				pos + Vector3Int.down,
-				pos + Vector3Int.left
-			};
+			List<Vector3Int> options = FlowField.GetAdjacent(pos);
 			foreach (Vector3Int opt in options) {
 				if (ffield.field.ContainsKey(opt)) yield return opt;
 			}
@@ -247,7 +237,7 @@ public class MovingObjectPath
 
 			Vector3Int bestMove = currentPos;
 			int bestMoveCost = ffield.field[currentPos];
-			foreach (Vector3Int adjacent in GetFieldOptions(currentPos)) {			
+			foreach (Vector3Int adjacent in GetFieldOptions(currentPos)) {		
 				int cost = ffield.field[adjacent];
 
 				if (cost < bestMoveCost) {
@@ -263,39 +253,6 @@ public class MovingObjectPath
 		}
 
 		return newPath;
-	}
-	
-	private static int CalcPriority(Vector3Int src, Vector3Int dest) {
-		return (int)Vector3Int.Distance(src, dest);
-	}
-
-	private static int Cost(Vector3Int src, Vector3Int dest) {
-		// the way we have coded cost into WorldTile:
-		// the number listed is the cost to enter said tile
-		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
-		return destTile.cost;
-	}
-	
-	private static int EdgeCost(Vector3Int dest) {
-		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
-		if (destTile == null) return -1;
-		return destTile.cost;
-	}
-	
-	private static int TotalPathCost(Vector3Int src, Vector3Int dest, Dictionary<Vector3Int, Vector3Int> cameFrom) {
-		// for now, assume all keys are present
-		Vector3Int progenitor = dest;
-		int totalCost = 0;
-		
-		// build the path in reverse, aka next steps (including target)
-		while (progenitor != src) {
-			var progTile = GameManager.inst.GetActiveGrid().GetTileAt(progenitor);
-			if (progTile == null) return -1;
-			
-			totalCost += progTile.cost;
-			progenitor = cameFrom[progenitor];
-		}
-		return totalCost;
 	}
 	
 	// this will disallow all movement through occupants, other than a specified template <T>

@@ -104,22 +104,20 @@ public class PlayerUnitController : UnitController
 		var mm = GameManager.inst.mouseManager;
 		var placeholder = mm.GetValidIsometricGridPos(grid);
 		//
-		if (mm.HasMouseMovedGrid()) {
-			currentSelectionFieldPath?.UnShow(grid);
+		currentSelectionFieldPath?.UnShow(grid);
 
-			// while the origin is a ValidMove, don't draw it
-			if (placeholder != mRange.origin && mRange.ValidMove(placeholder)) {
-				grid.SelectAtAlternate(placeholder);
+		// while the origin is a ValidMove, don't draw it
+		if (placeholder != mRange.origin && mRange.ValidMove(placeholder)) {
+			grid.SelectAtAlternate(placeholder);
 
-				// update this every time you move the mouse. Run time intensive? But shows path taken
-				currentSelectionFieldPath = MovingObjectPath.GetPathFromField(placeholder, mRange);
-				currentSelectionFieldPath.Show(grid, pathOverlayTile);
-			}
+			// update this every time you move the mouse. Run time intensive? But shows path taken
+			currentSelectionFieldPath = MovingObjectPath.GetPathFromField(placeholder, mRange);
+			currentSelectionFieldPath.Show(grid, pathOverlayTile);
 		}
 	}
 
 	private void PreviewPossibleEngagement() {
-		Vector3Int target = GetMouseTarget();
+		var target = GetMouseTarget();
 		GetOpposing().ForEach( it => (it as Unit).SetMildFocus(false) );
 
 		// TODO: I hate this

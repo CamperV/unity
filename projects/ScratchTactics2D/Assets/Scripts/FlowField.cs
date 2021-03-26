@@ -46,20 +46,28 @@ public class FlowField
 		return newField;
 	}
 	
-	protected static List<Vector3Int> GetAdjacent(Vector3Int pos) {
+	public static List<Vector3Int> GetAdjacent(Vector3Int pos) {
 		return new List<Vector3Int>() {
 			pos + Vector3Int.up,	// N
 			pos + Vector3Int.right,	// E
 			pos + Vector3Int.down,	// S
-			pos + Vector3Int.left	// W
+			pos + Vector3Int.left,	// W
+			pos + new Vector3Int(0, 0, 1)  + Vector3Int.up,
+			pos + new Vector3Int(0, 0, 1)  + Vector3Int.right,
+			pos + new Vector3Int(0, 0, 1)  + Vector3Int.down,
+			pos + new Vector3Int(0, 0, 1)  + Vector3Int.left,
+			pos + new Vector3Int(0, 0, -1) + Vector3Int.up,
+			pos + new Vector3Int(0, 0, -1) + Vector3Int.right,
+			pos + new Vector3Int(0, 0, -1) + Vector3Int.down,
+			pos + new Vector3Int(0, 0, -1) + Vector3Int.left,
 		};
 	}
-	
-	protected static int Cost(Vector3Int src, Vector3Int dest) {
+
+	public static int Cost(Vector3Int src, Vector3Int dest) {
 		// the way we have coded cost into WorldTile:
 		// the number listed is the cost to enter said tile
 		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
-		return destTile.cost;
+		return destTile.cost + 2*(destTile.cost * Mathf.Max(dest.z - src.z, 0));
 	}
 	
 	public void Absorb(FlowField other) {

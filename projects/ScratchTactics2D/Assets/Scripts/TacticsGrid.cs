@@ -74,17 +74,13 @@ public class TacticsGrid : GameGrid
 	}
 
 	public override void UnderlayAt(Vector3Int tilePos, Color color) {
-		//var overlayPosition = new Vector3Int(tilePos.x, tilePos.y, 1);
-		//baseTilemap.SetTile(overlayPosition, selectionOverlayTile);
-		//TintTile(overlayPosition, color);
-		TintTile(tilePos, color);
+		underlayTilemap.SetTile(tilePos, selectionOverlayTile);
+		TintTile(underlayTilemap, tilePos, color);
 	}
 
 	public override void ResetUnderlayAt(Vector3Int tilePos) {
-		//var overlayPosition = new Vector3Int(tilePos.x, tilePos.y, 1);
-		//baseTilemap.SetTile(overlayPosition, null);
-		//ResetTintTile(overlayPosition);
-		ResetTintTile(tilePos);
+		underlayTilemap.SetTile(tilePos, null);
+		ResetTintTile(underlayTilemap, tilePos);
 	}
 
     public void CreateTileMap(Vector3Int offset, WorldTile originTile) {
@@ -102,13 +98,29 @@ public class TacticsGrid : GameGrid
 		Debug.Assert(tacticsTileGrid.Count != 0);
 		
 		foreach(var pair in tacticsTileGrid.OrderBy(k => k.Key.x)) {
-			Debug.Log($"setting {pair.Key}");
 			baseTilemap.SetTile(pair.Key, pair.Value);
 		}
 
 		if (noCompress) return;
 		baseTilemap.CompressBounds();
 		baseTilemap.RefreshAllTiles();
+
+		// after refreshing all tiles, set rudimentary shading
+		float tintScale = 0.15f;
+		int maxZ = tacticsTileGrid.Keys.Max(it => it.z);
+		foreach(var pair in tacticsTileGrid) {
+			// tint the lower tiles by a step value, to create some shade
+			// and fill out the tiles all the way to the bottom (of the screen, so like 10 for now)
+			for (int i = pair.Key.z; i > -10; i--) {
+				Vector3Int lower = new Vector3Int(pair.Key.x, pair.Key.y, i);
+				baseTilemap.SetTile(lower, pair.Value);
+
+				baseTilemap.SetTileFlags(lower, TileFlags.None);
+				float tint = 1.0f - (tintScale * (maxZ - i));
+				float a = (i > -5) ? 1.0f : 1.0f - ( (tintScale/2.0f) * (-3 - i));
+				baseTilemap.SetColor(lower, new Color(tint, tint, tint, a));
+			}
+		}
 	}
 	
 	public Vector3Int GetDimensions() {

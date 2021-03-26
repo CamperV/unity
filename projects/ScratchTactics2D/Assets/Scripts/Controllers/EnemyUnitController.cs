@@ -159,16 +159,4 @@ public class EnemyUnitController : UnitController
 		var optimalPosition = atMaxDist.First(it => DistToSubject(it) == minDistSubject);
 		return optimalPosition;
 	}
-
-	private Vector3Int GetControllerCentroid(Controller controller) {
-		Vector3 _oppositionCentroid = Vector3.zero;
-		foreach (var adv in controller.activeRegistry) {
-			_oppositionCentroid += adv.gridPosition;
-		}
-		_oppositionCentroid /= (controller.activeRegistry.Count);
-		Vector3Int oppositionCentroid = new Vector3Int(Mathf.RoundToInt(_oppositionCentroid.x),
-													   Mathf.RoundToInt(_oppositionCentroid.y),
-													   Mathf.RoundToInt(_oppositionCentroid.z));
-		return oppositionCentroid;
-	}
 }
