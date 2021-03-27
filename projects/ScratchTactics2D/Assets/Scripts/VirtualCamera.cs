@@ -55,6 +55,7 @@ public class VirtualCamera
             // calculate what the new scale WILL be
             // and calculate the scale ratio. Just use X, because our scale is uniform on all axes
             var updatedScale = battle.transform.localScale + (Input.GetAxis("Mouse ScrollWheel") * 0.75f) * Vector3.one;
+            //var updatedScale = battle.transform.localScale + (Input.GetAxis("Mouse ScrollWheel") * 0.75f) * new Vector3(1, 1, 0);
             float scaleRatio = updatedScale.x / battle.transform.localScale.x;
 
             if (scaleRatio != 1.0f) {

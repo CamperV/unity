@@ -101,29 +101,29 @@ public class PlayerUnitController : UnitController
 	}
 
 	private void DrawValidMoveForSelection(MoveRange mRange) {
-		var mm = GameManager.inst.mouseManager;
-		var placeholder = mm.GetValidIsometricGridPos(grid);
-		//
 		currentSelectionFieldPath?.UnShow(grid);
+		//
+		var mm = GameManager.inst.mouseManager;
+		var gridPos = mm.GetValidIsometricGridPos(grid) ?? mRange.origin;
 
 		// while the origin is a ValidMove, don't draw it
-		if (placeholder != mRange.origin && mRange.ValidMove(placeholder)) {
-			grid.SelectAtAlternate(placeholder);
+		if (gridPos != mRange.origin && mRange.ValidMove(gridPos)) {
+			grid.SelectAtAlternate(gridPos);
 
 			// update this every time you move the mouse. Run time intensive? But shows path taken
-			currentSelectionFieldPath = MovingObjectPath.GetPathFromField(placeholder, mRange);
+			currentSelectionFieldPath = MovingObjectPath.GetPathFromField(gridPos, mRange);
 			currentSelectionFieldPath.Show(grid, pathOverlayTile);
 		}
 	}
 
 	private void PreviewPossibleEngagement() {
-		var target = GetMouseTarget();
 		GetOpposing().ForEach( it => (it as Unit).SetMildFocus(false) );
 
 		// TODO: I hate this
 		// we are re-drawing the red squares EVERY FRAME THAT WE ARE IN ATTACK SELECTION
 		// while it's not really a big deal, I just don't like it
 		currentSelection.DisplayStandingThreatRange();
+		Vector3Int target = GetMouseTarget();
 
 		// if target is an enemy combatant & we are about to attack it
 		if (currentSelection.attackRange.ValidAttack(currentSelection, target)) {
@@ -303,6 +303,10 @@ public class PlayerUnitController : UnitController
 			}
 		};
 
-		return GameManager.inst.mouseManager.GetValidIsometricGridPos(grid);
+		return GameManager.inst.mouseManager.GetValidIsometricGridPos(grid) ?? Constants.unselectableVector3Int;
+	}
+
+	public override HashSet<Vector3Int> GetObstacles() {		
+		return GameManager.inst.GetActiveGrid().CurrentOccupantPositionsExcepting<PlayerUnit>();
 	}
 }

@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
+using Extensions;
 
 public abstract class GameGrid : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public abstract class GameGrid : MonoBehaviour
 	[HideInInspector] public Tilemap overlayTilemap;
 	
 	private Dictionary<Vector3Int, Component> occupancyGrid;
+	protected Dictionary<Vector2Int, Vector3Int> translation2D;
 	//
 	
 	protected virtual void Awake() {				
@@ -26,23 +28,22 @@ public abstract class GameGrid : MonoBehaviour
 		overlayTilemap  = tilemapComponents[2];
 
 		occupancyGrid = new Dictionary<Vector3Int, Component>();
+		translation2D = new Dictionary<Vector2Int, Vector3Int>();
 	}
 	
-	public virtual Vector3 Grid2RealPos(Vector3Int tilePos) {
-		return baseTilemap.GetCellCenterWorld(tilePos);
+	// IMPORTANT: this is only used for converting locations to Unit/Entites positions
+	// we need to account for the Z-shift here
+	// wherever something needs to sit on top of a tile, but be sorted with them (TacticsEntities),
+	// we need to add a small Z-offset
+	public Vector3 Grid2RealPos(Vector3Int tilePos) {
+		return baseTilemap.GetCellCenterWorld(tilePos) + new Vector3(0, 0, 1);
 	}
 	
 	public virtual Vector3Int Real2GridPos(Vector3 realPos) {
 		var toModify = baseTilemap.WorldToCell(realPos);
 		return new Vector3Int(toModify.x, toModify.y, 0);
 	}
-	
-	public Vector3 GetTileInDirection(Vector3 start, Vector3Int dirVector) {
-		Vector3Int tileStart = Real2GridPos(start);
-		Vector3Int tileEnd   = tileStart + dirVector;
-		return Grid2RealPos(tileEnd);		
-	}
-	
+		
 	public Vector3Int RandomTile() {
 		int x = Random.Range(0, mapDimensionX);
 		int y = Random.Range(0, mapDimensionY);
@@ -71,15 +72,16 @@ public abstract class GameGrid : MonoBehaviour
 	
 	// neighbors are defined as adjacent squares in cardinal directions
 	public HashSet<Vector3Int> GetNeighbors(Vector3Int tilePos) {
-		List<Vector3Int> cardinal = new List<Vector3Int> {
-			tilePos + Vector3Int.up, 	// N
-			tilePos + Vector3Int.right, // E
-			tilePos + Vector3Int.down, 	// S
-			tilePos + Vector3Int.left  	// W
+		List<Vector2Int> cardinal = new List<Vector2Int> {
+			Vector2Int.up, 	// N
+			Vector2Int.right, // E
+			Vector2Int.down, 	// S
+			Vector2Int.left  	// W
 		};
 		
 		HashSet<Vector3Int> retHash = new HashSet<Vector3Int>();
-		foreach (Vector3Int pos in cardinal) {
+		foreach (Vector2Int cPos in cardinal) {
+			Vector3Int pos = To3D(new Vector2Int(tilePos.x, tilePos.y) + cPos);
 			if (IsInBounds(pos)) retHash.Add(pos);
 		}
 		return retHash;
@@ -173,27 +175,36 @@ public abstract class GameGrid : MonoBehaviour
 			return true;
 		}
 	}
-
-	public List<Component> CurrentOccupants() {
-		List<Component> allOccupants = new List<Component>();
-		foreach (Vector3Int k in occupancyGrid.Keys) {
-			var occupantAt = OccupantAt(k);
-			if (occupantAt != null) {
-				allOccupants.Add(occupantAt);
-			}
-		}
-		return allOccupants;
-	}
 	
 	public HashSet<Vector3Int> CurrentOccupantPositions<T>() {
 		HashSet<Vector3Int> allPositions = new HashSet<Vector3Int>();
 		foreach (Vector3Int k in occupancyGrid.Keys) {
 			var occupantAt = OccupantAt(k);
-			if (occupantAt != null && occupantAt.GetType().IsSubclassOf(typeof(T)) ) {
+			if (occupantAt != null && occupantAt.MatchesType(typeof(T))) {
 				allPositions.Add(k);
 			}
 		}
 		return allPositions;
+	}
+
+	public HashSet<Vector3Int> CurrentOccupantPositionsExcepting<T>() {
+		HashSet<Vector3Int> allPositions = new HashSet<Vector3Int>();
+		foreach (Vector3Int k in occupancyGrid.Keys) {
+			var occupantAt = OccupantAt(k);
+			if (occupantAt != null && !occupantAt.MatchesType(typeof(T))) {
+				allPositions.Add(k);
+			}
+		}
+		return allPositions;
+	}
+
+	public Vector3Int To3D(Vector2Int v) {
+		if (translation2D.ContainsKey(v)) {
+			return translation2D[v];
+		} else {
+			return new Vector3Int(v.x, v.y, 0);
+		}
+		
 	}
 	
 	// abstract zone

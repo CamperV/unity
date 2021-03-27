@@ -48,7 +48,7 @@ public class EnemyUnitController : UnitController
 					subjectsActingTrigger = false;
 					phaseActionState = Enum.PhaseActionState.acting;
 					
-					StartCoroutine(SubjectsTakeAction());
+					StartCoroutine( SubjectsTakeAction() );
 				}
 				break;
 				

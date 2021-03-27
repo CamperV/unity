@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using Extensions;
 
 public class TacticsManager : MonoBehaviour
 {
@@ -64,15 +65,35 @@ public class TacticsManager : MonoBehaviour
 					// having multiple senders, i.e. PathOverlayIso tiles and other Units, is difficult to keep track of
 
 					// if there is any overlay that can be obscured:
-					Vector3Int northPos = u.gridPosition + new Vector3Int(1, 1, 0);
+					Vector3Int northPos = u.gridPosition.GridPosInDirection(grid, new Vector2Int(1, 1));
 					if (grid.GetOverlayAt(u.gridPosition) || grid.GetOverlayAt(northPos)) {
 						u.ghosted = true;
 					}
 							
 					// or, if there is a Unit with an active focus right behind
-					if (((Unit)grid.OccupantAt(northPos))?.inFocus ?? false) {
-						u.ghosted = true;
+					var occupantAt = grid.OccupantAt(northPos);
+					if (occupantAt?.GetType().IsSubclassOf(typeof(Unit)) ?? false) {
+						if ((occupantAt as Unit).inFocus) {
+							u.ghosted = true;
+						}
 					}
+				}
+			}
+
+			// for obstacles (merge this code soon pls)
+			foreach (Vector3Int oPos in grid.CurrentOccupantPositions<Obstacle>()) {
+				Obstacle o = grid.OccupantAt(oPos) as Obstacle;
+				o.ghosted = false;
+
+				Vector3Int northPos = o.gridPosition.GridPosInDirection(grid, new Vector2Int(1, 1));
+				if (grid.GetOverlayAt(o.gridPosition) || grid.GetOverlayAt(northPos)) {
+					o.ghosted = true;
+				}
+						
+				// or, if there is a Unit with an active focus right behind
+				var occupantAt = grid.OccupantAt(northPos);
+				if (occupantAt?.GetType().IsSubclassOf(typeof(Unit)) ?? false) {
+					o.ghosted = true;
 				}
 			}
 		}

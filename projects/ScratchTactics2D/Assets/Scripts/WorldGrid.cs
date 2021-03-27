@@ -85,6 +85,7 @@ public class WorldGrid : GameGrid
 		baseTilemap.SetTile(nullPos, null);
 
 		worldTileGrid[tilePos] = tile;
+		translation2D[new Vector2Int(tilePos.x, tilePos.y)] = tilePos;
 		var depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
 		baseTilemap.SetTile(depthPos, tile);
 	}

@@ -33,10 +33,18 @@ public class TacticsEntityBase : MovingObject
 
 	protected SpriteRenderer spriteRenderer;
 	public float spriteHeight { get => spriteRenderer.bounds.size.y; }
-	
+/*	
 	// this is higher up, because we should be able to have Entities which are not Units
 	public static TacticsEntityBase Spawn(TacticsEntityBase prefab, Vector3Int tilePos, TacticsGrid grid) {
 		TacticsEntityBase entity = (TacticsEntityBase)Instantiate(prefab, grid.Grid2RealPos(tilePos), Quaternion.identity);
+			
+		entity.gridPosition = tilePos;
+		grid.UpdateOccupantAt(entity.gridPosition, entity);
+		return entity;
+	}
+*/
+	public static T Spawn<T>(T prefab, Vector3Int tilePos, TacticsGrid grid) where T : TacticsEntityBase {
+		T entity = Instantiate(prefab, grid.Grid2RealPos(tilePos), Quaternion.identity) as T;
 			
 		entity.gridPosition = tilePos;
 		grid.UpdateOccupantAt(entity.gridPosition, entity);
@@ -48,7 +56,8 @@ public class TacticsEntityBase : MovingObject
 		animator = GetComponent<Animator>();
 		
 		// set sprite properties
-		spriteRenderer.sortingLayerName = "Tactics Entities";
+		//spriteRenderer.sortingLayerName = "Tactics Entities";
+		spriteRenderer.sortingLayerName = "Tactics";
 		spriteRenderer.sortingOrder = 0;
 
 		// modify bounding box to match sprite

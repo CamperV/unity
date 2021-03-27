@@ -4,6 +4,7 @@ using System.Linq;
 using System;
 using UnityEngine;
 using Extensions;
+using Random = UnityEngine.Random;
 
 public class Battle : MonoBehaviour
 {
@@ -61,6 +62,7 @@ public class Battle : MonoBehaviour
 			}
 		}
 		//
+		SpawnObstacles();
 		SpawnAllUnits();
 	}
 
@@ -129,7 +131,7 @@ public class Battle : MonoBehaviour
 		// then apply the actual relevant stats
 		foreach (UnitStats unitStats in player.barracks.Values) {
 			var uPrefab = player.LoadUnitByTag(unitStats.unitTag);
-			PlayerUnit unit = (PlayerUnit)TacticsEntityBase.Spawn(uPrefab, playerSpawnPositions.PopAt(0), grid);
+			PlayerUnit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, playerSpawnPositions.PopAt(0), grid) as PlayerUnit;
 			//
 			unit.ApplyStats(unitStats);
 			GetController(player).Register(unit);
@@ -141,10 +143,22 @@ public class Battle : MonoBehaviour
 
 		foreach (UnitStats unitStats in other.barracks.Values) {
 			var uPrefab = other.LoadUnitByTag(unitStats.unitTag);
-			Unit unit = (Unit)TacticsEntityBase.Spawn(uPrefab, otherSpawnPositions.PopAt(0), grid);
+			Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, otherSpawnPositions.PopAt(0), grid);
 			//
 			unit.ApplyStats(unitStats);
 			GetController(other).Register(unit);
+		}
+	}
+
+	private void SpawnObstacles() {
+		Zone spawnZone = Zone.WithinGrid(grid, Vector3Int.zero, grid.GetDimensions() - Vector3Int.one);
+		var spawnPositions = spawnZone.GetPositions().RandomSelections<Vector3Int>(Random.Range(5, 10));
+
+		// TODO: get Obstacle from Tile type
+		foreach (Vector3Int pos in spawnPositions) {
+			Obstacle oPrefab = Resources.Load<Obstacle>("ObstacleTree");
+			Obstacle obs = TacticsEntityBase.Spawn<Obstacle>(oPrefab, pos, grid);
+			obs.transform.SetParent(this.transform);
 		}
 	}
 
@@ -193,7 +207,7 @@ public class Battle : MonoBehaviour
 
 		// create the zone to spawn units into
 		// randomly select which starting positions happen, for now
-		return new Pair<Zone, Zone>(Zone.WithinGrid(grid, playerA, playerB), Zone.WithinGrid(grid, otherA, otherB));
+		return new Pair<Zone, Zone>(Zone.VacantWithinGrid(grid, playerA, playerB), Zone.VacantWithinGrid(grid, otherA, otherB));
 	}
 
 	public void AddParticipant(OverworldEntity joiningEntity, WorldTile joiningTile) {
@@ -264,7 +278,7 @@ public class Battle : MonoBehaviour
 		var spawnPositions = spawnZone.GetPositions().RandomSelections<Vector3Int>(joiningEntity.barracks.Count);
 		foreach (UnitStats unitStats in joiningEntity.barracks.Values) {
 			var uPrefab = joiningEntity.LoadUnitByTag(unitStats.unitTag);
-			Unit unit = (Unit)TacticsEntityBase.Spawn(uPrefab, spawnPositions.PopAt(0), grid);
+			Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid);
 			//
 			unit.ApplyStats(unitStats);
 			existingEnemyController.Register(unit);

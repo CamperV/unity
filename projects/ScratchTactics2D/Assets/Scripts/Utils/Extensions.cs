@@ -63,6 +63,11 @@ namespace Extensions {
             return new Vector3Int((int)(v.x/s), (int)(v.y/s), (int)(v.z/s));
         }
 
+        // Vector3Int
+        public static Vector3Int GridPosInDirection(this Vector3Int v, GameGrid grid, Vector2Int dir) {
+            return grid.To3D(new Vector2Int(v.x, v.y) + dir);
+        }
+
         // Vector3
         public static Vector3 SafeScale(this Vector3 v, Vector3 o) {
             return new Vector3((o.x > 0) ? v.x/o.x : 1,
@@ -123,6 +128,11 @@ namespace Extensions {
             } else {
                 return tv;
             }
+        }
+
+        // Component
+        public static bool MatchesType(this Component c, Type t) {
+            return c.GetType() == t || c.GetType().IsSubclassOf(t);
         }
     }
 }

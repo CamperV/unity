@@ -35,7 +35,7 @@ public class UnitController : Controller
 		return advController.activeRegistry;
 	}
 
-	public HashSet<Vector3Int> GetObstacles() {
+	public virtual HashSet<Vector3Int> GetObstacles() {
 		// the controller must dictate to the Unit/MovingObject what counts as obstacles for it
 		var uPositions = GetOpposing().Select(it => it.gridPosition);
 		return new HashSet<Vector3Int>(uPositions);

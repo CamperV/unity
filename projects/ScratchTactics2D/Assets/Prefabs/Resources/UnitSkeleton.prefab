@@ -82,6 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c90fcbc9fdb626849a8af3ac1df45189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inMildFocus: 0
   parentController: {fileID: 5118058475980065873, guid: b3487c465fa1ac24ab899d04f4d62cb9, type: 3}
   unitUIPrefab: {fileID: 54845570200524099, guid: f9b5bd7a4113c2d429bce4b5e790e8ed, type: 3}
   unitUI: {fileID: 0}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Extensions;
 
 public abstract class MovingObject : MonoBehaviour
 {	
@@ -52,7 +53,7 @@ public abstract class MovingObject : MonoBehaviour
 	
 	private bool CrtMove(int xdir, int ydir, GameGrid grid, out Component occupant) {
 		// need to always be a cell/Tile coordinate
-		Vector3Int endTile = gridPosition + new Vector3Int(xdir, ydir, 0);
+		Vector3Int endTile = gridPosition.GridPosInDirection(grid, new Vector2Int(xdir, ydir));
 		Vector3 endpoint = grid.Grid2RealPos(endTile);
 
 		// first check if you're even in bounds, THEN get the occupant

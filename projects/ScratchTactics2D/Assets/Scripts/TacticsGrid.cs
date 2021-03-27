@@ -88,8 +88,9 @@ public class TacticsGrid : GameGrid
 
 		for (int x = 0; x < originTile.battleGridSize.x; x++) {
 			for (int y = 0; y < originTile.battleGridSize.y; y++) {
-				int zval = Random.Range(0, 2);
-				tacticsTileGrid[newOrigin + new Vector3Int(x, y, zval)] = tileOptions[originTile.GetType()];
+				Vector3Int pos = newOrigin + new Vector3Int(x, y, Random.Range(0, 2));
+				tacticsTileGrid[pos] = tileOptions[originTile.GetType()];
+				translation2D[new Vector2Int(pos.x, pos.y)] = pos;
 			}
 		}
 	}
@@ -106,7 +107,7 @@ public class TacticsGrid : GameGrid
 		baseTilemap.RefreshAllTiles();
 
 		// after refreshing all tiles, set rudimentary shading
-		float tintScale = 0.15f;
+		float tintScale = 0.20f;
 		int maxZ = tacticsTileGrid.Keys.Max(it => it.z);
 		foreach(var pair in tacticsTileGrid) {
 			// tint the lower tiles by a step value, to create some shade
@@ -117,7 +118,8 @@ public class TacticsGrid : GameGrid
 
 				baseTilemap.SetTileFlags(lower, TileFlags.None);
 				float tint = 1.0f - (tintScale * (maxZ - i));
-				float a = (i > -5) ? 1.0f : 1.0f - ( (tintScale/2.0f) * (-3 - i));
+				//float a = (i > -3) ? 1.0f : 1.0f - ( (tintScale/2.0f) * (-3 - i));
+				float a = 1.0f;
 				baseTilemap.SetColor(lower, new Color(tint, tint, tint, a));
 			}
 		}

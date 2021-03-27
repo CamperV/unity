@@ -166,7 +166,7 @@ public class MovingObjectPath
 			
 			// available positions are: your neighbors that are "moveable",
 			// minus any endpoints other pathers have scoped out
-			foreach (Vector3Int adjacent in GetMovementOptions(currentPos)) {
+			foreach (Vector3Int adjacent in GameManager.inst.GetActiveGrid().GetNeighbors(currentPos)) {
 				// first, check if its a specific obstacle
 				if (obstacles.Contains(adjacent)) continue;
 
@@ -253,23 +253,6 @@ public class MovingObjectPath
 		}
 
 		return newPath;
-	}
-	
-	// this will disallow all movement through occupants, other than a specified template <T>
-	private static List<Vector3Int> GetMovementOptions(Vector3Int fromPosition) {
-		// since we call TakePhaseAction serially...
-		// we don't need to know if an Enemy WILL move into a spot.
-		// if they had higher priority, they will have already moved into it	
-		// also, the conversion to HashSet, and the conversion back, is not worth it to remove from a list of 4 spaces max
-		List<Vector3Int> moveOptions = new List<Vector3Int>();
-		
-		var grid = GameManager.inst.GetActiveGrid();
-		foreach (Vector3Int pos in GameManager.inst.GetActiveGrid().GetNeighbors(fromPosition)) {
-			if (grid.IsInBounds(pos)) {
-				moveOptions.Add(pos);
-			}
-		}
-		return moveOptions;
 	}
 	
 	private void CalcStartEnd() {		
