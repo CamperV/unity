@@ -103,8 +103,8 @@ public class Battle : MonoBehaviour
 		
 		// setup up each side	
 		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
-		grid.CreateTileMap(offsets[0], playerTile);
-		grid.CreateTileMap(offsets[1], otherTile);
+		grid.CreateDominoTileMap(offsets[0], playerTile);
+		grid.CreateDominoTileMap(offsets[1], otherTile);
 		
 		// after all battle participants have generated their TileMaps, apply the contents of the tacticsTileGrid to the baseTilemap
 		// then compress the bounds afterwards
@@ -225,7 +225,7 @@ public class Battle : MonoBehaviour
 		var offset = orientationDict[(joiningEntity.gridPosition - player.gridPosition)];
 		
 		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
-		grid.CreateTileMap(offset, joiningTile);
+		grid.CreateDominoTileMap(offset, joiningTile);
 		grid.ApplyTileMap(noCompress: false);
 		//
 		Vector3 gridCenter = grid.GetGridCenterReal();

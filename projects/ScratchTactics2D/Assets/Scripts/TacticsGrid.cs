@@ -84,7 +84,7 @@ public class TacticsGrid : GameGrid
 		ResetTintTile(underlayTilemap, tilePos);
 	}
 
-    public void CreateTileMap(Vector3Int offset, WorldTile originTile) {
+    public void CreateDominoTileMap(Vector3Int offset, WorldTile originTile) {
 		var newOrigin = baseTilemap.origin + offset;
 
 		for (int x = 0; x < originTile.battleGridSize.x; x++) {

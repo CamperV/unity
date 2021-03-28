@@ -105,16 +105,8 @@ public class EnemyUnitController : UnitController
 				var clippedPath  = MovingObjectPath.Clip(pathToTarget, subject.moveRange);
 
 				// if the clipped path already has someone there... radiate again to find another place to stand nearby
-				var finalPosition = clippedPath.end;
-				if (!grid.VacantAt(finalPosition)) {
-					foreach (var v in clippedPath.end.GridRadiate(grid, subject.MOVE)) {
-						if (subject.moveRange.field.ContainsKey(v) && grid.VacantAt(v)) {
-							finalPosition = v;
-						}
-
-					}
-				}
-				var finalPath = MovingObjectPath.GetPathTo(subject.gridPosition, clippedPath.end, subject.obstacles);
+				var finalPosition = NextVacantPos(subject, clippedPath.end);
+				var finalPath = MovingObjectPath.GetPathTo(subject.gridPosition, finalPosition, subject.obstacles);
 				//
 				subject.TraverseTo(finalPath.end, fieldPath: finalPath);
 
@@ -174,6 +166,19 @@ public class EnemyUnitController : UnitController
 		var optimalPosition = atMaxDist.First(it => DistToSubject(it) == minDistSubject);
 		return optimalPosition;
 	}
+
+	public Vector3Int NextVacantPos(Unit subject, Vector3Int origPos) {
+		var grid = GameManager.inst.GetActiveGrid();
+		if (!grid.VacantAt(origPos)) {
+			foreach (var v in origPos.GridRadiate(grid, subject.MOVE)) {
+				if (subject.moveRange.field.ContainsKey(v) && grid.VacantAt(v)) {
+					return v;
+				}
+			}
+		}
+		return origPos;
+	}
+
 
 	public override HashSet<Vector3Int> GetObstacles() {		
 		return GameManager.inst.GetActiveGrid().CurrentOccupantPositionsExcepting<EnemyUnit>();
