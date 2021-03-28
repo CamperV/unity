@@ -20,7 +20,7 @@ namespace Extensions {
             }
         }
 
-        // extend Vector3Int to include Radiate
+        // Vector3Int
         public static IEnumerable<Vector3Int> Radiate(this Vector3Int v, int range) {
             HashSet<Vector3Int> toEnumerate = new HashSet<Vector3Int>();
             Queue<Vector3Int> queue = new Queue<Vector3Int>();
@@ -48,8 +48,40 @@ namespace Extensions {
         }
 
         // Vector3Int
+        public static IEnumerable<Vector3Int> GridRadiate(this Vector3Int v, GameGrid grid, int range) {
+            HashSet<Vector2Int> toEnumerate = new HashSet<Vector2Int>();
+            Queue<Vector2Int> queue = new Queue<Vector2Int>();
+            Vector2Int _v = new Vector2Int(v.x, v.y);
+            queue.Enqueue(_v);
+
+            while(queue.Count > 0) {
+                Vector2Int curr = queue.Dequeue();
+                if (toEnumerate.Contains(curr)) continue; 
+                if (curr != _v) toEnumerate.Add(curr);
+
+                if (curr.ManhattanDistance(_v) < range) {
+                    queue.Enqueue(curr + Vector2Int.up);
+                    queue.Enqueue(curr + Vector2Int.right);
+                    queue.Enqueue(curr + Vector2Int.down);
+                    queue.Enqueue(curr + Vector2Int.left);
+                }
+            }
+
+            // now spill the beans
+            foreach (var e in toEnumerate) {
+                yield return grid.To3D(e);
+            }
+        }
+
+        // Vector3Int
+        // NOTE: This is not true MH distance. But this is what we need
         public static int ManhattanDistance(this Vector3Int v, Vector3Int o) {
-            return Mathf.Abs(v.x-o.x) + Mathf.Abs(v.y-o.y) + Mathf.Abs(v.z-o.z);
+            return Mathf.Abs(v.x-o.x) + Mathf.Abs(v.y-o.y);
+        }
+
+        // Vector2Int
+        public static int ManhattanDistance(this Vector2Int v, Vector2Int o) {
+            return Mathf.Abs(v.x-o.x) + Mathf.Abs(v.y-o.y);
         }
 
         // Vector3Int

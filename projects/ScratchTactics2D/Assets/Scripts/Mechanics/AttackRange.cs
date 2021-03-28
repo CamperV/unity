@@ -50,7 +50,7 @@ public class AttackRange : FlowField
 	// ValidMoves will indicate what can be passed through,
 	// and MoveRange will indicate what must be pathed around
 	public bool ValidAttack(Unit currentSelection, Vector3Int tilePos) {
-		bool withinRange = (tilePos - currentSelection.gridPosition).magnitude <= currentSelection._RANGE;
+		bool withinRange = tilePos.ManhattanDistance(currentSelection.gridPosition) <= currentSelection._RANGE;
 		return field.ContainsKey(tilePos) && withinRange;
 	}
 }

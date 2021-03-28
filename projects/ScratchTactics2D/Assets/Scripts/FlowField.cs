@@ -67,7 +67,7 @@ public class FlowField
 		// the way we have coded cost into WorldTile:
 		// the number listed is the cost to enter said tile
 		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
-		return destTile.cost + 2*(destTile.cost * Mathf.Max(dest.z - src.z, 0));
+		return destTile.cost + 1*(destTile.cost * Mathf.Max(dest.z - src.z, 0));
 	}
 	
 	public void Absorb(FlowField other) {

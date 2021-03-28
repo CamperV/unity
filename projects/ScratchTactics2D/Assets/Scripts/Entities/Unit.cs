@@ -266,7 +266,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public bool InStandingAttackRange(Vector3Int target) {
-		return gridPosition.Radiate(_RANGE).ToList().Contains(target);
+		return gridPosition.GridRadiate(GameManager.inst.GetActiveGrid(), _RANGE).ToList().Contains(target);
 	}
 
 	public Attack GenerateAttack(bool isAggressor = true) {

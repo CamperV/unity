@@ -27,11 +27,6 @@ public class CameraManager : MonoBehaviour
 		trackingTarget = toTrack;
 	}
 
-	public static void SetTemporaryTracking(Transform toTrack) {
-		prevTrackingTarget = trackingTarget;
-		trackingTarget = toTrack;
-	}
-
 	public static void ResetTracking() {
 		if (prevTrackingTarget != null) {
 			trackingTarget = prevTrackingTarget;
