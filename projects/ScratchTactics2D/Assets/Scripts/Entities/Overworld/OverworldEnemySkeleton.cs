@@ -21,6 +21,10 @@ public class OverworldEnemySkeleton : OverworldEnemyBase
 				"UnitSkeleton",
 				"UnitSkeleton",
 				"UnitSkeleton",
+				"UnitSkeleton",
+				"UnitSkeleton",
+				"UnitSkeleton",
+				"UnitSkeleton",
 				"UnitSkeleton"
 			};
 		}

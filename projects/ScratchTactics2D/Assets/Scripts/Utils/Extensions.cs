@@ -22,7 +22,7 @@ namespace Extensions {
 
         // Vector3Int
         public static IEnumerable<Vector3Int> Radiate(this Vector3Int v, int range) {
-            HashSet<Vector3Int> toEnumerate = new HashSet<Vector3Int>();
+            List<Vector3Int> toEnumerate = new List<Vector3Int>();
             Queue<Vector3Int> queue = new Queue<Vector3Int>();
             queue.Enqueue(v);
 
@@ -49,7 +49,7 @@ namespace Extensions {
 
         // Vector3Int
         public static IEnumerable<Vector3Int> GridRadiate(this Vector3Int v, GameGrid grid, int range) {
-            HashSet<Vector2Int> toEnumerate = new HashSet<Vector2Int>();
+            List<Vector2Int> toEnumerate = new List<Vector2Int>();
             Queue<Vector2Int> queue = new Queue<Vector2Int>();
             Vector2Int _v = new Vector2Int(v.x, v.y);
             queue.Enqueue(_v);

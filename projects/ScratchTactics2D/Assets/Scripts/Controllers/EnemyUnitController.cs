@@ -98,10 +98,25 @@ public class EnemyUnitController : UnitController
 
 				// now, find a full path to the location
 				// even if we can't reach it, just go as far as you can
+				// CAVEAT: we can't just clip it
+				// if we do, we can have enemies standing in the same place.
+				// instead, we have to do the laborious thing, and REpath-find to the new clipped position
 				var pathToTarget = MovingObjectPath.GetPathTo(subject.gridPosition, optimalPosition, subject.obstacles);
 				var clippedPath  = MovingObjectPath.Clip(pathToTarget, subject.moveRange);
+
+				// if the clipped path already has someone there... radiate again to find another place to stand nearby
+				var finalPosition = clippedPath.end;
+				if (!grid.VacantAt(finalPosition)) {
+					foreach (var v in clippedPath.end.GridRadiate(grid, subject.MOVE)) {
+						if (subject.moveRange.field.ContainsKey(v) && grid.VacantAt(v)) {
+							finalPosition = v;
+						}
+
+					}
+				}
+				var finalPath = MovingObjectPath.GetPathTo(subject.gridPosition, clippedPath.end, subject.obstacles);
 				//
-				subject.TraverseTo(clippedPath.end, fieldPath: clippedPath);
+				subject.TraverseTo(finalPath.end, fieldPath: finalPath);
 
 				// spin until this subject is entirely done moving
 				while (subject.IsMoving()) { yield return null; }
