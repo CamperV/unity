@@ -35,46 +35,20 @@ public abstract class GameGrid : MonoBehaviour
 	// we need to account for the Z-shift here
 	// wherever something needs to sit on top of a tile, but be sorted with them (TacticsEntities),
 	// we need to add a small Z-offset
-	public Vector3 Grid2RealPos(Vector3Int tilePos) {
-		return baseTilemap.GetCellCenterWorld(tilePos) + new Vector3(0, 0, 1);
+	public Vector3 Grid2RealPos(Vector3Int tilePos, float zHeight = 0.0f) {
+		return baseTilemap.GetCellCenterWorld(tilePos) + new Vector3(0, 0, zHeight);
 	}
 	
 	public virtual Vector3Int Real2GridPos(Vector3 realPos) {
 		var toModify = baseTilemap.WorldToCell(realPos);
 		return new Vector3Int(toModify.x, toModify.y, 0);
 	}
-		
-	public Vector3Int RandomTile() {
-		int x = Random.Range(0, mapDimensionX);
-		int y = Random.Range(0, mapDimensionY);
-		return new Vector3Int(x, y, 0);
-	}
-	
-	public Vector3 RandomTileReal() {
-		return Grid2RealPos(RandomTile());
-	}
-	
-	public Vector3Int RandomTileWithin(HashSet<Vector3Int> within) {
-		int x;
-		int y;
-		Vector3Int retVal;
-		do {
-			x = Random.Range(0, mapDimensionX);
-			y = Random.Range(0, mapDimensionY);
-			retVal = new Vector3Int(x, y, 0);
-		} while (!within.Contains(retVal));
-		return retVal;
-	}
-	
-	public Vector3 RandomTileWithinReal(HashSet<Vector3Int> within) {
-		return Grid2RealPos(RandomTileWithin(within));
-	}
 	
 	// neighbors are defined as adjacent squares in cardinal directions
 	public HashSet<Vector3Int> GetNeighbors(Vector3Int tilePos) {
 		List<Vector2Int> cardinal = new List<Vector2Int> {
-			Vector2Int.up, 	// N
-			Vector2Int.right, // E
+			Vector2Int.up, 		// N
+			Vector2Int.right, 	// E
 			Vector2Int.down, 	// S
 			Vector2Int.left  	// W
 		};

@@ -101,10 +101,6 @@ public class WorldGrid : GameGrid
 		} while (!VacantAt(retVal) || except.Contains(GetTileAt(retVal).GetType()));
 		return retVal;
 	}
-	
-	public Vector3 RandomTileExceptTypeReal(HashSet<Type> except) {
-		return Grid2RealPos(RandomTileExceptType(except));
-	}
 
 	public void HighlightTile(Vector3Int tilePos, Color color) {
 		for (int z = 0; z < 2; z++) {

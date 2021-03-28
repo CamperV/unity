@@ -85,15 +85,13 @@ public class TacticsManager : MonoBehaviour
 				Obstacle o = grid.OccupantAt(oPos) as Obstacle;
 				o.ghosted = false;
 
-				Vector3Int northPos = o.gridPosition.GridPosInDirection(grid, new Vector2Int(1, 1));
-				if (grid.GetOverlayAt(o.gridPosition) || grid.GetOverlayAt(northPos)) {
-					o.ghosted = true;
-				}
-						
-				// or, if there is a Unit with an active focus right behind
-				var occupantAt = grid.OccupantAt(northPos);
-				if (occupantAt?.GetType().IsSubclassOf(typeof(Unit)) ?? false) {
-					o.ghosted = true;
+				o.ghosted |= grid.GetOverlayAt(o.gridPosition);
+				for (int h = 1; h < o.zHeight+1; h++) {
+					Vector3Int northPos = o.gridPosition.GridPosInDirection(grid, new Vector2Int(h, h));
+					o.ghosted |= grid.GetOverlayAt(northPos);
+							
+					// or, if there is a Unit with an active focus right behind
+					o.ghosted |= grid.OccupantAt(northPos)?.GetType().IsSubclassOf(typeof(Unit)) ?? false;
 				}
 			}
 		}

@@ -33,20 +33,14 @@ public class TacticsEntityBase : MovingObject
 
 	protected SpriteRenderer spriteRenderer;
 	public float spriteHeight { get => spriteRenderer.bounds.size.y; }
-/*	
-	// this is higher up, because we should be able to have Entities which are not Units
-	public static TacticsEntityBase Spawn(TacticsEntityBase prefab, Vector3Int tilePos, TacticsGrid grid) {
-		TacticsEntityBase entity = (TacticsEntityBase)Instantiate(prefab, grid.Grid2RealPos(tilePos), Quaternion.identity);
-			
-		entity.gridPosition = tilePos;
-		grid.UpdateOccupantAt(entity.gridPosition, entity);
-		return entity;
-	}
-*/
+	public virtual float zHeight { get => 1; }
+
 	public static T Spawn<T>(T prefab, Vector3Int tilePos, TacticsGrid grid) where T : TacticsEntityBase {
-		T entity = Instantiate(prefab, grid.Grid2RealPos(tilePos), Quaternion.identity) as T;
+		T entity = Instantiate(prefab, Vector3.zero, Quaternion.identity) as T;
 			
 		entity.gridPosition = tilePos;
+		//entity.transform.position = grid.Grid2RealPos(entity.gridPosition);
+		entity.UpdateRealPosition(grid.Grid2RealPos(entity.gridPosition));
 		grid.UpdateOccupantAt(entity.gridPosition, entity);
 		return entity;
 	}
@@ -72,6 +66,10 @@ public class TacticsEntityBase : MovingObject
 
 	public override bool GridMove(int xdir, int ydir) {
 		return base.AttemptGridMove(xdir, ydir, GameManager.inst.tacticsManager.GetActiveGrid());
+	}
+
+	public override void UpdateRealPosition(Vector3 pos) {
+		transform.position = pos + new Vector3(0, 0, zHeight);
 	}
 
 	public bool ColliderContains(Vector3 v) {

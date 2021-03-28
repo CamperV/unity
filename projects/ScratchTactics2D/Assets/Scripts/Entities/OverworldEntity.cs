@@ -30,6 +30,11 @@ public abstract class OverworldEntity : MovingObject
 		GenerateUnitStats();
 	}
 
+	public void ResetPosition(Vector3Int v) {
+		gridPosition = v;
+		transform.position = GameManager.inst.worldGrid.Grid2RealPos(gridPosition);
+	}
+
 	public Unit LoadUnitByTag(string tag) {
 		Unit unitPrefab;
 		if (unitPrefabs.ContainsKey(tag)) {

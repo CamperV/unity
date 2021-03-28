@@ -19,18 +19,13 @@ public class OverworldPlayer : OverworldEntity
 	}
 	
 	public static OverworldPlayer Spawn(OverworldPlayer prefab) {
-		OverworldPlayer player = Instantiate(prefab, GameManager.inst.worldGrid.RandomTileReal(), Quaternion.identity);
+		OverworldPlayer player = Instantiate(prefab);
 		
 		Vector3Int pos = new Vector3Int(1, (int)Mathf.Floor(GameManager.inst.worldGrid.mapDimensionY/2), 0);
 		player.ResetPosition(pos);
 		GameManager.inst.worldGrid.UpdateOccupantAt(player.gridPosition, player);
 		
 		return player;
-	}
-		
-	public void ResetPosition(Vector3Int v) {
-		gridPosition = v;
-		transform.position = GameManager.inst.worldGrid.Grid2RealPos(gridPosition);
 	}
 	
 	// action zone - these are called by a controller

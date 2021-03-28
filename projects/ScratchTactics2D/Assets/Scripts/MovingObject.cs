@@ -149,11 +149,13 @@ public abstract class MovingObject : MonoBehaviour
 
 			while (timeStep < 1.0f) {
 				timeStep += (Time.deltaTime / fixedTimePerTile);
-				transform.position = Vector3.Lerp(startPos, realNextPos, timeStep);
+				//transform.position = Vector3.Lerp(startPos, realNextPos, timeStep);
+				UpdateRealPosition(Vector3.Lerp(startPos, realNextPos, timeStep));
 				yield return null;
 			}
 		}
-		transform.position = realNextPos;
+		//transform.position = realNextPos;
+		UpdateRealPosition(realNextPos);
 
 		crtMovingFlag = false;
 		GameManager.inst.tacticsManager.resizeLock = false;
@@ -168,4 +170,7 @@ public abstract class MovingObject : MonoBehaviour
 	
 	public virtual void OnBlocked<T>(T component) where T : Component { return; }
 	public virtual bool IsMoving() { return crtMovingFlag; }
+	public virtual void UpdateRealPosition(Vector3 pos) {
+		transform.position = pos;
+	}
 }

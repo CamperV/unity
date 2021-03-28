@@ -50,9 +50,7 @@ public class OverworldEnemyBase : OverworldEntity
 		var grid = GameManager.inst.worldGrid;
 		
 		// this will auto-check occupancy
-		Vector3 spawnLoc = grid.RandomTileExceptTypeReal(enemy.unspawnable);
-		//
-		enemy.ResetPosition(grid.Real2GridPos(spawnLoc));
+		enemy.ResetPosition(grid.RandomTileExceptType(enemy.unspawnable));
 		grid.UpdateOccupantAt(enemy.gridPosition, enemy);
 
 		enemy.ID = ID;
@@ -164,11 +162,6 @@ public class OverworldEnemyBase : OverworldEntity
 		// if you've depleted your pool, send a false
 		// if you were able to move and the pool is not depleted, keep it alive
 		return moveSuccess;
-	}
-	
-	public void ResetPosition(Vector3Int v) {
-		gridPosition = v;
-		transform.position = GameManager.inst.worldGrid.Grid2RealPos(gridPosition);
 	}
 		
 	public void OnHit() { return; }
