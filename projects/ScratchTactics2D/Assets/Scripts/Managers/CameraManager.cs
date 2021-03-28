@@ -43,6 +43,7 @@ public class CameraManager : MonoBehaviour
 		Vector3 pos = new Vector3(Mathf.Clamp(trackingTarget.position.x, minBounds.x, maxBounds.x),
 								  Mathf.Clamp(trackingTarget.position.y, minBounds.y, maxBounds.y),
 								  transform.position.z);
+		
 		transform.position = pos;
 	}
 }

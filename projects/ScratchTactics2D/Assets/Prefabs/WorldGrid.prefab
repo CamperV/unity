@@ -590,7 +590,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapDimensionX: 50
-  mapDimensionY: 5
+  mapDimensionY: 10
   baseTilemap: {fileID: 0}
   underlayTilemap: {fileID: 0}
   overlayTilemap: {fileID: 0}

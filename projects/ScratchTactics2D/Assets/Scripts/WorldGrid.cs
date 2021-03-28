@@ -175,10 +175,11 @@ public class WorldGrid : GameGrid
 		CreateTintBuffer(mapMatrix);
 		
 		// how many tiles do we want shown vertically?
-		CameraManager.RefitCamera(mapDimensionY);
+//		CameraManager.RefitCamera(mapDimensionY);
+		CameraManager.RefitCamera(5);
 		
-		Vector2 minBounds = new Vector2(4, (float)mapDimensionY/2);
-		Vector2 maxBounds = new Vector2(mapDimensionX-4, (float)mapDimensionY/2);
+		Vector2 minBounds = new Vector2(4, 2.5f);
+		Vector2 maxBounds = new Vector2(mapDimensionX-4, (float)mapDimensionY - 2.5f);
 		CameraManager.SetBounds(minBounds, maxBounds);
     }
 	
