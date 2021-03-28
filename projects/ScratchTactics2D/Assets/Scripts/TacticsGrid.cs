@@ -27,6 +27,7 @@ public class TacticsGrid : GameGrid
 			[typeof(RoadWorldTile)] = (ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile),
 			//
 			[typeof(WaterWorldTile)] = (ScriptableObject.CreateInstance<WaterIsoTile>() as WaterIsoTile),
+			[typeof(DeepWaterWorldTile)] = (ScriptableObject.CreateInstance<WaterIsoTile>() as WaterIsoTile),
 			[typeof(WaterRoadWorldTile)] = (ScriptableObject.CreateInstance<WaterIsoTile>() as WaterIsoTile),
 			//
 			[typeof(ForestWorldTile)] = (ScriptableObject.CreateInstance<ForestIsoTile>() as ForestIsoTile),
@@ -112,7 +113,7 @@ public class TacticsGrid : GameGrid
 		foreach(var pair in tacticsTileGrid) {
 			// tint the lower tiles by a step value, to create some shade
 			// and fill out the tiles all the way to the bottom (of the screen, so like 10 for now)
-			for (int i = pair.Key.z; i > -10; i--) {
+			for (int i = pair.Key.z; i > -3; i--) {
 				Vector3Int lower = new Vector3Int(pair.Key.x, pair.Key.y, i);
 				baseTilemap.SetTile(lower, pair.Value);
 

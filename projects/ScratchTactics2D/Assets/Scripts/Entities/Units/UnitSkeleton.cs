@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class UnitSkeleton : Unit
+public class UnitSkeleton : EnemyUnit
 {
     // default unit stats
     public static UnitStats defaultStats {

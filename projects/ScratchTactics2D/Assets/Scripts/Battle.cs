@@ -143,7 +143,7 @@ public class Battle : MonoBehaviour
 
 		foreach (UnitStats unitStats in other.barracks.Values) {
 			var uPrefab = other.LoadUnitByTag(unitStats.unitTag);
-			Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, otherSpawnPositions.PopAt(0), grid);
+			EnemyUnit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, otherSpawnPositions.PopAt(0), grid) as EnemyUnit;
 			//
 			unit.ApplyStats(unitStats);
 			GetController(other).Register(unit);

@@ -56,6 +56,18 @@ public class WaterWorldTile : WorldTile
 	}
 }
 
+public class DeepWaterWorldTile : WorldTile
+{
+	public override int cost { get { return (int)(Constants.standardTickCost * 10.0f); } }
+	
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("deep_water_tile")
+		};
+		sprite = sprites[0];
+	}
+}
+
 public class MountainWorldTile : WorldTile
 {	
 	public override int probability { get { return 13; } }

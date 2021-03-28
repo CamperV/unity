@@ -60,7 +60,27 @@ public abstract class GameGrid : MonoBehaviour
 		}
 		return retHash;
 	}
-	
+
+	public HashSet<Vector3Int> GetEightNeighbors(Vector3Int tilePos) {
+		List<Vector2Int> cardinal = new List<Vector2Int> {
+			Vector2Int.up,
+			Vector2Int.right,
+			Vector2Int.down,
+			Vector2Int.left,
+			Vector2Int.up + Vector2Int.right,
+			Vector2Int.down + Vector2Int.right,
+			Vector2Int.up + Vector2Int.left,
+			Vector2Int.down + Vector2Int.left
+		};
+		
+		HashSet<Vector3Int> retHash = new HashSet<Vector3Int>();
+		foreach (Vector2Int cPos in cardinal) {
+			Vector3Int pos = To3D(new Vector2Int(tilePos.x, tilePos.y) + cPos);
+			if (IsInBounds(pos)) retHash.Add(pos);
+		}
+		return retHash;
+	}
+
 	public void OverlayAt(Vector3Int tilePos, OverlayTile tile) {
 		overlayTilemap.SetTile(tilePos, tile);
 	}

@@ -159,4 +159,8 @@ public class EnemyUnitController : UnitController
 		var optimalPosition = atMaxDist.First(it => DistToSubject(it) == minDistSubject);
 		return optimalPosition;
 	}
+
+	public override HashSet<Vector3Int> GetObstacles() {		
+		return GameManager.inst.GetActiveGrid().CurrentOccupantPositionsExcepting<EnemyUnit>();
+	}
 }
