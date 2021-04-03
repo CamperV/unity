@@ -104,7 +104,7 @@ public class PlayerUnitController : UnitController
 		currentSelectionFieldPath?.UnShow(grid);
 		//
 		var mm = GameManager.inst.mouseManager;
-		var gridPos = mm.GetValidIsometricGridPos(grid) ?? mRange.origin;
+		var gridPos = mm.GetMouseToGridPos(grid) ?? mRange.origin;
 
 		// while the origin is a ValidMove, don't draw it
 		if (gridPos != mRange.origin && mRange.ValidMove(gridPos)) {
@@ -303,7 +303,7 @@ public class PlayerUnitController : UnitController
 			}
 		};
 
-		return GameManager.inst.mouseManager.GetValidIsometricGridPos(grid) ?? Constants.unselectableVector3Int;
+		return GameManager.inst.mouseManager.GetMouseToGridPos(grid) ?? Constants.unselectableVector3Int;
 	}
 
 	public override HashSet<Vector3Int> GetObstacles() {		

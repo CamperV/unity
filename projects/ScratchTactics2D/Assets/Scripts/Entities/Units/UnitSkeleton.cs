@@ -15,7 +15,7 @@ public class UnitSkeleton : EnemyUnit
                 STRENGTH  = 1,
                 DEXTERITY = 1,
                 REFLEX    = 3,
-                MOVE      = 3,
+                MOVE      = 7,
 
                 inventoryPool = new List<Equipment>{
                     new Shortsword(),

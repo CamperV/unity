@@ -153,7 +153,7 @@ public class TacticsManager : MonoBehaviour
 		
 		// secondary try: select based on tileGridPos AFTER determining BB collisions
 		foreach (Unit u in unitsInBattle) {
-			if (!u.IsMoving() && mm.GetValidIsometricGridPos( (GameManager.inst.GetActiveGrid() as TacticsGrid) ) == u.gridPosition) {
+			if (!u.IsMoving() && mm.GetMouseToGridPos( (GameManager.inst.GetActiveGrid() as TacticsGrid) ) == u.gridPosition) {
 				return u;
 			}
 		}
