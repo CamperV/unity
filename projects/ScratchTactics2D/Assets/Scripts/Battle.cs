@@ -120,7 +120,11 @@ public class Battle : MonoBehaviour
 	
 	private void SpawnAllUnits() {
 		// number of spawnZones is equal to the number of worldParticpants (2)
-		Pair<Zone, Zone> spawnZones = GetSpawnZones();
+		Pair<GridAlignedZone, GridAlignedZone> spawnZones = GetSpawnZones();
+		spawnZones.first.Display();
+		spawnZones.second.Display();
+		Debug.Log($"spawn zone w/ pivot {spawnZones.first.pivot}: {spawnZones.first.GetPositions()}");
+		Debug.Log($"battle bounds are {grid.GetBounds()}");
 		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
@@ -162,52 +166,42 @@ public class Battle : MonoBehaviour
 		}
 	}
 
-	// TODO: refactor this into something that is actually modular
-	// right now, I'm too smooth-brain
-	private Pair<Zone, Zone> GetSpawnZones() {
-		Vector3Int playerA = Vector3Int.zero;
-		Vector3Int playerB = Vector3Int.zero;
-		Vector3Int otherA  = Vector3Int.zero;
-		Vector3Int otherB  = Vector3Int.zero;
-		
-		// these are the maximum size in each direction
-		Vector3Int gridDim = grid.GetDimensions() - Vector3Int.one;
-		
-		// boy this is a dumb, stubborn way to do this
+	private Pair<GridAlignedZone, GridAlignedZone> GetSpawnZones() {
+		Bounds gridBounds = grid.GetBounds();
+		Vector3 northeast = gridBounds.center + 0.75f*new Vector3(gridBounds.extents.x, gridBounds.extents.y, 0);
+		Vector3 northwest = gridBounds.center + 0.75f*new Vector3(-gridBounds.extents.x, gridBounds.extents.y, 0);
+		Vector3 southeast = gridBounds.center + 0.75f*new Vector3(gridBounds.extents.x, -gridBounds.extents.y, 0);
+		Vector3 southwest = gridBounds.center + 0.75f*new Vector3(-gridBounds.extents.x, -gridBounds.extents.y, 0);
+
+		Vector3 playerAnchor = Vector3.zero;
+		Vector3 otherAnchor = Vector3.zero;
 		switch (other.gridPosition - player.gridPosition) {
 			case Vector3Int v when v.Equals(Vector3Int.up):
-				playerA = Vector3Int.zero;
-				playerB = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, gridDim.z);
-				//
-				otherA  = new Vector3Int(gridDim.x, 0, 0);
-				otherB  = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, gridDim.z);
+				playerAnchor = southwest;
+				otherAnchor = northeast; 
+				playerAnchor = gridBounds.center;
+				otherAnchor = gridBounds.center;
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.right):
-				playerA = new Vector3Int(0, gridDim.y, 0);
-				playerB = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), gridDim.z);
-				//
-				otherA  = Vector3Int.zero;
-				otherB  = new Vector3Int(gridDim.x, (int)(gridDim.y/4.0f), 0);
+				playerAnchor = northwest;
+				otherAnchor = southeast; 
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.down):
-				playerA = new Vector3Int(gridDim.x, 0, 0);
-				playerB = new Vector3Int(gridDim.x - (int)(gridDim.x/4.0f), gridDim.y, gridDim.z);
-				//
-				otherA  = Vector3Int.zero;
-				otherB  = new Vector3Int((int)(gridDim.x/4.0f), gridDim.y, gridDim.z);
+				playerAnchor = northeast;
+				otherAnchor = southwest; 
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.left):
-				playerA = Vector3Int.zero;
-				playerB = new Vector3Int(gridDim.x, (int)(gridDim.y/4.0f), gridDim.z);
-				//
-				otherA  = new Vector3Int(0, gridDim.y, 0);
-				otherB  = new Vector3Int(gridDim.x, gridDim.y  - (int)(gridDim.y/4.0f), gridDim.z);
+				playerAnchor = southeast;
+				otherAnchor = northwest; 
 				break;
 		}
 
 		// create the zone to spawn units into
 		// randomly select which starting positions happen, for now
-		return new Pair<Zone, Zone>(Zone.VacantWithinGrid(grid, playerA, playerB), Zone.VacantWithinGrid(grid, otherA, otherB));
+		return new Pair<GridAlignedZone, GridAlignedZone>(
+			new GridAlignedZone(playerAnchor, 6, 4, 2, grid),
+			new GridAlignedZone(otherAnchor, 6, 4, 2, grid)
+		);
 	}
 
 	public void AddParticipant(OverworldEntity joiningEntity, WorldTile joiningTile) {

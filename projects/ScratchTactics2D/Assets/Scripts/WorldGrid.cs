@@ -176,7 +176,7 @@ public class WorldGrid : GameGrid
 		
 		// how many tiles do we want shown vertically?
 //		CameraManager.RefitCamera(mapDimensionY);
-		CameraManager.RefitCamera(5);
+		CameraManager.RefitCamera(7);
 		
 		Vector2 minBounds = new Vector2(4, 2.5f);
 		Vector2 maxBounds = new Vector2(mapDimensionX-4, (float)mapDimensionY - 2.5f);
@@ -300,8 +300,10 @@ public class WorldGrid : GameGrid
 			// now that the tiles are placed, check for deep water
 			foreach(Vector3Int lakePos in fField.field.Keys) {
 				bool surrounded = true;
-				foreach (var neighbor in GetNeighbors(lakePos)) {
-					surrounded &= (worldTileGrid[neighbor].GetType() == typeof(WaterWorldTile) || worldTileGrid[neighbor].GetType() == typeof(DeepWaterWorldTile));
+				foreach (var neighbor in GetEightNeighbors(lakePos)) {
+					//surrounded &= (worldTileGrid[neighbor].GetType() == typeof(WaterWorldTile) || worldTileGrid[neighbor].GetType() == typeof(DeepWaterWorldTile));
+					surrounded &= (worldTileGrid[neighbor].GetType() != typeof(GrassWorldTile) &&
+								   worldTileGrid[neighbor].GetType() != typeof(ForestWorldTile));
 				}
 				if (surrounded) SetAppropriateTile(lakePos, tileOptions[(int)TileEnum.deepWater]);
 			}

@@ -144,4 +144,8 @@ public class TacticsGrid : GameGrid
 	public Vector3 GetTilemapOrigin() {
 		return baseTilemap.GetCellCenterWorld(baseTilemap.origin);
 	}
+
+	public Bounds GetBounds() {
+		return baseTilemap.localBounds;
+	}
 }

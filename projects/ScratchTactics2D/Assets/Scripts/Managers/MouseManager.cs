@@ -25,11 +25,10 @@ public class MouseManager : MonoBehaviour
 				Debug.Log($"gridPos: {gridPos}");
 			}
 		}
-		*/
 
 		if (GameManager.inst.gameState == Enum.GameState.battle) {
 			Vector3? m = ProjectMouseOnGrid(currentActiveGrid);
-			if (Input.GetMouseButtonDown(0) || true) {
+			if (Input.GetMouseButtonDown(0)) {
 				burstZone?.ClearDisplay();
 
 				if (m != null) {
@@ -42,6 +41,7 @@ public class MouseManager : MonoBehaviour
 				}
 			}
 		}
+		*/
     }
 
 	public Vector3Int? GetMouseToGridPos(GameGrid grid) {

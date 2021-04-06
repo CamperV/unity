@@ -143,8 +143,8 @@ public class EnemyUnitController : UnitController
 	}
 
 	private Vector3Int GetClosestTarget(Unit subject, List<MovingObject> targets) {
-		var minDist = targets.Min(it => (subject.gridPosition - it.gridPosition).magnitude);
-		return targets.First(it => subject.gridPosition.ManhattanDistance(it.gridPosition) == minDist).gridPosition;
+		var minDist = targets.Min(it => it.gridPosition.ManhattanDistance(subject.gridPosition));
+		return targets.First(it => it.gridPosition.ManhattanDistance(subject.gridPosition) == minDist).gridPosition;
 	}
 
 	private Vector3Int GetOptimalToAttack(Unit subject, Vector3Int targetPosition) {
