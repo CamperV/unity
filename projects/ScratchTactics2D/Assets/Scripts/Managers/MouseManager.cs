@@ -9,8 +9,6 @@ public class MouseManager : MonoBehaviour
 	
 	[HideInInspector] public Vector3 mouseWorldPos;
 
-	private BurstZone burstZone;
-
     void Update() {
 		// get the collision point of the ray with the z = 0 plane
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -18,13 +16,17 @@ public class MouseManager : MonoBehaviour
 		currentActiveGrid = GameManager.inst.GetActiveGrid();
 		
 		// debug
-		/*
+		
 		if (Input.GetMouseButtonDown(0)) {
+			Vector3Int gridPos = Vector3Int.zero;
 			if (GameManager.inst.gameState == Enum.GameState.battle) {
-				var gridPos = GetMouseToGridPos( (currentActiveGrid as TacticsGrid) );
-				Debug.Log($"gridPos: {gridPos}");
+				gridPos = GetMouseToGridPos( (currentActiveGrid as TacticsGrid) ) ?? Vector3Int.zero;
+			} else {
+				gridPos = currentActiveGrid.Real2GridPos(mouseWorldPos);
 			}
+			Debug.Log($"gridPos: {gridPos}");
 		}
+		/*
 
 		if (GameManager.inst.gameState == Enum.GameState.battle) {
 			Vector3? m = ProjectMouseOnGrid(currentActiveGrid);

@@ -175,8 +175,7 @@ public class WorldGrid : GameGrid
 		CreateTintBuffer(mapMatrix);
 		
 		// how many tiles do we want shown vertically?
-//		CameraManager.RefitCamera(mapDimensionY);
-		CameraManager.RefitCamera(7);
+		CameraManager.RefitCamera(5);
 		
 		Vector2 minBounds = new Vector2(4, 2.5f);
 		Vector2 maxBounds = new Vector2(mapDimensionX-4, (float)mapDimensionY - 2.5f);
@@ -292,21 +291,19 @@ public class WorldGrid : GameGrid
 			int lakeSize = Random.Range(lowerBound, upperBound);
 			
 			FlowField fField = FlowField.FlowFieldFrom(lakeOrigin, nonMountains, range: lakeRange*Constants.standardTickCost, numElements: lakeSize);
-			
 			foreach(Vector3Int lakePos in fField.field.Keys) {
 				SetAppropriateTile(lakePos, tileOptions[(int)TileEnum.water]);
 			}
+		}
 
-			// now that the tiles are placed, check for deep water
-			foreach(Vector3Int lakePos in fField.field.Keys) {
-				bool surrounded = true;
-				foreach (var neighbor in GetEightNeighbors(lakePos)) {
-					//surrounded &= (worldTileGrid[neighbor].GetType() == typeof(WaterWorldTile) || worldTileGrid[neighbor].GetType() == typeof(DeepWaterWorldTile));
-					surrounded &= (worldTileGrid[neighbor].GetType() != typeof(GrassWorldTile) &&
-								   worldTileGrid[neighbor].GetType() != typeof(ForestWorldTile));
-				}
-				if (surrounded) SetAppropriateTile(lakePos, tileOptions[(int)TileEnum.deepWater]);
+		// now that the tiles are placed, check for deep water
+		foreach(Vector3Int tilePos in LocationsOf<WaterWorldTile>()) {
+			bool surrounded = true;
+			foreach (var neighbor in GetEightNeighbors(tilePos)) {
+				surrounded &= (worldTileGrid[neighbor].GetType() != typeof(GrassWorldTile) &&
+							   worldTileGrid[neighbor].GetType() != typeof(ForestWorldTile));
 			}
+			if (surrounded) SetAppropriateTile(tilePos, tileOptions[(int)TileEnum.deepWater]);
 		}
 	}
 	
@@ -458,5 +455,9 @@ public class WorldGrid : GameGrid
 			}
 		}
 		return retVal;
+	}
+
+	private List<Vector3Int> LocationsOf<T>() where T : WorldTile {
+		return worldTileGrid.Keys.ToList().Where( it => worldTileGrid[it].GetType() == typeof(T)).ToList();
 	}
 }

@@ -130,6 +130,7 @@ namespace Extensions {
             return r;
         }
 
+        // List
         public static List<T> RandomSelections<T>(this List<T> l, int numSelections) {
             List<T> retVal = new List<T>();
             List<int> available = Enumerable.Range(0, l.Count).ToList();

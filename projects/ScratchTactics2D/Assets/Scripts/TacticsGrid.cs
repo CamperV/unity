@@ -131,6 +131,12 @@ public class TacticsGrid : GameGrid
 							  baseTilemap.cellBounds.yMax - baseTilemap.cellBounds.yMin,
 							  baseTilemap.cellBounds.zMax - baseTilemap.cellBounds.zMin);
 	}
+
+	public Vector3 GetCellRadius2D() {
+		Vector3Int maxCell = new Vector3Int(baseTilemap.cellBounds.xMax, baseTilemap.cellBounds.yMax, 0);
+		float mag = (baseTilemap.GetCellCenterWorld(maxCell) - GetGridCenterReal()).magnitude;
+		return new Vector3(0, mag, 0);
+	}
 	
 	public Vector3 GetGridCenterReal() {
 		// interpolate the real world coordinates of the "middle" tiles
@@ -143,6 +149,10 @@ public class TacticsGrid : GameGrid
 	
 	public Vector3 GetTilemapOrigin() {
 		return baseTilemap.GetCellCenterWorld(baseTilemap.origin);
+	}
+
+	public List<Vector3Int> GetSurfacePositions() {
+		return translation2D.Values.ToList();
 	}
 
 	public Bounds GetBounds() {

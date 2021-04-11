@@ -120,11 +120,9 @@ public class Battle : MonoBehaviour
 	
 	private void SpawnAllUnits() {
 		// number of spawnZones is equal to the number of worldParticpants (2)
-		Pair<GridAlignedZone, GridAlignedZone> spawnZones = GetSpawnZones();
+		Pair<SpawnZone, SpawnZone> spawnZones = GetSpawnZones();
 		spawnZones.first.Display();
 		spawnZones.second.Display();
-		Debug.Log($"spawn zone w/ pivot {spawnZones.first.pivot}: {spawnZones.first.GetPositions()}");
-		Debug.Log($"battle bounds are {grid.GetBounds()}");
 		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
@@ -166,41 +164,70 @@ public class Battle : MonoBehaviour
 		}
 	}
 
-	private Pair<GridAlignedZone, GridAlignedZone> GetSpawnZones() {
-		Bounds gridBounds = grid.GetBounds();
-		Vector3 northeast = gridBounds.center + 0.75f*new Vector3(gridBounds.extents.x, gridBounds.extents.y, 0);
-		Vector3 northwest = gridBounds.center + 0.75f*new Vector3(-gridBounds.extents.x, gridBounds.extents.y, 0);
-		Vector3 southeast = gridBounds.center + 0.75f*new Vector3(gridBounds.extents.x, -gridBounds.extents.y, 0);
-		Vector3 southwest = gridBounds.center + 0.75f*new Vector3(-gridBounds.extents.x, -gridBounds.extents.y, 0);
+	private Pair<SpawnZone, SpawnZone> GetSpawnZones() {
+		//
+		// IMPORTANT: the north/suth/east/west scaling (0.4 currently) is linked to the size of the spawn zones
+		// if you're going to do this programmatically in the future, probably just switch to vector rotation
 
+		float wtfAngle = 63.565f;
+		Vector3 scaledRadius = 0.85f * grid.GetCellRadius2D();
+		Vector3 northeastVec = Quaternion.AngleAxis( wtfAngle, 			new Vector3(0, 0, -1)) * scaledRadius;
+		Vector3 northwestVec = Quaternion.AngleAxis(-wtfAngle, 			new Vector3(0, 0, -1)) * scaledRadius;
+		Vector3 southeastVec = Quaternion.AngleAxis( (180f - wtfAngle), new Vector3(0, 0, -1)) * scaledRadius;
+		Vector3 southwestVec = Quaternion.AngleAxis(-(180f - wtfAngle), new Vector3(0, 0, -1)) * scaledRadius;
+		Vector3 northeast = grid.GetGridCenterReal() + northeastVec;
+		Vector3 northwest = grid.GetGridCenterReal() + northwestVec;
+		Vector3 southeast = grid.GetGridCenterReal() + southeastVec;
+		Vector3 southwest = grid.GetGridCenterReal() + southwestVec;
+
+		//Debug.DrawLine(grid.GetGridCenterReal(), northeast, Color.red, 1000.0f, false);
+		//Debug.DrawLine(grid.GetGridCenterReal(), northwest, Color.blue, 1000.0f, false);
+		//Debug.DrawLine(grid.GetGridCenterReal(), southwest, Color.green, 1000.0f, false);
+		//Debug.DrawLine(grid.GetGridCenterReal(), southeast, Color.yellow, 1000.0f, false);
+
+		// literally just a char to determine if it's an N-S orientation or an E-W orientation
+		// the slashes just help me remember
+		string orientation = "//";
 		Vector3 playerAnchor = Vector3.zero;
 		Vector3 otherAnchor = Vector3.zero;
 		switch (other.gridPosition - player.gridPosition) {
 			case Vector3Int v when v.Equals(Vector3Int.up):
 				playerAnchor = southwest;
-				otherAnchor = northeast; 
-				playerAnchor = gridBounds.center;
-				otherAnchor = gridBounds.center;
+				otherAnchor = northeast;
+				//
+				orientation = "//";
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.right):
 				playerAnchor = northwest;
-				otherAnchor = southeast; 
+				otherAnchor = southeast;
+				//
+				orientation = "\\";
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.down):
+				otherAnchor = southwest;
 				playerAnchor = northeast;
-				otherAnchor = southwest; 
+				//
+				orientation = "//";
 				break;
 			case Vector3Int v when v.Equals(Vector3Int.left):
+				otherAnchor = northwest;
 				playerAnchor = southeast;
-				otherAnchor = northwest; 
+				//
+				orientation = "\\";
 				break;
 		}
 
 		// create the zone to spawn units into
 		// randomly select which starting positions happen, for now
-		return new Pair<GridAlignedZone, GridAlignedZone>(
-			new GridAlignedZone(playerAnchor, 6, 4, 2, grid),
-			new GridAlignedZone(otherAnchor, 6, 4, 2, grid)
+		const int width = 6;
+		const int height = 4;
+		const int depth = 2;
+		int xSize = (orientation == "//") ? height : width;
+		int ySize = (orientation == "//") ? width : height;
+		int zSize = depth;
+		return new Pair<SpawnZone, SpawnZone>(
+			new SpawnZone(playerAnchor, xSize-1, ySize-1, zSize, grid),
+			new SpawnZone(otherAnchor, xSize-1, ySize-1, zSize, grid)
 		);
 	}
 
