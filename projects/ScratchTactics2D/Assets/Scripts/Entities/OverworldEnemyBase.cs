@@ -170,10 +170,6 @@ public class OverworldEnemyBase : OverworldEntity
 		animator.SetTrigger("SkeletonAlert");
 	}
 	
-	public override bool GridMove(int xdir, int ydir) {
-		return base.AttemptGridMove(xdir, ydir, GameManager.inst.worldGrid);
-	}
-	
 	// let's be real... "entity" is just "player"
 	// in the future, I'd like to be able to orchestrate battles b/w NPCs
 	// but that's in the future. Change terminology now, to confuse less

@@ -2,10 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Extensions;
 
 public class OverworldPlayer : OverworldEntity
 {
-	public override float moveSpeed { get { return 1.0f; } }
+	public override float moveSpeed { get => 1.0f; }
+	public int moveThreshold { get => 200; }
 	
 	// abstract implementations
 	public override List<string> defaultUnitTags {
@@ -30,8 +32,15 @@ public class OverworldPlayer : OverworldEntity
 	
 	// action zone - these are called by a controller
 	public override bool GridMove(int xdir, int ydir) {
-		var success = base.AttemptGridMove(xdir, ydir, GameManager.inst.worldGrid);		
-		return success;
+		Vector3Int endTile = gridPosition.GridPosInDirection(GameManager.inst.worldGrid, new Vector2Int(xdir, ydir));
+
+		// first check if you can overcome the cost of the tile at all	
+		if (GameManager.inst.worldGrid.IsInBounds(endTile) && GameManager.inst.worldGrid.GetTileAt(endTile).cost <= moveThreshold) {
+			return base.AttemptGridMove(xdir, ydir, GameManager.inst.worldGrid);
+		} else {
+			BumpTowards(endTile, GameManager.inst.worldGrid);
+			return false;
+		}
 	}
 	
 	// this method is run when the Player moves INTO an Enemy

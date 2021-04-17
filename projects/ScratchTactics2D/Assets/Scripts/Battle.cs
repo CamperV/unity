@@ -246,6 +246,7 @@ public class Battle : MonoBehaviour
 		var offset = orientationDict[(joiningEntity.gridPosition - player.gridPosition)];
 		
 		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
+		Debug.Log($"Creating a new battleground with offset {offset}");
 		grid.CreateDominoTileMap(offset, joiningTile);
 		grid.ApplyTileMap(noCompress: false);
 		//

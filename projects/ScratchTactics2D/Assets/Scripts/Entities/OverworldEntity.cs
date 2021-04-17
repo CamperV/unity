@@ -35,6 +35,10 @@ public abstract class OverworldEntity : MovingObject
 		transform.position = GameManager.inst.worldGrid.Grid2RealPos(gridPosition);
 	}
 
+	public override bool GridMove(int xdir, int ydir) {
+		return base.AttemptGridMove(xdir, ydir, GameManager.inst.worldGrid);
+	}
+
 	public Unit LoadUnitByTag(string tag) {
 		Unit unitPrefab;
 		if (unitPrefabs.ContainsKey(tag)) {
