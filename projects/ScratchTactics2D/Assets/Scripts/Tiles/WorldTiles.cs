@@ -29,6 +29,31 @@ public class DirtWorldTile : WorldTile
 	}
 }
 
+public class VillageWorldTile : WorldTile
+{
+	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
+	public override int depth { get { return 1; } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("village_tile")
+		};
+		sprite = sprites[0];
+	}
+}
+
+public class RuinsWorldTile : WorldTile
+{
+	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("ruins_tile")
+		};
+		sprite = sprites[0];
+	}
+}
+
 public class ForestWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }

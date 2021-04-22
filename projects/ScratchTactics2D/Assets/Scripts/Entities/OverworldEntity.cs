@@ -11,6 +11,8 @@ public abstract class OverworldEntity : MovingObject
 	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;
 
+	public abstract HashSet<Type> spawnable { get; }
+
 	// constants
 	protected readonly float timeToDie = 1.0f;
 	

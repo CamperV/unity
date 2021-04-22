@@ -20,10 +20,10 @@ public class OverworldEnemyBase : OverworldEntity
 	}
 
 	// OVERRIDABLES
-	public virtual int detectionRange { get { return 5; } }
-	public virtual HashSet<Type> unspawnable {
+	public virtual int detectionRange { get { return 1; } }
+	public override HashSet<Type> spawnable {
 		get {
-			return new HashSet<Type>() { typeof(MountainWorldTile) };
+			return new HashSet<Type>() { typeof(GrassWorldTile) };
 		}
 	}
 
@@ -44,13 +44,13 @@ public class OverworldEnemyBase : OverworldEntity
 
 	private EnemyController parentController { get => GameManager.inst.enemyController; }
 	
-	// will never spawn into an unspawnable tile
+	// will only spawn into a spawnable tile
 	public static OverworldEnemyBase Spawn(OverworldEnemyBase prefab, int ID = -1) {
 		OverworldEnemyBase enemy = Instantiate(prefab, Vector3.zero, Quaternion.identity);
 		var grid = GameManager.inst.worldGrid;
 		
 		// this will auto-check occupancy
-		enemy.ResetPosition(grid.RandomTileExceptType(enemy.unspawnable));
+		enemy.ResetPosition( grid.RandomTileWithinType(enemy.spawnable) );
 		grid.UpdateOccupantAt(enemy.gridPosition, enemy);
 
 		enemy.ID = ID;

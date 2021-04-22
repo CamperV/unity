@@ -129,6 +129,7 @@ namespace Extensions {
             list.RemoveAt(index);
             return r;
         }
+        
 
         // List
         public static List<T> RandomSelections<T>(this List<T> l, int numSelections) {
@@ -143,6 +144,14 @@ namespace Extensions {
                 available.Remove(selIndex);
             }
             return retVal;
+        }
+
+        // List
+        public static T PopRandom<T>(this List<T> list) {
+            int rand = Random.Range(0, list.Count);
+            T r = list[rand];
+            list.RemoveAt(rand);
+            return r;
         }
 
         // Color

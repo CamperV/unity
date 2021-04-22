@@ -10,7 +10,7 @@ using Extensions;
 
 public class WorldGrid : GameGrid
 {
-	private enum TileEnum {grass, forest, water, deepWater, mountain, dirt};
+	private enum TileEnum {grass, forest, water, deepWater, mountain, village, ruins, dirt};
 	private List<WorldTile> tileOptions;
 	private OverlayTile selectTile;
 	private Dictionary<Vector3Int, WorldTile> worldTileGrid;
@@ -29,6 +29,8 @@ public class WorldGrid : GameGrid
 			(ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile),
 			(ScriptableObject.CreateInstance<DeepWaterWorldTile>() as DeepWaterWorldTile),
 			(ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile),
+			(ScriptableObject.CreateInstance<VillageWorldTile>() as VillageWorldTile),
+			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
 			(ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile)
 		};
 		selectTile = (ScriptableObject.CreateInstance<SelectOverlayTile>() as SelectOverlayTile);
@@ -90,6 +92,22 @@ public class WorldGrid : GameGrid
 		translation2D[new Vector2Int(tilePos.x, tilePos.y)] = tilePos;
 		var depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
 		baseTilemap.SetTile(depthPos, tile);
+	}
+
+	// randomly permuting may actually be better than iterating?
+	// nah probably not, this is lazy
+	public Vector3Int RandomTileWithinType(HashSet<Type> within) {
+		List<Vector3Int> pool = worldTileGrid.Keys.ToList().Where( it => within.Contains(worldTileGrid[it].GetType()) ).ToList();
+
+		Vector3Int retVal;
+		do {
+			if (pool.Count == 0) {
+				Debug.Log($"While trying to find a vacant tile of types {within}, all are vacant");
+				return -1*Vector3Int.one;
+			}
+			retVal = pool.PopRandom<Vector3Int>();
+		} while (!VacantAt(retVal));
+		return retVal;
 	}
 	
 	public Vector3Int RandomTileExceptType(HashSet<Type> except) {
@@ -171,7 +189,13 @@ public class WorldGrid : GameGrid
 		LinkMountainRanges(mapMatrix);
 		CreateForests(mapMatrix, 2, 5);
 		CreateLakes(mapMatrix, 5, 10);
-		CreateRoad();
+
+		// player-affecting tiles
+		PlaceVillages(mapMatrix, 10);
+		CreateRoadBetweenWaypoints( LocationsOf<VillageWorldTile>() );
+		CreateRoadBetweenWaypoints( LocationsOf<VillageWorldTile>().RandomSelections<Vector3Int>(3) );
+
+		// finalize outside
 		CreateTintBuffer(mapMatrix);
 		
 		// how many tiles do we want shown vertically?
@@ -306,8 +330,29 @@ public class WorldGrid : GameGrid
 			if (surrounded) SetAppropriateTile(tilePos, tileOptions[(int)TileEnum.deepWater]);
 		}
 	}
-	
-	private void CreateRoad() {
+
+	// wow I was very lazy when I implemented this
+	// just keep it man, there's too much to do
+	private void PlaceVillages(int[,] mapMatrix, int num) {
+		if (num < 2) {
+			Debug.Log("Need to place at least a starting and ending village");
+			return;
+		}
+
+		// first village
+		// the rest are randomized
+		Vector3Int firstVillagePos = new Vector3Int(1, Random.Range(1, mapDimensionY-1), 0);
+		SetAppropriateTile(firstVillagePos, tileOptions[(int)TileEnum.village]);
+
+		Vector3Int lastVillagePos  = new Vector3Int(mapDimensionX-1, Random.Range(1, mapDimensionY-1), 0);
+		SetAppropriateTile(lastVillagePos, tileOptions[(int)TileEnum.village]);
+
+		foreach (Vector3Int villagePos in PositionsOfType(mapMatrix, TileEnum.grass).RandomSelections<Vector3Int>((int)(num-2))) {
+			SetAppropriateTile(villagePos, tileOptions[(int)TileEnum.village]);
+		}
+	}
+
+	private void CreateRoad(Vector3Int startPos, Vector3Int endPos) {
 		// utility func
 		HashSet<Vector3Int> _HS(Vector3Int a, Vector3Int b) {
 			return new HashSet<Vector3Int> {a, b};
@@ -331,8 +376,6 @@ public class WorldGrid : GameGrid
 			return patternToTile[pattern];
 		}
 
-		Vector3Int startPos = new Vector3Int(1, Random.Range(1, mapDimensionY-1), 0);
-		Vector3Int endPos   = new Vector3Int(mapDimensionX-1, Random.Range(1, mapDimensionY-1), 0);
 		MovingObjectPath road = MovingObjectPath.GetAnyPathTo(startPos, endPos);
 		
 		// now that we have the path, place the correct road tiles
@@ -365,9 +408,24 @@ public class WorldGrid : GameGrid
 				}
 				else if (tileType == typeof(MountainWorldTile)) {
 					roadTile = GetPatternTile<MountainRoadWorldTile>(pattern);
+				} else {
+					roadTile = GetPatternTile<RoadWorldTile>(pattern);
 				}
 				SetAppropriateTile(roadPos, roadTile);
 			}
+		}
+	}
+
+	private void CreateRoadBetweenWaypoints(List<Vector3Int> waypoints) {
+		Vector3Int prevPos = Vector3Int.zero;
+		int i = 0;
+
+		foreach (Vector3Int pos in waypoints.OrderBy(it => it.x)) {
+			if (i > 0) {
+				CreateRoad(prevPos, pos);
+			}
+			prevPos = pos;
+			i++;
 		}
 	}
 	

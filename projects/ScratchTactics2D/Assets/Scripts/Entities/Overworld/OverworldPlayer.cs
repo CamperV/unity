@@ -8,6 +8,14 @@ public class OverworldPlayer : OverworldEntity
 {
 	public override float moveSpeed { get => 1.0f; }
 	public int moveThreshold { get => 200; }
+
+	public override HashSet<Type> spawnable {
+		get {
+			return new HashSet<Type>() {
+				typeof(VillageWorldTile)
+			};
+		}
+	}
 	
 	// abstract implementations
 	public override List<string> defaultUnitTags {
@@ -23,8 +31,7 @@ public class OverworldPlayer : OverworldEntity
 	public static OverworldPlayer Spawn(OverworldPlayer prefab) {
 		OverworldPlayer player = Instantiate(prefab);
 		
-		Vector3Int pos = new Vector3Int(1, (int)Mathf.Floor(GameManager.inst.worldGrid.mapDimensionY/2), 0);
-		player.ResetPosition(pos);
+		player.ResetPosition( GameManager.inst.worldGrid.RandomTileWithinType(player.spawnable) );
 		GameManager.inst.worldGrid.UpdateOccupantAt(player.gridPosition, player);
 		
 		return player;
