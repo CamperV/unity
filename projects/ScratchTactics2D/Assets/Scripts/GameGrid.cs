@@ -92,6 +92,10 @@ public abstract class GameGrid : MonoBehaviour
 	public OverlayTile GetOverlayAt(Vector3Int tilePos) {
 		return overlayTilemap.GetTile(tilePos) as OverlayTile;
 	}
+
+	public bool UnderlayNull(Vector3Int tilePos) {
+		return underlayTilemap.GetTile(tilePos) == null;
+	}
 	
 	public virtual void SelectAt(Vector3Int tilePos, Color? color = null) {
 		TintTile(baseTilemap, tilePos, color ?? Constants.selectColorBlue);

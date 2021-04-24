@@ -11,7 +11,8 @@ public class OverworldEnemySkeleton : OverworldEnemyBase
 		get {
 			return new HashSet<Type>() {
 				typeof(ForestWorldTile),
-				typeof(RoadWorldTile)
+				typeof(ForestRoadWorldTile),
+				typeof(MountainRoadWorldTile),
 			};
 		}
 	}

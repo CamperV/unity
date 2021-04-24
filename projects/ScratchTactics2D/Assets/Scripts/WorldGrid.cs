@@ -193,7 +193,7 @@ public class WorldGrid : GameGrid
 		// player-affecting tiles
 		PlaceVillages(mapMatrix, 10);
 		CreateRoadBetweenWaypoints( LocationsOf<VillageWorldTile>() );
-		CreateRoadBetweenWaypoints( LocationsOf<VillageWorldTile>().RandomSelections<Vector3Int>(3) );
+		
 
 		// finalize outside
 		CreateTintBuffer(mapMatrix);
@@ -352,77 +352,13 @@ public class WorldGrid : GameGrid
 		}
 	}
 
-	private void CreateRoad(Vector3Int startPos, Vector3Int endPos) {
-		// utility func
-		HashSet<Vector3Int> _HS(Vector3Int a, Vector3Int b) {
-			return new HashSet<Vector3Int> {a, b};
-		}
-		
-		T GetPatternTile<T>(HashSet<Vector3Int> pattern) where T : WorldTile {
-			MethodInfo methodInfo = typeof(T).GetMethod("GetTileWithSprite");
-			
-			Dictionary<HashSet<Vector3Int>, T> patternToTile = new Dictionary<HashSet<Vector3Int>, T>(HashSet<Vector3Int>.CreateSetComparer()) {
-				[_HS(Vector3Int.left, Vector3Int.right)] = (T)methodInfo.Invoke(null, new object[] {0}),
-				//			
-				[_HS(Vector3Int.up, Vector3Int.left)]	 = (T)methodInfo.Invoke(null, new object[] {1}),
-				[_HS(Vector3Int.up, Vector3Int.right)]	 = (T)methodInfo.Invoke(null, new object[] {2}),
-				//
-				[_HS(Vector3Int.down, Vector3Int.right)] = (T)methodInfo.Invoke(null, new object[] {3}),
-				[_HS(Vector3Int.down, Vector3Int.left)]	 = (T)methodInfo.Invoke(null, new object[] {4}),
-				//
-				[_HS(Vector3Int.up, Vector3Int.down)]	 = (T)methodInfo.Invoke(null, new object[] {5})
-			};
-			
-			return patternToTile[pattern];
-		}
-
-		MovingObjectPath road = MovingObjectPath.GetAnyPathTo(startPos, endPos);
-		
-		// now that we have the path, place the correct road tiles
-		Vector3Int prevPos = startPos;
-		Vector3Int roadPos = startPos;
-		Vector3Int nextPos = startPos;
-		while(roadPos != endPos) {
-			prevPos = roadPos;
-			roadPos = nextPos;
-			nextPos = road.Next(roadPos);
-			
-			// create a pattern, only if they're different
-			if(prevPos != roadPos && roadPos != nextPos && prevPos != nextPos) {
-				HashSet<Vector3Int> pattern = _HS((prevPos - roadPos), (nextPos - roadPos));
-				
-				Type tileType = worldTileGrid[roadPos].GetType();
-				WorldTile roadTile = null;
-				
-				if (tileType == typeof(GrassWorldTile)) {
-					roadTile = GetPatternTile<RoadWorldTile>(pattern);
-				}
-				else if (tileType == typeof(ForestWorldTile)) {
-					roadTile = GetPatternTile<ForestRoadWorldTile>(pattern);
-				}				
-				else if (tileType == typeof(WaterWorldTile)) {
-					roadTile = GetPatternTile<WaterRoadWorldTile>(pattern);
-				}
-				else if (tileType == typeof(DeepWaterWorldTile)) {
-					roadTile = GetPatternTile<WaterRoadWorldTile>(pattern);
-				}
-				else if (tileType == typeof(MountainWorldTile)) {
-					roadTile = GetPatternTile<MountainRoadWorldTile>(pattern);
-				} else {
-					roadTile = GetPatternTile<RoadWorldTile>(pattern);
-				}
-				SetAppropriateTile(roadPos, roadTile);
-			}
-		}
-	}
-
 	private void CreateRoadBetweenWaypoints(List<Vector3Int> waypoints) {
 		Vector3Int prevPos = Vector3Int.zero;
 		int i = 0;
 
 		foreach (Vector3Int pos in waypoints.OrderBy(it => it.x)) {
 			if (i > 0) {
-				CreateRoad(prevPos, pos);
+				new Road(prevPos, pos).Apply(this);
 			}
 			prevPos = pos;
 			i++;
@@ -517,5 +453,9 @@ public class WorldGrid : GameGrid
 
 	private List<Vector3Int> LocationsOf<T>() where T : WorldTile {
 		return worldTileGrid.Keys.ToList().Where( it => worldTileGrid[it].GetType() == typeof(T)).ToList();
+	}
+
+	public Type TypeAt(Vector3Int v) {
+		return worldTileGrid[v].GetType();
 	}
 }

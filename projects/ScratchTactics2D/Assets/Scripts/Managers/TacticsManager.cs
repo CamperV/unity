@@ -86,6 +86,7 @@ public class TacticsManager : MonoBehaviour
 				o.ghosted = false;
 
 				o.ghosted |= grid.GetOverlayAt(o.gridPosition);
+				o.ghosted |= !grid.UnderlayNull(o.gridPosition);
 				for (int h = 1; h < o.zHeight+1; h++) {
 					Vector3Int northPos = o.gridPosition.GridPosInDirection(grid, new Vector2Int(h, h));
 					o.ghosted |= grid.GetOverlayAt(northPos);
