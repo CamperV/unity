@@ -129,7 +129,6 @@ namespace Extensions {
             list.RemoveAt(index);
             return r;
         }
-        
 
         // List
         public static List<T> RandomSelections<T>(this List<T> l, int numSelections) {

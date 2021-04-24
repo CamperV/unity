@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 public class GrassWorldTile : WorldTile
 {
 	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
-	public override int probability { get { return 74; } }
+	public override int probability { get { return 73; } }
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -45,6 +45,7 @@ public class VillageWorldTile : WorldTile
 public class RuinsWorldTile : WorldTile
 {
 	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
+	public override int probability { get { return 1; } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
