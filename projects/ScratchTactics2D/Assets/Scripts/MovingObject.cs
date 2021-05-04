@@ -8,11 +8,9 @@ public abstract class MovingObject : MonoBehaviour
 {	
 	public virtual float moveSpeed { get { return 1.0f; } }
 
-	private Vector3Int _gridPosition;
-	[HideInInspector] public Vector3Int gridPosition {
-		get {
-			return _gridPosition;
-		}
+	protected Vector3Int _gridPosition;
+	[HideInInspector] public virtual Vector3Int gridPosition {
+		get => _gridPosition;
 		protected set {
 			_gridPosition = value;			
 		}
@@ -20,7 +18,6 @@ public abstract class MovingObject : MonoBehaviour
 	
 	protected bool crtMovingFlag = false;
 	protected Coroutine crtMovement;
-
 	public bool isMoving { get => crtMovingFlag; }
 
 	public virtual bool IsActive() {

@@ -11,7 +11,6 @@ public class MovingObjectPath
 	private EndpointOverlayTile endpointOverlayTile;
 	
 	public Dictionary<Vector3Int, Vector3Int> path = new Dictionary<Vector3Int, Vector3Int>();
-	public List<Vector3Int> pathList = new List<Vector3Int>();
 	public Vector3Int start {
 		get { return _start; }
 		set { _start = value; }
@@ -33,7 +32,6 @@ public class MovingObjectPath
 		if (path.Count != 0) {
 			//ResetDrawPath();
 			path.Clear();
-			pathList.Clear();
 			start = new Vector3Int(-1, -1, -1);
 			end   = new Vector3Int(-1, -1, -1);
 		}
@@ -64,6 +62,13 @@ public class MovingObjectPath
 			}
 			yield return position;
 		} while (position != end);
+	}
+
+	public bool Contains(Vector3Int v) {
+		foreach(Vector3Int p in Unwind()) {
+			if (v == p) return true;
+		}
+		return false;
 	}
 	
 	public List<Vector3Int> GetPathEdges() {

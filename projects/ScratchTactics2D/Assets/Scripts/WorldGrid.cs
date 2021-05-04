@@ -10,10 +10,12 @@ using Extensions;
 
 public class WorldGrid : GameGrid
 {
-	private enum TileEnum {grass, forest, water, deepWater, mountain, village, ruins, dirt};
+	private enum TileEnum {grass, forest, water, deepWater, mountain, village, ruins, dirt, x};
 	private List<WorldTile> tileOptions;
 	private OverlayTile selectTile;
+	private OverlayTile blankTile;
 	private Dictionary<Vector3Int, WorldTile> worldTileGrid;
+	public Dictionary<Vector3Int, Terrain> terrainGrid;
 	
 	private Canvas tintCanvas;
 	
@@ -31,11 +33,13 @@ public class WorldGrid : GameGrid
 			(ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile),
 			(ScriptableObject.CreateInstance<VillageWorldTile>() as VillageWorldTile),
 			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
-			(ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile)
+			(ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile),
+			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile)
 		};
 		selectTile = (ScriptableObject.CreateInstance<SelectOverlayTile>() as SelectOverlayTile);
 		
 		worldTileGrid = new Dictionary<Vector3Int, WorldTile>();
+		terrainGrid = new Dictionary<Vector3Int, Terrain>();
 		
 		// set camera and canvas
 		tintCanvas = GetComponentsInChildren<Canvas>()[0];
@@ -192,14 +196,14 @@ public class WorldGrid : GameGrid
 
 		// player-affecting tiles
 		PlaceVillages(mapMatrix, 10);
-		CreateRoadBetweenWaypoints( LocationsOf<VillageWorldTile>() );
+		CreateRoadsBetweenWaypoints( LocationsOf<VillageWorldTile>() );
 		
 
 		// finalize outside
 		CreateTintBuffer(mapMatrix);
 		
 		// how many tiles do we want shown vertically?
-		CameraManager.RefitCamera(5);
+		CameraManager.RefitCamera(10);
 		
 		Vector2 minBounds = new Vector2(4, 2.5f);
 		Vector2 maxBounds = new Vector2(mapDimensionX-4, (float)mapDimensionY - 2.5f);
@@ -255,6 +259,7 @@ public class WorldGrid : GameGrid
 		// choose some %age of mountains to link
 		// "3" is mountain type in mapMatrix
 		List<Vector3Int> posList = PositionsOfType(mapMatrix, TileEnum.mountain);
+		foreach (var mnt in posList) { terrainGrid[mnt] = new Mountain(mnt); }
 		List<Vector3Int> toLink = posList.RandomSelections<Vector3Int>((int)(posList.Count/2));
 		
 		// for each linking mountain, find the closest next mountain, and link to it
@@ -268,6 +273,7 @@ public class WorldGrid : GameGrid
 			while(currPos != endMountain) {
 				currPos = mRange.Next(currPos);
 				SetAppropriateTile(currPos, tileOptions[(int)TileEnum.mountain]);
+				terrainGrid[currPos] = new Mountain(currPos);
 			}
 		}
 	}
@@ -275,6 +281,7 @@ public class WorldGrid : GameGrid
 	private void CreateForests(int[,] mapMatrix, int lowerBound = 4, int upperBound = 9) {
 		// choose random grass points to make into lakes
 		List<Vector3Int> posList = PositionsOfType(mapMatrix, TileEnum.forest);
+		foreach (var frt in posList) { terrainGrid[frt] = new Forest(frt); }
 		
 		// TODO: this can be faster for sure
 		HashSet<Vector3Int> nonMountains = new HashSet<Vector3Int>();
@@ -285,14 +292,15 @@ public class WorldGrid : GameGrid
 		}
 
 		// flood fill each of these areas with randomized tile counts
-		foreach(Vector3Int lakeOrigin in posList) {
-			int lakeRange = Random.Range(lowerBound, upperBound);
-			int lakeSize = Random.Range(lowerBound, upperBound);
+		foreach(Vector3Int origin in posList) {
+			int forestRange = Random.Range(lowerBound, upperBound);
+			int forestSize = Random.Range(lowerBound, upperBound);
 			
-			FlowField fField = FlowField.FlowFieldFrom(lakeOrigin, nonMountains, range: lakeRange*Constants.standardTickCost, numElements: lakeSize);
+			FlowField fField = FlowField.FlowFieldFrom(origin, nonMountains, range: forestRange*Constants.standardTickCost, numElements: forestSize);
 			
-			foreach(Vector3Int lakePos in fField.field.Keys) {
-				SetAppropriateTile(lakePos, tileOptions[(int)TileEnum.forest]);
+			foreach(Vector3Int frtPos in fField.field.Keys) {
+				SetAppropriateTile(frtPos, tileOptions[(int)TileEnum.forest]);
+				terrainGrid[frtPos] = new Forest(frtPos);
 			}
 		}
 	}
@@ -300,6 +308,7 @@ public class WorldGrid : GameGrid
 	private void CreateLakes(int[,] mapMatrix, int lowerBound = 4, int upperBound = 9) {
 		// choose random grass points to make into lakes
 		List<Vector3Int> posList = PositionsOfType(mapMatrix, TileEnum.water);
+		foreach (var wtr in posList) { terrainGrid[wtr] = new Water(wtr); }
 		
 		// TODO: this can be faster for sure
 		HashSet<Vector3Int> nonMountains = new HashSet<Vector3Int>();
@@ -317,6 +326,7 @@ public class WorldGrid : GameGrid
 			FlowField fField = FlowField.FlowFieldFrom(lakeOrigin, nonMountains, range: lakeRange*Constants.standardTickCost, numElements: lakeSize);
 			foreach(Vector3Int lakePos in fField.field.Keys) {
 				SetAppropriateTile(lakePos, tileOptions[(int)TileEnum.water]);
+				terrainGrid[lakePos] = new Water(lakePos);
 			}
 		}
 
@@ -343,53 +353,41 @@ public class WorldGrid : GameGrid
 		// the rest are randomized
 		Vector3Int firstVillagePos = new Vector3Int(1, Random.Range(1, mapDimensionY-1), 0);
 		SetAppropriateTile(firstVillagePos, tileOptions[(int)TileEnum.village]);
+		terrainGrid[firstVillagePos] = new Village(firstVillagePos);
 
 		Vector3Int lastVillagePos  = new Vector3Int(mapDimensionX-1, Random.Range(1, mapDimensionY-1), 0);
 		SetAppropriateTile(lastVillagePos, tileOptions[(int)TileEnum.village]);
+		terrainGrid[lastVillagePos] = new Village(lastVillagePos);
 
 		foreach (Vector3Int villagePos in PositionsOfType(mapMatrix, TileEnum.grass).RandomSelections<Vector3Int>((int)(num-2))) {
 			SetAppropriateTile(villagePos, tileOptions[(int)TileEnum.village]);
+			terrainGrid[villagePos] = new Village(villagePos);
 		}
 	}
 
-	private void CreateRoadBetweenWaypoints(List<Vector3Int> waypoints) {
+	private void CreateRoadsBetweenWaypoints(List<Vector3Int> waypoints) {
 		Vector3Int prevPos = Vector3Int.zero;
 		int i = 0;
 
+		// since Roads need to know about each other in order to select the correct tile, keep track here, and Apply() later
+		List<Road> roads = new List<Road>();
 		foreach (Vector3Int pos in waypoints.OrderBy(it => it.x)) {
 			if (i > 0) {
-				new Road(prevPos, pos).Apply(this);
+				Road road = new Road(prevPos, pos);
+				roads.Add(road);
+				
+				// while we're here, update the grid for the first pass
+				foreach(Vector3Int p in road.Unwind()) {
+					terrainGrid[p] = road;
+				}
 			}
 			prevPos = pos;
 			i++;
 		}
-	}
-	
-	private void CreateTileBuffer(int[,] mapMatrix) {
-		// now that we have a world, create an out-of-bounds region for display purposes
-		List<CloudWorldTile> bufferTiles = new List<CloudWorldTile>{
-			CloudWorldTile.GetTileWithSprite(0),
-			CloudWorldTile.GetTileWithSprite(1),
-			CloudWorldTile.GetTileWithSprite(2)
-		};
-		int buffer = bufferTiles.Count+3;
 		
-		int xUpper = mapMatrix.GetLength(0);
-		int yUpper = mapMatrix.GetLength(1);
-		for (int x = -buffer; x < xUpper+buffer; x++) {			
-			for (int y = -buffer; y < yUpper+buffer; y++) {
-				if ((x > -1 && y > -1) && (x < xUpper && y < yUpper)) continue;
-				
-				CloudWorldTile tileChoice = bufferTiles[2];
-				if ((x >= -1 && x <= xUpper+1) && (y >= -1 && y <= yUpper+1)) {
-					tileChoice = bufferTiles[0];
-				} else if ((x >= -2 && x <= xUpper+2) && (y >= -2 && y <= yUpper+2)) {
-					tileChoice = bufferTiles[1];
-				}
-				
-				// set the WorldTile in the actual tilemap
-				baseTilemap.SetTile(new Vector3Int(x, y, tileChoice.depth), tileChoice);
-			}
+		// second pass: now that the terrain is set, Apply() each road
+		foreach(Road road in roads) {
+			road.Apply(this);
 		}
 	}
 	
@@ -403,15 +401,15 @@ public class WorldGrid : GameGrid
 				if ((x > -1 && y > -1) && (x < xUpper && y < yUpper)) continue;
 				
 				// set the WorldTile in the actual tilemap
-				Vector3Int tilePos = new Vector3Int(x, y, tileOptions[(int)TileEnum.mountain].depth);
-				baseTilemap.SetTile(tilePos, tileOptions[(int)TileEnum.mountain]);
+				Vector3Int tilePos = new Vector3Int(x, y, tileOptions[(int)TileEnum.x].depth);
+				baseTilemap.SetTile(tilePos, tileOptions[(int)TileEnum.x]);
 
 				if ((x >= -1 && x <= xUpper+1) && (y >= -1 && y <= yUpper+1)) {
-					TintTile(baseTilemap, tilePos, new Color(0.80f, 0.80f, 0.80f));
+					TintTile(baseTilemap, tilePos, new Color(0.90f, 0.90f, 0.90f));
 				} else if ((x >= -2 && x <= xUpper+2) && (y >= -2 && y <= yUpper+2)) {
-					TintTile(baseTilemap, tilePos, new Color(0.50f, 0.50f, 0.50f));
+					TintTile(baseTilemap, tilePos, new Color(0.70f, 0.70f, 0.70f));
 				} else {
-					TintTile(baseTilemap, tilePos, new Color(0.3f, 0.3f, 0.3f));
+					TintTile(baseTilemap, tilePos, new Color(0.40f, 0.40f, 0.40f));
 				}
 			}
 		}
@@ -457,5 +455,29 @@ public class WorldGrid : GameGrid
 
 	public Type TypeAt(Vector3Int v) {
 		return worldTileGrid[v].GetType();
+	}
+
+	public Terrain TerrainAt(Vector3Int v) {
+		if (terrainGrid.ContainsKey(v)) {
+			return terrainGrid[v];
+		} else {
+			Terrain e = new EmptyTerrain();
+			terrainGrid[v] = e;
+			return e;
+		}
+	}
+
+	public override void UnderlayAt(Vector3Int tilePos, Color color) {
+		underlayTilemap.SetTile(tilePos, selectTile);
+		TintTile(underlayTilemap, tilePos, color);
+	}
+
+	public override void ResetUnderlayAt(Vector3Int tilePos) {
+		underlayTilemap.SetTile(tilePos, null);
+		ResetTintTile(underlayTilemap, tilePos);
+	}
+
+	public void HideAt(Vector3Int tilePos) {
+		HighlightTile(tilePos, Constants.hideColorBlack);
 	}
 }

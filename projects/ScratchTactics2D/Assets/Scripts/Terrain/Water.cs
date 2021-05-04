@@ -8,7 +8,13 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public abstract class WorldTerrain
+public class Water : Terrain
 {
-	public abstract void Apply(WorldGrid grid);
+	public Vector3Int position;
+
+	public Water(Vector3Int pos) {
+		position = pos;
+	}
+
+	public override void Apply(WorldGrid grid) {}
 }

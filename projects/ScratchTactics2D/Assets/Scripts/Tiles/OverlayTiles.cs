@@ -20,6 +20,16 @@ public class SelectOverlayTile : OverlayTile
 	}
 }
 
+public class BlankOverlayTile : OverlayTile
+{
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("blank_overlay_tile")
+		};
+		sprite = sprites[0];
+	}
+}
+
 public class PathOverlayTile : OverlayTile
 {
 	public void OnEnable() {

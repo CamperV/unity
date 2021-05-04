@@ -12,6 +12,7 @@ public abstract class OverworldEntity : MovingObject
 	protected Animator animator;
 
 	public abstract HashSet<Type> spawnable { get; }
+	public virtual int visionRange { get => FieldOfView.maxVisibility; }
 
 	// constants
 	protected readonly float timeToDie = 1.0f;
@@ -24,12 +25,36 @@ public abstract class OverworldEntity : MovingObject
 	// this is where the "real" units are stored
 	public Dictionary<Guid, UnitStats> barracks = new Dictionary<Guid, UnitStats>();
 	
+	// for moving around the Overworld
+	// why in this file? Because it will be updated every time gridPosition is updated
+	private FieldOfView _fov;
+	public FieldOfView fov {
+		get => _fov;
+		set {
+			if (_fov != null) _fov.ClearDisplay(GameManager.inst.worldGrid);
+			_fov = value;
+			_fov.Display(GameManager.inst.worldGrid);
+		}
+	}
+	
+	[HideInInspector] public override Vector3Int gridPosition {
+		get => _gridPosition;
+
+		// make sure you also update FOV when moving
+		protected set {
+			_gridPosition = value;
+			fov = new FieldOfView(_gridPosition, visionRange, GameManager.inst.worldGrid);
+		}
+	}
+
 	protected virtual void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
 		
 		// generate your units here (name, tags, etc)
 		GenerateUnitStats();
+
+		//fov = new FieldOfView(Vector3Int.zero, 0, GameManager.inst.worldGrid);
 	}
 
 	public void ResetPosition(Vector3Int v) {

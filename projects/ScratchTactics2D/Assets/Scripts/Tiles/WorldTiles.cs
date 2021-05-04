@@ -11,7 +11,7 @@ public class GrassWorldTile : WorldTile
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("grass_tile")
+			ResourceLoader.GetSprite("Parchment/parchment_base")
 		};
 		sprite = sprites[0];
 	}
@@ -36,7 +36,7 @@ public class VillageWorldTile : WorldTile
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("village_tile")
+			ResourceLoader.GetSprite("Parchment/parchment_village_base")
 		};
 		sprite = sprites[0];
 	}
@@ -49,7 +49,7 @@ public class RuinsWorldTile : WorldTile
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("ruins_tile")
+			ResourceLoader.GetSprite("Parchment/parchment_ruins")
 		};
 		sprite = sprites[0];
 	}
@@ -63,7 +63,7 @@ public class ForestWorldTile : WorldTile
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("full_forest_tile")
+			ResourceLoader.GetSprite("Parchment/parchment_copse")
 		};
 		sprite = sprites[0];
 	}
@@ -76,7 +76,7 @@ public class WaterWorldTile : WorldTile
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("water_tile")
+			ResourceLoader.GetSprite("Parchment/parchment_water")
 		};
 		sprite = sprites[0];
 	}
@@ -88,7 +88,7 @@ public class DeepWaterWorldTile : WorldTile
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("deep_water_tile")
+			ResourceLoader.GetSprite("Parchment/parchment_deep_water")
 		};
 		sprite = sprites[0];
 	}
@@ -102,7 +102,17 @@ public class MountainWorldTile : WorldTile
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("mountain_range_tile")
+			ResourceLoader.GetSprite("Parchment/parchment_mountain_cluster")
+		};
+		sprite = sprites[0];
+	}
+}
+
+public class XWorldTile : WorldTile
+{		
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("Parchment/parchment_x")
 		};
 		sprite = sprites[0];
 	}
@@ -132,12 +142,17 @@ public class RoadWorldTile : WorldTile
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_0"),
-			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_1"),
-			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_2"),
-			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_3"),
-			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_4"),
-			ResourceLoader.GetMultiSprite("grass_road_tile", "grass_road_tile_5")
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_0"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_1"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_2"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_3"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_4"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_5"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_6"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_7"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_8"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_9"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_10")
 		};
 		sprite = sprites[0];
 	}
@@ -155,12 +170,17 @@ public class MountainRoadWorldTile : WorldTile
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_0"),
-			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_1"),
-			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_2"),
-			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_3"),
-			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_4"),
-			ResourceLoader.GetMultiSprite("mountain_road_tile", "mountain_road_tile_5")			
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_0"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_1"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_2"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_3"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_4"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_5"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_6"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_7"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_8"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_9"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_10")
 		};
 		sprite = sprites[0];
 	}
@@ -176,12 +196,17 @@ public class WaterRoadWorldTile : WorldTile
 {
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_0"),
-			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_1"),
-			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_2"),
-			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_3"),
-			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_4"),
-			ResourceLoader.GetMultiSprite("water_road_tile_grassy", "water_road_tile_grassy_5")			
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_0"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_1"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_2"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_3"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_4"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_5"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_6"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_7"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_8"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_9"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_bridge", "parchment_bridge_10")
 		};
 		sprite = sprites[0];
 	}
@@ -199,18 +224,51 @@ public class ForestRoadWorldTile : WorldTile
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetMultiSprite("full_forest_road_tile", "full_forest_road_tile_0"),
-			ResourceLoader.GetMultiSprite("full_forest_road_tile", "full_forest_road_tile_1"),
-			ResourceLoader.GetMultiSprite("full_forest_road_tile", "full_forest_road_tile_2"),
-			ResourceLoader.GetMultiSprite("full_forest_road_tile", "full_forest_road_tile_3"),
-			ResourceLoader.GetMultiSprite("full_forest_road_tile", "full_forest_road_tile_4"),
-			ResourceLoader.GetMultiSprite("full_forest_road_tile", "full_forest_road_tile_5")		
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_0"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_1"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_2"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_3"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_4"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_5"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_6"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_7"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_8"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_9"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_10")	
 		};
 		sprite = sprites[0];
 	}
 
 	public static ForestRoadWorldTile GetTileWithSprite(int spriteIndex) {
 		ForestRoadWorldTile wt = ScriptableObject.CreateInstance<ForestRoadWorldTile>() as ForestRoadWorldTile;
+		wt.SetSprite(spriteIndex);
+		return wt;
+	}
+}
+
+public class VillageRoadWorldTile : WorldTile
+{
+	public override int cost { get { return Constants.standardTickCost; } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_0"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_1"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_2"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_3"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_4"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_5"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_6"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_7"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_8"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_9"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_10")
+		};
+		sprite = sprites[0];
+	}
+	
+	public static VillageRoadWorldTile GetTileWithSprite(int spriteIndex) {
+		VillageRoadWorldTile wt = ScriptableObject.CreateInstance<VillageRoadWorldTile>() as VillageRoadWorldTile;
 		wt.SetSprite(spriteIndex);
 		return wt;
 	}

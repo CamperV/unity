@@ -73,6 +73,36 @@ namespace Extensions {
             }
         }
 
+            // Vector3Int
+        public static IEnumerable<Vector3Int> RadiateSquare(this Vector3Int v, int range) {
+            HashSet<Vector3Int> toEnumerate = new HashSet<Vector3Int> {v};
+
+            // start with the first ring, skip the 0th
+            for(int r = 1; r < range+1; r++) {
+                int xMin = v.x - r;
+                int yMin = v.y - r;
+                int xMax = v.x + r;
+                int yMax = v.y + r;
+
+                // top and bottom
+                for(int xm = xMin; xm <= xMax; xm++) {
+                    toEnumerate.Add( new Vector3Int(xm, yMin, 0) );
+                    toEnumerate.Add( new Vector3Int(xm, yMax, 0) );
+                }
+
+                // both sides
+                for(int ym = yMin; ym <= yMax; ym++) {
+                    toEnumerate.Add( new Vector3Int(xMin, ym, 0) );
+                    toEnumerate.Add( new Vector3Int(xMax, ym, 0) );
+                }
+            }
+
+            // now spill the beans
+            foreach (var e in toEnumerate) {
+                yield return e; 
+            }
+        }
+
         // Vector3Int
         // NOTE: This is not true MH distance. But this is what we need
         public static int ManhattanDistance(this Vector3Int v, Vector3Int o) {
@@ -174,6 +204,11 @@ namespace Extensions {
         // Component
         public static bool MatchesType(this Component c, Type t) {
             return c.GetType() == t || c.GetType().IsSubclassOf(t);
+        }
+
+        // Type
+        public static bool MatchesType(this Type c, Type t) {
+            return c == t || c.IsSubclassOf(t);
         }
     }
 }
