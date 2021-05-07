@@ -130,6 +130,23 @@ namespace Extensions {
             return grid.To3D(new Vector2Int(v.x, v.y) + dir);
         }
 
+        // Vector3Int
+        public static Vector3Int Unit(this Vector3Int v) {
+            return new Vector3Int(Mathf.Clamp(v.x, -1, 1), Mathf.Clamp(v.y, -1, 1), Mathf.Clamp(v.z, -1, 1));
+        }
+
+        public static Vector3Int X(this Vector3Int v) {
+            return new Vector3Int(v.x, 0, 0);
+        }
+
+        public static Vector3Int Y(this Vector3Int v) {
+            return new Vector3Int(0, v.y, 0);
+        }
+
+        public static Vector3Int Z(this Vector3Int v) {
+            return new Vector3Int(0, 0, v.z);
+        }
+
         // Vector3
         public static Vector3 SafeScale(this Vector3 v, Vector3 o) {
             return new Vector3((o.x > 0) ? v.x/o.x : 1,

@@ -477,7 +477,7 @@ public class WorldGrid : GameGrid
 		ResetTintTile(underlayTilemap, tilePos);
 	}
 
-	public void HideAt(Vector3Int tilePos) {
-		HighlightTile(tilePos, Constants.hideColorBlack);
+	public void HideAt(Vector3Int tilePos, float intensity = 0.15f) {
+		HighlightTile(tilePos, (intensity*Color.white).WithAlpha(1.0f));
 	}
 }
