@@ -14,8 +14,7 @@ public class OverworldPlayer : OverworldEntity
 			return new HashSet<Type>() {
 				typeof(VillageWorldTile),
 				typeof(GrassWorldTile),
-				typeof(ForestWorldTile),
-				typeof(WaterWorldTile)
+				typeof(ForestWorldTile)
 			};
 		}
 	}

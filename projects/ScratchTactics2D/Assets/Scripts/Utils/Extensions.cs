@@ -229,15 +229,65 @@ namespace Extensions {
         }
 
         // float[,]
-        public static float[,] AddElementWise(this float[,] f, float[,] o) {
+        public static float[,] Add(this float[,] f, float[,] o) {
             float[,] resultant = new float[f.GetLength(0), f.GetLength(1)];
 
             for (int x = 0; x < f.GetLength(0); x++) {
-                for (int y = 0; y < f.GetLength(0); y++) {
+                for (int y = 0; y < f.GetLength(1); y++) {
                     resultant[x, y] = f[x, y] + o[x, y];
                 }
             }
             return resultant;
+        }
+
+        // float[,]
+        public static float[,] Subtract(this float[,] f, float[,] o) {
+            float[,] resultant = new float[f.GetLength(0), f.GetLength(1)];
+
+            for (int x = 0; x < f.GetLength(0); x++) {
+                for (int y = 0; y < f.GetLength(1); y++) {
+                    resultant[x, y] = f[x, y] - o[x, y];
+                }
+            }
+            return resultant;
+        }
+
+        // float[,]
+        public static float Min(this float[,] f) {
+            float currMin = float.MaxValue;
+
+            for (int x = 0; x < f.GetLength(0); x++) {
+                for (int y = 0; y < f.GetLength(1); y++) {
+                    currMin = Mathf.Min(currMin, f[x, y]);
+                }
+            }
+            return currMin;
+        }
+
+        // float[,]
+        public static float Max(this float[,] f) {
+            float currMax = float.MinValue;
+
+            for (int x = 0; x < f.GetLength(0); x++) {
+                for (int y = 0; y < f.GetLength(1); y++) {
+                    currMax = Mathf.Max(currMax, f[x, y]);
+                }
+            }
+            return currMax;
+        }
+
+        // float[,]
+        public static float[,] Normalize(this float[,] f) {
+            float[,] r = new float[f.GetLength(0), f.GetLength(1)];
+            float min = f.Min();
+            float max = f.Max();
+
+            for (int x = 0; x < f.GetLength(0); x++) {
+                for (int y = 0; y < f.GetLength(1); y++) {
+                    r[x, y] = Mathf.InverseLerp(min, max, f[x, y]);
+                }
+            }
+            return r;
         }
     }
 }

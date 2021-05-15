@@ -43,10 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23e68a681587c7a44aacb7eee12435f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapDimension: {x: 150, y: 150}
+  mapDimension: {x: 50, y: 200}
   seed: 12345
   scale: 8
-  octaves: 5
-  persistance: 0.1
-  lacunarity: 2.5
-  offset: {x: 0, y: 0}
+  octaves: 2
+  power: 2
