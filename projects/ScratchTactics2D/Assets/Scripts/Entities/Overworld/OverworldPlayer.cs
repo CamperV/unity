@@ -12,7 +12,10 @@ public class OverworldPlayer : OverworldEntity
 	public override HashSet<Type> spawnable {
 		get {
 			return new HashSet<Type>() {
-				typeof(VillageWorldTile)
+				typeof(VillageWorldTile),
+				typeof(GrassWorldTile),
+				typeof(ForestWorldTile),
+				typeof(WaterWorldTile)
 			};
 		}
 	}

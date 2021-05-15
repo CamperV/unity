@@ -8,6 +8,9 @@ using Random = UnityEngine.Random;
 
 public class TacticsGrid : GameGrid
 {
+	public int mapDimensionX;
+	public int mapDimensionY;
+	
 	private Dictionary<Type, TacticsTile> tileOptions;
 	private Dictionary<Vector3Int, TacticsTile> tacticsTileGrid;
 

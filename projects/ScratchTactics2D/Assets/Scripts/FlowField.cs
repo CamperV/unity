@@ -8,8 +8,9 @@ public class FlowField
 	public Vector3Int origin;
 	public Dictionary<Vector3Int, int> field;
 	
-	public static FlowField FlowFieldFrom(Vector3Int origin, HashSet<Vector3Int> nodeSet, int range = Int32.MaxValue, int numElements = Int32.MaxValue) {
-		//		
+	public static FlowField FlowFieldFrom(Vector3Int origin, IEnumerable<Vector3Int> _nodeSet, int range = Int32.MaxValue, int numElements = Int32.MaxValue) {
+		HashSet<Vector3Int> nodeSet = new HashSet<Vector3Int>(_nodeSet);
+
 		Dictionary<Vector3Int, int> distance = new Dictionary<Vector3Int, int>();
 		PriorityQueue<Vector3Int> fieldQueue = new PriorityQueue<Vector3Int>();
 

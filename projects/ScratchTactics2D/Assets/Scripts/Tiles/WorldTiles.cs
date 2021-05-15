@@ -19,7 +19,7 @@ public class GrassWorldTile : WorldTile
 
 public class DirtWorldTile : WorldTile
 {
-	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
+	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {

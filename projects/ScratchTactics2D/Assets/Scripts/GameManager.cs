@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
 	
 	public void EnterOverworldState() {
 		// refit/retrack camera
-		CameraManager.SetTracking(player.transform);
+		//CameraManager.SetTracking(player.transform);
 		
 		// show the overworld clearly
 		worldGrid.DisableTint();

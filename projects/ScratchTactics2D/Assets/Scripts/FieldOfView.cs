@@ -50,7 +50,7 @@ public class FieldOfView
 	public void Display(WorldGrid grid) {
 		foreach(Vector3Int nonField in grid.GetAllTilePos()) {
 			if (field.ContainsKey(nonField)) continue;
-			grid.HideAt(nonField);
+			grid.HideAt(nonField, intensity: 1.0f);
 		}
 	}
 

@@ -8,9 +8,6 @@ using Extensions;
 
 public abstract class GameGrid : MonoBehaviour
 {
-	public int mapDimensionX;
-	public int mapDimensionY;
-	
 	[HideInInspector] public Tilemap baseTilemap;
 	[HideInInspector] public Tilemap underlayTilemap;
 	[HideInInspector] public Tilemap overlayTilemap;

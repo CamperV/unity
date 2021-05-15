@@ -227,5 +227,17 @@ namespace Extensions {
         public static bool MatchesType(this Type c, Type t) {
             return c == t || c.IsSubclassOf(t);
         }
+
+        // float[,]
+        public static float[,] AddElementWise(this float[,] f, float[,] o) {
+            float[,] resultant = new float[f.GetLength(0), f.GetLength(1)];
+
+            for (int x = 0; x < f.GetLength(0); x++) {
+                for (int y = 0; y < f.GetLength(0); y++) {
+                    resultant[x, y] = f[x, y] + o[x, y];
+                }
+            }
+            return resultant;
+        }
     }
 }
