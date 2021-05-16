@@ -15,6 +15,7 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         if (Input.GetKeyDown(KeyCode.R)) {
             GenerateMap();
             ApplyMap(GameManager.inst.worldGrid.baseTilemap);
+            Postprocessing();
         }
     }
 
@@ -35,7 +36,7 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         /* .30 -> */ [0.55f] = new Color(0.00f, 1.00f, 0.00f, 1.00f),    // green
         /* .55 -> */ [0.65f] = new Color(0.00f, 0.75f, 0.00f, 1.00f),    // deep green
         /* .65 -> */ [0.75f] = new Color(0.50f, 0.50f, 0.50f, 1.00f),    // gray
-        /* .80 -> */ [1.00f] = new Color(1.00f, 1.00f, 1.00f, 1.00f)     // white
+        /* .75 -> */ [1.00f] = new Color(1.00f, 1.00f, 1.00f, 1.00f)     // white
     };
 
     protected TileEnum ElevationToTile(float elevation) {

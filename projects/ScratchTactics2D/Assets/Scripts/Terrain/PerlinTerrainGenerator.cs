@@ -11,6 +11,8 @@ using Extensions;
 
 public class PerlinTerrainGenerator : ElevationTerrainGenerator
 {
+    public float[,] noise;
+
     [Header("Perlin Noise Settings")]
 	public int seed;
 	public float scale;
@@ -25,16 +27,19 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // SaveTextureAsPNG(template, "template.png");
         //float[,] noise = GenerateNoiseMap(additive: TextureAsFloat(template));
         
+        // make sure the bottom part of the map is beachy
         float[,] beachMask = GenerateLogGradient(scale: 2.0f);
         SaveTextureAsPNG(RawTexture(beachMask), "beachMask.png");
 
+        // make sure the top part of the map is mountainous
         float[,] mountainMask = GenerateExpGradient(4.0f, reversed: true);
         SaveTextureAsPNG(RawTexture(mountainMask), "mountainMask.png");
 
+        // add dimples to add "natural" lakes
         float[,] lakeMask = GenerateRandomDimples(verticalThreshold: (int)(mapDimensionY/4f), seed: seed);
-        SaveTextureAsPNG(RawTexture(lakeMask), "random_dimples.png");
+        SaveTextureAsPNG(RawTexture(lakeMask), "lakeMask.png");
         
-        float[,] noise = GenerateNoiseMap().Add(beachMask).Add(mountainMask).Subtract(lakeMask).Normalize();
+        noise = GenerateNoiseMap().Add(beachMask).Add(mountainMask).Subtract(lakeMask).Normalize();
         
         // save the noise as a Texture2D
         Texture2D rawTexture = RawTexture(noise);
@@ -49,7 +54,44 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
 		}
     }
 
-    private float[,] GenerateNoiseMap() {
+    public override void Postprocessing() {
+        if (seed != -1) Random.InitState(seed);
+
+        // add rivers
+        // a) select a start position at a certain altitude
+        // b) create gravity river
+        // c) replace coordinates with blue
+        int numRivers = Random.Range(1, 15);
+
+        List<Vector2Int> potentialHeads = new List<Vector2Int>();
+        float altitudeThreshold = 0.95f;
+        //
+        float[,] riverMap = new float[mapDimensionX, mapDimensionY];
+        for (int x = 0; x < mapDimensionX; x++) {
+            for (int y = 0; y < mapDimensionY; y++) {
+                riverMap[x, y] = noise[x, y];
+
+                if (noise[x, y] >= altitudeThreshold) {
+                    potentialHeads.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+        foreach(Vector2Int head in potentialHeads.RandomSelections<Vector2Int>(numRivers)) {
+            HashSet<Vector2Int> river = River.FromElevationMap(noise, head);
+            foreach (Vector2Int r in river) {
+                riverMap[r.x, r.y] = 0.25f;
+            }
+        }
+        
+        Texture2D riverTexture = ColorizedTexture(riverMap);
+        SaveTextureAsPNG(riverTexture, "river_map.png");
+
+        // smooth beach?
+        // seed + grow forests
+        // add PoI and roads to them
+    }
+
+    protected virtual float[,] GenerateNoiseMap() {
         float[,] noise = new float[mapDimensionX, mapDimensionY];
         
         // When changing noise scale, it zooms from top-right corner
@@ -94,13 +136,5 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         }
 
         return noise;
-    }
-
-    public override void Postprocessing() {
-        // add dimples to add "natural" lakes
-        // add rivers
-        // smooth beach?
-        // seed + grow forests
-        // add PoI and roads to them
     }
 }
