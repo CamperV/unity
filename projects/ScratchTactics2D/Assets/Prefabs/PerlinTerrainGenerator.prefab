@@ -45,6 +45,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapDimension: {x: 50, y: 200}
   seed: 12345
-  scale: 8
+  scale: 10
   octaves: 2
   power: 2

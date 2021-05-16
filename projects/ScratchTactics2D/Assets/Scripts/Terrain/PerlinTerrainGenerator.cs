@@ -30,8 +30,11 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
 
         float[,] mountainMask = GenerateExpGradient(4.0f, reversed: true);
         SaveTextureAsPNG(RawTexture(mountainMask), "mountainMask.png");
+
+        float[,] lakeMask = GenerateRandomDimples(verticalThreshold: (int)(mapDimensionY/4f), seed: seed);
+        SaveTextureAsPNG(RawTexture(lakeMask), "random_dimples.png");
         
-        float[,] noise = GenerateNoiseMap().Add(beachMask).Add(mountainMask).Normalize();
+        float[,] noise = GenerateNoiseMap().Add(beachMask).Add(mountainMask).Subtract(lakeMask).Normalize();
         
         // save the noise as a Texture2D
         Texture2D rawTexture = RawTexture(noise);
@@ -93,5 +96,11 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         return noise;
     }
 
-    public override void Postprocessing() {}
+    public override void Postprocessing() {
+        // add dimples to add "natural" lakes
+        // add rivers
+        // smooth beach?
+        // seed + grow forests
+        // add PoI and roads to them
+    }
 }

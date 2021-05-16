@@ -114,6 +114,35 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         return gradient;
     }
 
+    protected float[,] GenerateRandomDimples(int verticalThreshold = 0, int seed = -1) {
+        float[,] dimpleMap = new float[mapDimensionX, mapDimensionY];
+
+        if (seed != -1) Random.InitState(seed);
+        int numDimples = Random.Range(0, (int)(mapDimensionY/20f));
+
+        for (int d = 0; d < numDimples; d++) {
+            Vector2Int randomPosition = new Vector2Int(Random.Range(0, mapDimensionX), Random.Range(0, mapDimensionY));
+            int randomRadius = Random.Range(5, (int)(mapDimensionX/5.0f));
+
+            // see if we can simply discard this one
+            if ((randomPosition.y - randomRadius) < verticalThreshold) continue;
+
+            Vector2Int minBox = randomPosition - (randomRadius * Vector2Int.one);
+            Vector2Int maxBox = randomPosition + (randomRadius * Vector2Int.one);
+
+            // only search in a box around the dimple's origin
+            for (int x = Mathf.Max(0, minBox.x); x < Mathf.Min(mapDimensionX, maxBox.x); x++) {
+                for (int y = Mathf.Max(0, minBox.y); y < Mathf.Min(mapDimensionY, maxBox.y); y++) {
+                    float verticalScale = 0.5f + Mathf.InverseLerp(verticalThreshold, mapDimensionY, y); // 1 - 1.5 depending on vertical height
+
+                    float distance = (new Vector2(x, y) - randomPosition).magnitude;
+                    dimpleMap[x, y] += Mathf.Pow((1f - Mathf.InverseLerp(0, randomRadius, distance)), verticalScale);
+                }
+            }
+        }
+        return dimpleMap;
+    }
+
     protected Texture2D LoadTemplate(string name) {
         return Resources.Load<Texture2D>(name);
     }

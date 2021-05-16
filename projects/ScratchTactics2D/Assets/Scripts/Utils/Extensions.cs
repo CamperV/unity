@@ -253,6 +253,33 @@ namespace Extensions {
         }
 
         // float[,]
+        // subtraction that only allows a certain amount of depression
+        public static float[,] SubtractGated(this float[,] f, float[,] o, float gateValue) {
+            float[,] resultant = new float[f.GetLength(0), f.GetLength(1)];
+
+            for (int x = 0; x < f.GetLength(0); x++) {
+                for (int y = 0; y < f.GetLength(1); y++) {
+                    float diff = f[x, y] - o[x, y];
+                    resultant[x, y] = Mathf.Min(f[x, y] - gateValue, diff);
+                }
+            }
+            return resultant;
+        }
+
+        // float[,]
+        // gauge the depression by this instances's value
+        public static float[,] SubtractProportionally(this float[,] f, float[,] o) {
+            float[,] resultant = new float[f.GetLength(0), f.GetLength(1)];
+
+            for (int x = 0; x < f.GetLength(0); x++) {
+                for (int y = 0; y < f.GetLength(1); y++) {
+                    resultant[x, y] = f[x, y] - (f[x, y] * o[x, y]);
+                }
+            }
+            return resultant;
+        }
+
+        // float[,]
         public static float Min(this float[,] f) {
             float currMin = float.MaxValue;
 
