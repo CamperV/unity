@@ -61,30 +61,30 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // a) select a start position at a certain altitude
         // b) create gravity river
         // c) replace coordinates with blue
-        int numRivers = Random.Range(1, 15);
+        // int numRivers = Random.Range(10, 15);
 
-        List<Vector2Int> potentialHeads = new List<Vector2Int>();
-        float altitudeThreshold = 0.95f;
-        //
-        float[,] riverMap = new float[mapDimensionX, mapDimensionY];
-        for (int x = 0; x < mapDimensionX; x++) {
-            for (int y = 0; y < mapDimensionY; y++) {
-                riverMap[x, y] = noise[x, y];
+        // List<Vector2Int> potentialHeads = new List<Vector2Int>();
+        // float altitudeThreshold = 0.90f;
+        // //
+        // float[,] riverMap = new float[mapDimensionX, mapDimensionY];
+        // for (int x = 0; x < mapDimensionX; x++) {
+        //     for (int y = 0; y < mapDimensionY; y++) {
+        //         riverMap[x, y] = noise[x, y];
 
-                if (noise[x, y] >= altitudeThreshold) {
-                    potentialHeads.Add(new Vector2Int(x, y));
-                }
-            }
-        }
-        foreach(Vector2Int head in potentialHeads.RandomSelections<Vector2Int>(numRivers)) {
-            HashSet<Vector2Int> river = River.FromElevationMap(noise, head);
-            foreach (Vector2Int r in river) {
-                riverMap[r.x, r.y] = 0.25f;
-            }
-        }
+        //         if (noise[x, y] >= altitudeThreshold) {
+        //             potentialHeads.Add(new Vector2Int(x, y));
+        //         }
+        //     }
+        // }
+        // foreach(Vector2Int head in potentialHeads.RandomSelections<Vector2Int>(numRivers)) {
+        //     HashSet<Vector2Int> river = River.FromElevationMap(noise, head);
+        //     foreach (Vector2Int r in river) {
+        //         riverMap[r.x, r.y] = 0.25f;
+        //     }
+        // }
         
-        Texture2D riverTexture = ColorizedTexture(riverMap);
-        SaveTextureAsPNG(riverTexture, "river_map.png");
+        // Texture2D riverTexture = ColorizedTexture(riverMap);
+        // SaveTextureAsPNG(riverTexture, "river_map.png");
 
         // smooth beach?
         // seed + grow forests

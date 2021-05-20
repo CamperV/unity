@@ -29,7 +29,6 @@ public class River : Terrain
 			currentPos = pathQueue.Dequeue();
 			if (river.Contains(currentPos)) continue;
 			
-			// doesn't support forking at the moment
 			float currMinEl = elevation[currentPos.x, currentPos.y];
 			List<Vector2Int> minVals = new List<Vector2Int>();
 
@@ -55,9 +54,9 @@ public class River : Terrain
 		Vector2Int mapBounds = new Vector2Int(map.GetLength(0), map.GetLength(1));
 
 		for (int x = -1; x <= 1; x++) {
-			if (pos.x+x < 0 || pos.x+x > mapBounds.x) continue;
+			if (pos.x+x < 0 || pos.x+x > mapBounds.x-1) continue;
 			for (int y = -1; y <= 1; y++) {
-				if (pos.y+y < 0 || pos.y+y > mapBounds.y) continue;
+				if (pos.y+y < 0 || pos.y+y > mapBounds.y-1) continue;
 				if (x != 0 && y != 0) continue; // discard non-cardinals
 
 				yield return new Vector2Int(x, y) + pos;

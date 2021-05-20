@@ -589,8 +589,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4cb4edd8b0cc0141b42a837ec4aba87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapDimensionX: 50
-  mapDimensionY: 10
   baseTilemap: {fileID: 0}
   underlayTilemap: {fileID: 0}
   overlayTilemap: {fileID: 0}

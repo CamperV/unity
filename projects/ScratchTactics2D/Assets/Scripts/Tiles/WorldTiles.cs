@@ -17,13 +17,13 @@ public class GrassWorldTile : WorldTile
 	}
 }
 
-public class DirtWorldTile : WorldTile
+public class SandWorldTile : WorldTile
 {
 	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("dirt_tile")
+			ResourceLoader.GetSprite("Parchment/parchment_sand")
 		};
 		sprite = sprites[0];
 	}
@@ -69,6 +69,19 @@ public class ForestWorldTile : WorldTile
 	}
 }
 
+public class FoothillsWorldTile : WorldTile
+{
+	public override int probability { get { return 8; } }
+	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("Parchment/parchment_foothills")
+		};
+		sprite = sprites[0];
+	}
+}
+
 public class WaterWorldTile : WorldTile
 {
 	public override int probability { get { return 5; } }
@@ -102,7 +115,17 @@ public class MountainWorldTile : WorldTile
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("Parchment/parchment_mountain_cluster")
+			ResourceLoader.GetSprite("Parchment/parchment_mountain_medium")
+		};
+		sprite = sprites[0];
+	}
+}
+
+public class PeakWorldTile : MountainWorldTile
+{		
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("Parchment/parchment_mountain_peaks")
 		};
 		sprite = sprites[0];
 	}

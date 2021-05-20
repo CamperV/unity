@@ -21,12 +21,13 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
 
     // these are the elevtaion thresholds for placing each tile
     protected Dictionary<float, TileEnum> tileElevation = new Dictionary<float, TileEnum>{
-        [0.10f] = TileEnum.deepWater,
+        [0.20f] = TileEnum.deepWater,
         [0.25f] = TileEnum.water,
-        [0.30f] = TileEnum.dirt,
+        [0.30f] = TileEnum.sand,
         [0.65f] = TileEnum.grass,
-        [0.80f] = TileEnum.forest,
-        [1.00f] = TileEnum.mountain
+        [0.75f] = TileEnum.foothills,
+        [0.80f] = TileEnum.mountain,
+        [1.00f] = TileEnum.peak
     };
 
     protected Dictionary<float, Color> colorElevation = new Dictionary<float, Color>{

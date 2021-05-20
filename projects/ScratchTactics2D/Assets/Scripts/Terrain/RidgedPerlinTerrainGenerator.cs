@@ -13,6 +13,7 @@ public class RidgedPerlinTerrainGenerator : PerlinTerrainGenerator
 {
     protected override float[,] GenerateNoiseMap() {
         float[,] noise = new float[mapDimensionX, mapDimensionY];
+        float[,] ridges = new float[mapDimensionX, mapDimensionY];
         
         // When changing noise scale, it zooms from top-right corner
         // This will make it zoom from the center
@@ -36,9 +37,12 @@ public class RidgedPerlinTerrainGenerator : PerlinTerrainGenerator
                     Vector2 sample = octaveScale * new Vector2(sampleX, sampleY) + randomOffset;
 
                     float perlinValue = 1/octaveScale * Mathf.PerlinNoise(sample.x, sample.y);
-                    float v = Mathf.Pow(perlinValue, power);
-                    float ridged = 1f - Mathf.Abs(v - 0.5f);
-                    noiseHeight += ridged;
+                    noiseHeight += Mathf.Pow(perlinValue, power);
+
+                    // base octave only
+                    if (o == 0) {
+                        ridges[x, y] = Mathf.Abs(Mathf.Lerp(-1f, 1f, noiseHeight));
+                    }
                 }
 
                 // assign temp non-lerped value here
@@ -57,6 +61,7 @@ public class RidgedPerlinTerrainGenerator : PerlinTerrainGenerator
             }
         }
 
+        SaveTextureAsPNG(RawTexture(ridges), "ridgedOctave.png");
         return noise;
     }
 }

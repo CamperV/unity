@@ -10,7 +10,7 @@ using Extensions;
 
 public abstract class TerrainGenerator : MonoBehaviour
 {
-	public enum TileEnum {grass, forest, water, deepWater, mountain, village, ruins, dirt, x};
+	public enum TileEnum {grass, sand, forest, water, deepWater, foothills, mountain, peak, village, ruins, x};
 
 	public Vector2Int mapDimension;
 	protected int mapDimensionX { get => mapDimension.x; }
@@ -27,13 +27,15 @@ public abstract class TerrainGenerator : MonoBehaviour
 	void Awake() {
 		tileOptions = new WorldTile[]{
 			(ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile),
+			(ScriptableObject.CreateInstance<SandWorldTile>() as SandWorldTile),
 			(ScriptableObject.CreateInstance<ForestWorldTile>() as ForestWorldTile),
 			(ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile),
 			(ScriptableObject.CreateInstance<DeepWaterWorldTile>() as DeepWaterWorldTile),
+			(ScriptableObject.CreateInstance<FoothillsWorldTile>() as FoothillsWorldTile),
 			(ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile),
+			(ScriptableObject.CreateInstance<PeakWorldTile>() as PeakWorldTile),
 			(ScriptableObject.CreateInstance<VillageWorldTile>() as VillageWorldTile),
 			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
-			(ScriptableObject.CreateInstance<DirtWorldTile>() as DirtWorldTile),
 			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile)
 		};
 	}

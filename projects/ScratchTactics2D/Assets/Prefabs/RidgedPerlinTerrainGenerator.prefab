@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8176838686405494709
+--- !u!1 &616193146536380532
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8176838686405494707}
-  - component: {fileID: 8176838686405494708}
+  - component: {fileID: 616193146536380534}
+  - component: {fileID: 616193146536380533}
   m_Layer: 0
-  m_Name: PerlinTerrainGenerator
+  m_Name: RidgedPerlinTerrainGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8176838686405494707
+--- !u!4 &616193146536380534
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8176838686405494709}
+  m_GameObject: {fileID: 616193146536380532}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,20 +31,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8176838686405494708
+--- !u!114 &616193146536380533
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8176838686405494709}
+  m_GameObject: {fileID: 616193146536380532}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23e68a681587c7a44aacb7eee12435f5, type: 3}
+  m_Script: {fileID: 11500000, guid: c7e48744f83fbb1468820b35b6a0c2a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mapDimension: {x: 50, y: 200}
   seed: 12345
-  scale: 6
+  scale: 10
   octaves: 2
   power: 1
