@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public class TerrainPattern3x3 : HashSet<Vector3Int>
+public class TerrainPattern3x3 : TerrainPattern
 {
     // ORDER MATTERS HERE - see the RoadWorldTile sprite ordering
     public static TerrainPattern3x3 North { get => new TerrainPattern3x3{ Vector3Int.up }; }

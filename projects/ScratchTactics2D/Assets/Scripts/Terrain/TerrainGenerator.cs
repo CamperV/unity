@@ -10,7 +10,7 @@ using Extensions;
 
 public abstract class TerrainGenerator : MonoBehaviour
 {
-	public enum TileEnum {none, grass, sand, forest, water, deepWater, foothills, mountain, peak, mountain2x2, village, ruins, x};
+	public enum TileEnum {none, grass, sand, forest, water, deepWater, foothills, mountain, peak, peak2x2, village, ruins, x};
 
 	public Vector2Int mapDimension;
 	protected int mapDimensionX { get => mapDimension.x; }
@@ -85,34 +85,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 		//foreach (var mntPos in PositionsOfType(TileEnum.mountain)) {
 		// if (mntPos.x >= map.GetLength(0)-2 || mntPos.y >= map.GetLength(1)-2) continue;
 
-		for (int x = map.GetLength(0)-2; x >= 0 ; x--) {
-			for (int y = map.GetLength(1)-2; y >= 0; y--) {
-
-				// check here, to modify while iterating
-				if (map[x, y] == TileEnum.mountain || map[x, y] == TileEnum.peak) {
-					var mntPos = new Vector3Int(x, y, 0);
-				
-					List<Vector3Int> _pattern = new List<Vector3Int>{
-						mntPos,
-						mntPos + Vector3Int.right,
-						mntPos + Vector3Int.up,
-						mntPos + Vector3Int.right + Vector3Int.up,
-					}.Where( it => map[it.x, it.y] == TileEnum.mountain || map[it.x, it.y] == TileEnum.peak).ToList();
-					TerrainPatternShape pattern = TerrainPatternShape.FromList( _pattern.Select(it => it - mntPos).ToList() );
-
-					// if the filtered pattern matches a square:
-					if (TerrainPatternShape.BottomLeftSquare.Matches(pattern)) {
-						Debug.Log($"{mntPos} passed!");
-						_pattern.ForEach( it => Debug.Log($"> {it} ({map[it.x, it.y]})") );
-
-						map[mntPos.x,   mntPos.y]   = TileEnum.mountain2x2;
-						map[mntPos.x+1, mntPos.y]   = TileEnum.none;
-						map[mntPos.x,   mntPos.y+1] = TileEnum.none;
-						map[mntPos.x+1, mntPos.y+1] = TileEnum.none;
-					}
-				}
-			}
-		}
+		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2);
     }
 
 	public virtual void Postprocessing() {}
@@ -149,5 +122,28 @@ public abstract class TerrainGenerator : MonoBehaviour
 			}
 		}
 		return retVal;
+	}
+
+	protected void PatternReplace(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith) {
+		for (int x = map.GetLength(0)-pattern.width; x >= 0 ; x--) {
+			for (int y = map.GetLength(1)-pattern.height; y >= 0; y--) {
+				if (map[x, y] == toReplace) {
+					Vector3Int mntPos = new Vector3Int(x, y, 0);
+
+					// if all pos caught in pattern match the "toReplace":
+					bool match = true;
+					foreach (var v in pattern.YieldPattern(mntPos)) {
+						match &= map[v.x, v.y] == toReplace;
+					}
+
+					if (match) {
+						map[mntPos.x, mntPos.y] = replaceWith;
+						foreach (var v in pattern.YieldPatternExcept(mntPos, mntPos)) {
+							map[v.x, v.y] = TileEnum.none;
+						}
+					}
+				}
+			}
+		}
 	}
 }

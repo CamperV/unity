@@ -54,7 +54,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
 		}
     }
 
-    public virtual void Postprocessing() {
+    public override void Postprocessing() {
         if (seed != -1) Random.InitState(seed);
 
         base.Postprocessing();

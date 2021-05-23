@@ -72,7 +72,7 @@ public class ForestWorldTile : WorldTile
 public class FoothillsWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }
-	public override int depth { get { return 1; } }
+	public override int depth { get { return 0; } }
 	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
 
 	public void OnEnable() {
@@ -114,7 +114,7 @@ public class MountainWorldTile : WorldTile
 	public override int depth { get { return 1; } }
 	public override int cost { get { return (int)(Constants.standardTickCost * 5.0f); } }
 	
-	public void OnEnable() {
+	public virtual void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetSprite("Parchment/parchment_mountain_medium")
 		};
@@ -124,7 +124,7 @@ public class MountainWorldTile : WorldTile
 
 public class PeakWorldTile : MountainWorldTile
 {		
-	public void OnEnable() {
+	public override void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetSprite("Parchment/parchment_mountain_peaks")
 		};
@@ -134,7 +134,7 @@ public class PeakWorldTile : MountainWorldTile
 
 public class Mountain2x2WorldTile : MountainWorldTile
 {		
-	public void OnEnable() {
+	public override void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetSprite("Parchment/parchment_mountain_2x2")
 		};
