@@ -28,6 +28,14 @@ public class TerrainPattern3x3 : HashSet<Vector3Int>
     public static TerrainPattern3x3 SouthEastWest { get => new TerrainPattern3x3{ Vector3Int.down, Vector3Int.left, Vector3Int.right }; }
     public static TerrainPattern3x3 NorthSouthEastWest { get => new TerrainPattern3x3{ Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right }; }
     
+    public T GetPatternTile<T>() where T : WorldTile {
+        int match = MatchStandardPattern();
+        Debug.Assert(match > -1);
+
+        MethodInfo methodInfo = typeof(T).GetMethod("GetTileWithSprite");
+        return (T)methodInfo.Invoke(null, new object[] { Mathf.Max(0, match) });
+	}
+
     private int MatchStandardPattern() {
         List<TerrainPattern3x3> toMatchAgainst = new List<TerrainPattern3x3>() {
             TerrainPattern3x3.EastWest,
@@ -45,15 +53,6 @@ public class TerrainPattern3x3 : HashSet<Vector3Int>
         for(int i = 0; i < toMatchAgainst.Count; i++) {
             if (this.SetEquals(toMatchAgainst[i])) return i;
         }
-
         return -1;
     }
-
-    public T GetPatternTile<T>() where T : WorldTile {
-        int match = MatchStandardPattern();
-        Debug.Assert(match > -1);
-
-        MethodInfo methodInfo = typeof(T).GetMethod("GetTileWithSprite");
-        return (T)methodInfo.Invoke(null, new object[] { Mathf.Max(0, match) });
-	}
 }

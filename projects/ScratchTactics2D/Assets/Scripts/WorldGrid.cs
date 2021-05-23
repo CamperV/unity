@@ -13,10 +13,10 @@ public class WorldGrid : GameGrid
 	private int mapDimensionX;
 	private int mapDimensionY;
 	
+	public int zoomLevel;	// in vertical tiles
 	public TerrainGenerator terrainGenerator;	// assigned prefab
 
 	private OverlayTile selectTile;
-	private OverlayTile blankTile;
 	private Dictionary<Vector3Int, WorldTile> worldTileGrid;
 	public Dictionary<Vector3Int, Terrain> terrainGrid;
 	
@@ -179,6 +179,7 @@ public class WorldGrid : GameGrid
 
 		TerrainGenerator tg = Instantiate(terrainGenerator);
 		tg.GenerateMap();
+		tg.Preprocessing();
 		tg.SetTileSetter(SetAppropriateTile);
 		tg.ApplyMap(baseTilemap);
 		tg.Postprocessing();
@@ -189,7 +190,7 @@ public class WorldGrid : GameGrid
 		CreateTintBuffer( tg.GetMap() );
 		
 		// how many tiles do we want shown vertically?
-		CameraManager.RefitCamera(25);
+		CameraManager.RefitCamera(zoomLevel);
 		//CameraManager.RefitStaticCamera(new Vector3(tg.mapDimension.x/2f, tg.mapDimension.y/2f, -10f), tg.mapDimension.y+8);
 		
 		Vector2 minBounds = new Vector2(4, 2.5f);

@@ -94,7 +94,7 @@ public class PlayerController : Controller
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
 	private int MoveUp(MovingObject subject) {
-		var success = subject.GridMove(0, 1);
+		var success = subject.GridMove(0, 10);
 		var tickCost = GameManager.inst.worldGrid.GetTileAt(subject.gridPosition).cost;
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}

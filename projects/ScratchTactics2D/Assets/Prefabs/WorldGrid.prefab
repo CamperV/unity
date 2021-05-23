@@ -592,4 +592,5 @@ MonoBehaviour:
   baseTilemap: {fileID: 0}
   underlayTilemap: {fileID: 0}
   overlayTilemap: {fileID: 0}
+  zoomLevel: 15
   terrainGenerator: {fileID: 8176838686405494708, guid: 8610f828ff354d745a224df4cd5a7937, type: 3}
