@@ -5,8 +5,10 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Extensions {
-    public static class Extensions {
+namespace Extensions
+{
+    public static class Extensions
+    {
 
         // extend Phase enum to link enums a la LL
         public static Enum.Phase NextPhase(this Enum.Phase p) {
@@ -317,16 +319,28 @@ namespace Extensions {
             return r;
         }
 
-        // float[,]
-        public static float[,] ApplyTransform(this float[,] f, Func<float, float> Fn) {
-            float[,] r = new float[f.GetLength(0), f.GetLength(1)];
+        // int[,]
+        public static int[,] Subtract(this int[,] f, int[,] o) {
+            int[,] resultant = new int[f.GetLength(0), f.GetLength(1)];
 
             for (int x = 0; x < f.GetLength(0); x++) {
                 for (int y = 0; y < f.GetLength(1); y++) {
-                    r[x, y] = Fn(f[x, y]);
+                    resultant[x, y] = f[x, y] - o[x, y];
                 }
             }
-            return r;
+            return resultant;
+        }
+
+        // int[,]
+        public static float[,] ToFloat(this int[,] i) {
+            float[,] f = new float[i.GetLength(0), i.GetLength(1)];
+
+            for (int x = 0; x < i.GetLength(0); x++) {
+                for (int y = 0; y < i.GetLength(1); y++) {
+                    f[x, y] = (float)i[x, y];
+                }
+            }
+            return f;
         }
     }
 }

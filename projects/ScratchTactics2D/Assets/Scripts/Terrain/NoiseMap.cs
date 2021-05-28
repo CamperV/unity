@@ -6,25 +6,15 @@ using System.IO;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Extensions;
+using MapTools;
 
-public class NoiseMap
+public class NoiseMap : ElevationMap
 {
     public float[,,] octaves;
-    private float[,] map;
-
-    public float[,] Map { get => map; }
-
-    public int width { get => map.GetLength(0); }
-    public int height { get => map.GetLength(1); }
-
 
     public NoiseMap(int numOctaves, int xDim, int yDim) {
         octaves = new float[numOctaves, xDim, yDim];
         map = new float[xDim, yDim];
-    }
-
-    public float At(int x, int y) {
-        return map[x, y];
     }
 
     public float[,] GetOctave(int octave) {
@@ -49,22 +39,6 @@ public class NoiseMap
     
     // get the 0th octave, normalize differently, return
     public float[,] GetRidges() {
-        return GetOctave(0).ApplyTransform(it => 1f - Mathf.Abs(Mathf.Lerp(-1f, 1f, it) ));
-    }
-
-    // fluent
-    public NoiseMap Add(float[,] toAdd) {
-        map = map.Add(toAdd);
-        return this;
-    }
-
-    // fluent
-    public NoiseMap Subtract(float[,] toSub) {
-        map = map.Subtract(toSub);
-        return this;
-    }
-
-    public void NormalizeMap() {
-        map = map.Normalize();
+        return GetOctave(0).Map<float>(it => 1f - Mathf.Abs(Mathf.Lerp(-1f, 1f, it) ));
     }
 }

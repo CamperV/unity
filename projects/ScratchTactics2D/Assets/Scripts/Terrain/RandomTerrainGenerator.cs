@@ -34,7 +34,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 		}
 	}
 
-	public override void Postprocessing() {
+	protected override void Postprocessing() {
 		LinkMountainRanges();
 		CreateForests(2, 5);
 		CreateLakes(5, 10);
@@ -163,5 +163,39 @@ public class RandomTerrainGenerator : TerrainGenerator
 		foreach(Road road in roads) {
 			road.Apply(GameManager.inst.worldGrid);
 		}
+	}
+
+	private List<Vector3Int> PositionsOfType(TileEnum type) {
+		List<Vector3Int> positionList = new List<Vector3Int>();
+		
+		for (int x = 0; x < map.GetLength(0); x++) {
+			for (int y = 0; y < map.GetLength(1); y++) {
+				if (map[x, y] == type) {
+					positionList.Add(new Vector3Int(x, y, 0));
+				}
+			}
+		}
+		return positionList;
+	}
+	
+	private Vector3Int ClosestOfType(Vector3Int startPos, TileEnum type) {
+		Vector3Int retVal = startPos;
+		float currDist = (float)(map.GetLength(0) + 1);
+		
+		for (int x = 0; x < map.GetLength(0); x++) {
+			for (int y = 0; y < map.GetLength(1); y++) {
+				if (map[x, y] == type) {
+					Vector3Int currPos = new Vector3Int(x, y, 0);
+					if (currPos == startPos) continue;
+					
+					float dist = Vector3Int.Distance(startPos, currPos);
+					if (dist < currDist) {
+						currDist = dist;
+						retVal = currPos;
+					}
+				}
+			}
+		}
+		return retVal;
 	}
 }

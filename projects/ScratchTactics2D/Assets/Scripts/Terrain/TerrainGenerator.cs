@@ -10,7 +10,17 @@ using Extensions;
 
 public abstract class TerrainGenerator : MonoBehaviour
 {
-	public enum TileEnum {none, grass, sand, forest, water, deepWater, foothills, mountain, mountain2x2, peak, peak2x2, village, ruins, x};
+	public enum TileEnum {
+		none,
+		deepWater, water,
+		sand,
+		grass,
+		forest,
+		foothills, mountain, mountain2x2, peak, peak2x2,
+		village,
+		ruins,
+		x
+	};
 
 	public Vector2Int mapDimension;
 	protected int mapDimensionX { get => mapDimension.x; }
@@ -22,17 +32,16 @@ public abstract class TerrainGenerator : MonoBehaviour
 	
 	public abstract void GenerateMap();
 	// virtual: Preprocessing();
-	// virtual: ApplyMap();
 	// virtual: Postprocessing();
 
 	void Awake() {
 		tileOptions = new WorldTile[]{
 			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile),
-			(ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile),
-			(ScriptableObject.CreateInstance<SandWorldTile>() as SandWorldTile),
-			(ScriptableObject.CreateInstance<ForestWorldTile>() as ForestWorldTile),
-			(ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile),
 			(ScriptableObject.CreateInstance<DeepWaterWorldTile>() as DeepWaterWorldTile),
+			(ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile),
+			(ScriptableObject.CreateInstance<SandWorldTile>() as SandWorldTile),
+			(ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile),
+			(ScriptableObject.CreateInstance<ForestWorldTile>() as ForestWorldTile),
 			(ScriptableObject.CreateInstance<FoothillsWorldTile>() as FoothillsWorldTile),
 			(ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile),
 			(ScriptableObject.CreateInstance<Mountain2x2WorldTile>() as Mountain2x2WorldTile),
@@ -56,7 +65,10 @@ public abstract class TerrainGenerator : MonoBehaviour
 		return map;
 	}
 
-	public virtual void ApplyMap(Tilemap tilemap) {
+	public void ApplyMap(Tilemap tilemap) {
+		Preprocessing();
+		//
+
 		var currentPos = tilemap.origin;
 
 		for (int x = 0; x < map.GetLength(0); x++) {
@@ -76,56 +88,21 @@ public abstract class TerrainGenerator : MonoBehaviour
 		//
 		tilemap.CompressBounds();
 		tilemap.RefreshAllTiles();
+
+		//
+		Postprocessing();
 	}
 
-    public virtual void Preprocessing() {
+    protected virtual void Preprocessing() {
 		Debug.Log($"Preprocessing: mountain2x2 replacement");
 
         // replace 2x2 mountains with large mountain tiles
 		// create bottom-left 2x2 pattern for each mountain
-		//foreach (var mntPos in PositionsOfType(TileEnum.mountain)) {
-		// if (mntPos.x >= map.GetLength(0)-2 || mntPos.y >= map.GetLength(1)-2) continue;
-
 		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2);
 		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2);
     }
-
-	public virtual void Postprocessing() {}
-
-	protected List<Vector3Int> PositionsOfType(TileEnum type) {
-		List<Vector3Int> positionList = new List<Vector3Int>();
-		
-		for (int x = 0; x < map.GetLength(0); x++) {
-			for (int y = 0; y < map.GetLength(1); y++) {
-				if (map[x, y] == type) {
-					positionList.Add(new Vector3Int(x, y, 0));
-				}
-			}
-		}
-		return positionList;
-	}
+	protected virtual void Postprocessing() {}
 	
-	protected Vector3Int ClosestOfType(Vector3Int startPos, TileEnum type) {
-		Vector3Int retVal = startPos;
-		float currDist = (float)(map.GetLength(0) + 1);
-		
-		for (int x = 0; x < map.GetLength(0); x++) {
-			for (int y = 0; y < map.GetLength(1); y++) {
-				if (map[x, y] == type) {
-					Vector3Int currPos = new Vector3Int(x, y, 0);
-					if (currPos == startPos) continue;
-					
-					float dist = Vector3Int.Distance(startPos, currPos);
-					if (dist < currDist) {
-						currDist = dist;
-						retVal = currPos;
-					}
-				}
-			}
-		}
-		return retVal;
-	}
-
 	protected void PatternReplace(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith) {
 		for (int x = map.GetLength(0)-pattern.width; x >= 0 ; x--) {
 			for (int y = map.GetLength(1)-pattern.height; y >= 0; y--) {

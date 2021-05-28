@@ -179,10 +179,8 @@ public class WorldGrid : GameGrid
 
 		TerrainGenerator tg = Instantiate(terrainGenerator);
 		tg.GenerateMap();
-		tg.Preprocessing();
 		tg.SetTileSetter(SetAppropriateTile);
 		tg.ApplyMap(baseTilemap);
-		tg.Postprocessing();
 		mapDimensionX = tg.mapDimension.x;
 		mapDimensionY = tg.mapDimension.y;
 

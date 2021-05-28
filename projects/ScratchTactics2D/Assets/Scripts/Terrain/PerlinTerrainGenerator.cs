@@ -8,11 +8,10 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
+using MapTools;
 
 public class PerlinTerrainGenerator : ElevationTerrainGenerator
 {
-    public NoiseMap noise;
-
     [Header("Perlin Noise Settings")]
 	public int seed;
 	public float scale;
@@ -20,9 +19,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
     [Range(0, 4)]
     public float power;
 
-	public override void GenerateMap() {
-        map = new TileEnum[mapDimensionX, mapDimensionY];
-        
+	public override void GenerateMap() {        
         // make sure the bottom part of the map is beachy
         float[,] beachMask = GenerateLogGradient(scale: 2.0f);
         SaveTextureAsPNG(RawTexture(beachMask), "beachMask.png");
@@ -35,31 +32,21 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         float[,] lakeMask = GenerateRandomDimples(verticalThreshold: (int)(mapDimensionY/4f), seed: seed);
         SaveTextureAsPNG(RawTexture(lakeMask), "lakeMask.png");
         
-        noise = GenerateNoiseMap().Add(beachMask).Add(mountainMask).Subtract(lakeMask);
-        noise.NormalizeMap();
+        elevation = GenerateNoiseMap().Add(beachMask).Add(mountainMask).Subtract(lakeMask);
+        elevation.NormalizeMap();
         
         // save the noise as a Texture2D
-        Texture2D rawTexture = RawTexture(noise.Map);
-        Texture2D terrainTexture = ColorizedTexture(noise.Map);
+        Texture2D rawTexture = RawTexture(elevation.Map);
+        Texture2D terrainTexture = ColorizedTexture(elevation.Map);
         SaveTextureAsPNG(rawTexture, "noise_map.png");
         SaveTextureAsPNG(terrainTexture, "terrain_map.png");
-
-        SaveTextureAsPNG(RawTexture(noise.GetRidges()), $"ridges.png");
     	
+        map = new TileEnum[mapDimensionX, mapDimensionY];
 		for (int i = 0; i < map.GetLength(0); i++) {
 			for (int j = 0; j < map.GetLength(1); j++) {
-				map[i, j] = ElevationToTile( noise.At(i, j) );
+				map[i, j] = ElevationToTile( elevation.At(i, j) );
 			}
 		}
-    }
-
-    public override void Postprocessing() {
-        if (seed != -1) Random.InitState(seed);
-
-        base.Postprocessing();
-        // smooth beach?
-        // seed + grow forests
-        // add PoI and roads to them
     }
 
     protected virtual NoiseMap GenerateNoiseMap() {

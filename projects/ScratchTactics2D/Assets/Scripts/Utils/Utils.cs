@@ -12,6 +12,7 @@ public static class Utils
 		yield return new WaitForSeconds(delay);
 		VoidAction();
 	}
+
 	public static IEnumerator DelayedExecuteTicks(int delayTicks, Action VoidAction) {
 		int count = 0;
 		while (count < delayTicks) {
@@ -20,6 +21,7 @@ public static class Utils
 		}
 		VoidAction();
 	}
+	
 	public static IEnumerator DelayedFlag(bool flag, Action VoidAction) {
 		while (flag) {
 			yield return null;

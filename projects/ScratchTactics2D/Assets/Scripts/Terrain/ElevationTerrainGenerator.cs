@@ -8,14 +8,16 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
+using MapTools;
 
 public abstract class ElevationTerrainGenerator : TerrainGenerator
 {
+    public ElevationMap elevation;
+    
     void Update() {
         if (Input.GetKeyDown(KeyCode.R)) {
             GenerateMap();
             ApplyMap(GameManager.inst.worldGrid.baseTilemap);
-            Postprocessing();
         }
     }
 
@@ -39,6 +41,27 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         /* .65 -> */ [0.75f] = new Color(0.50f, 0.50f, 0.50f, 1.00f),    // gray
         /* .75 -> */ [1.00f] = new Color(1.00f, 1.00f, 1.00f, 1.00f)     // white
     };
+
+    // Preprocessing is run before ApplyMap
+    protected override void Preprocessing() {
+        // smooth beach?
+        // seed + grow forests
+
+        // add PoI and roads to them
+        // create villages
+        // For now, simply spawn where there aren't moutains/water
+        // in the future, have villages "prefer" certain areas, maybe using GetRidges(), or find places close to water, etc
+        // this may be relegated to different types of villages
+        int numVillages = Random.Range(15, 20);
+        int[,] spawnableVillageMask = map.LocationsOf<TileEnum>(TileEnum.mountain, TileEnum.peak, TileEnum.water, TileEnum.deepWater).Inverse();
+
+        foreach(var pos in spawnableVillageMask.FilterToList(it => it == 1).RandomSelections<Vector2Int>(numVillages)) {
+            map[pos.x, pos.y] = TileEnum.village;
+        }
+
+        // pattern replacer
+        base.Preprocessing();
+    }
 
     protected TileEnum ElevationToTile(float elevation) {
         foreach (KeyValuePair<float, TileEnum> elPair in tileElevation.OrderBy(p => p.Key)) {
