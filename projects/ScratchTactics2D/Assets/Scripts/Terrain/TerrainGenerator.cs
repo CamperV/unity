@@ -10,7 +10,7 @@ using Extensions;
 
 public abstract class TerrainGenerator : MonoBehaviour
 {
-	public enum TileEnum {none, grass, sand, forest, water, deepWater, foothills, mountain, peak, peak2x2, village, ruins, x};
+	public enum TileEnum {none, grass, sand, forest, water, deepWater, foothills, mountain, mountain2x2, peak, peak2x2, village, ruins, x};
 
 	public Vector2Int mapDimension;
 	protected int mapDimensionX { get => mapDimension.x; }
@@ -35,8 +35,9 @@ public abstract class TerrainGenerator : MonoBehaviour
 			(ScriptableObject.CreateInstance<DeepWaterWorldTile>() as DeepWaterWorldTile),
 			(ScriptableObject.CreateInstance<FoothillsWorldTile>() as FoothillsWorldTile),
 			(ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile),
-			(ScriptableObject.CreateInstance<PeakWorldTile>() as PeakWorldTile),
 			(ScriptableObject.CreateInstance<Mountain2x2WorldTile>() as Mountain2x2WorldTile),
+			(ScriptableObject.CreateInstance<PeakWorldTile>() as PeakWorldTile),
+			(ScriptableObject.CreateInstance<Peak2x2WorldTile>() as Peak2x2WorldTile),
 			(ScriptableObject.CreateInstance<VillageWorldTile>() as VillageWorldTile),
 			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
 			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile)
@@ -86,6 +87,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 		// if (mntPos.x >= map.GetLength(0)-2 || mntPos.y >= map.GetLength(1)-2) continue;
 
 		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2);
+		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2);
     }
 
 	public virtual void Postprocessing() {}

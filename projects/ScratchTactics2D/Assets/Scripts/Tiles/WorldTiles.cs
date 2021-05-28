@@ -142,6 +142,16 @@ public class Mountain2x2WorldTile : MountainWorldTile
 	}
 }
 
+public class Peak2x2WorldTile : MountainWorldTile
+{		
+	public override void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("Parchment/parchment_mountain_peaks_2x2")
+		};
+		sprite = sprites[0];
+	}
+}
+
 public class XWorldTile : WorldTile
 {		
 	public void OnEnable() {
