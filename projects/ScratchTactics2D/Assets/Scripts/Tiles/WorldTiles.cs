@@ -116,7 +116,7 @@ public class MountainWorldTile : WorldTile
 	
 	public virtual void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("Parchment/parchment_mountain_medium")
+			ResourceLoader.GetSprite("Parchment/parchment_mountain_cluster")
 		};
 		sprite = sprites[0];
 	}

@@ -316,5 +316,17 @@ namespace Extensions {
             }
             return r;
         }
+
+        // float[,]
+        public static float[,] ApplyTransform(this float[,] f, Func<float, float> Fn) {
+            float[,] r = new float[f.GetLength(0), f.GetLength(1)];
+
+            for (int x = 0; x < f.GetLength(0); x++) {
+                for (int y = 0; y < f.GetLength(1); y++) {
+                    r[x, y] = Fn(f[x, y]);
+                }
+            }
+            return r;
+        }
     }
 }
