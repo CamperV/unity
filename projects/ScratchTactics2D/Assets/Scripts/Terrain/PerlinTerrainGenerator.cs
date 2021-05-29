@@ -14,10 +14,10 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
 {
     [Header("Perlin Noise Settings")]
 	public int seed;
-	public float scale;
+	public float perlinScale;
 	public int octaves;
     [Range(0, 4)]
-    public float power;
+    public float perlinPower;
 
 	public override void GenerateMap() {        
         // make sure the bottom part of the map is beachy
@@ -32,14 +32,13 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         float[,] lakeMask = GenerateRandomDimples(verticalThreshold: (int)(mapDimensionY/4f), seed: seed);
         SaveTextureAsPNG(RawTexture(lakeMask), "lakeMask.png");
         
-        elevation = GenerateNoiseMap().Add(beachMask).Add(mountainMask).Subtract(lakeMask);
+        elevation = GeneratePerlinNoiseMap(mapDimensionX, mapDimensionY, octaves, scale: perlinScale, power: perlinPower);
+        elevation.Add(beachMask).Add(mountainMask).Subtract(lakeMask);
         elevation.NormalizeMap();
         
         // save the noise as a Texture2D
-        Texture2D rawTexture = RawTexture(elevation.Map);
-        Texture2D terrainTexture = ColorizedTexture(elevation.Map);
-        SaveTextureAsPNG(rawTexture, "noise_map.png");
-        SaveTextureAsPNG(terrainTexture, "terrain_map.png");
+        SaveTextureAsPNG( RawTexture(elevation.Map), "noise_map.png");
+        SaveTextureAsPNG( ColorizedTexture(elevation.Map), "terrain_map.png");
     	
         map = new TileEnum[mapDimensionX, mapDimensionY];
 		for (int i = 0; i < map.GetLength(0); i++) {
@@ -49,21 +48,57 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
 		}
     }
 
-    protected virtual NoiseMap GenerateNoiseMap() {
-        NoiseMap noiseMap = new NoiseMap(octaves, mapDimensionX, mapDimensionY);
+    // Preprocessing is run before ApplyMap
+    protected override void Preprocessing() {
+        // smooth beach?
+        // seed + grow forests
+        // > generate a separate noise map, smoother, to generate forests
+        NoiseMap forestProbabilityMap = GeneratePerlinNoiseMap(mapDimensionX, mapDimensionY, 1, scale: perlinScale*2.0f, power: 0.75f);
+        forestProbabilityMap.Mask( elevation.Map.ClampBinaryThreshold(0.45f, 0.85f) );
+        SaveTextureAsPNG(RawTexture(forestProbabilityMap.Map), "forest_map.png");
+
+        for (int x = 0; x < forestProbabilityMap.width; x++) {
+            for (int y = 0; y < forestProbabilityMap.height; y++) {
+                float val = forestProbabilityMap.At(x, y);
+                float rng = Random.Range(0.55f, 0.90f);
+                if (rng <= val) {
+                    map[x, y] = TileEnum.forest;
+                }
+            }
+        }
+        // now, pattern match and create deepForest, where a forest is touching a forest in each cardinal direction
+
+        // add PoI and roads to them
+        // create villages
+        // For now, simply spawn where there aren't moutains/water
+        // in the future, have villages "prefer" certain areas, maybe using GetRidges(), or find places close to water, etc
+        // this may be relegated to different types of villages
+        int[,] spawnableVillageMask = (elevation as NoiseMap).GetRidges().BinaryThreshold(0.80f).Subtract( map.LocationsOf<TileEnum>(TileEnum.water, TileEnum.deepWater) );
+        List<Vector2Int> villagePositions = spawnableVillageMask.Where(it => it == 1).ToList().RandomSelections<Vector2Int>(numVillages);
+        //
+        foreach(Vector2Int pos in villagePositions) {
+            map[pos.x, pos.y] = TileEnum.village;
+        }
+
+        // pattern replacer is run in the base Preprocessing class
+        base.Preprocessing();
+    }
+
+    private NoiseMap GeneratePerlinNoiseMap(int dimX, int dimY, int numOctaves, float scale = 1.0f, float power = 1.0f) {
+        NoiseMap noiseMap = new NoiseMap(dimX, dimY, numOctaves);
         
         // When changing noise scale, it zooms from top-right corner
         // This will make it zoom from the center
-        Vector2 midpoint = new Vector2(mapDimensionX/2f, mapDimensionY/2f);
+        Vector2 midpoint = new Vector2(dimX/2f, dimY/2f);
 
         if (seed != -1) Random.InitState(seed);
         Vector2 randomOffset = new Vector2(Random.Range(-10000, 10000), Random.Range(-10000, 10000));
     
-        for (int x = 0; x < mapDimensionX; x++) {
-            for (int y = 0; y < mapDimensionY; y++) {
+        for (int x = 0; x < dimX; x++) {
+            for (int y = 0; y < dimY; y++) {
 
                 // fill out each octave x-y
-                for (int o = 0; o < octaves; o++) {         
+                for (int o = 0; o < numOctaves; o++) {         
                     float octaveScale = Mathf.Pow(2f, o);  // 1, 2, 4, 8, etc
 
                     float sampleX = (float)(x - midpoint.x)/scale;

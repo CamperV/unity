@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapDimension: {x: 50, y: 200}
+  numVillages: 10
   seed: 12345
-  scale: 6
+  perlinScale: 6
   octaves: 2
-  power: 1
+  perlinPower: 1

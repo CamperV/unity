@@ -23,12 +23,37 @@ namespace MapTools
             return r;
         }
 
+        // apply arbitary functions to this map
+        public static T[,] Mask<T>(this T[,] t, int[,] mask) {
+            T[,] r = new T[t.GetLength(0), t.GetLength(1)];
+
+            for (int x = 0; x < t.GetLength(0); x++) {
+                for (int y = 0; y < t.GetLength(1); y++) {
+                    if (mask[x, y] == 1) {
+                        r[x, y] = t[x, y];
+                    }
+                }
+            }
+            return r;
+        }
+
         public static int[,] BinaryThreshold(this float[,] f, float thresh) {
             int[,] mask = new int[f.GetLength(0), f.GetLength(1)];
 
             for (int x = 0; x < f.GetLength(0); x++) {
                 for (int y = 0; y < f.GetLength(1); y++) {
                     mask[x, y] = (f[x, y] >= thresh) ? 1 : 0;
+                }
+            }
+            return mask;
+        }
+
+        public static int[,] ClampBinaryThreshold(this float[,] f, float lowerThresh, float upperThresh) {
+            int[,] mask = new int[f.GetLength(0), f.GetLength(1)];
+
+            for (int x = 0; x < f.GetLength(0); x++) {
+                for (int y = 0; y < f.GetLength(1); y++) {
+                    mask[x, y] = (f[x, y] >= lowerThresh && f[x, y] <= upperThresh) ? 1 : 0;
                 }
             }
             return mask;
@@ -56,15 +81,14 @@ namespace MapTools
             return retVal;
         }
 
-        public static List<Vector2Int> FilterToList(this int[,] i, Func<int, bool> Filter) {
-            List<Vector2Int> retVal = new List<Vector2Int>();
-
+        public static IEnumerable<Vector2Int> Where(this int[,] i, Func<int, bool> Filter) {
             for (int x = 0; x < i.GetLength(0); x++) {
                 for (int y = 0; y < i.GetLength(1); y++) {
-                    if (Filter(i[x, y])) retVal.Add( new Vector2Int(x, y) );
+                    if (Filter(i[x, y])) {
+                        yield return new Vector2Int(x, y);
+                    }
                 }
             }
-            return retVal;
         }
 
         public static int[,] LocationsOf<T>(this T[,] m, params T[] matches) {

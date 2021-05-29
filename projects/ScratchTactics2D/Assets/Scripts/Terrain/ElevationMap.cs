@@ -37,6 +37,12 @@ public class ElevationMap
         return this;
     }
 
+    // fluent
+    public ElevationMap Mask(int[,] toMask) {
+        map = map.Mask<float>(toMask);
+        return this;
+    }
+
     public void NormalizeMap() {
         map = map.Normalize();
     }

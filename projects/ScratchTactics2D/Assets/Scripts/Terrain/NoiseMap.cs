@@ -12,7 +12,7 @@ public class NoiseMap : ElevationMap
 {
     public float[,,] octaves;
 
-    public NoiseMap(int numOctaves, int xDim, int yDim) {
+    public NoiseMap(int xDim, int yDim, int numOctaves) {
         octaves = new float[numOctaves, xDim, yDim];
         map = new float[xDim, yDim];
     }

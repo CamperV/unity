@@ -27,6 +27,9 @@ public abstract class TerrainGenerator : MonoBehaviour
 	protected int mapDimensionY { get => mapDimension.y; }
 	protected TileEnum[,] map;
 
+	// generation parameters
+	public int numVillages;
+
 	protected static WorldTile[] tileOptions;
 	public Action<Vector3Int, WorldTile> TileSetter;
 	
