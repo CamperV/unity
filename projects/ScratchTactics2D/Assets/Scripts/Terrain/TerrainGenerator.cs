@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
+using MapTools;
 
 public abstract class TerrainGenerator : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 		deepWater, water,
 		sand,
 		grass,
-		forest,
+		forest, deepForest,
 		foothills, mountain, mountain2x2, peak, peak2x2,
 		village,
 		ruins,
@@ -40,18 +41,27 @@ public abstract class TerrainGenerator : MonoBehaviour
 	void Awake() {
 		tileOptions = new WorldTile[]{
 			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile),
+			//
 			(ScriptableObject.CreateInstance<DeepWaterWorldTile>() as DeepWaterWorldTile),
 			(ScriptableObject.CreateInstance<WaterWorldTile>() as WaterWorldTile),
+			//
 			(ScriptableObject.CreateInstance<SandWorldTile>() as SandWorldTile),
+			//
 			(ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile),
+			//
 			(ScriptableObject.CreateInstance<ForestWorldTile>() as ForestWorldTile),
+			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
+			//
 			(ScriptableObject.CreateInstance<FoothillsWorldTile>() as FoothillsWorldTile),
 			(ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile),
 			(ScriptableObject.CreateInstance<Mountain2x2WorldTile>() as Mountain2x2WorldTile),
 			(ScriptableObject.CreateInstance<PeakWorldTile>() as PeakWorldTile),
 			(ScriptableObject.CreateInstance<Peak2x2WorldTile>() as Peak2x2WorldTile),
+			//
 			(ScriptableObject.CreateInstance<VillageWorldTile>() as VillageWorldTile),
+			//
 			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
+			//
 			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile)
 		};
 	}
@@ -101,27 +111,38 @@ public abstract class TerrainGenerator : MonoBehaviour
 
         // replace 2x2 mountains with large mountain tiles
 		// create bottom-left 2x2 pattern for each mountain
-		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2);
-		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2);
+		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2, nullifyOthers: true);
+		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2, nullifyOthers: true);
     }
 	protected virtual void Postprocessing() {}
 	
-	protected void PatternReplace(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith) {
-		for (int x = map.GetLength(0)-pattern.width; x >= 0 ; x--) {
-			for (int y = map.GetLength(1)-pattern.height; y >= 0; y--) {
+	protected void PatternReplace(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, bool nullifyOthers = false) {
+		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
+			for (int y = map.GetLength(1)-1; y >= 0; y--) {
 				if (map[x, y] == toReplace) {
-					Vector3Int mntPos = new Vector3Int(x, y, 0);
+					Vector3Int origin = new Vector3Int(x, y, 0);
 
 					// if all pos caught in pattern match the "toReplace":
 					bool match = true;
-					foreach (var v in pattern.YieldPattern(mntPos)) {
-						match &= map[v.x, v.y] == toReplace;
+					foreach (var v in pattern.YieldPattern(origin)) {
+						// check bounds here for the first time
+						if (map.Contains(v.x, v.y)) {
+							match &= map[v.x, v.y] == toReplace;
+						}
 					}
 
 					if (match) {
-						map[mntPos.x, mntPos.y] = replaceWith;
-						foreach (var v in pattern.YieldPatternExcept(mntPos, mntPos)) {
-							map[v.x, v.y] = TileEnum.none;
+						map[origin.x, origin.y] = replaceWith;
+
+						// in the case of mountains, we need to make sure other mountain tiles aren't placed here
+						// but sometimes we only want to modifiy the origin
+						if (nullifyOthers) {
+							foreach (var v in pattern.YieldPatternExcept(origin, origin)) {
+
+								if (map.Contains(v.x, v.y)) {
+									map[v.x, v.y] = TileEnum.none;
+								}
+							}
 						}
 					}
 				}

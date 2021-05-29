@@ -23,7 +23,6 @@ namespace MapTools
             return r;
         }
 
-        // apply arbitary functions to this map
         public static T[,] Mask<T>(this T[,] t, int[,] mask) {
             T[,] r = new T[t.GetLength(0), t.GetLength(1)];
 
@@ -35,6 +34,11 @@ namespace MapTools
                 }
             }
             return r;
+        }
+
+        public static bool Contains<T>(this T[,] t, int x, int y) {
+            Debug.Log($"> {x}/{y} against {t.GetLength(0)}/{t.GetLength(1)}");
+            return (x >= 0) && (x < t.GetLength(0)) && (y >= 0) && (y < t.GetLength(1));
         }
 
         public static int[,] BinaryThreshold(this float[,] f, float thresh) {

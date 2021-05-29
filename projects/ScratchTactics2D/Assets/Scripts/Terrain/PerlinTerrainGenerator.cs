@@ -67,6 +67,9 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
             }
         }
         // now, pattern match and create deepForest, where a forest is touching a forest in each cardinal direction
+        // TODO: this is currently replacing while going - modify to use another method here
+        // we're getting checkerboard
+        PatternReplace(TerrainPatternShape.CenterPlus, TileEnum.forest, TileEnum.deepForest, nullifyOthers: false);
 
         // add PoI and roads to them
         // create villages
