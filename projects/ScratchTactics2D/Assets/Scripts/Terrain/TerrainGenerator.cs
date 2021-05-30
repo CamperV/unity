@@ -50,7 +50,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 			(ScriptableObject.CreateInstance<GrassWorldTile>() as GrassWorldTile),
 			//
 			(ScriptableObject.CreateInstance<ForestWorldTile>() as ForestWorldTile),
-			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
+			(ScriptableObject.CreateInstance<DeepForestWorldTile>() as DeepForestWorldTile),
 			//
 			(ScriptableObject.CreateInstance<FoothillsWorldTile>() as FoothillsWorldTile),
 			(ScriptableObject.CreateInstance<MountainWorldTile>() as MountainWorldTile),
@@ -111,12 +111,12 @@ public abstract class TerrainGenerator : MonoBehaviour
 
         // replace 2x2 mountains with large mountain tiles
 		// create bottom-left 2x2 pattern for each mountain
-		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2, nullifyOthers: true);
-		PatternReplace(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2, nullifyOthers: true);
+		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2);
+		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2);
     }
 	protected virtual void Postprocessing() {}
 	
-	protected void PatternReplace(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, bool nullifyOthers = false) {
+	protected void PatternReplaceMultiple(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith) {
 		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
 			for (int y = map.GetLength(1)-1; y >= 0; y--) {
 				if (map[x, y] == toReplace) {
@@ -136,17 +136,47 @@ public abstract class TerrainGenerator : MonoBehaviour
 
 						// in the case of mountains, we need to make sure other mountain tiles aren't placed here
 						// but sometimes we only want to modifiy the origin
-						if (nullifyOthers) {
-							foreach (var v in pattern.YieldPatternExcept(origin, origin)) {
+						foreach (var v in pattern.YieldPatternExcept(origin, origin)) {
 
-								if (map.Contains(v.x, v.y)) {
-									map[v.x, v.y] = TileEnum.none;
-								}
+							if (map.Contains(v.x, v.y)) {
+								map[v.x, v.y] = TileEnum.none;
 							}
 						}
 					}
 				}
 			}
+		}
+	}
+
+	protected void PatternReplaceSingle(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, params TileEnum[] patternContent) {
+		List<Vector3Int> secondPass = new List<Vector3Int>();
+
+		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
+			for (int y = map.GetLength(1)-1; y >= 0; y--) {
+				if (map[x, y] == toReplace) {
+					Vector3Int origin = new Vector3Int(x, y, 0);
+
+					// if all pos caught in pattern match any of the patternContent:
+					bool matchAllPositions = true;
+					foreach (var v in pattern.YieldPattern(origin)) {
+						// check bounds here for the first time
+						if (map.Contains(v.x, v.y)) {
+							bool matchAnyTypes = false;
+							foreach(var patternMatcher in patternContent) {
+								matchAnyTypes |= map[v.x, v.y] == patternMatcher;
+							}
+							matchAllPositions &= matchAnyTypes;
+						}
+					}
+
+					if (matchAllPositions) secondPass.Add(origin);
+				}
+			}
+		}
+
+		// perform all replacements in a second pass so that they do not affect one another
+		foreach (var og in secondPass) {
+			map[og.x, og.y] = replaceWith;
 		}
 	}
 }

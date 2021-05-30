@@ -59,6 +59,20 @@ public class ForestWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }
 	public override int depth { get { return 1; } }
+	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("Parchment/parchment_sparse_forest")
+		};
+		sprite = sprites[0];
+	}
+}
+
+public class DeepForestWorldTile : WorldTile
+{
+	public override int probability { get { return 8; } }
+	public override int depth { get { return 1; } }
 	public override int cost { get { return (int)(Constants.standardTickCost * 2.0f); } }
 
 	public void OnEnable() {
@@ -72,7 +86,7 @@ public class ForestWorldTile : WorldTile
 public class FoothillsWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }
-	public override int depth { get { return 0; } }
+	public override int depth { get { return 1; } }
 	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
 
 	public void OnEnable() {
@@ -116,7 +130,7 @@ public class MountainWorldTile : WorldTile
 	
 	public virtual void OnEnable() {
 		sprites = new List<Sprite>() {
-			ResourceLoader.GetSprite("Parchment/parchment_mountain_cluster")
+			ResourceLoader.GetSprite("Parchment/parchment_mountain")
 		};
 		sprite = sprites[0];
 	}

@@ -20,4 +20,9 @@ public class TerrainPatternShape : TerrainPattern
     // o x o
     //   o
     public static TerrainPatternShape CenterPlus { get => new TerrainPatternShape{ Vector3Int.zero, Vector3Int.right, Vector3Int.up, Vector3Int.left, Vector3Int.down }; }
+    
+    //   o
+    // o   o
+    //   o
+    public static TerrainPatternShape NoCenterPlus { get => new TerrainPatternShape{ Vector3Int.right, Vector3Int.up, Vector3Int.left, Vector3Int.down }; }
 }

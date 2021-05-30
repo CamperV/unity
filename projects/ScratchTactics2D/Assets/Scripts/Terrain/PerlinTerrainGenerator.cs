@@ -53,6 +53,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // smooth beach?
         // seed + grow forests
         // > generate a separate noise map, smoother, to generate forests
+        // TODO: I really just kinda smooth-brained this one out: there's a better way to balance the multiple thresholds/rng here
         NoiseMap forestProbabilityMap = GeneratePerlinNoiseMap(mapDimensionX, mapDimensionY, 1, scale: perlinScale*2.0f, power: 0.75f);
         forestProbabilityMap.Mask( elevation.Map.ClampBinaryThreshold(0.45f, 0.85f) );
         SaveTextureAsPNG(RawTexture(forestProbabilityMap.Map), "forest_map.png");
@@ -69,7 +70,8 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // now, pattern match and create deepForest, where a forest is touching a forest in each cardinal direction
         // TODO: this is currently replacing while going - modify to use another method here
         // we're getting checkerboard
-        PatternReplace(TerrainPatternShape.CenterPlus, TileEnum.forest, TileEnum.deepForest, nullifyOthers: false);
+        PatternReplaceSingle(TerrainPatternShape.CenterPlus, TileEnum.forest, TileEnum.deepForest,
+                             TileEnum.forest, TileEnum.mountain, TileEnum.mountain2x2, TileEnum.peak, TileEnum.peak2x2);    
 
         // add PoI and roads to them
         // create villages
