@@ -11,6 +11,8 @@ using MapTools;
 
 public abstract class TerrainGenerator : MonoBehaviour
 {
+	// NOTE:
+	// this does not contain an exhaustive list of tiles. ex: road tiles
 	public enum TileEnum {
 		none,
 		deepWater, water,
@@ -111,27 +113,36 @@ public abstract class TerrainGenerator : MonoBehaviour
 
         // replace 2x2 mountains with large mountain tiles
 		// create bottom-left 2x2 pattern for each mountain
-		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2);
-		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2);
+		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2, TileEnum.peak);
+		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2, TileEnum.mountain);
     }
-	protected virtual void Postprocessing() {}
+	protected virtual void Postprocessing() {
+        // link the villages via roads
+		CreateRoadsBetweenWaypoints( map.LocationsOf<TileEnum>(TileEnum.village)
+										.Where(it => it == 1)
+										.Select(it => new Vector3Int(it.x, it.y, 0))
+										.ToList() );
+	}
 	
-	protected void PatternReplaceMultiple(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith) {
+	protected void PatternReplaceMultiple(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, params TileEnum[] patternContent) {
 		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
 			for (int y = map.GetLength(1)-1; y >= 0; y--) {
 				if (map[x, y] == toReplace) {
 					Vector3Int origin = new Vector3Int(x, y, 0);
 
-					// if all pos caught in pattern match the "toReplace":
-					bool match = true;
+					// if all pos caught in pattern match any of the patternContent:
+					bool matchAllPositions = true;
 					foreach (var v in pattern.YieldPattern(origin)) {
-						// check bounds here for the first time
 						if (map.Contains(v.x, v.y)) {
-							match &= map[v.x, v.y] == toReplace;
+							bool matchAnyTypes = false;
+							foreach(var patternMatcher in patternContent) {
+								matchAnyTypes |= map[v.x, v.y] == patternMatcher;
+							}
+							matchAllPositions &= matchAnyTypes;
 						}
 					}
 
-					if (match) {
+					if (matchAllPositions) {
 						map[origin.x, origin.y] = replaceWith;
 
 						// in the case of mountains, we need to make sure other mountain tiles aren't placed here
@@ -177,6 +188,33 @@ public abstract class TerrainGenerator : MonoBehaviour
 		// perform all replacements in a second pass so that they do not affect one another
 		foreach (var og in secondPass) {
 			map[og.x, og.y] = replaceWith;
+		}
+	}
+
+	protected void CreateRoadsBetweenWaypoints(List<Vector3Int> waypoints) {
+		Vector3Int prevPos = Vector3Int.zero;
+		int i = 0;
+
+		// since Roads need to know about each other in order to select the correct tile, keep track here, and Apply() later
+		List<Road> roads = new List<Road>();
+		foreach (Vector3Int pos in waypoints.OrderBy(it => it.y)) {
+			if (i > 0) {
+				Road road = new Road(prevPos, pos);
+				roads.Add(road);
+				
+				// while we're here, update the grid for the first pass
+				foreach (Vector3Int p in road.Unwind()) {
+					GameManager.inst.worldGrid.SetTerrainAt(p, road);
+					map[p.x, p.y] = TileEnum.none;
+				}
+			}
+			prevPos = pos;
+			i++;
+		}
+		
+		// second pass: now that the terrain is set, Apply() each road
+		foreach(Road road in roads) {
+			road.Apply(GameManager.inst.worldGrid);
 		}
 	}
 }

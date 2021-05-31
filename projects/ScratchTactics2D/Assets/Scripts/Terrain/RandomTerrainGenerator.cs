@@ -139,32 +139,6 @@ public class RandomTerrainGenerator : TerrainGenerator
 		}
 	}
 
-	private void CreateRoadsBetweenWaypoints(List<Vector3Int> waypoints) {
-		Vector3Int prevPos = Vector3Int.zero;
-		int i = 0;
-
-		// since Roads need to know about each other in order to select the correct tile, keep track here, and Apply() later
-		List<Road> roads = new List<Road>();
-		foreach (Vector3Int pos in waypoints.OrderBy(it => it.x)) {
-			if (i > 0) {
-				Road road = new Road(prevPos, pos);
-				roads.Add(road);
-				
-				// while we're here, update the grid for the first pass
-				foreach(Vector3Int p in road.Unwind()) {
-					GameManager.inst.worldGrid.SetTerrainAt(p, road);
-				}
-			}
-			prevPos = pos;
-			i++;
-		}
-		
-		// second pass: now that the terrain is set, Apply() each road
-		foreach(Road road in roads) {
-			road.Apply(GameManager.inst.worldGrid);
-		}
-	}
-
 	private List<Vector3Int> PositionsOfType(TileEnum type) {
 		List<Vector3Int> positionList = new List<Vector3Int>();
 		

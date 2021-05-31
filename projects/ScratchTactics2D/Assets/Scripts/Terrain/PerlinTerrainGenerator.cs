@@ -50,7 +50,10 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
 
     // Preprocessing is run before ApplyMap
     protected override void Preprocessing() {
+        //
         // smooth beach?
+        //
+
         // seed + grow forests
         // > generate a separate noise map, smoother, to generate forests
         // TODO: I really just kinda smooth-brained this one out: there's a better way to balance the multiple thresholds/rng here
@@ -85,6 +88,23 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
             map[pos.x, pos.y] = TileEnum.village;
         }
 
+        Vector3Int prevPos = Vector3Int.zero;
+		int i = 0;
+		foreach (Vector2Int _pos in villagePositions.OrderBy(it => it.y)) {
+            Vector3Int pos = new Vector3Int(_pos.x, _pos.y, 0);
+            
+			if (i > 0) {
+                Path path = new ElevationPathfinder(elevation).BFS(prevPos, pos);
+				
+				// while we're here, update the grid for the first pass
+				foreach (Vector3Int p in path.Unwind()) {
+					map[p.x, p.y] = TileEnum.none;
+				}
+			}
+			prevPos = pos;
+			i++;
+		}
+		
         // pattern replacer is run in the base Preprocessing class
         base.Preprocessing();
     }
