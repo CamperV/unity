@@ -109,5 +109,17 @@ namespace MapTools
             }
             return mask;
         }
+
+        // similar to IPathable
+        public static IEnumerable<Vector3Int> GetNeighbors<T>(this T[,] m, Vector3Int origin) {
+            Vector3Int up = origin + Vector3Int.up;
+            Vector3Int right = origin + Vector3Int.right;
+            Vector3Int down = origin + Vector3Int.down;
+            Vector3Int left = origin + Vector3Int.left;
+            if (m.Contains<T>(up.x, up.y)) yield return up;
+            if (m.Contains<T>(right.x, right.y)) yield return right;
+            if (m.Contains<T>(down.x, down.y)) yield return down;
+            if (m.Contains<T>(left.x, left.y)) yield return left;
+        }
     }
 }

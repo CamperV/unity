@@ -41,7 +41,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 
 		// player-affecting tiles
 		PlaceVillages(10);
-		CreateRoadsBetweenWaypoints( GameManager.inst.worldGrid.LocationsOf<VillageWorldTile>() );
+		// CreateRoadsBetweenWaypoints( GameManager.inst.worldGrid.LocationsOf<VillageWorldTile>() );
 	}
 
 	private void LinkMountainRanges() {

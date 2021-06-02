@@ -109,20 +109,12 @@ public abstract class TerrainGenerator : MonoBehaviour
 	}
 
     protected virtual void Preprocessing() {
-		Debug.Log($"Preprocessing: mountain2x2 replacement");
-
         // replace 2x2 mountains with large mountain tiles
 		// create bottom-left 2x2 pattern for each mountain
 		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2, TileEnum.peak);
 		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2, TileEnum.mountain);
     }
-	protected virtual void Postprocessing() {
-        // link the villages via roads
-		CreateRoadsBetweenWaypoints( map.LocationsOf<TileEnum>(TileEnum.village)
-										.Where(it => it == 1)
-										.Select(it => new Vector3Int(it.x, it.y, 0))
-										.ToList() );
-	}
+	protected virtual void Postprocessing() {}
 	
 	protected void PatternReplaceMultiple(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, params TileEnum[] patternContent) {
 		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
@@ -188,33 +180,6 @@ public abstract class TerrainGenerator : MonoBehaviour
 		// perform all replacements in a second pass so that they do not affect one another
 		foreach (var og in secondPass) {
 			map[og.x, og.y] = replaceWith;
-		}
-	}
-
-	protected void CreateRoadsBetweenWaypoints(List<Vector3Int> waypoints) {
-		Vector3Int prevPos = Vector3Int.zero;
-		int i = 0;
-
-		// since Roads need to know about each other in order to select the correct tile, keep track here, and Apply() later
-		List<Road> roads = new List<Road>();
-		foreach (Vector3Int pos in waypoints.OrderBy(it => it.y)) {
-			if (i > 0) {
-				Road road = new Road(prevPos, pos);
-				roads.Add(road);
-				
-				// while we're here, update the grid for the first pass
-				foreach (Vector3Int p in road.Unwind()) {
-					GameManager.inst.worldGrid.SetTerrainAt(p, road);
-					map[p.x, p.y] = TileEnum.none;
-				}
-			}
-			prevPos = pos;
-			i++;
-		}
-		
-		// second pass: now that the terrain is set, Apply() each road
-		foreach(Road road in roads) {
-			road.Apply(GameManager.inst.worldGrid);
 		}
 	}
 }
