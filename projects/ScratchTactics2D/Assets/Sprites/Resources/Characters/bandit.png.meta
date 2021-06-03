@@ -1,7 +1,13 @@
 fileFormatVersion: 2
-guid: cc8fbcd87b3b8b5419da8b4c7ce709bd
+guid: 0d9d7655beaaaa84892b3615e4155338
 TextureImporter:
   internalIDToNameTable:
+  - first:
+      213: 7337244988482422387
+    second: bandit 1_0
+  - first:
+      213: 748768923967128002
+    second: bandit 1_1
   - first:
       213: -2011081452543692480
     second: bandit_0
