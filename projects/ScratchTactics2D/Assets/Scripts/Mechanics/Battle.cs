@@ -16,15 +16,15 @@ public class Battle : MonoBehaviour
 	//
 	[HideInInspector] public TacticsGrid grid;
 	
-	public OverworldPlayer player;
-	public OverworldEntity other;
-	public List<OverworldEntity> allOther;
+	[HideInInspector] public OverworldPlayer player;
+	[HideInInspector] public OverworldEntity other;
+	[HideInInspector] public List<OverworldEntity> allOther;
 
-	public Vector3Int playerGridOffset;
+	[HideInInspector] public Vector3Int playerGridOffset;
 
 	// used for pausing the battle
-	public int savedTurn;
-	public bool isPaused = false;
+	[HideInInspector] public int savedTurn;
+	[HideInInspector] public bool isPaused = false;
 	
 	void Awake() {
 		grid = GetComponentsInChildren<TacticsGrid>()[0];

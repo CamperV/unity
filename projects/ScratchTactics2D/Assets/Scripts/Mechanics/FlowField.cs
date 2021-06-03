@@ -67,8 +67,8 @@ public class FlowField
 	public static int Cost(Vector3Int src, Vector3Int dest) {
 		// the way we have coded cost into Terrain:
 		// the number listed is the cost to enter said tile
-		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
-		return destTile.cost + 1*(destTile.cost * Mathf.Max(dest.z - src.z, 0));
+		var destTerrain = GameManager.inst.overworld.TerrainAt(dest);
+		return destTerrain.cost + (destTerrain.cost * Mathf.Max(dest.z - src.z, 0));
 	}
 	
 	public void Absorb(FlowField other) {

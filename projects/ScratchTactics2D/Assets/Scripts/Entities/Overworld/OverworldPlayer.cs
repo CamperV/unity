@@ -39,34 +39,28 @@ public class OverworldPlayer : OverworldEntity
 	
 	// action zone - these are called by a controller
 	public override bool GridMove(int xdir, int ydir) {
-		Vector3Int endTile = gridPosition.GridPosInDirection(GameManager.inst.overworld, new Vector2Int(xdir, ydir));
+		var overworld = GameManager.inst.overworld;
 
-		// first check if you can overcome the cost of the tile at all	
-		if (GameManager.inst.overworld.IsInBounds(endTile) && GameManager.inst.overworld.GetTileAt(endTile).cost <= moveThreshold) {
-			return base.AttemptGridMove(xdir, ydir, GameManager.inst.overworld);
-		} else {
-			BumpTowards(endTile, GameManager.inst.overworld);
-			return false;
+		// first check if you can overcome the cost of the tile at all and see if there is anybody there already
+		Vector3Int endPos = gridPosition.GridPosInDirection(overworld, new Vector2Int(xdir, ydir));
+		Component occupant = AttemptGridMove(xdir, ydir, overworld, addlConditions: overworld.TerrainAt(endPos).cost <= moveThreshold);
+
+		if (occupant?.MatchesType(typeof(OverworldEnemyBase)) ?? false) {
+			OverworldEnemyBase enemy = occupant as OverworldEnemyBase;
+			enemy.OnHit();
+			InitiateBattle(enemy);
 		}
-	}
-	
-	// this method is run when the Player moves INTO an Enemy
-	// this will always create a battle, and never enter into an already in-progress one
-	public override void OnBlocked<T>(T component) {
-		OverworldEnemyBase hitEnemy = component as OverworldEnemyBase;
-		hitEnemy.OnHit(); // play hit animation
-
-		InitiateBattle(hitEnemy);
+		return occupant == null;
 	}
 
-	public void InitiateBattle(OverworldEnemyBase hitEnemy) {
+	public void InitiateBattle(OverworldEnemyBase combatant) {
 		StartCoroutine(ExecuteAfterMoving(() => {
 			// programmatically load in a TacticsGrid that matches what we need
 			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
-			Terrain enemyTerrain = GameManager.inst.overworld.TerrainAt(hitEnemy.gridPosition);
+			Terrain enemyTerrain = GameManager.inst.overworld.TerrainAt(combatant.gridPosition);
 		
 			GameManager.inst.EnterBattleState();
-			GameManager.inst.tacticsManager.CreateActiveBattle(this, hitEnemy, playerTerrain, enemyTerrain, Enum.Phase.player);
+			GameManager.inst.tacticsManager.CreateActiveBattle(this, combatant, playerTerrain, enemyTerrain, Enum.Phase.player);
 		}));
 	}
 }

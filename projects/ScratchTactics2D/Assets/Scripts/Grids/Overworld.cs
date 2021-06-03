@@ -190,7 +190,7 @@ public class Overworld : GameGrid, IPathable
 				if ((x > -1 && y > -1) && (x < xUpper && y < yUpper)) continue;
 				
 				// set the WorldTile in the actual tilemap
-				Vector3Int tilePos = new Vector3Int(x, y, TerrainGenerator.TileOption(TerrainGenerator.TileEnum.x).depth);
+				Vector3Int tilePos = new Vector3Int(x, y, 0);
 				baseTilemap.SetTile(tilePos, TerrainGenerator.TileOption(TerrainGenerator.TileEnum.x));
 
 				if ((x >= -1 && x <= xUpper+1) && (y >= -1 && y <= yUpper+1)) {

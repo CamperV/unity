@@ -149,7 +149,7 @@ public class OverworldEnemyBase : OverworldEntity
 		//
 		// Also, standardize the "attack" bump. Don't make them move into a square
 		bool moveSuccess = false;
-		var tickCost = (selectedMove == flowField.origin) ? Constants.standardTickCost : grid.GetTileAt(selectedMove).cost;
+		var tickCost = (selectedMove == flowField.origin) ? Constants.standardTickCost : grid.TerrainAt(selectedMove).cost;
 		
 		if (tickPool > 0 && tickCost <= tickPool) {
 			Vector3Int nextStep = ToPosition(selectedMove, 1);
@@ -163,18 +163,21 @@ public class OverworldEnemyBase : OverworldEntity
 		// if you were able to move and the pool is not depleted, keep it alive
 		return moveSuccess;
 	}
+
+	public override bool GridMove(int xdir, int ydir) {
+		var overworld = GameManager.inst.overworld;
+		Component occupant = AttemptGridMove(xdir, ydir, overworld);
+
+		if (occupant?.MatchesType(typeof(OverworldPlayer)) ?? false) {
+			InitiateBattle();
+		}
+		return occupant == null;
+	}
 		
 	public void OnHit() { return; }
 	
 	public void Alert() {
 		animator.SetTrigger("SkeletonAlert");
-	}
-	
-	// let's be real... "entity" is just "player"
-	// in the future, I'd like to be able to orchestrate battles b/w NPCs
-	// but that's in the future. Change terminology now, to confuse less
-	public override void OnBlocked<T>(T component) {
-		Debug.Log($"{this} would have strode right into {this}");
 	}
 
 	public virtual bool CanAttackPlayer() {

@@ -46,6 +46,9 @@ public abstract class OverworldEntity : MovingObject
 			fov = new FieldOfView(_gridPosition, visionRange, GameManager.inst.overworld);
 		}
 	}
+	
+	// child classes must specify which grid to travel on
+	public abstract bool GridMove(int xdir, int ydir);
 
 	protected virtual void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -53,17 +56,11 @@ public abstract class OverworldEntity : MovingObject
 		
 		// generate your units here (name, tags, etc)
 		GenerateUnitStats();
-
-		//fov = new FieldOfView(Vector3Int.zero, 0, GameManager.inst.overworld);
 	}
 
 	public void ResetPosition(Vector3Int v) {
 		gridPosition = v;
 		transform.position = GameManager.inst.overworld.Grid2RealPos(gridPosition);
-	}
-
-	public override bool GridMove(int xdir, int ydir) {
-		return base.AttemptGridMove(xdir, ydir, GameManager.inst.overworld);
 	}
 
 	public Unit LoadUnitByTag(string tag) {

@@ -46,7 +46,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 220231495522711647}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bfe57d343011464da0f7149cdb5f0a9, type: 3}
+  m_Script: {fileID: 11500000, guid: ff453e65bb1edeb448f76ec9861f6e6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   defaultControllerPrefab: {fileID: 5007282424744042210, guid: 8f44ac671b19b08478b75c1609a95db8, type: 3}
@@ -114,14 +114,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 831110151278361556}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d03e23c912ac8904fb563a14e2de0c0b, type: 3}
+  m_Script: {fileID: 11500000, guid: 0293dcc106c4fe14fa0f747f366cc089, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapDimensionX: 0
-  mapDimensionY: 0
   baseTilemap: {fileID: 0}
   underlayTilemap: {fileID: 0}
   overlayTilemap: {fileID: 0}
+  mapDimensionX: 0
+  mapDimensionY: 0
 --- !u!1 &2752310964297596388
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,54 +30,44 @@ public abstract class MovingObject : MonoBehaviour
 							  Mathf.Clamp(pos.z - gridPosition.z,  -speed, speed));
 	}
 	
-	// child classes must specify which grid to travel on
-	public abstract bool GridMove(int xdir, int ydir);
-		
-	public bool AttemptGridMove(int xdir, int ydir, GameGrid grid) {
-		Component hitComponent;
-		bool canMove = CrtMove(xdir, ydir, grid, out hitComponent);
-		
-		// but if you did...
-		if(!canMove && hitComponent != null) {
-			OnBlocked(hitComponent);
-		}
-		return canMove;
-	}
-
 	public void BumpTowards(Vector3Int target, GameGrid grid, float distanceScale = 5.0f) {
 		StartCoroutine( SmoothBump(grid.Grid2RealPos(target), distanceScale) );
 	}
-	
-	private bool CrtMove(int xdir, int ydir, GameGrid grid, out Component occupant) {
-		// need to always be a cell/Tile coordinate
-		Vector3Int endTile = gridPosition.GridPosInDirection(grid, new Vector2Int(xdir, ydir));
-		Vector3 endpoint = grid.Grid2RealPos(endTile);
-
-		// first check if you're even in bounds, THEN get the occupant
-		occupant = null;
-		if (grid.IsInBounds(endTile)) {
-			occupant = grid.OccupantAt(endTile);
 			
-			// no collisions
+	// move only if you can, return non-null if you can't move and there is a Component blocking you
+	public Component AttemptGridMove(int xdir, int ydir, GameGrid grid, bool addlConditions = true) {
+		Vector3Int endPos = gridPosition.GridPosInDirection(grid, new Vector2Int(xdir, ydir));
+		Vector3 endpoint = grid.Grid2RealPos(endPos);
+
+		if (grid.IsInBounds(endPos) && addlConditions) {
+			var occupant = grid.OccupantAt(endPos);
+
 			if (occupant == null) {
-				// we can move: instantly update the grid w/ this info to block further inquiry
-				// also, remove the ref to yourself and set occupancy to null. No two things can ever coexist, so this should be fine
-				grid.UpdateOccupantAt(gridPosition, null);
-				grid.UpdateOccupantAt(endTile, this);
-				gridPosition = endTile;
-				
-				// always interrupt a moving crt to change the destination of the SmoothMovement slide
+				// SUCCESS!
+				Move(xdir, ydir, grid);
+						
 				if (crtMovingFlag) StopCoroutine(crtMovement);
 				crtMovement = StartCoroutine( SmoothMovement(endpoint) );
-				return true;
 			}
+			return occupant;
+
+		// No success, you're out of bounds
+		} else {
+			if (crtMovingFlag) StopCoroutine(crtMovement);
+			crtMovement = StartCoroutine( SmoothBump(endpoint, 5.0f) );
 		}
 
-		// Can't move?
-		// always interrupt a moving crt to change the destination of the SmoothMovement slide
-		if (crtMovingFlag) StopCoroutine(crtMovement);
-		crtMovement = StartCoroutine( SmoothBump(endpoint, 5.0f) );
-		return false;
+		return null;
+	}
+	
+	private void Move(int xdir, int ydir, GameGrid grid) {
+		Vector3Int endPos = gridPosition.GridPosInDirection(grid, new Vector2Int(xdir, ydir));
+
+		// we can move: instantly update the grid w/ this info to block further inquiry
+		// also, remove the ref to yourself and set occupancy to null. No two things can ever coexist, so this should be fine
+		grid.UpdateOccupantAt(gridPosition, null);
+		grid.UpdateOccupantAt(endPos, this);
+		gridPosition = endPos;
 	}
 	
 	// this is like a Python-generator: Coroutine
@@ -165,7 +155,6 @@ public abstract class MovingObject : MonoBehaviour
 		VoidAction();
 	}
 	
-	public virtual void OnBlocked<T>(T component) where T : Component { return; }
 	public virtual bool IsMoving() { return crtMovingFlag; }
 	public virtual void UpdateRealPosition(Vector3 pos) {
 		transform.position = pos;
