@@ -922,7 +922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxEnemies: 2
   minEnemies: 1
-  worldGridPrefab: {fileID: 6013225397290577684, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
+  overworldPrefab: {fileID: 6013225397290577684, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
   playerPrefab: {fileID: 5140243916379933852, guid: e378b7eb70c68894abdf51437ee7749a, type: 3}
   phaseManagerPrefab: {fileID: 6692847297558468328, guid: af94431e23b50634bb543ba8bffeee85, type: 3}
   mouseManagerPrefab: {fileID: 1876840539373920246, guid: 973af614b3f54a9438b6734064013085, type: 3}
@@ -930,7 +930,7 @@ MonoBehaviour:
   playerControllerPrefab: {fileID: 2585787102688693564, guid: 14ad95fcae1a4d349be8d593356258cd, type: 3}
   enemyControllerPrefab: {fileID: 4983432242793738251, guid: 8ea67fbe6c5b4a2469877b539315fe42, type: 3}
   enemyPrefab: {fileID: 8796498940265689709, guid: 808d1185909d64349a0774e3afa315a0, type: 3}
-  worldGrid: {fileID: 0}
+  overworld: {fileID: 0}
   player: {fileID: 0}
   phaseManager: {fileID: 0}
   mouseManager: {fileID: 0}

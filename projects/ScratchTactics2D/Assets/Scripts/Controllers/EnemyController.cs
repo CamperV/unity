@@ -17,7 +17,7 @@ public class EnemyController : Controller
 	
 	public HashSet<Vector3Int> traversablePositions = new HashSet<Vector3Int>();
 	public HashSet<Vector3Int> currentEnemyPositions {
-		get => GameManager.inst.worldGrid.CurrentOccupantPositions<OverworldEnemyBase>();
+		get => GameManager.inst.overworld.CurrentOccupantPositions<OverworldEnemyBase>();
 	}
 
 	public bool enemiesFollowing {
@@ -188,7 +188,7 @@ public class EnemyController : Controller
 				// will return in-bounds neighbors
 				// if: we've never seen them before
 				// if: they are not unspawnable
-				foreach (Vector3Int adjacent in GameManager.inst.worldGrid.GetNeighbors(currentPos)) {
+				foreach (Vector3Int adjacent in GameManager.inst.overworld.GetNeighbors(currentPos)) {
 					if (traversablePositions.Contains(adjacent))
 						continue;
 

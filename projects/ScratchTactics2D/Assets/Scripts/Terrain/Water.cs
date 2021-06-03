@@ -10,11 +10,8 @@ using Extensions;
 
 public class Water : Terrain
 {
-	public Vector3Int position;
-
+	public Water(){}
 	public Water(Vector3Int pos) {
 		position = pos;
 	}
-
-	public override void Apply(WorldGrid grid) {}
 }

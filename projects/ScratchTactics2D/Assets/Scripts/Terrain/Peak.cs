@@ -8,12 +8,11 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public class Forest : Terrain
+public class Peak : Mountain
 {
-	public override int occlusion { get => FieldOfView.maxVisibility - 2; }
-
-	public Forest(){}
-	public Forest(Vector3Int pos) {
+	public override int occlusion { get => FieldOfView.maxVisibility; }
+	
+	public Peak(Vector3Int pos) {
 		position = pos;
 	}
 }

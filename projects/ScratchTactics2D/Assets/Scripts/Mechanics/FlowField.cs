@@ -65,7 +65,7 @@ public class FlowField
 	}
 
 	public static int Cost(Vector3Int src, Vector3Int dest) {
-		// the way we have coded cost into WorldTile:
+		// the way we have coded cost into Terrain:
 		// the number listed is the cost to enter said tile
 		var destTile = GameManager.inst.GetActiveGrid().GetTileAt(dest);
 		return destTile.cost + 1*(destTile.cost * Mathf.Max(dest.z - src.z, 0));
@@ -83,9 +83,9 @@ public class FlowField
 		field = mergedField;
 	}
 	
-	// just grabs worldGrid for prototyping
+	// just grabs overworld for prototyping
 	public void DebugDisplay() {
-		GameManager.inst.worldGrid.ResetHighlightTiles(new HashSet<Vector3Int>(field.Keys));
+		GameManager.inst.overworld.ResetHighlightTiles(new HashSet<Vector3Int>(field.Keys));
 		
 		Dictionary<float, HashSet<Vector3Int>> toHighlight = new Dictionary<float, HashSet<Vector3Int>>();
 		
@@ -100,7 +100,7 @@ public class FlowField
 			float scale = 0.05f;
 			Color color = new Color(1f-(scale*mag), 1f-(scale*mag), 1f-(scale*mag));
 			
-			GameManager.inst.worldGrid.HighlightTiles(toHighlight[mag], color);
+			GameManager.inst.overworld.HighlightTiles(toHighlight[mag], color);
 		}
 	}
 

@@ -90,21 +90,21 @@ public class MovingObjectPath
 	
 	public bool IsValid() {
 		// check the endpoints to ensure path is still valid
-		return !IsEmpty() && GameManager.inst.worldGrid.VacantAt(end);
+		return !IsEmpty() && GameManager.inst.overworld.VacantAt(end);
 	}
 	
 	public void DrawPath() {
 		foreach (Vector3Int tile in path.Keys) {
-			GameManager.inst.worldGrid.OverlayAt(tile, pathOverlayTile);
+			GameManager.inst.overworld.OverlayAt(tile, pathOverlayTile);
 		}
-		GameManager.inst.worldGrid.OverlayAt(end, endpointOverlayTile);
+		GameManager.inst.overworld.OverlayAt(end, endpointOverlayTile);
 	}
 	
 	public void ResetDrawPath() {
 		foreach (Vector3Int tile in path.Keys) {
-			GameManager.inst.worldGrid.ResetOverlayAt(tile);
+			GameManager.inst.overworld.ResetOverlayAt(tile);
 		}
-		GameManager.inst.worldGrid.ResetOverlayAt(end);
+		GameManager.inst.overworld.ResetOverlayAt(end);
 	}
 
 	public void Show(GameGrid grid, OverlayTile overlayTile) {

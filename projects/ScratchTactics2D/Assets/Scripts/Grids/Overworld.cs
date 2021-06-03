@@ -8,17 +8,13 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public class WorldGrid : GameGrid
-{
-	private int mapDimensionX;
-	private int mapDimensionY;
-	
+public class Overworld : GameGrid, IPathable
+{	
 	public int zoomLevel;	// in vertical tiles
 	public TerrainGenerator terrainGenerator;	// assigned prefab
+	public Dictionary<Vector3Int, Terrain> terrain;
 
 	private OverlayTile selectTile;
-	private Dictionary<Vector3Int, WorldTile> worldTileGrid;
-	public Dictionary<Vector3Int, Terrain> terrainGrid;
 	
 	private Canvas tintCanvas;
 	
@@ -26,9 +22,8 @@ public class WorldGrid : GameGrid
 		base.Awake();
 
 		selectTile = (ScriptableObject.CreateInstance<SelectOverlayTile>() as SelectOverlayTile);
-		
-		worldTileGrid = new Dictionary<Vector3Int, WorldTile>();
-		terrainGrid = new Dictionary<Vector3Int, Terrain>();
+		//
+		terrain = new Dictionary<Vector3Int, Terrain>();
 		
 		// set camera and canvas
 		tintCanvas = GetComponentsInChildren<Canvas>()[0];
@@ -39,18 +34,15 @@ public class WorldGrid : GameGrid
 	}
 
 	public override bool IsInBounds(Vector3Int tilePos) {
-		return worldTileGrid.ContainsKey(tilePos);
+		return terrain.ContainsKey(tilePos);
 	}
 		
 	public override GameTile GetTileAt(Vector3Int tilePos) {
-		if (worldTileGrid.ContainsKey(tilePos)) {
-			return worldTileGrid[tilePos];
-		}
-		return null;
+		return baseTilemap.GetTile(tilePos) as GameTile;
 	}
 
 	public override HashSet<Vector3Int> GetAllTilePos() {
-		return new HashSet<Vector3Int>(worldTileGrid.Keys);
+		return new HashSet<Vector3Int>(terrain.Keys);
 	}
 
 	public override void SelectAt(Vector3Int tilePos, Color? color = null) {
@@ -74,23 +66,14 @@ public class WorldGrid : GameGrid
 	public void SetAppropriateTile(Vector3Int tilePos, WorldTile tile) {	
 		// set in the WorldTile dictionary for easy path cost lookup
 		Debug.Assert(tilePos.z == 0);
-
-		// if anything else is there, nullify it in the map first
-		// this will happen when replacing roads, etc
-		var nullDepth = ((WorldTile)GetTileAt(tilePos))?.depth ?? 0;
-		var nullPos = new Vector3Int(tilePos.x, tilePos.y, nullDepth);
-		baseTilemap.SetTile(nullPos, null);
-
-		worldTileGrid[tilePos] = tile;
 		translation2D[new Vector2Int(tilePos.x, tilePos.y)] = tilePos;
-		var depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
-		baseTilemap.SetTile(depthPos, tile);
+		baseTilemap.SetTile(tilePos, tile);
 	}
 
 	// randomly permuting may actually be better than iterating?
 	// nah probably not, this is lazy
 	public Vector3Int RandomTileWithinType(HashSet<Type> within) {
-		List<Vector3Int> pool = worldTileGrid.Keys.ToList().Where( it => within.Contains(worldTileGrid[it].GetType()) ).ToList();
+		List<Vector3Int> pool = terrain.Keys.ToList().Where( it => within.Contains(terrain[it].GetType()) ).ToList();
 
 		Vector3Int retVal;
 		do {
@@ -104,12 +87,14 @@ public class WorldGrid : GameGrid
 	}
 	
 	public Vector3Int RandomTileExceptType(HashSet<Type> except) {
+		int upperX = terrain.Keys.Select(it => it.x).Max();
+		int upperY = terrain.Keys.Select(it => it.y).Max();
 		int x;
 		int y;
 		Vector3Int retVal;
 		do {
-			x = Random.Range(0, mapDimensionX);
-			y = Random.Range(0, mapDimensionY);
+			x = Random.Range(0, upperX);
+			y = Random.Range(0, upperY);
 			retVal = new Vector3Int(x, y, 0);
 		} while (!VacantAt(retVal) || except.Contains(GetTileAt(retVal).GetType()));
 		return retVal;
@@ -138,7 +123,7 @@ public class WorldGrid : GameGrid
 	}
 
 	public void ResetAllHighlightTiles() {
-		foreach (var tilePos in worldTileGrid.Keys) {
+		foreach (var tilePos in terrain.Keys) {
 			for (int z = 0; z < 2; z++) {
 				var v = new Vector3Int(tilePos.x, tilePos.y, z);
 				ResetTintTile(baseTilemap, v);
@@ -147,15 +132,15 @@ public class WorldGrid : GameGrid
 	}
 	
 	public override void TintTile(Tilemap tilemap, Vector3Int tilePos, Color color) {
-		Vector3Int depthPos;
-		if (worldTileGrid.ContainsKey(tilePos)) {
-			var tile = worldTileGrid[tilePos];
-			depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
-		} else  {
-			depthPos = tilePos;
-		}
+		// Vector3Int depthPos;
+		// if (terrain.ContainsKey(tilePos)) {
+		// 	var tile = terrain[tilePos].tile;
+		// 	depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
+		// } else  {
+		// 	depthPos = tilePos;
+		// }
 
-		if (tilemap.GetTile(depthPos) != null) {
+		if (tilemap.GetTile(tilePos) != null) {
 			tilemap.SetTileFlags(tilePos, TileFlags.None);
 			tilemap.SetColor(tilePos, color);
 			return;
@@ -181,8 +166,7 @@ public class WorldGrid : GameGrid
 		tg.GenerateMap();
 		tg.SetTileSetter(SetAppropriateTile);
 		tg.ApplyMap(baseTilemap);
-		mapDimensionX = tg.mapDimension.x;
-		mapDimensionY = tg.mapDimension.y;
+		terrain = tg.GetTerrain();
 
 		// finalize outside
 		CreateTintBuffer( tg.GetMap() );
@@ -192,7 +176,7 @@ public class WorldGrid : GameGrid
 		//CameraManager.RefitStaticCamera(new Vector3(tg.mapDimension.x/2f, tg.mapDimension.y/2f, -10f), tg.mapDimension.y+8);
 		
 		Vector2 minBounds = new Vector2(4, 2.5f);
-		Vector2 maxBounds = new Vector2(mapDimensionX-4, (float)mapDimensionY - 2.5f);
+		Vector2 maxBounds = new Vector2(tg.mapDimension.x-4, (float)tg.mapDimension.y - 2.5f);
 		CameraManager.SetBounds(minBounds, maxBounds);
     }
 
@@ -220,31 +204,44 @@ public class WorldGrid : GameGrid
 		}
 	}
 
-	public List<Vector3Int> LocationsOf<T>() where T : WorldTile {
-		return worldTileGrid.Keys.ToList().Where( it => worldTileGrid[it].GetType() == typeof(T)).ToList();
+	public List<Vector3Int> LocationsOf<T>() where T : Terrain {
+		return terrain.Keys.ToList().Where( it => terrain[it].GetType() == typeof(T)).ToList();
 	}
 
-	public List<Vector3Int> LocationsExceptOf<T>() where T : WorldTile {
-		return worldTileGrid.Keys.ToList().Where( it => worldTileGrid[it].GetType() != typeof(T)).ToList();
+	public List<Vector3Int> LocationsExceptOf<T>() where T : Terrain {
+		return terrain.Keys.ToList().Where( it => terrain[it].GetType() != typeof(T)).ToList();
 	}
 
 	public Type TypeAt(Vector3Int v) {
-		return worldTileGrid[v].GetType();
+		return terrain[v].GetType();
 	}
 
-	public void SetTerrainAt(Vector3Int v, Terrain terrain) {
-		terrainGrid[v] = terrain;
+	public void SetTerrainAt(Vector3Int v, Terrain t) {
+		terrain[v] = t;
 	}
 
 	public Terrain TerrainAt(Vector3Int v) {
-		if (terrainGrid.ContainsKey(v)) {
-			return terrainGrid[v];
-		} else {
-			Terrain e = new EmptyTerrain();
-			terrainGrid[v] = e;
-			return e;
+		if (terrain.ContainsKey(v)) {
+			return terrain[v];
 		}
+		return new EmptyTerrain();
 	}
+
+    // IPathable definitions
+    public IEnumerable<Vector3Int> GetNeighbors(Vector3Int origin) {
+        Vector3Int up = origin + Vector3Int.up;
+        Vector3Int right = origin + Vector3Int.right;
+        Vector3Int down = origin + Vector3Int.down;
+        Vector3Int left = origin + Vector3Int.left;
+        if (terrain.ContainsKey(up)) yield return up;
+        if (terrain.ContainsKey(right)) yield return right;
+        if (terrain.ContainsKey(down)) yield return down;
+        if (terrain.ContainsKey(left)) yield return left;
+    }
+
+    public int EdgeCost(Vector3Int src, Vector3Int dest) {
+        return 1;
+    }
 
 	public override void UnderlayAt(Vector3Int tilePos, Color color) {
 		underlayTilemap.SetTile(tilePos, selectTile);

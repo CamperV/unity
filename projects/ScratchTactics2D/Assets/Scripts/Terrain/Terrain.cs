@@ -10,6 +10,17 @@ using Extensions;
 
 public abstract class Terrain
 {
+	public Vector3Int position;
 	public virtual int occlusion { get => 0; }
-	public abstract void Apply(WorldGrid grid);
+	public virtual Vector2Int battleGridSize { get => new Vector2Int(8, 8); }
+	
+	protected TacticsTile _tacticsTile;
+	public virtual TacticsTile tacticsTile {
+		get {
+			if (_tacticsTile == null) {
+				_tacticsTile = ScriptableObject.CreateInstance<GrassIsoTile>();
+			}
+			return _tacticsTile;
+		}
+	}
 }

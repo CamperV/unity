@@ -11,9 +11,7 @@ public class TacticsGrid : GameGrid
 	public int mapDimensionX;
 	public int mapDimensionY;
 	
-	private Dictionary<Type, TacticsTile> tileOptions;
 	private Dictionary<Vector3Int, TacticsTile> tacticsTileGrid;
-
 	private Grid baseGrid;
 
 	private OverlayTile waypointOverlayTile;
@@ -21,25 +19,7 @@ public class TacticsGrid : GameGrid
 	
     protected override void Awake() {
 		base.Awake();
-		
-		// tileOptions determine probability order as well
-		// so when Tactics is generated, it will check if the tile is:
-		//  grass first, then dirt, then water, then mountain
-		tileOptions = new Dictionary<Type, TacticsTile>() {
-			[typeof(GrassWorldTile)] = (ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile),
-			[typeof(RoadWorldTile)] = (ScriptableObject.CreateInstance<GrassIsoTile>() as GrassIsoTile),
-			//
-			[typeof(WaterWorldTile)] = (ScriptableObject.CreateInstance<WaterIsoTile>() as WaterIsoTile),
-			[typeof(DeepWaterWorldTile)] = (ScriptableObject.CreateInstance<WaterIsoTile>() as WaterIsoTile),
-			[typeof(WaterRoadWorldTile)] = (ScriptableObject.CreateInstance<WaterIsoTile>() as WaterIsoTile),
-			//
-			[typeof(ForestWorldTile)] = (ScriptableObject.CreateInstance<ForestIsoTile>() as ForestIsoTile),
-			[typeof(ForestRoadWorldTile)] = (ScriptableObject.CreateInstance<ForestIsoTile>() as ForestIsoTile),
-			//
-			[typeof(MountainWorldTile)] = (ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile),
-			[typeof(MountainRoadWorldTile)] = (ScriptableObject.CreateInstance<MountainIsoTile>() as MountainIsoTile)
-		};
-		
+
 		tacticsTileGrid = new Dictionary<Vector3Int, TacticsTile>();
 		baseGrid = GetComponent<Grid>();
 
@@ -87,13 +67,13 @@ public class TacticsGrid : GameGrid
 		ResetTintTile(underlayTilemap, tilePos);
 	}
 
-    public void CreateDominoTileMap(Vector3Int offset, WorldTile originTile) {
+    public void CreateDominoTileMap(Vector3Int offset, Terrain originTerrain) {
 		var newOrigin = baseTilemap.origin + offset;
 
-		for (int x = 0; x < originTile.battleGridSize.x; x++) {
-			for (int y = 0; y < originTile.battleGridSize.y; y++) {
+		for (int x = 0; x < originTerrain.battleGridSize.x; x++) {
+			for (int y = 0; y < originTerrain.battleGridSize.y; y++) {
 				Vector3Int pos = newOrigin + new Vector3Int(x, y, Random.Range(0, 2));
-				tacticsTileGrid[pos] = tileOptions[originTile.GetType()];
+				tacticsTileGrid[pos] = originTerrain.tacticsTile;
 				translation2D[new Vector2Int(pos.x, pos.y)] = pos;
 			}
 		}

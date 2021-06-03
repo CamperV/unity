@@ -10,5 +10,4 @@ using Extensions;
 
 public class EmptyTerrain : Terrain
 {
-	public override void Apply(WorldGrid grid) {}
 }

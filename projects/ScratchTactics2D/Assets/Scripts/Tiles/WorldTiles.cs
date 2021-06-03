@@ -6,7 +6,6 @@ using UnityEngine.Tilemaps;
 
 public class GrassWorldTile : WorldTile
 {
-	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
 	public override int probability { get { return 73; } }
 	
 	public void OnEnable() {
@@ -19,8 +18,6 @@ public class GrassWorldTile : WorldTile
 
 public class SandWorldTile : WorldTile
 {
-	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
-
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetSprite("Parchment/parchment_sand")
@@ -31,9 +28,6 @@ public class SandWorldTile : WorldTile
 
 public class VillageWorldTile : WorldTile
 {
-	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
-	public override int depth { get { return 1; } }
-
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetSprite("Parchment/parchment_village_base")
@@ -44,7 +38,6 @@ public class VillageWorldTile : WorldTile
 
 public class RuinsWorldTile : WorldTile
 {
-	public override int cost { get { return (int)(Constants.standardTickCost * 1.0f); } }
 	public override int probability { get { return 1; } }
 
 	public void OnEnable() {
@@ -58,8 +51,6 @@ public class RuinsWorldTile : WorldTile
 public class ForestWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }
-	public override int depth { get { return 1; } }
-	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -72,8 +63,6 @@ public class ForestWorldTile : WorldTile
 public class DeepForestWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }
-	public override int depth { get { return 1; } }
-	public override int cost { get { return (int)(Constants.standardTickCost * 2.0f); } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -86,8 +75,6 @@ public class DeepForestWorldTile : WorldTile
 public class FoothillsWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }
-	public override int depth { get { return 1; } }
-	public override int cost { get { return (int)(Constants.standardTickCost * 1.5f); } }
 
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -100,7 +87,6 @@ public class FoothillsWorldTile : WorldTile
 public class WaterWorldTile : WorldTile
 {
 	public override int probability { get { return 5; } }
-	public override int cost { get { return (int)(Constants.standardTickCost * 5.0f); } }
 	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
@@ -111,9 +97,7 @@ public class WaterWorldTile : WorldTile
 }
 
 public class DeepWaterWorldTile : WorldTile
-{
-	public override int cost { get { return (int)(Constants.standardTickCost * 10.0f); } }
-	
+{	
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetSprite("Parchment/parchment_deep_water")
@@ -125,9 +109,7 @@ public class DeepWaterWorldTile : WorldTile
 public class MountainWorldTile : WorldTile
 {	
 	public override int probability { get { return 13; } }
-	public override int depth { get { return 1; } }
-	public override int cost { get { return (int)(Constants.standardTickCost * 5.0f); } }
-	
+
 	public virtual void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetSprite("Parchment/parchment_mountain")
@@ -196,8 +178,6 @@ public class CloudWorldTile : WorldTile
 
 public class RoadWorldTile : WorldTile
 {
-	public override int cost { get { return Constants.standardTickCost; } }
-
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetMultiSprite("Parchment/parchment_base_road", "parchment_base_road_0"),
@@ -224,8 +204,6 @@ public class RoadWorldTile : WorldTile
 
 public class MountainRoadWorldTile : WorldTile
 {
-	public override int depth { get { return 1; } }
-
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetMultiSprite("Parchment/parchment_mountain_road", "parchment_mountain_road_0"),
@@ -278,8 +256,6 @@ public class WaterRoadWorldTile : WorldTile
 
 public class ForestRoadWorldTile : WorldTile
 {
-	public override int depth { get { return 1; } }
-
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetMultiSprite("Parchment/parchment_copse_road", "parchment_copse_road_0"),
@@ -306,8 +282,6 @@ public class ForestRoadWorldTile : WorldTile
 
 public class VillageRoadWorldTile : WorldTile
 {
-	public override int cost { get { return Constants.standardTickCost; } }
-
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_0"),

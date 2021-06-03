@@ -8,14 +8,14 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public class Road : Terrain
+public class _Road
 {
 	public Vector3Int start;
 	public Vector3Int end;
 
 	private MovingObjectPath path;
 
-	public Road(Vector3Int startPos, Vector3Int endPos) {
+	public _Road(Vector3Int startPos, Vector3Int endPos) {
 		start = startPos;
 		end = endPos;
 		path = MovingObjectPath.GetAnyPathTo(startPos, endPos);
@@ -25,7 +25,7 @@ public class Road : Terrain
 		return path.Unwind();
 	}
 
-	public override void Apply(WorldGrid grid) {
+	public void Apply(Overworld grid) {
 
 		// for every tile that should be a road
 		// always slice away the first startPos, because it's connected to something
@@ -42,7 +42,7 @@ public class Road : Terrain
 				}
 			}
 
-			// now set based on the current worldTileGrid Type
+			// now set based on the current Type
 			Type tileType = grid.TypeAt(roadPos);
 			WorldTile roadTile = null;
 			
@@ -71,27 +71,4 @@ public class Road : Terrain
 			grid.SetAppropriateTile(roadPos, roadTile);				
 		}
 	}
-
-	// private T GetPatternTile<T>(HashSet<Vector3Int> pattern) where T : WorldTile {
-	// 	MethodInfo methodInfo = typeof(T).GetMethod("GetTileWithSprite");
-		
-	// 	Dictionary<HashSet<Vector3Int>, T> patternToTile = new Dictionary<HashSet<Vector3Int>, T>(HashSet<Vector3Int>.CreateSetComparer()) {
-	// 		[_HS(Vector3Int.left, Vector3Int.right)] = (T)methodInfo.Invoke(null, new object[] {0}),
-	// 		//			
-	// 		[_HS(Vector3Int.up, Vector3Int.left)]	 = (T)methodInfo.Invoke(null, new object[] {1}),
-	// 		[_HS(Vector3Int.up, Vector3Int.right)]	 = (T)methodInfo.Invoke(null, new object[] {2}),
-	// 		//
-	// 		[_HS(Vector3Int.down, Vector3Int.right)] = (T)methodInfo.Invoke(null, new object[] {3}),
-	// 		[_HS(Vector3Int.down, Vector3Int.left)]	 = (T)methodInfo.Invoke(null, new object[] {4}),
-	// 		//
-	// 		[_HS(Vector3Int.up, Vector3Int.down)]	 = (T)methodInfo.Invoke(null, new object[] {5})
-	// 	};
-		
-	// 	return patternToTile[pattern];
-	// }
-
-	// // utility func
-	// HashSet<Vector3Int> _HS(Vector3Int a, Vector3Int b) {
-	// 	return new HashSet<Vector3Int> {a, b};
-	// }
 }

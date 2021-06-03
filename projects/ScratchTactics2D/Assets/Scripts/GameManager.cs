@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 	public int minEnemies;
 	
 	// prefabs to be instantiated
-	public WorldGrid worldGridPrefab;
+	public Overworld overworldPrefab;
 	public OverworldPlayer playerPrefab;
 	public PhaseManager phaseManagerPrefab;
 	public MouseManager mouseManagerPrefab;
@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
 	public OverworldEnemyBase enemyPrefab;
 	
 	// these are public so the EnemyManager can access Player locations
-	[HideInInspector] public WorldGrid worldGrid;
+	[HideInInspector] public Overworld overworld;
 	[HideInInspector] public OverworldPlayer player;
 	[HideInInspector] public PhaseManager phaseManager;
 	[HideInInspector] public MouseManager mouseManager;
@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
 	}
 	
 	void Init() {
-		worldGrid      = Instantiate(worldGridPrefab, Vector3.zero, Quaternion.identity);
+		overworld      = Instantiate(overworldPrefab, Vector3.zero, Quaternion.identity);
 		mouseManager   = Instantiate(mouseManagerPrefab);
 		phaseManager   = Instantiate(phaseManagerPrefab);
 		tacticsManager = Instantiate(tacticsManagerPrefab, Vector3.zero, Quaternion.identity);
@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
 		enemyController  = Instantiate(enemyControllerPrefab);
 
 		// generate the world and spawn the player into it
-		worldGrid.GenerateWorld();
+		overworld.GenerateWorld();
 		player = OverworldPlayer.Spawn(playerPrefab);
 		playerController.Register(player);
 		
@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
 		CameraManager.SetTracking(player.transform);
 		
 		// show the overworld clearly
-		worldGrid.DisableTint();
+		overworld.DisableTint();
 		
 		gameState = Enum.GameState.overworld;
 		phaseManager.StartPhase(Enum.Phase.player);
@@ -100,8 +100,8 @@ public class GameManager : MonoBehaviour
 		CameraManager.SetTracking(Camera.main.transform);
 		
 		// tint overworld to give focus to battle
-		worldGrid.EnableTint();
-		worldGrid.ClearOverlayTiles();
+		overworld.EnableTint();
+		overworld.ClearOverlayTiles();
 		
 		// give all control to TacticsManager
 		gameState = Enum.GameState.battle;
@@ -112,11 +112,11 @@ public class GameManager : MonoBehaviour
 	public GameGrid GetActiveGrid() {
 		switch (gameState) {
 			case Enum.GameState.overworld:
-				return worldGrid;
+				return overworld;
 			case Enum.GameState.battle:
 				return tacticsManager.GetActiveGrid();
 			default:
-				return worldGrid;
+				return overworld;
 		}
 	}
 }

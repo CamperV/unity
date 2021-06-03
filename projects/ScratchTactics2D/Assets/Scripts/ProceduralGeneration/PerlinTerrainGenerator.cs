@@ -29,10 +29,10 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         SaveTextureAsPNG(RawTexture(mountainMask), "mountainMask.png");
 
         // add dimples to add "natural" lakes
-        float[,] lakeMask = GenerateRandomDimples(verticalThreshold: (int)(mapDimensionY/4f), seed: seed);
+        float[,] lakeMask = GenerateRandomDimples(verticalThreshold: (int)(mapDimension.y/4f), seed: seed);
         SaveTextureAsPNG(RawTexture(lakeMask), "lakeMask.png");
         
-        elevation = GeneratePerlinNoiseMap(mapDimensionX, mapDimensionY, octaves, scale: perlinScale, power: perlinPower);
+        elevation = GeneratePerlinNoiseMap(mapDimension.x, mapDimension.y, octaves, scale: perlinScale, power: perlinPower);
         elevation.Add(beachMask).Add(mountainMask).Subtract(lakeMask);
         elevation.NormalizeMap();
         
@@ -40,7 +40,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         SaveTextureAsPNG( RawTexture(elevation.Map), "noise_map.png");
         SaveTextureAsPNG( ColorizedTexture(elevation.Map), "terrain_map.png");
     	
-        map = new TileEnum[mapDimensionX, mapDimensionY];
+        map = new TileEnum[mapDimension.x, mapDimension.y];
 		for (int i = 0; i < map.GetLength(0); i++) {
 			for (int j = 0; j < map.GetLength(1); j++) {
 				map[i, j] = ElevationToTile( elevation.At(i, j) );
@@ -57,7 +57,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // seed + grow forests
         // > generate a separate noise map, smoother, to generate forests
         // TODO: I really just kinda smooth-brained this one out: there's a better way to balance the multiple thresholds/rng here
-        NoiseMap forestProbabilityMap = GeneratePerlinNoiseMap(mapDimensionX, mapDimensionY, 1, scale: perlinScale*2.0f, power: 0.75f);
+        NoiseMap forestProbabilityMap = GeneratePerlinNoiseMap(mapDimension.x, mapDimension.y, 1, scale: perlinScale*2.0f, power: 0.75f);
         forestProbabilityMap.Mask( elevation.Map.ClampBinaryThreshold(0.45f, 0.85f) );
         SaveTextureAsPNG(RawTexture(forestProbabilityMap.Map), "forest_map.png");
 

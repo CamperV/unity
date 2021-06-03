@@ -11,11 +11,9 @@ using Extensions;
 public class Mountain : Terrain
 {
 	public override int occlusion { get => FieldOfView.maxVisibility; }
-	public Vector3Int position;
 
+	public Mountain(){}
 	public Mountain(Vector3Int pos) {
 		position = pos;
 	}
-
-	public override void Apply(WorldGrid grid) {}
 }

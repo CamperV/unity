@@ -23,7 +23,7 @@ public class OverworldEnemyBase : OverworldEntity
 	public virtual int detectionRange { get { return 1; } }
 	public override HashSet<Type> spawnable {
 		get {
-			return new HashSet<Type>() { typeof(GrassWorldTile) };
+			return new HashSet<Type>() { typeof(Plain) };
 		}
 	}
 
@@ -47,7 +47,7 @@ public class OverworldEnemyBase : OverworldEntity
 	// will only spawn into a spawnable tile
 	public static OverworldEnemyBase Spawn(OverworldEnemyBase prefab, int ID = -1) {
 		OverworldEnemyBase enemy = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-		var grid = GameManager.inst.worldGrid;
+		var grid = GameManager.inst.overworld;
 		
 		// this will auto-check occupancy
 		enemy.ResetPosition( grid.RandomTileWithinType(enemy.spawnable) );
@@ -121,7 +121,7 @@ public class OverworldEnemyBase : OverworldEntity
 			gridPosition + Vector3Int.down,		// S
 			gridPosition + Vector3Int.left		// W
 		};
-		var grid = GameManager.inst.worldGrid;
+		var grid = GameManager.inst.overworld;
 		
 		// don't move until within detection range
 		int minCost = flowField.field[gridPosition];
@@ -185,15 +185,15 @@ public class OverworldEnemyBase : OverworldEntity
 	public void InitiateBattle() {
 		// entities can spend their entire remaining tickPool to attack a player
 		SpendTicks(tickPool);
-		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.worldGrid);
+		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.overworld);
 
 		StartCoroutine(ExecuteAfterMoving(() => {
 			// programmatically load in a TacticsGrid that matches what we need
-			WorldTile thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;
-			WorldTile playerTile = GameManager.inst.worldGrid.GetTileAt(GameManager.inst.player.gridPosition) as WorldTile;
+			Terrain thisTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
+			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(GameManager.inst.player.gridPosition);
 		
 			GameManager.inst.EnterBattleState();
-			GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTile, thisTile, Enum.Phase.enemy);
+			GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTerrain, thisTerrain, Enum.Phase.enemy);
 		}));
 	}
 
@@ -201,12 +201,12 @@ public class OverworldEnemyBase : OverworldEntity
 		// we don't need this function to start the battle phase, let the EnemyController release back and Resume the battle
 		// however, it will now resume with a new enemy joining
 		SpendTicks(tickPool);
-		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.worldGrid);
+		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.overworld);
 
 		StartCoroutine(ExecuteAfterMoving(() => {
 			// programmatically load in a TacticsGrid that matches what we need
-			WorldTile thisTile = GameManager.inst.worldGrid.GetTileAt(gridPosition) as WorldTile;			
-			GameManager.inst.tacticsManager.AddToActiveBattle(this, thisTile);
+			Terrain thisTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);		
+			GameManager.inst.tacticsManager.AddToActiveBattle(this, thisTerrain);
 		}));
 	}
 }

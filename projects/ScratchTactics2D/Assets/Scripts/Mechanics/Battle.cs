@@ -36,7 +36,7 @@ public class Battle : MonoBehaviour
 		activeParticipants = new Dictionary<Controller, OverworldEntity>();
 	}
 	
-	public void Init(OverworldPlayer playerEntity, OverworldEntity otherEntity, WorldTile playerTile, WorldTile otherTile) {
+	public void Init(OverworldPlayer playerEntity, OverworldEntity otherEntity, Terrain playerTerrain, Terrain otherTerrain) {
 		player = playerEntity;
 		other = otherEntity;
 
@@ -44,7 +44,7 @@ public class Battle : MonoBehaviour
 		allOther = new List<OverworldEntity>{ other };
 
 		//
-		PopulateGridAndReposition(playerTile, otherTile);
+		PopulateGridAndReposition(playerTerrain, otherTerrain);
 		//
 		// register controllers for units to be registered to
 		// we fully re-instantiate controllers each time. Including the player
@@ -76,24 +76,24 @@ public class Battle : MonoBehaviour
 	
 	// we can only start a Battle with two participants
 	// however, others can join(?)
-	private void PopulateGridAndReposition(WorldTile playerTile, WorldTile otherTile) {				
+	private void PopulateGridAndReposition(Terrain playerTerrain, Terrain otherTerrain) {				
 		// determine orientations
 		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
 			[Vector3Int.up] = new List<Vector3Int>() {
 				Vector3Int.zero,
-				new Vector3Int(playerTile.battleGridSize.x, 0, 0)
+				new Vector3Int(playerTerrain.battleGridSize.x, 0, 0)
 			}, 
 			[Vector3Int.right] = new List<Vector3Int>() {
-				new Vector3Int(0, otherTile.battleGridSize.y, 0),
+				new Vector3Int(0, otherTerrain.battleGridSize.y, 0),
 				Vector3Int.zero
 			}, 
 			[Vector3Int.down] = new List<Vector3Int>() {
-				new Vector3Int(otherTile.battleGridSize.x, 0, 0),
+				new Vector3Int(otherTerrain.battleGridSize.x, 0, 0),
 				Vector3Int.zero
 			}, 
 			[Vector3Int.left] = new List<Vector3Int>() {
 				Vector3Int.zero,
-				new Vector3Int(0, playerTile.battleGridSize.y, 0)
+				new Vector3Int(0, playerTerrain.battleGridSize.y, 0)
 			}
 		};
 		var offsets = orientationDict[(other.gridPosition - player.gridPosition)];
@@ -103,8 +103,8 @@ public class Battle : MonoBehaviour
 		
 		// setup up each side	
 		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
-		grid.CreateDominoTileMap(offsets[0], playerTile);
-		grid.CreateDominoTileMap(offsets[1], otherTile);
+		grid.CreateDominoTileMap(offsets[0], playerTerrain);
+		grid.CreateDominoTileMap(offsets[1], otherTerrain);
 		
 		// after all battle participants have generated their TileMaps, apply the contents of the tacticsTileGrid to the baseTilemap
 		// then compress the bounds afterwards
@@ -231,23 +231,23 @@ public class Battle : MonoBehaviour
 		);
 	}
 
-	public void AddParticipant(OverworldEntity joiningEntity, WorldTile joiningTile) {
+	public void AddParticipant(OverworldEntity joiningEntity, Terrain joiningTerrain) {
 		(joiningEntity as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
 		allOther.Add(joiningEntity);
 
 		// add to grid and reposition
-		WorldTile playerTile = (WorldTile)GameManager.inst.worldGrid.GetTileAt(player.gridPosition);
+		Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(player.gridPosition);
 		Dictionary<Vector3Int, Vector3Int> orientationDict = new Dictionary<Vector3Int, Vector3Int>() {
-			[Vector3Int.up]    = playerGridOffset + new Vector3Int(playerTile.battleGridSize.x, 0, 0),
-			[Vector3Int.right] = playerGridOffset - new Vector3Int(0, joiningTile.battleGridSize.y, 0),
-			[Vector3Int.down]  = playerGridOffset - new Vector3Int(joiningTile.battleGridSize.x, 0, 0), 
-			[Vector3Int.left]  = playerGridOffset + new Vector3Int(0, playerTile.battleGridSize.y, 0)
+			[Vector3Int.up]    = playerGridOffset + new Vector3Int(playerTerrain.battleGridSize.x, 0, 0),
+			[Vector3Int.right] = playerGridOffset - new Vector3Int(0, joiningTerrain.battleGridSize.y, 0),
+			[Vector3Int.down]  = playerGridOffset - new Vector3Int(joiningTerrain.battleGridSize.x, 0, 0), 
+			[Vector3Int.left]  = playerGridOffset + new Vector3Int(0, playerTerrain.battleGridSize.y, 0)
 		};
 		var offset = orientationDict[(joiningEntity.gridPosition - player.gridPosition)];
 		
 		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
 		Debug.Log($"Creating a new battleground with offset {offset}");
-		grid.CreateDominoTileMap(offset, joiningTile);
+		grid.CreateDominoTileMap(offset, joiningTerrain);
 		grid.ApplyTileMap(noCompress: false);
 		//
 		Vector3 gridCenter = grid.GetGridCenterReal();
@@ -270,8 +270,8 @@ public class Battle : MonoBehaviour
 
 		// helpers
 		Vector3Int min  = offset;
-		Vector3Int xDim = new Vector3Int(joiningTile.battleGridSize.x-1, 0, 0);
-		Vector3Int yDim = new Vector3Int(0, joiningTile.battleGridSize.y-1, 0); 
+		Vector3Int xDim = new Vector3Int(joiningTerrain.battleGridSize.x-1, 0, 0);
+		Vector3Int yDim = new Vector3Int(0, joiningTerrain.battleGridSize.y-1, 0); 
 		Vector3Int max  = min + xDim + yDim;
 		switch (joiningEntity.gridPosition - player.gridPosition) {
 			case Vector3Int v when v.Equals(Vector3Int.up):
@@ -391,7 +391,7 @@ public class Battle : MonoBehaviour
 		StartCoroutine( Utils.DelayedExecute(0.0f, () => {
 			isPaused = true;
 			gameObject.SetActive(false);
-			GameManager.inst.worldGrid.DisableTint();
+			GameManager.inst.overworld.DisableTint();
 		}));
 	}
 
@@ -400,8 +400,8 @@ public class Battle : MonoBehaviour
 		gameObject.SetActive(true);
 
 		// tint overworld to give focus to battle
-		GameManager.inst.worldGrid.EnableTint();
-		GameManager.inst.worldGrid.ClearOverlayTiles();
+		GameManager.inst.overworld.EnableTint();
+		GameManager.inst.overworld.ClearOverlayTiles();
 		GameManager.inst.gameState = Enum.GameState.battle;
 	}
 }

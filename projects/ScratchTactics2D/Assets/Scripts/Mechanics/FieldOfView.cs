@@ -14,12 +14,12 @@ public class FieldOfView
 	public Vector3Int origin;
 	public Dictionary<Vector3Int, int> field;
 
-	public FieldOfView(Vector3Int _origin, int range, WorldGrid grid) {
+	public FieldOfView(Vector3Int _origin, int range, Overworld grid) {
 		origin = _origin;
 		field = RaycastField(origin, range, grid);
 	}
 
-	private Dictionary<Vector3Int, int> RaycastField(Vector3Int origin, int range, WorldGrid grid) {
+	private Dictionary<Vector3Int, int> RaycastField(Vector3Int origin, int range, Overworld grid) {
 		Dictionary<Vector3Int, int> _field = new Dictionary<Vector3Int, int> {
 			[origin] = 0,
 			/*[origin + Vector3Int.up] = 0,
@@ -47,18 +47,18 @@ public class FieldOfView
 		return _field;
 	}
 	
-	public void Display(WorldGrid grid) {
+	public void Display(Overworld grid) {
 		foreach(Vector3Int nonField in grid.GetAllTilePos()) {
 			if (field.ContainsKey(nonField)) continue;
 			grid.HideAt(nonField, intensity: 1.0f);
 		}
 	}
 
-	public void ClearDisplay(WorldGrid grid) {
+	public void ClearDisplay(Overworld grid) {
 		grid.ResetAllHighlightTiles();
 	}
 
-	private int BresenhamCost(Vector3Int src, Vector3Int dest, WorldGrid grid) {
+	private int BresenhamCost(Vector3Int src, Vector3Int dest, Overworld grid) {
 		Vector3Int unitDir = (dest - src).Unit();
 
 		int acc = 0;
@@ -114,7 +114,7 @@ public class FieldOfView
         }
 	}
 
-	private int MinimumRaycastCost(Vector3Int src, Vector3Int dest, WorldGrid grid) {
+	private int MinimumRaycastCost(Vector3Int src, Vector3Int dest, Overworld grid) {
 		Vector3 realSrc = grid.Grid2RealPos(src);
 		Vector3 realDest = grid.Grid2RealPos(dest);
 		float buffer = grid.GetComponent<Grid>().cellSize.x / 20.0f;
@@ -134,7 +134,7 @@ public class FieldOfView
 	}
 
 	// this is way too expensive
-	private int RaycastCost(Vector3 src, Vector3 dest, WorldGrid grid, int resolution = 10) {
+	private int RaycastCost(Vector3 src, Vector3 dest, Overworld grid, int resolution = 10) {
 		HashSet<Vector3Int> alongRay = new HashSet<Vector3Int>();
 
 		foreach (var step in src.SteppedInterpEx(dest, resolution)) {
@@ -145,7 +145,7 @@ public class FieldOfView
 		return alongRay.Aggregate(0, (acc, it) =>  acc + grid.TerrainAt(it).occlusion ) + alongRay.Count;
 	}
 
-	public static IEnumerable<Vector3Int> RaycastLine(Vector3 src, Vector3 dest, WorldGrid grid, int resolution = 10) {
+	public static IEnumerable<Vector3Int> RaycastLine(Vector3 src, Vector3 dest, Overworld grid, int resolution = 10) {
 		HashSet<Vector3Int> alongRay = new HashSet<Vector3Int>();
 
 		foreach (var step in src.SteppedInterpEx(dest, resolution)) {

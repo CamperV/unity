@@ -17,17 +17,15 @@ public abstract class TerrainGenerator : MonoBehaviour
 		none,
 		deepWater, water,
 		sand,
-		grass,
+		plain,
 		forest, deepForest,
-		foothills, mountain, mountain2x2, peak, peak2x2,
+		foothill, mountain, mountain2x2, peak, peak2x2,
 		village,
 		ruins,
 		x
 	};
 
 	public Vector2Int mapDimension;
-	protected int mapDimensionX { get => mapDimension.x; }
-	protected int mapDimensionY { get => mapDimension.y; }
 	protected TileEnum[,] map;
 
 	// generation parameters
@@ -78,6 +76,57 @@ public abstract class TerrainGenerator : MonoBehaviour
 
 	public TileEnum[,] GetMap() {
 		return map;
+	}
+
+	// convert and return the TileEnum map into a terrain map
+	public Dictionary<Vector3Int, Terrain> GetTerrain() {
+		Dictionary<Vector3Int, Terrain> retVal = new Dictionary<Vector3Int, Terrain>();
+
+		for (int x = 0; x < mapDimension.x; x++) {
+			for (int y = 0; y < mapDimension.y; y++) {
+				Terrain terrain = new EmptyTerrain();
+				Vector3Int pos = new Vector3Int(x, y, 0);
+
+				switch (map[x, y]) {
+					case TileEnum.deepWater:
+						terrain = new DeepWater(pos);
+						break;
+					case TileEnum.water:
+						terrain = new Water(pos);
+						break;
+					case TileEnum.sand:
+						terrain = new Sand(pos);
+						break;
+					case TileEnum.plain:
+						terrain = new Plain(pos);
+						break;
+					case TileEnum.forest:
+						terrain = new Forest(pos);
+						break;
+					case TileEnum.deepForest:
+						terrain = new DeepForest(pos);
+						break;
+					case TileEnum.foothill:
+						terrain = new Foothill(pos);
+						break;
+					case TileEnum.mountain:
+						terrain = new Mountain(pos);
+						break;
+					case TileEnum.peak:
+						terrain = new Peak(pos);
+						break;
+					case TileEnum.village:
+						terrain = new Village(pos);
+						break;
+					case TileEnum.ruins:
+						terrain = new Ruins(pos);
+						break;
+				}
+				retVal[pos] = terrain;
+			}
+		}
+
+		return retVal;
 	}
 
 	public void ApplyMap(Tilemap tilemap) {

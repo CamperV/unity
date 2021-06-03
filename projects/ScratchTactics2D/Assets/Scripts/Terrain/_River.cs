@@ -8,10 +8,8 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public class River : Terrain
+public class _River
 {
-	public override void Apply(WorldGrid grid) {}
-
 	public static HashSet<Vector2Int> FromElevationMap(float[,] elevation, Vector2Int startPosition) {
 		HashSet<Vector2Int> river = new HashSet<Vector2Int>();
 		

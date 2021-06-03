@@ -31,9 +31,9 @@ public abstract class OverworldEntity : MovingObject
 	public FieldOfView fov {
 		get => _fov;
 		set {
-			if (_fov != null) _fov.ClearDisplay(GameManager.inst.worldGrid);
+			if (_fov != null) _fov.ClearDisplay(GameManager.inst.overworld);
 			_fov = value;
-			_fov.Display(GameManager.inst.worldGrid);
+			_fov.Display(GameManager.inst.overworld);
 		}
 	}
 	
@@ -43,7 +43,7 @@ public abstract class OverworldEntity : MovingObject
 		// make sure you also update FOV when moving
 		protected set {
 			_gridPosition = value;
-			fov = new FieldOfView(_gridPosition, visionRange, GameManager.inst.worldGrid);
+			fov = new FieldOfView(_gridPosition, visionRange, GameManager.inst.overworld);
 		}
 	}
 
@@ -54,16 +54,16 @@ public abstract class OverworldEntity : MovingObject
 		// generate your units here (name, tags, etc)
 		GenerateUnitStats();
 
-		//fov = new FieldOfView(Vector3Int.zero, 0, GameManager.inst.worldGrid);
+		//fov = new FieldOfView(Vector3Int.zero, 0, GameManager.inst.overworld);
 	}
 
 	public void ResetPosition(Vector3Int v) {
 		gridPosition = v;
-		transform.position = GameManager.inst.worldGrid.Grid2RealPos(gridPosition);
+		transform.position = GameManager.inst.overworld.Grid2RealPos(gridPosition);
 	}
 
 	public override bool GridMove(int xdir, int ydir) {
-		return base.AttemptGridMove(xdir, ydir, GameManager.inst.worldGrid);
+		return base.AttemptGridMove(xdir, ydir, GameManager.inst.overworld);
 	}
 
 	public Unit LoadUnitByTag(string tag) {
@@ -105,7 +105,7 @@ public abstract class OverworldEntity : MovingObject
 		// fade down
 		// when faded, remove gameObject
 		Debug.Log($"{this} has died :(");
-		GameManager.inst.worldGrid.UpdateOccupantAt(gridPosition, null);
+		GameManager.inst.overworld.UpdateOccupantAt(gridPosition, null);
 		StartCoroutine(FadeDownToInactive(timeToDie));
 	}
 

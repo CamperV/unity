@@ -6,22 +6,12 @@ using UnityEngine.Tilemaps;
 
 public abstract class GameTile : Tile
 {
-	// returns an integer that signifies the cost of entering this tile
-	public virtual int cost { get => 1; }
 }
 
 public abstract class WorldTile : GameTile
 {
-	public override int cost { get => Constants.standardTickCost; }
-
 	// returns a probability from 0-99 that this tile is generated
 	public virtual int probability { get => 0; }
-	
-	// returns the dimensions of the battleGrid to be created when a Battle is started on this tile
-	public virtual Vector2Int battleGridSize { get => new Vector2Int(8, 8); }
-
-	// reserved for tiles that have visual depth, ie mountains
-	public virtual int depth { get => 0; }
 	
 	// utility methods for getting specific worldtile sprites
 	public List<Sprite> sprites;
@@ -32,6 +22,8 @@ public abstract class WorldTile : GameTile
 
 public abstract class TacticsTile : GameTile
 {
+	// returns an integer that signifies the cost of entering this tile
+	public virtual int cost { get => Constants.standardTickCost; }
 	public List<Sprite> sprites;
 }
 

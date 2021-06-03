@@ -6,13 +6,11 @@ using Random = UnityEngine.Random;
 
 public class OverworldEnemySkeleton : OverworldEnemyBase
 {	
-	public override int detectionRange { get { return 2; } }
+	public override int detectionRange { get { return 3; } }
 	public override HashSet<Type> spawnable {
 		get {
 			return new HashSet<Type>() {
-				typeof(ForestWorldTile),
-				typeof(ForestRoadWorldTile),
-				typeof(MountainRoadWorldTile),
+				typeof(DeepForest)
 			};
 		}
 	}

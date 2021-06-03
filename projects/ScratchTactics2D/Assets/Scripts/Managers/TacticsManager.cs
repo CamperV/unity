@@ -107,12 +107,12 @@ public class TacticsManager : MonoBehaviour
 	// NOTE: we can only ever start a battle with two participants
 	// because of the interleaving of Overworld turns and Tactics turns, even if there WOULD be more than one enemy active,
 	// it still won't be included in the battle until it can take its turn
-	public void CreateActiveBattle(OverworldPlayer player, OverworldEnemyBase other, WorldTile playerTile, WorldTile enemyTile, Enum.Phase initiatingPhase) {
+	public void CreateActiveBattle(OverworldPlayer player, OverworldEnemyBase other, Terrain playerTerrain, Terrain enemyTerrain, Enum.Phase initiatingPhase) {
 		var cameraPos = new Vector3(Camera.main.transform.position.x,
 									Camera.main.transform.position.y,
 									0);		
 		activeBattle = Instantiate(battlePrefab, cameraPos, Quaternion.identity);
-		activeBattle.Init(player, other, playerTile, enemyTile);
+		activeBattle.Init(player, other, playerTerrain, enemyTerrain);
 		//
 		virtualCamera = new VirtualCamera(activeBattle);
 		virtualCamera.Zoom(1.0f);
@@ -120,8 +120,8 @@ public class TacticsManager : MonoBehaviour
 		activeBattle.StartBattleOnPhase(initiatingPhase);
 	}
 
-	public void AddToActiveBattle(OverworldEnemyBase other, WorldTile otherTile) {
-		activeBattle.AddParticipant(other, otherTile);
+	public void AddToActiveBattle(OverworldEnemyBase other, Terrain otherTerrain) {
+		activeBattle.AddParticipant(other, otherTerrain);
 	}
 
 	public void ResolveActiveBattle(List<OverworldEntity> defeatedEntities) {

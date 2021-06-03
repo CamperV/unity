@@ -17,7 +17,7 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
     void Update() {
         if (Input.GetKeyDown(KeyCode.R)) {
             GenerateMap();
-            ApplyMap(GameManager.inst.worldGrid.baseTilemap);
+            ApplyMap(GameManager.inst.overworld.baseTilemap);
         }
     }
 
@@ -26,8 +26,8 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         [0.20f] = TileEnum.deepWater,
         [0.25f] = TileEnum.water,
         [0.30f] = TileEnum.sand,
-        [0.65f] = TileEnum.grass,
-        [0.75f] = TileEnum.foothills,
+        [0.65f] = TileEnum.plain,
+        [0.75f] = TileEnum.foothill,
         [0.80f] = TileEnum.mountain,
         [1.00f] = TileEnum.peak
     };
@@ -90,7 +90,7 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
             TileEnum tileAt = map[roadPos.x, roadPos.y];
             WorldTile roadTile = null;
             
-            if (tileAt == TileEnum.grass) {
+            if (tileAt == TileEnum.plain) {
                 roadTile = pattern.GetPatternTile<RoadWorldTile>();
             }
             else if (tileAt == TileEnum.forest || tileAt == TileEnum.deepForest) {
@@ -132,12 +132,12 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
     }
 
     protected float[,] GenerateCircularGradient(float threshold = 1.0f, float slope = 1.0f) {
-        float[,] gradient = new float[mapDimensionX, mapDimensionY];
-        Vector2 midpoint = new Vector2(mapDimensionX/2f, mapDimensionY/2f);
+        float[,] gradient = new float[mapDimension.x, mapDimension.y];
+        Vector2 midpoint = new Vector2(mapDimension.x/2f, mapDimension.y/2f);
 
         float maxDistance = Vector2.Distance(new Vector2(0, 0), midpoint);
-        for (int x = 0; x < mapDimensionX; x++) {
-            for (int y = 0; y < mapDimensionY; y++) {
+        for (int x = 0; x < mapDimension.x; x++) {
+            for (int y = 0; y < mapDimension.y; y++) {
                 float distance = Vector2.Distance(new Vector2(x, y), midpoint);
                 gradient[x, y] = Mathf.Clamp((1f - (Mathf.InverseLerp(0f, maxDistance, distance) * slope)), 0.0f, threshold);
             }
@@ -146,12 +146,12 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
     }
 
     protected float[,] GenerateVerticalGradient(float threshold = 1.0f, float slope = 1.0f) {
-        float[,] gradient = new float[mapDimensionX, mapDimensionY];
+        float[,] gradient = new float[mapDimension.x, mapDimension.y];
 
-        float maxDistance = slope * mapDimensionY;
-        for (int x = 0; x < mapDimensionX; x++) {
-            for (int y = 0; y < mapDimensionY; y++) {
-                float distance = slope * (mapDimensionY - y);
+        float maxDistance = slope * mapDimension.y;
+        for (int x = 0; x < mapDimension.x; x++) {
+            for (int y = 0; y < mapDimension.y; y++) {
+                float distance = slope * (mapDimension.y - y);
                 gradient[x, y] = Mathf.Clamp(1f - Mathf.InverseLerp(0f, maxDistance, distance), 0.0f, threshold);
             }
         }
@@ -159,13 +159,13 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
     }
 
     protected float[,] GenerateLogGradient(float scale = 1.0f) {
-        float[,] gradient = new float[mapDimensionX, mapDimensionY];
+        float[,] gradient = new float[mapDimension.x, mapDimension.y];
         float logScale = 0.001f;
 
         float minDistance = Mathf.Log(0.01f);
-        float maxDistance = Mathf.Log(mapDimensionY * logScale);
-        for (int x = 0; x < mapDimensionX; x++) {
-            for (int y = 0; y < mapDimensionY; y++) {
+        float maxDistance = Mathf.Log(mapDimension.y * logScale);
+        for (int x = 0; x < mapDimension.x; x++) {
+            for (int y = 0; y < mapDimension.y; y++) {
                 float distance = Mathf.Log(y * logScale);
                 gradient[x, y] = scale * Mathf.InverseLerp(minDistance, maxDistance, distance);
             }
@@ -174,14 +174,14 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
     }
 
     protected float[,] GenerateExpGradient(float power, float scale = 1.0f, bool reversed = false) {
-        float[,] gradient = new float[mapDimensionX, mapDimensionY];
+        float[,] gradient = new float[mapDimension.x, mapDimension.y];
 
         float minDistance = 0f;
-        float maxDistance = Mathf.Pow(mapDimensionY, power);
+        float maxDistance = Mathf.Pow(mapDimension.y, power);
 
-        for (int x = 0; x < mapDimensionX; x++) {
-            for (int y = 0; y < mapDimensionY; y++) {
-                float _base = (reversed) ? y :  mapDimensionY - y;
+        for (int x = 0; x < mapDimension.x; x++) {
+            for (int y = 0; y < mapDimension.y; y++) {
+                float _base = (reversed) ? y :  mapDimension.y - y;
                 float distance = Mathf.Pow(_base, power);
                 gradient[x, y] = scale * Mathf.InverseLerp(minDistance, maxDistance, distance);
             }
@@ -190,14 +190,14 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
     }
 
     protected float[,] GenerateRandomDimples(int verticalThreshold = 0, int seed = -1) {
-        float[,] dimpleMap = new float[mapDimensionX, mapDimensionY];
+        float[,] dimpleMap = new float[mapDimension.x, mapDimension.y];
 
         if (seed != -1) Random.InitState(seed);
-        int numDimples = Random.Range(0, (int)(mapDimensionY/20f));
+        int numDimples = Random.Range(0, (int)(mapDimension.y/20f));
 
         for (int d = 0; d < numDimples; d++) {
-            Vector2Int randomPosition = new Vector2Int(Random.Range(0, mapDimensionX), Random.Range(0, mapDimensionY));
-            int randomRadius = Random.Range(5, (int)(mapDimensionX/5.0f));
+            Vector2Int randomPosition = new Vector2Int(Random.Range(0, mapDimension.x), Random.Range(0, mapDimension.y));
+            int randomRadius = Random.Range(5, (int)(mapDimension.x/5.0f));
 
             // see if we can simply discard this one
             if ((randomPosition.y - randomRadius) < verticalThreshold) continue;
@@ -206,9 +206,9 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
             Vector2Int maxBox = randomPosition + (randomRadius * Vector2Int.one);
 
             // only search in a box around the dimple's origin
-            for (int x = Mathf.Max(0, minBox.x); x < Mathf.Min(mapDimensionX, maxBox.x); x++) {
-                for (int y = Mathf.Max(0, minBox.y); y < Mathf.Min(mapDimensionY, maxBox.y); y++) {
-                    float verticalScale = 0.5f + Mathf.InverseLerp(verticalThreshold, mapDimensionY, y); // 1 - 1.5 depending on vertical height
+            for (int x = Mathf.Max(0, minBox.x); x < Mathf.Min(mapDimension.x, maxBox.x); x++) {
+                for (int y = Mathf.Max(0, minBox.y); y < Mathf.Min(mapDimension.y, maxBox.y); y++) {
+                    float verticalScale = 0.5f + Mathf.InverseLerp(verticalThreshold, mapDimension.y, y); // 1 - 1.5 depending on vertical height
 
                     float distance = (new Vector2(x, y) - randomPosition).magnitude;
                     dimpleMap[x, y] += Mathf.Pow((1f - Mathf.InverseLerp(0, randomRadius, distance)), verticalScale);
