@@ -13,8 +13,8 @@ public class Path
 	// it also greatly simplifies the utility functions I have to write
 	protected LinkedList<Vector3Int> path = new LinkedList<Vector3Int>();
 	
-	public LinkedListNode<Vector3Int> start { get => path.First; }
-	public LinkedListNode<Vector3Int> end { get => path.Last; }
+	public Vector3Int start { get => path.First.Value; }
+	public Vector3Int end { get => path.Last.Value; }
 	
 	public void AddFirst(Vector3Int v) {
 		path.AddFirst(v);
@@ -33,7 +33,7 @@ public class Path
 	}
 	
 	public IEnumerable<Vector3Int> Unwind(int slice = 0) {
-		var position = start;
+		LinkedListNode<Vector3Int> position = path.First;
 		do {
 			position = position.Next;
 			
@@ -43,7 +43,7 @@ public class Path
 				continue;
 			}
 			yield return position.Value;
-		} while (position != end);
+		} while (position != path.Last);
 	}
 
 	public bool Contains(Vector3Int v) {
@@ -66,6 +66,21 @@ public class Path
 		// use two loops to avoid modifying path during iteration
 		foreach (var fr in forRemoval) {
 			path.Remove(fr);
+		}
+	}
+
+	public void Show(GameGrid grid, OverlayTile overlayTile) {
+		foreach (Vector3Int tilePos in Unwind()) {
+			if (tilePos == end) break; // skip end tile for debug
+			
+			grid.OverlayAt(tilePos, overlayTile);
+		}
+	}
+
+	public void UnShow(GameGrid grid) {
+		// slice 1 will clip the start position out
+		foreach (Vector3Int tilePos in Unwind()) {
+			grid.ResetOverlayAt(tilePos);
 		}
 	}
 }

@@ -3,52 +3,20 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class FlowField
+public class FlowField : IPathable
 {
 	public Vector3Int origin;
 	public Dictionary<Vector3Int, int> field;
 	
-	public static FlowField FlowFieldFrom(Vector3Int origin, IEnumerable<Vector3Int> _nodeSet, int range = Int32.MaxValue, int numElements = Int32.MaxValue) {
-		HashSet<Vector3Int> nodeSet = new HashSet<Vector3Int>(_nodeSet);
-
-		Dictionary<Vector3Int, int> distance = new Dictionary<Vector3Int, int>();
-		PriorityQueue<Vector3Int> fieldQueue = new PriorityQueue<Vector3Int>();
-
-		// initial setup
-		Vector3Int currentPos = origin;
-		fieldQueue.Enqueue(0, currentPos);
-		if (nodeSet.Contains(origin)) {
-			distance[origin] = 0;
-		}
-		
-		while (fieldQueue.Count != 0) {
-			currentPos = fieldQueue.Dequeue();
-					
-			foreach (Vector3Int adjacent in GetAdjacent(currentPos)) {
-				if (distance.Count > numElements) { continue; }
-				
-				if (nodeSet.Contains(adjacent)) {
-					int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;
-					var updatedCost = distSoFar + Cost(currentPos, adjacent);
-					if (updatedCost > range) { continue; }
-					
-					if (!distance.ContainsKey(adjacent) || updatedCost < distance[adjacent]) {
-						distance[adjacent] = updatedCost;
-						fieldQueue.Enqueue(distance[adjacent], adjacent);
-					}
-				}
-			}
-		}
-		
-		// upon success, create and return a FlowField using the distance dict
-		FlowField newField = new FlowField();
-		newField.origin = origin;
-		newField.field = distance;
-		return newField;
+	public FlowField(){}
+	public FlowField(Vector3Int _origin, Dictionary<Vector3Int, int> _field) {
+		origin = _origin;
+		field = _field;
 	}
-	
-	public static List<Vector3Int> GetAdjacent(Vector3Int pos) {
-		return new List<Vector3Int>() {
+
+	// IPathable definitions
+	public IEnumerable<Vector3Int> GetNeighbors(Vector3Int pos) {
+		List<Vector3Int> options = new List<Vector3Int>() {
 			pos + Vector3Int.up,	// N
 			pos + Vector3Int.right,	// E
 			pos + Vector3Int.down,	// S
@@ -62,13 +30,18 @@ public class FlowField
 			pos + new Vector3Int(0, 0, -1) + Vector3Int.down,
 			pos + new Vector3Int(0, 0, -1) + Vector3Int.left,
 		};
-	}
 
-	public static int Cost(Vector3Int src, Vector3Int dest) {
+		foreach (Vector3Int opt in options) {
+			if (field.ContainsKey(opt))
+				yield return opt;
+		}
+	}
+	public int EdgeCost(Vector3Int src, Vector3Int dest) {
 		// the way we have coded cost into Terrain:
 		// the number listed is the cost to enter said tile
-		var destTerrain = GameManager.inst.overworld.TerrainAt(dest);
-		return destTerrain.cost + (destTerrain.cost * Mathf.Max(dest.z - src.z, 0));
+		// var destTerrain = GameManager.inst.overworld.TerrainAt(dest);
+		// return destTerrain.cost + (destTerrain.cost * Mathf.Max(dest.z - src.z, 0));
+		return field[dest];
 	}
 	
 	public void Absorb(FlowField other) {

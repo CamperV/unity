@@ -9,7 +9,7 @@ public class PlayerUnitController : UnitController
 	private PathOverlayIsoTile pathOverlayTile;
 
 	private PlayerUnit currentSelection;
-	private MovingObjectPath currentSelectionFieldPath;
+	private Path currentSelectionFieldPath;
 	private TacticsGrid grid;
 
 	// possible actions for PlayerUnits and their bindings
@@ -111,7 +111,7 @@ public class PlayerUnitController : UnitController
 			grid.SelectAtAlternate(gridPos);
 
 			// update this every time you move the mouse. Run time intensive? But shows path taken
-			currentSelectionFieldPath = MovingObjectPath.GetPathFromField(gridPos, mRange);
+			currentSelectionFieldPath = new FlowFieldPathfinder(mRange).BFS(gridPos);
 			currentSelectionFieldPath.Show(grid, pathOverlayTile);
 		}
 	}
@@ -184,7 +184,7 @@ public class PlayerUnitController : UnitController
 								currentSelection.UnlockSelection();
 								currentSelectionFieldPath?.UnShow(grid);
 
-								currentSelection.TraverseTo(target, fieldPath: currentSelectionFieldPath);
+								currentSelection.TraverseTo(target, currentSelectionFieldPath);
 
 								// on end
 								StartCoroutine(currentSelection.ExecuteAfterMoving(() => {

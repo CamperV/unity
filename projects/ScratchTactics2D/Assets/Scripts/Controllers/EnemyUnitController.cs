@@ -101,14 +101,16 @@ public class EnemyUnitController : UnitController
 				// CAVEAT: we can't just clip it
 				// if we do, we can have enemies standing in the same place.
 				// instead, we have to do the laborious thing, and REpath-find to the new clipped position
-				var pathToTarget = MovingObjectPath.GetPathTo(subject.gridPosition, optimalPosition, subject.obstacles);
-				var clippedPath  = MovingObjectPath.Clip(pathToTarget, subject.moveRange);
+				Path pathToTarget = new EntityPathfinder(grid, subject.obstacles).BFS(subject.gridPosition, optimalPosition);
+				pathToTarget.Clip(subject.moveRange);
 
 				// if the clipped path already has someone there... radiate again to find another place to stand nearby
-				var finalPosition = NextVacantPos(subject, clippedPath.end);
-				var finalPath = MovingObjectPath.GetPathTo(subject.gridPosition, finalPosition, subject.obstacles);
+				if (!grid.VacantAt(pathToTarget.end)) {
+					Vector3Int finalPosition = NextVacantPos(subject, pathToTarget.end);
+					pathToTarget = new EntityPathfinder(grid, subject.obstacles).BFS(subject.gridPosition, finalPosition);
+				}
 				//
-				subject.TraverseTo(finalPath.end, fieldPath: finalPath);
+				subject.TraverseTo(pathToTarget.end, pathToTarget);
 
 				// spin until this subject is entirely done moving
 				while (subject.IsMoving()) { yield return null; }
@@ -169,11 +171,9 @@ public class EnemyUnitController : UnitController
 
 	public Vector3Int NextVacantPos(Unit subject, Vector3Int origPos) {
 		var grid = GameManager.inst.GetActiveGrid();
-		if (!grid.VacantAt(origPos)) {
-			foreach (var v in origPos.GridRadiate(grid, subject.MOVE)) {
-				if (subject.moveRange.field.ContainsKey(v) && grid.VacantAt(v)) {
-					return v;
-				}
+		foreach (var v in origPos.GridRadiate(grid, subject.MOVE)) {
+			if (subject.moveRange.field.ContainsKey(v) && grid.VacantAt(v)) {
+				return v;
 			}
 		}
 		return origPos;

@@ -16,6 +16,14 @@ public class EnemyController : Controller
 	public FlowField flowFieldToPlayer;
 	
 	public HashSet<Vector3Int> traversablePositions = new HashSet<Vector3Int>();
+	public HashSet<Vector3Int> untraversablePositions {
+		get {
+			HashSet<Vector3Int> retVal = GameManager.inst.overworld.GetAllTilePos();
+			retVal.ExceptWith(traversablePositions);
+			return retVal;
+		}
+	}
+
 	public HashSet<Vector3Int> currentEnemyPositions {
 		get => GameManager.inst.overworld.CurrentOccupantPositions<OverworldEnemyBase>();
 	}
@@ -200,13 +208,13 @@ public class EnemyController : Controller
 	}
 	
 	public void InitFlowField(Vector3Int initOrigin) {
-		flowFieldToPlayer = FlowField.FlowFieldFrom(initOrigin, traversablePositions);
+		flowFieldToPlayer = new EntityPathfinder(GameManager.inst.overworld, untraversablePositions).FlowField<FlowField>(initOrigin);
 	}
 	
 	private void UpdateFlowField() {
 		FlowField prevFlowFieldToPlayer = flowFieldToPlayer;
 		
-		flowFieldToPlayer = FlowField.FlowFieldFrom(lastKnownPlayerPos, traversablePositions);
+		flowFieldToPlayer = new EntityPathfinder(GameManager.inst.overworld, untraversablePositions).FlowField<FlowField>(lastKnownPlayerPos);
 		flowFieldToPlayer.Absorb(prevFlowFieldToPlayer);
 	}
 

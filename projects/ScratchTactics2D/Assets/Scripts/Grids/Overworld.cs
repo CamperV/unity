@@ -33,6 +33,11 @@ public class Overworld : GameGrid, IPathable
 		tintCanvas.sortingOrder = 1;
 	}
 
+    // IPathable definitions
+    public override int EdgeCost(Vector3Int src, Vector3Int dest) {
+        return 1;
+    }
+
 	public override bool IsInBounds(Vector3Int tilePos) {
 		return terrain.ContainsKey(tilePos);
 	}
@@ -208,10 +213,6 @@ public class Overworld : GameGrid, IPathable
 		return terrain.Keys.ToList().Where( it => terrain[it].GetType() == typeof(T)).ToList();
 	}
 
-	public List<Vector3Int> LocationsExceptOf<T>() where T : Terrain {
-		return terrain.Keys.ToList().Where( it => terrain[it].GetType() != typeof(T)).ToList();
-	}
-
 	public Type TypeAt(Vector3Int v) {
 		return terrain[v].GetType();
 	}
@@ -226,22 +227,6 @@ public class Overworld : GameGrid, IPathable
 		}
 		return new EmptyTerrain();
 	}
-
-    // IPathable definitions
-    public IEnumerable<Vector3Int> GetNeighbors(Vector3Int origin) {
-        Vector3Int up = origin + Vector3Int.up;
-        Vector3Int right = origin + Vector3Int.right;
-        Vector3Int down = origin + Vector3Int.down;
-        Vector3Int left = origin + Vector3Int.left;
-        if (terrain.ContainsKey(up)) yield return up;
-        if (terrain.ContainsKey(right)) yield return right;
-        if (terrain.ContainsKey(down)) yield return down;
-        if (terrain.ContainsKey(left)) yield return left;
-    }
-
-    public int EdgeCost(Vector3Int src, Vector3Int dest) {
-        return 1;
-    }
 
 	public override void UnderlayAt(Vector3Int tilePos, Color color) {
 		underlayTilemap.SetTile(tilePos, selectTile);

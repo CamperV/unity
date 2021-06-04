@@ -75,8 +75,9 @@ public class RandomTerrainGenerator : TerrainGenerator
 			int forestRange = Random.Range(lowerBound, upperBound);
 			int forestSize = Random.Range(lowerBound, upperBound);
 			
-			var nonMnt = GameManager.inst.overworld.LocationsExceptOf<Mountain>();
-			FlowField fField = FlowField.FlowFieldFrom(origin, nonMnt, range: forestRange*Constants.standardTickCost, numElements: forestSize);
+			var overworld = GameManager.inst.overworld;
+			var pf = new EntityPathfinder(overworld, new HashSet<Vector3Int>(overworld.LocationsOf<Mountain>()));
+			FlowField fField = pf.FlowField<FlowField>(origin, range: forestRange*Constants.standardTickCost, numElements: forestSize);
 			
 			foreach(Vector3Int frt in fField.field.Keys) {
 				TileSetter(frt, TileOption(TileEnum.forest));
@@ -95,8 +96,10 @@ public class RandomTerrainGenerator : TerrainGenerator
 			int lakeRange = Random.Range(lowerBound, upperBound);
 			int lakeSize = Random.Range(lowerBound, upperBound);
 			
-			var nonMnt = GameManager.inst.overworld.LocationsExceptOf<Mountain>();
-			FlowField fField = FlowField.FlowFieldFrom(lakeOrigin, nonMnt, range: lakeRange*Constants.standardTickCost, numElements: lakeSize);
+			var overworld = GameManager.inst.overworld;
+			var pf = new EntityPathfinder(overworld, new HashSet<Vector3Int>(overworld.LocationsOf<Mountain>()));
+			FlowField fField = pf.FlowField<FlowField>(lakeOrigin, range: lakeRange*Constants.standardTickCost, numElements: lakeSize);
+			
 			foreach(Vector3Int lakePos in fField.field.Keys) {
 				TileSetter(lakePos, TileOption(TileEnum.water));
 				GameManager.inst.overworld.SetTerrainAt(lakePos, new Water(lakePos));

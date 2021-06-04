@@ -177,7 +177,7 @@ public class MovingObjectPath
 
 				// units can move through units of similar types, but not enemy types
 				int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;
-				var updatedCost = distSoFar + FlowField.Cost(currentPos, adjacent);
+				var updatedCost = distSoFar + GameManager.inst.GetActiveGrid().EdgeCost(currentPos, adjacent);
 				
 				if (!distance.ContainsKey(adjacent) || updatedCost < distance[adjacent]) {
 					distance[adjacent] = updatedCost;
@@ -216,13 +216,6 @@ public class MovingObjectPath
 	}
 
 	public static MovingObjectPath GetPathFromField(Vector3Int targetPosition, FlowField ffield) {
-		IEnumerable<Vector3Int> GetFieldOptions(Vector3Int pos) {
-			List<Vector3Int> options = FlowField.GetAdjacent(pos);
-			foreach (Vector3Int opt in options) {
-				if (ffield.field.ContainsKey(opt)) yield return opt;
-			}
-		}
-
 		MovingObjectPath newPath = new MovingObjectPath(ffield.origin);
 		newPath.start = ffield.origin;
 		newPath.end   = targetPosition;
@@ -242,7 +235,7 @@ public class MovingObjectPath
 
 			Vector3Int bestMove = currentPos;
 			int bestMoveCost = ffield.field[currentPos];
-			foreach (Vector3Int adjacent in GetFieldOptions(currentPos)) {		
+			foreach (Vector3Int adjacent in ffield.GetNeighbors(currentPos)) {		
 				int cost = ffield.field[adjacent];
 
 				if (cost < bestMoveCost) {

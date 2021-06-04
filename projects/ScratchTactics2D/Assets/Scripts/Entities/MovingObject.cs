@@ -120,7 +120,7 @@ public abstract class MovingObject : MonoBehaviour
 		crtMovingFlag = false;
 	}
 
-	protected IEnumerator SmoothMovementPath(MovingObjectPath path, GameGrid grid) {
+	protected IEnumerator SmoothMovementPath(Path path, GameGrid grid) {
 		crtMovingFlag = true;
 		GameManager.inst.tacticsManager.resizeLock = true;
 
@@ -136,12 +136,11 @@ public abstract class MovingObject : MonoBehaviour
 
 			while (timeStep < 1.0f) {
 				timeStep += (Time.deltaTime / fixedTimePerTile);
-				//transform.position = Vector3.Lerp(startPos, realNextPos, timeStep);
+
 				UpdateRealPosition(Vector3.Lerp(startPos, realNextPos, timeStep));
 				yield return null;
 			}
 		}
-		//transform.position = realNextPos;
 		UpdateRealPosition(realNextPos);
 
 		crtMovingFlag = false;

@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public abstract class GameGrid : MonoBehaviour
+public abstract class GameGrid : MonoBehaviour, IPathable
 {
 	[HideInInspector] public Tilemap baseTilemap;
 	[HideInInspector] public Tilemap underlayTilemap;
@@ -27,6 +27,21 @@ public abstract class GameGrid : MonoBehaviour
 		occupancyGrid = new Dictionary<Vector3Int, Component>();
 		translation2D = new Dictionary<Vector2Int, Vector3Int>();
 	}
+
+	// IPathable Definitions
+	public virtual IEnumerable<Vector3Int> GetNeighbors(Vector3Int origin) {
+        Vector3Int up = origin + Vector3Int.up;
+        Vector3Int right = origin + Vector3Int.right;
+        Vector3Int down = origin + Vector3Int.down;
+        Vector3Int left = origin + Vector3Int.left;
+        if (IsInBounds(up)) yield return up;
+        if (IsInBounds(right)) yield return right;
+        if (IsInBounds(down)) yield return down;
+        if (IsInBounds(left)) yield return left;
+    }
+	public virtual int EdgeCost(Vector3Int src, Vector3Int dest) {
+		return 1;
+	}
 	
 	// IMPORTANT: this is only used for converting locations to Unit/Entites positions
 	// we need to account for the Z-shift here
@@ -39,23 +54,6 @@ public abstract class GameGrid : MonoBehaviour
 	public virtual Vector3Int Real2GridPos(Vector3 realPos) {
 		var toModify = baseTilemap.WorldToCell(realPos);
 		return new Vector3Int(toModify.x, toModify.y, 0);
-	}
-	
-	// neighbors are defined as adjacent squares in cardinal directions
-	public HashSet<Vector3Int> GetNeighbors(Vector3Int tilePos) {
-		List<Vector2Int> cardinal = new List<Vector2Int> {
-			Vector2Int.up, 		// N
-			Vector2Int.right, 	// E
-			Vector2Int.down, 	// S
-			Vector2Int.left  	// W
-		};
-		
-		HashSet<Vector3Int> retHash = new HashSet<Vector3Int>();
-		foreach (Vector2Int cPos in cardinal) {
-			Vector3Int pos = To3D(new Vector2Int(tilePos.x, tilePos.y) + cPos);
-			if (IsInBounds(pos)) retHash.Add(pos);
-		}
-		return retHash;
 	}
 
 	public HashSet<Vector3Int> GetEightNeighbors(Vector3Int tilePos) {

@@ -174,13 +174,13 @@ public abstract class Unit : TacticsEntityBase
 
 	public void UpdateThreatRange() {
 		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
-		HashSet<Vector3Int> tiles = new HashSet<Vector3Int>(grid.GetAllTilePos());
-		tiles.ExceptWith(obstacles);
 
 		var moveable = (OptionActive("Move")) ? MOVE : 0;
 		var attackable = (OptionActive("Attack")) ? _RANGE : 0;
-		moveRange = MoveRange.MoveRangeFrom(gridPosition, tiles, range: moveable);
-		attackRange = AttackRange.AttackRangeFrom(moveRange, grid.GetAllTilePos(), range: attackable);
+
+		moveRange = new EntityPathfinder(grid, obstacles).FlowField<MoveRange>(gridPosition, range: moveable);
+		Debug.Log($"created mrange {moveRange} / {moveRange == null}");
+		attackRange = new AttackRange(moveRange, attackable);
 	}
 
 	public void DisplayThreatRange() {
@@ -208,8 +208,8 @@ public abstract class Unit : TacticsEntityBase
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
-		MoveRange zero = MoveRange.MoveRangeFrom(gridPosition, grid.GetAllTilePos(), range: 0);
-		attackRange = AttackRange.AttackRangeFrom(zero, grid.GetAllTilePos(), range: _RANGE);
+		MoveRange standing = new MoveRange(gridPosition);
+		attackRange = new AttackRange(standing, _RANGE);
 		attackRange.Display(grid);
 
 		// add the lil selection square
@@ -251,14 +251,11 @@ public abstract class Unit : TacticsEntityBase
 		//unitUI.healthBar.Hide();
 	}
 
-	public void TraverseTo(Vector3Int target, MovingObjectPath fieldPath = null) {
-		GameGrid grid = GameManager.inst.tacticsManager.GetActiveGrid();
-		if (fieldPath == null) {
-			fieldPath = MovingObjectPath.GetPathFromField(target, moveRange);
-		}
+	public void TraverseTo(Vector3Int target, Path viaPath) {
+		TacticsGrid grid = GameManager.inst.tacticsManager.GetActiveGrid();
 
 		// movement animation
-		StartCoroutine(SmoothMovementPath(fieldPath, grid));
+		StartCoroutine( SmoothMovementPath(viaPath, grid) );
 
 		grid.UpdateOccupantAt(gridPosition, null);
 		grid.UpdateOccupantAt(target, this);

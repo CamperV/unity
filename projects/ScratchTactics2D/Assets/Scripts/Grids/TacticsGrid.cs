@@ -26,6 +26,24 @@ public class TacticsGrid : GameGrid
 		waypointOverlayTile = PathOverlayIsoTile.GetTileWithSprite(1);
 		selectionOverlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
 	}
+
+	// IPathable definitions
+	public override IEnumerable<Vector3Int> GetNeighbors(Vector3Int tilePos) {
+		List<Vector2Int> cardinal = new List<Vector2Int> {
+			Vector2Int.up, 		// N
+			Vector2Int.right, 	// E
+			Vector2Int.down, 	// S
+			Vector2Int.left  	// W
+		};
+		
+		foreach (Vector2Int cPos in cardinal) {
+			Vector3Int pos = To3D(new Vector2Int(tilePos.x, tilePos.y) + cPos);
+			if (IsInBounds(pos)) yield return pos;
+		}
+	}
+	public override int EdgeCost(Vector3Int src, Vector3Int dest) {
+        return 1;
+    }
 	
 	public override bool IsInBounds(Vector3Int tilePos) {
 		return tacticsTileGrid.ContainsKey(tilePos);

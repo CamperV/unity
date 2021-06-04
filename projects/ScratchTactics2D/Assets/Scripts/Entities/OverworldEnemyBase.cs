@@ -40,8 +40,6 @@ public class OverworldEnemyBase : OverworldEntity
 	private int tickPool { get; set; }
 	
 	public Enum.EnemyState state;
-	public MovingObjectPath pathToPlayer; // use to cache and not recalculate every frame
-
 	private EnemyController parentController { get => GameManager.inst.enemyController; }
 	
 	// will only spawn into a spawnable tile
