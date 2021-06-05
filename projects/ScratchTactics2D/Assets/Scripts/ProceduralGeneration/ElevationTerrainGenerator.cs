@@ -42,19 +42,21 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         /* .75 -> */ [1.00f] = new Color(1.00f, 1.00f, 1.00f, 1.00f)     // white
     };
 
-    protected override void Postprocessing() {
+    protected override void Preprocessing() {
         // link the villages via roads
 		CreateRoadsBetweenWaypoints( map.LocationsOf<TileEnum>(TileEnum.village)
 										.Where(it => it == 1)
 										.Select(it => new Vector3Int(it.x, it.y, 0))
 										.ToList() );
+        
+        // mountain pattern replacers in TerrainGenerator
+        base.Preprocessing();
     }
 
     // what makes this protected?
     // A: the usage of "elevation" as the pathfinding mechanism
     protected void CreateRoadsBetweenWaypoints(List<Vector3Int> waypoints) {	
         // This needs post-processing to set the appropriate tile afterwards
-        int[,] roadMask  = new int[mapDimension.x, mapDimension.y];
         Vector3Int prevPos = Vector3Int.zero;
         int i = 0;
 
@@ -67,49 +69,30 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
                 
                 // while we're here, update the grid for the first pass
                 foreach (Vector3Int p in path.Unwind()) {
-                    roadMask[p.x, p.y] = 1;
+                    switch (map[p.x, p.y]) {
+                        case TileEnum.water:
+                        case TileEnum.deepWater:
+                            map[p.x, p.y] = TileEnum.waterRoad;
+                            break;
+                        case TileEnum.forest:
+                        case TileEnum.deepForest:
+                            map[p.x, p.y] = TileEnum.forestRoad;
+                            break;
+                        case TileEnum.mountain:
+                        case TileEnum.peak:
+                            map[p.x, p.y] = TileEnum.mountainRoad;
+                            break;
+                        case TileEnum.village:
+                            map[p.x, p.y] = TileEnum.villageRoad;
+                            break;
+                        default:
+                            map[p.x, p.y] = TileEnum.road;
+                            break;
+                    }
                 }
             }
             prevPos = pos;
             i++;
-        }
-
-        // second pass: now that the terrain is set, apply the correct tile for each roadPos
-        foreach (Vector2Int _roadPos in roadMask.Where(it => it == 1)) {
-            Vector3Int roadPos = new Vector3Int(_roadPos.x, _roadPos.y, 0);
-
-            // create Pattern of Road positions center
-            TerrainPattern3x3 pattern = new TerrainPattern3x3();
-            foreach(Vector3Int neighbor in roadMask.GetNeighbors(roadPos)) {
-                if (roadMask[neighbor.x, neighbor.y] == 1 || map[neighbor.x, neighbor.y] == TileEnum.village) {
-                    pattern.Add( neighbor - roadPos );	
-                }
-            }
-
-            // now set based on the current TileEnum set there
-            TileEnum tileAt = map[roadPos.x, roadPos.y];
-            WorldTile roadTile = null;
-            
-            if (tileAt == TileEnum.plain) {
-                roadTile = pattern.GetPatternTile<RoadWorldTile>();
-            }
-            else if (tileAt == TileEnum.forest || tileAt == TileEnum.deepForest) {
-                roadTile = pattern.GetPatternTile<ForestRoadWorldTile>();
-            }				
-            else if (tileAt == TileEnum.water || tileAt == TileEnum.deepWater) {
-                roadTile = pattern.GetPatternTile<WaterRoadWorldTile>();
-            }
-            else if (tileAt == TileEnum.mountain || tileAt == TileEnum.peak) {
-                roadTile = pattern.GetPatternTile<MountainRoadWorldTile>();
-            }
-            else if (tileAt == TileEnum.village) {
-                roadTile = pattern.GetPatternTile<VillageRoadWorldTile>();
-            }
-            else {
-                roadTile = pattern.GetPatternTile<RoadWorldTile>();
-            }
-
-            TileSetter(roadPos, roadTile);
         }
     }
 

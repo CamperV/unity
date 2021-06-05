@@ -88,7 +88,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
             map[pos.x, pos.y] = TileEnum.village;
         }
 		
-        // pattern replacer is run in the base Preprocessing class
+        // road router in ElevationTerrainGenerator
         base.Preprocessing();
     }
 

@@ -22,7 +22,14 @@ public abstract class TerrainGenerator : MonoBehaviour
 		foothill, mountain, mountain2x2, peak, peak2x2,
 		village,
 		ruins,
-		x
+		x,
+
+		// after this point, not included in TileOptions
+		waterRoad,
+		road,
+		forestRoad,
+		mountainRoad,
+		villageRoad
 	};
 
 	public Vector2Int mapDimension;
@@ -69,9 +76,45 @@ public abstract class TerrainGenerator : MonoBehaviour
 	public void SetTileSetter(Action<Vector3Int, WorldTile> tileSetter) {
 		TileSetter = tileSetter;
 	}
-
+	
 	public static WorldTile TileOption(TileEnum tileType) {
 		return tileOptions[(int)tileType];
+	}
+	public WorldTile TileOption(int x, int y) {
+		// aka if you're not a road
+		if ((int)map[x, y] < tileOptions.Length) {
+			return tileOptions[(int)map[x, y]];
+
+		// else, you're a road*
+		} else {
+			Vector3Int roadPos = new Vector3Int(x, y, 0);
+
+            // create Pattern of Road positions center
+            TerrainPattern3x3 roadPattern = new TerrainPattern3x3();
+            foreach(Vector3Int neighbor in map.GetNeighbors(roadPos)) {
+                if (map[neighbor.x, neighbor.y] == TileEnum.road 			||
+					map[neighbor.x, neighbor.y] == TileEnum.waterRoad 		||
+					map[neighbor.x, neighbor.y] == TileEnum.forestRoad 		||
+					map[neighbor.x, neighbor.y] == TileEnum.mountainRoad 	||
+					map[neighbor.x, neighbor.y] == TileEnum.villageRoad) {
+                    roadPattern.Add( neighbor - roadPos );	
+                }
+            }
+
+			// now grab appropriate tile based on road TileEnum
+			switch (map[x, y]) {
+				case TileEnum.waterRoad:
+					return roadPattern.GetPatternTile<WaterRoadWorldTile>();
+				case TileEnum.forestRoad:
+					return roadPattern.GetPatternTile<ForestRoadWorldTile>();
+				case TileEnum.mountainRoad:
+					return roadPattern.GetPatternTile<MountainRoadWorldTile>();
+				case TileEnum.villageRoad:
+					return roadPattern.GetPatternTile<VillageRoadWorldTile>();
+				default:
+					return roadPattern.GetPatternTile<RoadWorldTile>();
+			}
+		}
 	}
 
 	public TileEnum[,] GetMap() {
@@ -115,11 +158,20 @@ public abstract class TerrainGenerator : MonoBehaviour
 					case TileEnum.peak:
 						terrain = new Peak(pos);
 						break;
+					case TileEnum.villageRoad:
 					case TileEnum.village:
 						terrain = new Village(pos);
 						break;
 					case TileEnum.ruins:
 						terrain = new Ruins(pos);
+						break;
+					// fall-through here
+					// don't include villageRoad
+					case TileEnum.waterRoad:
+					case TileEnum.road:
+					case TileEnum.forestRoad:
+					case TileEnum.mountainRoad:
+						terrain = new Road(pos);
 						break;
 				}
 				retVal[pos] = terrain;
@@ -138,7 +190,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 		for (int x = 0; x < map.GetLength(0); x++) {
 			for (int y = 0; y < map.GetLength(1); y++) {
 				
-				var tileChoice = TileOption(map[x, y]);
+				var tileChoice = TileOption(x, y);
 				TileSetter(currentPos, tileChoice);
 				
 				currentPos = new Vector3Int(currentPos.x,
