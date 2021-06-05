@@ -13,7 +13,7 @@ public abstract class Terrain
 	public Vector3Int position;
 	public virtual int occlusion { get => 0; }
 	public virtual Vector2Int battleGridSize { get => new Vector2Int(8, 8); }
-	public virtual int cost { get => Constants.standardTickCost; }
+	public virtual int tickCost { get => Constants.standardTickCost; }
 	
 	protected TacticsTile _tacticsTile;
 	public virtual TacticsTile tacticsTile {

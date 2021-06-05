@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Extensions;
 
-public class OverworldPlayer : OverworldEntity
+public class OverworldPlayer : Army
 {
 	public override float moveSpeed { get => 1.0f; }
 	public int moveThreshold { get => Constants.standardTickCost*5; }
@@ -43,7 +43,7 @@ public class OverworldPlayer : OverworldEntity
 
 		// first check if you can overcome the cost of the tile at all and see if there is anybody there already
 		Vector3Int endPos = gridPosition.GridPosInDirection(overworld, new Vector2Int(xdir, ydir));
-		Component occupant = AttemptGridMove(xdir, ydir, overworld, addlConditions: overworld.TerrainAt(endPos).cost <= moveThreshold);
+		Component occupant = AttemptGridMove(xdir, ydir, overworld, addlConditions: overworld.TerrainAt(endPos).tickCost <= moveThreshold);
 
 		if (occupant?.MatchesType(typeof(OverworldEnemyBase)) ?? false) {
 			OverworldEnemyBase enemy = occupant as OverworldEnemyBase;

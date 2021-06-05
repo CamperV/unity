@@ -40,7 +40,8 @@ public class FlowField : IPathable
 		// the way we have coded cost into Terrain:
 		// the number listed is the cost to enter said tile
 		// var destTerrain = GameManager.inst.overworld.TerrainAt(dest);
-		// return destTerrain.cost + (destTerrain.cost * Mathf.Max(dest.z - src.z, 0));
+		// return destTerrain.cost;
+		//return destTerrain.cost + (destTerrain.cost * Mathf.Max(dest.z - src.z, 0));
 		return field[dest];
 	}
 	

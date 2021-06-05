@@ -124,7 +124,7 @@ public class TacticsManager : MonoBehaviour
 		activeBattle.AddParticipant(other, otherTerrain);
 	}
 
-	public void ResolveActiveBattle(List<OverworldEntity> defeatedEntities) {
+	public void ResolveActiveBattle(List<Army> defeatedEntities) {
 		foreach (var defeatedEntity in defeatedEntities) {
 			defeatedEntity.Die();
 		}

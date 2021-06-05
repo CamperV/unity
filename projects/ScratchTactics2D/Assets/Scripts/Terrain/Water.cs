@@ -9,7 +9,9 @@ using Random = UnityEngine.Random;
 using Extensions;
 
 public class Water : Terrain
-{
+{	
+	public override int tickCost { get => Constants.standardTickCost * 5; }
+
 	public Water(){}
 	public Water(Vector3Int pos) {
 		position = pos;

@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerController : Controller
 {
 	// possible actions for Player and their bindings
-	private Dictionary<KeyCode, Func<OverworldEntity, int>> actionBindings = new Dictionary<KeyCode, Func<OverworldEntity, int>>();
+	private Dictionary<KeyCode, Func<Army, int>> actionBindings = new Dictionary<KeyCode, Func<Army, int>>();
 	
 	protected override void Awake() {
 		base.Awake();
@@ -65,10 +65,10 @@ public class PlayerController : Controller
 		return KeyCode.None;
 	}
 	
-	private IEnumerator SubjectsTakeAction(Func<OverworldEntity, int> Action) {
-		OverworldEntity lastSubject = activeRegistry[0] as OverworldEntity;
+	private IEnumerator SubjectsTakeAction(Func<Army, int> Action) {
+		Army lastSubject = activeRegistry[0] as Army;
 		foreach (var _subject in activeRegistry) {
-			OverworldEntity subject = _subject as OverworldEntity;
+			Army subject = _subject as Army;
 
 			// we've taken an action... but what did it cost
 			int ticksTaken = Action(subject);
@@ -85,27 +85,27 @@ public class PlayerController : Controller
 	}
 
 	// these Funcs return the cost of taking said actions
-	private int MoveLeft(OverworldEntity subject) {
+	private int MoveLeft(Army subject) {
 		var success = subject.GridMove(-5, 0);
-		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).cost;
+		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).tickCost;
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
-	private int MoveRight(OverworldEntity subject) {
+	private int MoveRight(Army subject) {
 		var success = subject.GridMove(5, 0);
-		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).cost;
+		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).tickCost;
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
-	private int MoveUp(OverworldEntity subject) {
+	private int MoveUp(Army subject) {
 		var success = subject.GridMove(0, 5);
-		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).cost;
+		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).tickCost;
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
-	private int MoveDown(OverworldEntity subject) {
+	private int MoveDown(Army subject) {
 		var success = subject.GridMove(0, -5);
-		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).cost;
+		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).tickCost;
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
-	private int Pass(OverworldEntity subject) {
+	private int Pass(Army subject) {
 		return Constants.standardTickCost;
 	}
 }

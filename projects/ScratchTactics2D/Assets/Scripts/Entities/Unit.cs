@@ -329,9 +329,9 @@ public abstract class Unit : TacticsEntityBase
 		GameManager.inst.tacticsManager.GetActiveGrid().UpdateOccupantAt(gridPosition, null);
 
 		// this unit will be automatically removed from the activeRegistry of the controller...
-		// but won't be removed from the actual OverworldEntity unless we force it
+		// but won't be removed from the actual Army unless we force it
 		var battle = GameManager.inst.tacticsManager.activeBattle;
-		OverworldEntity oe = battle.GetOverworldEntityFromController(parentController);
+		Army oe = battle.GetArmyFromController(parentController);
 		oe.RemoveUnit(ID);
 	}
 

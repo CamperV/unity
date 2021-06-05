@@ -6,7 +6,7 @@ using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public abstract class OverworldEntity : MovingObject
+public abstract class Army : MovingObject
 {
 	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;

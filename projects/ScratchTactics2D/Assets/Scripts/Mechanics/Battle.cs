@@ -8,8 +8,8 @@ using Random = UnityEngine.Random;
 
 public class Battle : MonoBehaviour
 {
-	private Dictionary<OverworldEntity, Controller> activeControllers;
-	private Dictionary<Controller, OverworldEntity> activeParticipants;
+	private Dictionary<Army, Controller> activeControllers;
+	private Dictionary<Controller, Army> activeParticipants;
 	//
 	public Controller defaultControllerPrefab;
 	[HideInInspector] public Controller defaultController;
@@ -17,8 +17,8 @@ public class Battle : MonoBehaviour
 	[HideInInspector] public TacticsGrid grid;
 	
 	[HideInInspector] public OverworldPlayer player;
-	[HideInInspector] public OverworldEntity other;
-	[HideInInspector] public List<OverworldEntity> allOther;
+	[HideInInspector] public Army other;
+	[HideInInspector] public List<Army> allOther;
 
 	[HideInInspector] public Vector3Int playerGridOffset;
 
@@ -29,19 +29,19 @@ public class Battle : MonoBehaviour
 	void Awake() {
 		grid = GetComponentsInChildren<TacticsGrid>()[0];
 		//
-		activeControllers = new Dictionary<OverworldEntity, Controller>();
+		activeControllers = new Dictionary<Army, Controller>();
 		defaultController = Instantiate(defaultControllerPrefab);
 		defaultController.transform.SetParent(transform);
 
-		activeParticipants = new Dictionary<Controller, OverworldEntity>();
+		activeParticipants = new Dictionary<Controller, Army>();
 	}
 	
-	public void Init(OverworldPlayer playerEntity, OverworldEntity otherEntity, Terrain playerTerrain, Terrain otherTerrain) {
+	public void Init(OverworldPlayer playerEntity, Army otherEntity, Terrain playerTerrain, Terrain otherTerrain) {
 		player = playerEntity;
 		other = otherEntity;
 
 		(other as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
-		allOther = new List<OverworldEntity>{ other };
+		allOther = new List<Army>{ other };
 
 		//
 		PopulateGridAndReposition(playerTerrain, otherTerrain);
@@ -50,7 +50,7 @@ public class Battle : MonoBehaviour
 		// we fully re-instantiate controllers each time. Including the player
 		// we don't necessarily want OverworldEntities to have unit controllers outside of a battle
 		// we do, however, need to keep track of the current units available to each entity better
-		foreach (OverworldEntity participant in new List<OverworldEntity>{ player, other }) {
+		foreach (Army participant in new List<Army>{ player, other }) {
 			var prefab = participant.unitControllerPrefab;
 			if (prefab != null) {
 				var controller = Instantiate(prefab);
@@ -231,7 +231,7 @@ public class Battle : MonoBehaviour
 		);
 	}
 
-	public void AddParticipant(OverworldEntity joiningEntity, Terrain joiningTerrain) {
+	public void AddParticipant(Army joiningEntity, Terrain joiningTerrain) {
 		(joiningEntity as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
 		allOther.Add(joiningEntity);
 
@@ -307,7 +307,7 @@ public class Battle : MonoBehaviour
 		}	
 	}
 
-	private Controller GetController(OverworldEntity oe) {
+	private Controller GetController(Army oe) {
 		if (activeControllers.ContainsKey(oe)) {
 			return activeControllers[oe];
 		} else {
@@ -333,7 +333,7 @@ public class Battle : MonoBehaviour
 		}
 	}
 
-	public OverworldEntity GetOverworldEntityFromController(Controller con) {
+	public Army GetArmyFromController(Controller con) {
 		if (activeParticipants.ContainsKey(con)) {
 			return activeParticipants[con];
 		} else {
@@ -341,7 +341,7 @@ public class Battle : MonoBehaviour
 		}
 	}
 	
-	public OverworldEntity GetOverworldEntityFromPhase(Enum.Phase phase) {
+	public Army GetArmyFromPhase(Enum.Phase phase) {
 		if (phase == Enum.Phase.player) {
 			return player;
 		} else if (phase == Enum.Phase.enemy) {
@@ -365,10 +365,10 @@ public class Battle : MonoBehaviour
 		return false; // battle continues
 	}
 
-	public List<OverworldEntity> GetDefeated() {
+	public List<Army> GetDefeated() {
 		UnitController playerController = activeControllers[player] as UnitController;
 		if (!playerController.activeRegistry.Any()) {
-			return new List<OverworldEntity>{ (OverworldEntity)player };
+			return new List<Army>{ (Army)player };
 		}
 
 		UnitController enemyController = activeControllers[other] as UnitController;
@@ -378,7 +378,7 @@ public class Battle : MonoBehaviour
 
 		// this should be unreachable code
 		Debug.Assert(false);
-		return new List<OverworldEntity>(); // battle continues		
+		return new List<Army>(); // battle continues		
 	}
 
 	// pause, hand control off to the GameManager.overworld state

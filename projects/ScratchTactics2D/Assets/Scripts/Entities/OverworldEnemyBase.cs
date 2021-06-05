@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 using Extensions;
 using TMPro;
 
-public class OverworldEnemyBase : OverworldEntity
+public class OverworldEnemyBase : Army
 {
 	// for visualization debug
 	private int _ID = -1;
@@ -147,7 +147,7 @@ public class OverworldEnemyBase : OverworldEntity
 		//
 		// Also, standardize the "attack" bump. Don't make them move into a square
 		bool moveSuccess = false;
-		var tickCost = (selectedMove == flowField.origin) ? Constants.standardTickCost : grid.TerrainAt(selectedMove).cost;
+		var tickCost = (selectedMove == flowField.origin) ? Constants.standardTickCost : grid.TerrainAt(selectedMove).tickCost;
 		
 		if (tickPool > 0 && tickCost <= tickPool) {
 			Vector3Int nextStep = ToPosition(selectedMove, 1);

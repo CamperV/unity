@@ -35,7 +35,7 @@ public class Overworld : GameGrid, IPathable
 
     // IPathable definitions
     public override int EdgeCost(Vector3Int src, Vector3Int dest) {
-        return 1;
+		return TerrainAt(dest).tickCost;
     }
 
 	public override bool IsInBounds(Vector3Int tilePos) {
