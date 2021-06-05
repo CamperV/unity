@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class EntityPathfinder : Pathfinder
+public abstract class ObstaclePathfinder : Pathfinder
 {
 	HashSet<Vector3Int> obstacles;
 
-	public EntityPathfinder(GameGrid grid, HashSet<Vector3Int> _obstacles) {
-		pathableSurface = grid;
+	public ObstaclePathfinder(HashSet<Vector3Int> _obstacles) {
 		obstacles = _obstacles;
+	}
+	public ObstaclePathfinder() {
+		obstacles = new HashSet<Vector3Int>();
 	}
 
 	public override Path BFS(Vector3Int startPosition, Vector3Int targetPosition) {

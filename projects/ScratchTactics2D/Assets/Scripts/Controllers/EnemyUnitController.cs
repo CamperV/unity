@@ -101,13 +101,13 @@ public class EnemyUnitController : UnitController
 				// CAVEAT: we can't just clip it
 				// if we do, we can have enemies standing in the same place.
 				// instead, we have to do the laborious thing, and REpath-find to the new clipped position
-				Path pathToTarget = new EntityPathfinder(grid, subject.obstacles).BFS(subject.gridPosition, optimalPosition);
+				Path pathToTarget = new UnitPathfinder(subject.obstacles).BFS(subject.gridPosition, optimalPosition);
 				pathToTarget.Clip(subject.moveRange);
 
 				// if the clipped path already has someone there... radiate again to find another place to stand nearby
 				if (!grid.VacantAt(pathToTarget.end)) {
 					Vector3Int finalPosition = NextVacantPos(subject, pathToTarget.end);
-					pathToTarget = new EntityPathfinder(grid, subject.obstacles).BFS(subject.gridPosition, finalPosition);
+					pathToTarget = new UnitPathfinder(subject.obstacles).BFS(subject.gridPosition, finalPosition);
 				}
 				//
 				subject.TraverseTo(pathToTarget.end, pathToTarget);

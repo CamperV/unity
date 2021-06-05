@@ -178,8 +178,7 @@ public abstract class Unit : TacticsEntityBase
 		var moveable = (OptionActive("Move")) ? MOVE : 0;
 		var attackable = (OptionActive("Attack")) ? _RANGE : 0;
 
-		moveRange = new EntityPathfinder(grid, obstacles).FlowField<MoveRange>(gridPosition, range: moveable);
-		Debug.Log($"created mrange {moveRange} / {moveRange == null}");
+		moveRange = new UnitPathfinder(obstacles).FlowField<MoveRange>(gridPosition, range: moveable);
 		attackRange = new AttackRange(moveRange, attackable);
 	}
 

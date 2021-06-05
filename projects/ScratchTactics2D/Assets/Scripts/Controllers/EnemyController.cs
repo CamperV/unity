@@ -208,13 +208,13 @@ public class EnemyController : Controller
 	}
 	
 	public void InitFlowField(Vector3Int initOrigin) {
-		flowFieldToPlayer = new EntityPathfinder(GameManager.inst.overworld, untraversablePositions).FlowField<FlowField>(initOrigin);
+		flowFieldToPlayer = new ArmyPathfinder(untraversablePositions).FlowField<FlowField>(initOrigin);
 	}
 	
 	private void UpdateFlowField() {
 		FlowField prevFlowFieldToPlayer = flowFieldToPlayer;
 		
-		flowFieldToPlayer = new EntityPathfinder(GameManager.inst.overworld, untraversablePositions).FlowField<FlowField>(lastKnownPlayerPos);
+		flowFieldToPlayer = new ArmyPathfinder(untraversablePositions).FlowField<FlowField>(lastKnownPlayerPos);
 		flowFieldToPlayer.Absorb(prevFlowFieldToPlayer);
 	}
 

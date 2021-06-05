@@ -13,12 +13,12 @@ public class _Road
 	public Vector3Int start;
 	public Vector3Int end;
 
-	private MovingObjectPath path;
+	private Path path;
 
 	public _Road(Vector3Int startPos, Vector3Int endPos) {
 		start = startPos;
 		end = endPos;
-		path = MovingObjectPath.GetAnyPathTo(startPos, endPos);
+		path = new ArmyPathfinder().BFS(startPos, endPos);
 	}
 
 	public IEnumerable<Vector3Int> Unwind(int slice = 0) {

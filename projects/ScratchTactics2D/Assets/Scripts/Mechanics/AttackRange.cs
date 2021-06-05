@@ -8,12 +8,8 @@ public class AttackRange : FlowField
 {	
 	public AttackRange(){}
 	public AttackRange(MoveRange mRange, int range) {
-		Debug.Log($"from MoveRange {mRange}");
 		origin = mRange.origin;
-		Debug.Log($"Set attack origin to {origin}");
-		field = new Dictionary<Vector3Int, int>(mRange.field);
-		Debug.Log($"Set attack field to {field}");
-		
+		field = new Dictionary<Vector3Int, int>(mRange.field);	
 
 		//		
 		PriorityQueue<Vector3Int> fieldQueue = new PriorityQueue<Vector3Int>();

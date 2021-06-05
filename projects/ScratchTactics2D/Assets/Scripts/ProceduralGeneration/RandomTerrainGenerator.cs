@@ -55,12 +55,10 @@ public class RandomTerrainGenerator : TerrainGenerator
 			
 			// create paths between them
 			// for each path, replace the tile with a mountain tile
-			MovingObjectPath mRange = MovingObjectPath.GetAnyPathTo(startMountain, endMountain);
-			Vector3Int currPos = startMountain;
-			while(currPos != endMountain) {
-				currPos = mRange.Next(currPos);
-				TileSetter(currPos, TileOption(TileEnum.mountain));
-				GameManager.inst.overworld.SetTerrainAt(currPos, new Mountain(currPos));
+			Path mRange = new ArmyPathfinder().BFS(startMountain, endMountain);
+			foreach (Vector3Int mntPos in mRange.Unwind()) {
+				TileSetter(mntPos, TileOption(TileEnum.mountain));
+				GameManager.inst.overworld.SetTerrainAt(mntPos, new Mountain(mntPos));
 			}
 		}
 	}
@@ -75,8 +73,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 			int forestRange = Random.Range(lowerBound, upperBound);
 			int forestSize = Random.Range(lowerBound, upperBound);
 			
-			var overworld = GameManager.inst.overworld;
-			var pf = new EntityPathfinder(overworld, new HashSet<Vector3Int>(overworld.LocationsOf<Mountain>()));
+			var pf = new ArmyPathfinder(new HashSet<Vector3Int>(GameManager.inst.overworld.LocationsOf<Mountain>()));
 			FlowField fField = pf.FlowField<FlowField>(origin, range: forestRange*Constants.standardTickCost, numElements: forestSize);
 			
 			foreach(Vector3Int frt in fField.field.Keys) {
@@ -96,8 +93,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 			int lakeRange = Random.Range(lowerBound, upperBound);
 			int lakeSize = Random.Range(lowerBound, upperBound);
 			
-			var overworld = GameManager.inst.overworld;
-			var pf = new EntityPathfinder(overworld, new HashSet<Vector3Int>(overworld.LocationsOf<Mountain>()));
+			var pf = new ArmyPathfinder(new HashSet<Vector3Int>(GameManager.inst.overworld.LocationsOf<Mountain>()));
 			FlowField fField = pf.FlowField<FlowField>(lakeOrigin, range: lakeRange*Constants.standardTickCost, numElements: lakeSize);
 			
 			foreach(Vector3Int lakePos in fField.field.Keys) {
