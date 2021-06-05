@@ -102,7 +102,7 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
                 return elPair.Value;
         }
         // default case
-        return TileEnum.x;
+        return TileEnum.none;
     }
 
     protected Color ElevationToColor(float elevation) {

@@ -69,6 +69,16 @@ public class Path
 		}
 	}
 
+	public IEnumerable<Vector3Int> Serially() {
+		LinkedListNode<Vector3Int> position = path.First;
+		LinkedListNode<Vector3Int> prevPosition = position;
+		do {
+			prevPosition = position;
+			position = position.Next;
+			yield return position.Value - prevPosition.Value;
+		} while (position != path.Last);
+	}
+
 	public void Show(GameGrid grid, OverlayTile overlayTile) {
 		foreach (Vector3Int tilePos in Unwind()) {
 			if (tilePos == end) break; // skip end tile for debug

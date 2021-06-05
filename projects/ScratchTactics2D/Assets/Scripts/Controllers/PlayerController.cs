@@ -7,10 +7,15 @@ public class PlayerController : Controller
 {
 	// possible actions for Player and their bindings
 	private Dictionary<KeyCode, Func<Army, int>> actionBindings = new Dictionary<KeyCode, Func<Army, int>>();
+	private Dictionary<Vector3Int, Func<Army, int>> directionMapping = new Dictionary<Vector3Int, Func<Army, int>>();
+
+	public Queue<Func<Army, int>> actionQueue;
+	private OverworldPlayer registeredPlayer { get => activeRegistry[0] as OverworldPlayer; }
 	
 	protected override void Awake() {
 		base.Awake();
 		myPhase = Enum.Phase.player;
+		actionQueue = new Queue<Func<Army, int>>();
 		
 		// this needs to be done at run-time
 		// is this  abad idiom? Or is this more just for organization?
@@ -23,6 +28,12 @@ public class PlayerController : Controller
 		actionBindings[KeyCode.W]    	   = MoveUp;
 		actionBindings[KeyCode.S]  		   = MoveDown;
 		actionBindings[KeyCode.Space]	   = Pass;
+
+		// for pathToQueue lookup
+		directionMapping[Vector3Int.left]  = MoveLeft;
+		directionMapping[Vector3Int.right] = MoveRight;
+		directionMapping[Vector3Int.up]    = MoveUp;
+		directionMapping[Vector3Int.down]  = MoveDown;
 	}
 
 	public override bool MyPhaseActive() {
@@ -31,13 +42,30 @@ public class PlayerController : Controller
 	
 	void Update() {
 		if (!MyPhaseActive()) return;
-		var kc = CheckInput();
+		KeyCode kc = CheckInput();
 		
 		switch(phaseActionState) {
 			case Enum.PhaseActionState.waitingForInput:
-				if (actionBindings.ContainsKey(kc)) {
+				// if the mouse was pressed on the Overworld
+				if (Input.GetMouseButtonDown(0)) {
+					Vector3Int mousePos = GameManager.inst.overworld.Real2GridPos(GameManager.inst.mouseManager.mouseWorldPos);
+					Path pathToQueue = new ArmyPathfinder().BFS(registeredPlayer.gridPosition, mousePos);
+
+					foreach (Vector3Int nextMove in pathToQueue.Serially()) {
+						actionQueue.Enqueue(directionMapping[nextMove]);
+					}
+
+				// or, if there was a relevant keypress
+				} else if (actionBindings.ContainsKey(kc)) {
+					actionQueue.Enqueue(actionBindings[kc]);
+				}
+				
+				// now unspool the queue
+				if (actionQueue.Count > 0) {
+					Func<Army, int> actionToTake = actionQueue.Dequeue();
+
 					phaseActionState = Enum.PhaseActionState.acting;
-					StartCoroutine(SubjectsTakeAction(actionBindings[kc]));
+					StartCoroutine( PlayerTakeAction(actionToTake) );
 				}
 				break;
 				
@@ -56,7 +84,7 @@ public class PlayerController : Controller
 				break;
 		}
     }
-	
+
 	private KeyCode CheckInput() {
 		// return KeyCode that is down, checking in "actionBindings" order
 		foreach (KeyCode kc in actionBindings.Keys) {
@@ -65,43 +93,36 @@ public class PlayerController : Controller
 		return KeyCode.None;
 	}
 	
-	private IEnumerator SubjectsTakeAction(Func<Army, int> Action) {
-		Army lastSubject = activeRegistry[0] as Army;
-		foreach (var _subject in activeRegistry) {
-			Army subject = _subject as Army;
+	private IEnumerator PlayerTakeAction(Func<Army, int> Action) {
+		// we've taken an action... but what did it cost
+		int ticksTaken = Action(registeredPlayer);
+		GameManager.inst.enemyController.AddTicksAll(ticksTaken);
 
-			// we've taken an action... but what did it cost
-			int ticksTaken = Action(subject);
-			//
-			GameManager.inst.enemyController.AddTicksAll(ticksTaken);
+		yield return new WaitForSeconds(phaseDelayTime);
 
-			lastSubject = subject;
-			yield return new WaitForSeconds(phaseDelayTime);
-		}
-		
-		StartCoroutine( lastSubject.ExecuteAfterMoving( () => {
+		StartCoroutine( registeredPlayer.ExecuteAfterMoving( () => {
 			phaseActionState = Enum.PhaseActionState.complete;
 		}) );
 	}
 
 	// these Funcs return the cost of taking said actions
 	private int MoveLeft(Army subject) {
-		var success = subject.GridMove(-5, 0);
+		var success = subject.GridMove(-1, 0);
 		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).tickCost;
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
 	private int MoveRight(Army subject) {
-		var success = subject.GridMove(5, 0);
+		var success = subject.GridMove(1, 0);
 		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).tickCost;
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
 	private int MoveUp(Army subject) {
-		var success = subject.GridMove(0, 5);
+		var success = subject.GridMove(0, 1);
 		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).tickCost;
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}
 	private int MoveDown(Army subject) {
-		var success = subject.GridMove(0, -5);
+		var success = subject.GridMove(0, -1);
 		var tickCost = GameManager.inst.overworld.TerrainAt(subject.gridPosition).tickCost;
 		return (success) ? (int)(tickCost / subject.moveSpeed) : Constants.standardTickCost;
 	}

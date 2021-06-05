@@ -9,7 +9,6 @@ interface IPhasedObject
 	Enum.Phase myPhase { get; }
 	bool MyPhaseActive();
 	void TriggerPhase();
-	void TakePhaseAction();
 }
 
 public abstract class PhasedObject : MonoBehaviour, IPhasedObject
@@ -36,10 +35,5 @@ public abstract class PhasedObject : MonoBehaviour, IPhasedObject
 	// only for overworld objects, right now
 	public virtual bool MyPhaseActive() {
 		return GameManager.inst.phaseManager.currentPhase == myPhase;
-	}
-	
-	//
-	public virtual void TakePhaseAction() {
-		throw new System.InvalidOperationException("TakePhaseAction must be defined at a lower-level.");
 	}
 }

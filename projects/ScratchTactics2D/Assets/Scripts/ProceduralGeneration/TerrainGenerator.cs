@@ -22,7 +22,8 @@ public abstract class TerrainGenerator : MonoBehaviour
 		foothill, mountain, mountain2x2, peak, peak2x2,
 		village,
 		ruins,
-		x,
+		// NoTile section
+		mountainNoTile, peakNoTile,
 
 		// after this point, not included in TileOptions
 		waterRoad,
@@ -68,7 +69,9 @@ public abstract class TerrainGenerator : MonoBehaviour
 			(ScriptableObject.CreateInstance<VillageWorldTile>() as VillageWorldTile),
 			//
 			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
-			//
+			
+			// NoTile
+			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile),
 			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile)
 		};
 	}
@@ -117,6 +120,21 @@ public abstract class TerrainGenerator : MonoBehaviour
 		}
 	}
 
+	public static TileEnum NoTileOption(TileEnum tileType) {
+		switch (tileType) {
+			case TileEnum.mountain:
+			case TileEnum.mountain2x2:
+				return TileEnum.mountainNoTile;
+				break;
+			case TileEnum.peak:
+			case TileEnum.peak2x2:
+				return TileEnum.peakNoTile;
+				break;
+			default:
+				return TileEnum.none;
+		}
+	}
+
 	public TileEnum[,] GetMap() {
 		return map;
 	}
@@ -153,9 +171,13 @@ public abstract class TerrainGenerator : MonoBehaviour
 						terrain = new Foothill(pos);
 						break;
 					case TileEnum.mountain:
+					case TileEnum.mountain2x2:
+					case TileEnum.mountainNoTile:
 						terrain = new Mountain(pos);
 						break;
 					case TileEnum.peak:
+					case TileEnum.peak2x2:
+					case TileEnum.peakNoTile:
 						terrain = new Peak(pos);
 						break;
 					case TileEnum.villageRoad:
@@ -241,9 +263,8 @@ public abstract class TerrainGenerator : MonoBehaviour
 						// in the case of mountains, we need to make sure other mountain tiles aren't placed here
 						// but sometimes we only want to modifiy the origin
 						foreach (var v in pattern.YieldPatternExcept(origin, origin)) {
-
 							if (map.Contains(v.x, v.y)) {
-								map[v.x, v.y] = TileEnum.none;
+								map[v.x, v.y] = NoTileOption(toReplace);
 							}
 						}
 					}

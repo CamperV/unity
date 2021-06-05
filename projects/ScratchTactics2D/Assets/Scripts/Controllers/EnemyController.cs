@@ -104,6 +104,7 @@ public class EnemyController : Controller
 	}
 	
 	public IEnumerator SubjectsTakeAction() {
+		Debug.Log($"enemies now taking action");
 		// use this bool to determine whether or not to start the phase over again
 		// this allows all enemies to spend out their ticks properly
 		keepPhaseAlive = false;
