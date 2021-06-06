@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5140243916379933852}
   - component: {fileID: 5232930140179158453}
   m_Layer: 9
-  m_Name: OverworldPlayer
+  m_Name: PlayerArmy
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,15 +73,15 @@ SpriteRenderer:
   m_SortingLayerID: 244181823
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -7328256368193133169, guid: a3d914ab6a2ffc944ad0a7781cc2fc9d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.32, y: 0.32}
+  m_Size: {x: 1, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &5140243916379933852
@@ -93,7 +93,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5140243916379933854}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e07171ca7665e14389d90b92a2604f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 28404adf1f378f148b8e711856b7968c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   unitControllerPrefab: {fileID: 6070387731492201818, guid: 9834c21cc39052d428e08bc9cfc711bb, type: 3}

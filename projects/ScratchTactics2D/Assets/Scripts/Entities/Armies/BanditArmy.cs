@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class OverworldEnemySkeleton : OverworldEnemyBase
+public class BanditArmy : EnemyArmy
 {	
 	public override int detectionRange { get { return 3; } }
 	public override HashSet<Type> spawnable {
@@ -23,5 +23,13 @@ public class OverworldEnemySkeleton : OverworldEnemyBase
 				"UnitSkeleton"
 			};
 		}
+	}
+
+	public override void OnHit() {
+		return;
+	}
+	
+	public override void OnAlert() {
+		animator.SetTrigger("SkeletonAlert");
 	}
 }

@@ -9,7 +9,7 @@ public class PlayerUnitController : UnitController
 	private PathOverlayIsoTile pathOverlayTile;
 
 	private PlayerUnit currentSelection;
-	private Path currentSelectionFieldPath;
+	private BattlePath currentSelectionFieldPath;
 	private TacticsGrid grid;
 
 	// possible actions for PlayerUnits and their bindings
@@ -101,7 +101,7 @@ public class PlayerUnitController : UnitController
 	}
 
 	private void DrawValidMoveForSelection(MoveRange mRange) {
-		currentSelectionFieldPath?.UnShow(grid);
+		currentSelectionFieldPath?.UnShow();
 		//
 		var mm = GameManager.inst.mouseManager;
 		var gridPos = mm.GetMouseToGridPos(grid) ?? mRange.origin;
@@ -111,8 +111,8 @@ public class PlayerUnitController : UnitController
 			grid.SelectAtAlternate(gridPos);
 
 			// update this every time you move the mouse. Run time intensive? But shows path taken
-			currentSelectionFieldPath = new FlowFieldPathfinder(mRange).BFS(gridPos);
-			currentSelectionFieldPath.Show(grid, pathOverlayTile);
+			currentSelectionFieldPath = new FlowFieldPathfinder(mRange).BFS<BattlePath>(gridPos);
+			currentSelectionFieldPath.Show();
 		}
 	}
 
@@ -182,7 +182,7 @@ public class PlayerUnitController : UnitController
 
 								// unshow some ugly bits as we travel
 								currentSelection.UnlockSelection();
-								currentSelectionFieldPath?.UnShow(grid);
+								currentSelectionFieldPath?.UnShow();
 
 								currentSelection.TraverseTo(target, currentSelectionFieldPath);
 
@@ -264,7 +264,7 @@ public class PlayerUnitController : UnitController
 			currentSelection.OnDeselect();
 			currentSelection = null;
 		}
-		currentSelectionFieldPath?.UnShow(GameManager.inst.tacticsManager.GetActiveGrid());
+		currentSelectionFieldPath?.UnShow();
 		interactState = Enum.InteractState.noSelection;
 	}
 

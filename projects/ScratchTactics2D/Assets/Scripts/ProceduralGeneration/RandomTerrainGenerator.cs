@@ -55,7 +55,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 			
 			// create paths between them
 			// for each path, replace the tile with a mountain tile
-			Path mRange = new ArmyPathfinder().BFS(startMountain, endMountain);
+			Path mRange = new ArmyPathfinder().BFS<Path>(startMountain, endMountain);
 			foreach (Vector3Int mntPos in mRange.Unwind()) {
 				TileSetter(mntPos, TileOption(TileEnum.mountain));
 				GameManager.inst.overworld.SetTerrainAt(mntPos, new Mountain(mntPos));

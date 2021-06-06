@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class PlayerController : Controller
+public class PlayerArmyController : Controller
 {
 	// possible actions for Player and their bindings
 	private Dictionary<KeyCode, Func<Army, int>> actionBindings = new Dictionary<KeyCode, Func<Army, int>>();
 	private Dictionary<Vector3Int, Func<Army, int>> directionMapping = new Dictionary<Vector3Int, Func<Army, int>>();
 
 	public Queue<Func<Army, int>> actionQueue;
-	private OverworldPlayer registeredPlayer { get => activeRegistry[0] as OverworldPlayer; }
+	private PlayerArmy registeredPlayer { get => activeRegistry[0] as PlayerArmy; }
+	private OverworldPath _pathToQueue;
+	private bool actionQueueEmpty { get => actionQueue.Count == 0; }
 	
 	protected override void Awake() {
 		base.Awake();
@@ -46,26 +48,53 @@ public class PlayerController : Controller
 		
 		switch(phaseActionState) {
 			case Enum.PhaseActionState.waitingForInput:
-				// if the mouse was pressed on the Overworld
-				if (Input.GetMouseButtonDown(0)) {
-					Vector3Int mousePos = GameManager.inst.overworld.Real2GridPos(GameManager.inst.mouseManager.mouseWorldPos);
-					Path pathToQueue = new ArmyPathfinder().BFS(registeredPlayer.gridPosition, mousePos);
 
-					foreach (Vector3Int nextMove in pathToQueue.Serially()) {
-						actionQueue.Enqueue(directionMapping[nextMove]);
+				// if you already have actions queued, don't allow for any more queueings
+				// this also allows for interupts (i.e. you've been spotted by an enemy, or are blocked)
+				if (actionQueueEmpty) {
+					// input mode is determined here
+					if (Input.GetKey(KeyCode.LeftControl)) {
+						Vector3Int mousePos = GameManager.inst.overworld.Real2GridPos(GameManager.inst.mouseManager.mouseWorldPos);
+
+						if (_pathToQueue == null || mousePos != _pathToQueue.end) {
+							_pathToQueue?.UnShow();
+
+							_pathToQueue = new ArmyPathfinder(GameManager.inst.enemyController.currentEnemyPositions).BFS<OverworldPath>(registeredPlayer.gridPosition, mousePos);
+							_pathToQueue.interactFlag = Interactable(_pathToQueue.end);
+							_pathToQueue.Show();
+						}
+					
+						// if the mouse was pressed on the Overworld while in mousemode
+						// create an enqueue a series of actions to take based on this path
+						if (Input.GetMouseButtonDown(0)) {
+							Debug.Assert(_pathToQueue != null);
+
+							foreach (Vector3Int nextMove in _pathToQueue.Serially()) {
+								actionQueue.Enqueue(directionMapping[nextMove]);
+							}
+						}
+
+					// or, if there was a relevant keypress
+					} else if (actionBindings.ContainsKey(kc)) {
+						actionQueue.Enqueue(actionBindings[kc]);
+						_pathToQueue?.UnShow();
+					} else {
+						_pathToQueue?.UnShow();
 					}
-
-				// or, if there was a relevant keypress
-				} else if (actionBindings.ContainsKey(kc)) {
-					actionQueue.Enqueue(actionBindings[kc]);
 				}
-				
-				// now unspool the queue
-				if (actionQueue.Count > 0) {
+
+				// NOTE: this is NOT in an else clause
+				// this is because we must be able to populate and execute the queue in the same frame
+				if (!actionQueueEmpty) {
 					Func<Army, int> actionToTake = actionQueue.Dequeue();
 
 					phaseActionState = Enum.PhaseActionState.acting;
 					StartCoroutine( PlayerTakeAction(actionToTake) );
+
+					// finally, start "consuming" the displayed path
+					if (!_pathToQueue.IsEmpty()) {
+						_pathToQueue.UnShowUntil(registeredPlayer.gridPosition);
+					}
 				}
 				break;
 				
@@ -84,6 +113,12 @@ public class PlayerController : Controller
 				break;
 		}
     }
+
+	public void ClearActionQueue() {
+		actionQueue.Clear();
+		_pathToQueue?.UnShow();
+		_pathToQueue?.Clear();
+	}
 
 	private KeyCode CheckInput() {
 		// return KeyCode that is down, checking in "actionBindings" order
@@ -128,5 +163,11 @@ public class PlayerController : Controller
 	}
 	private int Pass(Army subject) {
 		return Constants.standardTickCost;
+	}
+
+	private bool Interactable(Vector3Int v) {
+		HashSet<Vector3Int> canInteractWith = new HashSet<Vector3Int>();
+		canInteractWith.UnionWith(GameManager.inst.enemyController.currentEnemyPositions);
+		return canInteractWith.Contains(v);
 	}
 }

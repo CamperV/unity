@@ -18,8 +18,8 @@ public class PhaseManager : MonoBehaviour
 		set => currentTurnByState[GameManager.inst.gameState] = value;
 	}
 
-	private PlayerController playerControllerInst;
-	private EnemyController enemyControllerInst;
+	private PlayerArmyController playerControllerInst;
+	private EnemyArmyController enemyControllerInst;
 	private Dictionary<Enum.Phase, string> phaseStringRepr = new Dictionary<Enum.Phase, string>() {
 		[Enum.Phase.none] = "N/A",
 		[Enum.Phase.player] = "Player",

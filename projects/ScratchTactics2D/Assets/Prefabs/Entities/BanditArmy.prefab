@@ -40,15 +40,15 @@ SpriteRenderer:
   m_SortingLayerID: 244181823
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -2011081452543692480, guid: 0d9d7655beaaaa84892b3615e4155338, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &8796498940265689709
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2030106808076709487}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44d3d624a1ef22449ac763b9c54c70a4, type: 3}
+  m_Script: {fileID: 11500000, guid: b96ae8c964005564a95eb9836d1b13d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   unitControllerPrefab: {fileID: 5118058475980065873, guid: b3487c465fa1ac24ab899d04f4d62cb9, type: 3}
@@ -118,7 +118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2239003336567494939, guid: a43cfd85df7d62f419123b637cdcfa13, type: 3}
       propertyPath: m_Name
-      value: OverworldEnemySkeleton
+      value: BanditArmy
       objectReference: {fileID: 0}
     - target: {fileID: 2239003336567494940, guid: a43cfd85df7d62f419123b637cdcfa13, type: 3}
       propertyPath: m_Size.x

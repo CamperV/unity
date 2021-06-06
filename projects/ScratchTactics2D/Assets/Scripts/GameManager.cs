@@ -10,31 +10,27 @@ public class GameManager : MonoBehaviour
 	// singleton
 	public static GameManager inst = null; // enforces singleton behavior
 	public Enum.GameState gameState { get; set; }
-
-	// accessed by children via singleton
-	public int maxEnemies;
-	public int minEnemies;
 	
 	// prefabs to be instantiated
 	public Overworld overworldPrefab;
-	public OverworldPlayer playerPrefab;
+	public PlayerArmy playerPrefab;
 	public PhaseManager phaseManagerPrefab;
 	public MouseManager mouseManagerPrefab;
 	public TacticsManager tacticsManagerPrefab;
 	//
-	public PlayerController playerControllerPrefab;
-	public EnemyController enemyControllerPrefab;
+	public PlayerArmyController playerControllerPrefab;
+	public EnemyArmyController enemyControllerPrefab;
 	//
-	public OverworldEnemyBase enemyPrefab;
+	public EnemyArmy enemyPrefab;
 	
 	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public Overworld overworld;
-	[HideInInspector] public OverworldPlayer player;
+	[HideInInspector] public PlayerArmy player;
 	[HideInInspector] public PhaseManager phaseManager;
 	[HideInInspector] public MouseManager mouseManager;
 	//
-	[HideInInspector] public PlayerController playerController;
-	[HideInInspector] public EnemyController enemyController;
+	[HideInInspector] public PlayerArmyController playerController;
+	[HideInInspector] public EnemyArmyController enemyController;
 	
 	//
 	// this has its own grid/tilemap children
@@ -71,12 +67,12 @@ public class GameManager : MonoBehaviour
 
 		// generate the world and spawn the player into it
 		overworld.GenerateWorld();
-		player = OverworldPlayer.Spawn(playerPrefab);
+		player = PlayerArmy.Spawn(playerPrefab);
 		playerController.Register(player);
 		
 		// now, spawn the enemies
-		for (int i = 0; i < Random.Range(minEnemies, maxEnemies); i++) {
-			var enemy = OverworldEnemyBase.Spawn(enemyPrefab, ID: i+1);
+		for (int i = 0; i < Random.Range(0, 15); i++) {
+			var enemy = EnemyArmy.Spawn(enemyPrefab, ID: i+1);
 			enemyController.Register(enemy);
 		}
 		

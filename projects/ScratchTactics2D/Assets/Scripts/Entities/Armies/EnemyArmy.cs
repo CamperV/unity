@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 using Extensions;
 using TMPro;
 
-public class OverworldEnemyBase : Army
+public abstract class EnemyArmy : Army
 {
 	// for visualization debug
 	private int _ID = -1;
@@ -33,18 +33,21 @@ public class OverworldEnemyBase : Army
 	// OVERRIDABLES
 
 	// OverworldEneies have a special property: tickPool
-	// when the OverworldPlayer moves, they add ticks to all active entities controlled by EnemyController
+	// when the PlayerArmy moves, they add ticks to all active entities controlled by EnemyArmyController
 	// the enemies must check their pool for when they want to move. This will allow enemies to sometimes move
 	// multiple times in reference to the player - likewise, the player can move morethan once before an
 	// enemy can theoretically move
 	private int tickPool { get; set; }
 	
 	public Enum.EnemyState state;
-	private EnemyController parentController { get => GameManager.inst.enemyController; }
+	private EnemyArmyController parentController { get => GameManager.inst.enemyController; }
+
+	public abstract void OnHit();
+	public abstract void OnAlert();
 	
 	// will only spawn into a spawnable tile
-	public static OverworldEnemyBase Spawn(OverworldEnemyBase prefab, int ID = -1) {
-		OverworldEnemyBase enemy = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+	public static EnemyArmy Spawn(EnemyArmy prefab, int ID = -1) {
+		EnemyArmy enemy = Instantiate(prefab, Vector3.zero, Quaternion.identity);
 		var grid = GameManager.inst.overworld;
 		
 		// this will auto-check occupancy
@@ -79,12 +82,10 @@ public class OverworldEnemyBase : Army
 
 	public void AddTicks(int ticks) {
 		tickPool += ticks;
-		Debug.Log($"{this} received {ticks} ticks [{tickPool}]");
 	}
 
 	protected void SpendTicks(int ticks) {
 		tickPool -= (int)(ticks / moveSpeed);
-		Debug.Log($"{this} spent {ticks} [{tickPool}]");
 	}
 
 	// for future expandability:
@@ -166,20 +167,13 @@ public class OverworldEnemyBase : Army
 		var overworld = GameManager.inst.overworld;
 		Component occupant = AttemptGridMove(xdir, ydir, overworld);
 
-		if (occupant?.MatchesType(typeof(OverworldPlayer)) ?? false) {
+		if (occupant?.MatchesType(typeof(PlayerArmy)) ?? false) {
 			InitiateBattle();
 		}
 		return occupant == null;
 	}
-		
-	public void OnHit() { return; }
-	
-	public void Alert() {
-		animator.SetTrigger("SkeletonAlert");
-	}
 
 	public virtual bool CanAttackPlayer() {
-		//return tickPool >= Constants.standardTickCost && gridPosition.AdjacentTo(GameManager.inst.player.gridPosition);
 		return tickPool > 0 && gridPosition.AdjacentTo(GameManager.inst.player.gridPosition);
 	}
 
@@ -199,7 +193,7 @@ public class OverworldEnemyBase : Army
 	}
 
 	public void JoinBattle() {
-		// we don't need this function to start the battle phase, let the EnemyController release back and Resume the battle
+		// we don't need this function to start the battle phase, let the EnemyArmyController release back and Resume the battle
 		// however, it will now resume with a new enemy joining
 		SpendTicks(tickPool);
 		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.overworld);

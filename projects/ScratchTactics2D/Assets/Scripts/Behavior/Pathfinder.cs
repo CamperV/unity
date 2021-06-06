@@ -14,7 +14,7 @@ public abstract class Pathfinder
 {
 	public IPathable pathableSurface;
 
-	public virtual Path BFS(Vector3Int startPosition, Vector3Int targetPosition) {
+	public virtual T BFS<T>(Vector3Int startPosition, Vector3Int targetPosition) where T : Path, new() {
 		// this is a simple Best-Path-First BFS graph-search system
 		// Grid Positions are the Nodes, and are connected to their neighbors
 		
@@ -58,7 +58,7 @@ public abstract class Pathfinder
 		}
 		
 		// if we found the target, recount the path to get there
-		Path newPath = new Path();
+		T newPath = new T();
 		
 		if (foundTarget) {		
 			// init value only

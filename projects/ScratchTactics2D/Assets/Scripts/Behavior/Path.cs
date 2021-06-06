@@ -78,19 +78,4 @@ public class Path
 			yield return position.Value - prevPosition.Value;
 		} while (position != path.Last);
 	}
-
-	public void Show(GameGrid grid, OverlayTile overlayTile) {
-		foreach (Vector3Int tilePos in Unwind()) {
-			if (tilePos == end) break; // skip end tile for debug
-			
-			grid.OverlayAt(tilePos, overlayTile);
-		}
-	}
-
-	public void UnShow(GameGrid grid) {
-		// slice 1 will clip the start position out
-		foreach (Vector3Int tilePos in Unwind()) {
-			grid.ResetOverlayAt(tilePos);
-		}
-	}
 }

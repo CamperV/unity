@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Extensions;
 
-public class OverworldPlayer : Army
+public class PlayerArmy : Army
 {
 	public override float moveSpeed { get => 1.0f; }
 	public int moveThreshold { get => Constants.standardTickCost*5; }
@@ -28,8 +28,8 @@ public class OverworldPlayer : Army
 		}
 	}
 	
-	public static OverworldPlayer Spawn(OverworldPlayer prefab) {
-		OverworldPlayer player = Instantiate(prefab);
+	public static PlayerArmy Spawn(PlayerArmy prefab) {
+		PlayerArmy player = Instantiate(prefab);
 		
 		player.ResetPosition( GameManager.inst.overworld.RandomTileWithinType(player.spawnable) );
 		GameManager.inst.overworld.UpdateOccupantAt(player.gridPosition, player);
@@ -45,15 +45,15 @@ public class OverworldPlayer : Army
 		Vector3Int endPos = gridPosition.GridPosInDirection(overworld, new Vector2Int(xdir, ydir));
 		Component occupant = AttemptGridMove(xdir, ydir, overworld, addlConditions: overworld.TerrainAt(endPos).tickCost <= moveThreshold);
 
-		if (occupant?.MatchesType(typeof(OverworldEnemyBase)) ?? false) {
-			OverworldEnemyBase enemy = occupant as OverworldEnemyBase;
+		if (occupant?.MatchesType(typeof(EnemyArmy)) ?? false) {
+			EnemyArmy enemy = occupant as EnemyArmy;
 			enemy.OnHit();
 			InitiateBattle(enemy);
 		}
 		return occupant == null;
 	}
 
-	public void InitiateBattle(OverworldEnemyBase combatant) {
+	public void InitiateBattle(EnemyArmy combatant) {
 		StartCoroutine(ExecuteAfterMoving(() => {
 			// programmatically load in a TacticsGrid that matches what we need
 			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);

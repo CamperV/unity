@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class EnemyController : Controller
+public class EnemyArmyController : Controller
 {
 	// flags 
 	private bool subjectsActingTrigger;
@@ -25,11 +25,11 @@ public class EnemyController : Controller
 	}
 
 	public HashSet<Vector3Int> currentEnemyPositions {
-		get => GameManager.inst.overworld.CurrentOccupantPositions<OverworldEnemyBase>();
+		get => GameManager.inst.overworld.CurrentOccupantPositions<EnemyArmy>();
 	}
 
 	public bool enemiesFollowing {
-		get => activeRegistry.Where(it => (it as OverworldEnemyBase).state == Enum.EnemyState.followField).Any();
+		get => activeRegistry.Where(it => (it as EnemyArmy).state == Enum.EnemyState.followField).Any();
 	}
 
 	protected override void Awake() {
@@ -104,22 +104,24 @@ public class EnemyController : Controller
 	}
 	
 	public IEnumerator SubjectsTakeAction() {
-		Debug.Log($"enemies now taking action");
 		// use this bool to determine whether or not to start the phase over again
 		// this allows all enemies to spend out their ticks properly
 		keepPhaseAlive = false;
 		crtActing = true;
 
-		List<MovingObject> orderedRegistry = activeRegistry.OrderBy(it => (it as OverworldEnemyBase).CalculateInitiative()).ToList();
+		List<MovingObject> orderedRegistry = activeRegistry.OrderBy(it => (it as EnemyArmy).CalculateInitiative()).ToList();
 		for (int i = 0; i < orderedRegistry.Count; i++) {
-			OverworldEnemyBase subject = orderedRegistry[i] as OverworldEnemyBase;
+			EnemyArmy subject = orderedRegistry[i] as EnemyArmy;
 
 			switch(subject.state) {
 				case Enum.EnemyState.idle:
 					// alert! animation
 					if (subject.InDetectionRange(flowFieldToPlayer)) {
 						subject.state = Enum.EnemyState.followField;
-						subject.Alert();
+						subject.OnAlert();
+
+						// also tell the PlayerArmyController to clear its queue
+						GameManager.inst.playerController.ClearActionQueue();
 					} else {
 						subject.TakeIdleAction();
 					}
@@ -132,7 +134,7 @@ public class EnemyController : Controller
 					if (subject.CanAttackPlayer()) {	// checks ticks
 						// ...and spends ticks
 						if (GameManager.inst.tacticsManager.activeBattle) {
-							subject.Alert();
+							subject.OnAlert();
 							subject.JoinBattle();
 						} else {
 							subject.InitiateBattle();
@@ -184,7 +186,7 @@ public class EnemyController : Controller
 		
 		// for each subject, grow a region to create traversable
 		foreach (var subject in activeRegistry) {
-			OverworldEnemyBase enemy = (OverworldEnemyBase)subject;
+			EnemyArmy enemy = (EnemyArmy)subject;
 			Queue<Vector3Int> queue = new Queue<Vector3Int>();
 
 			// initial setup
@@ -219,7 +221,7 @@ public class EnemyController : Controller
 		flowFieldToPlayer.Absorb(prevFlowFieldToPlayer);
 	}
 
-	private FlowField IndividualFlowField(OverworldEnemyBase subject) {
+	private FlowField IndividualFlowField(EnemyArmy subject) {
 		// each enemy needs to smartly avoid each other as to not pile up
 		// Do not make a new FlowField, but rather patch the current FlowField to add cost to spots currently occupied by friendlies
 		FlowField patchedFlowField = flowFieldToPlayer;
@@ -253,7 +255,7 @@ public class EnemyController : Controller
 		// (implicitly re-box cast)
 		// only receive ticks if you are currently activated, and moving
 		// if you're inBattle or idle, do not receive ticks
-		foreach (OverworldEnemyBase en in activeRegistry) {
+		foreach (EnemyArmy en in activeRegistry) {
 			if (en.state == Enum.EnemyState.followField) {
 				en.AddTicks(ticks);
 			}

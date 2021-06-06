@@ -14,7 +14,7 @@ public abstract class ObstaclePathfinder : Pathfinder
 		obstacles = new HashSet<Vector3Int>();
 	}
 
-	public override Path BFS(Vector3Int startPosition, Vector3Int targetPosition) {
+	public override T BFS<T>(Vector3Int startPosition, Vector3Int targetPosition) {
 		// this is a simple Best-Path-First BFS graph-search system
 		// Grid Positions are the Nodes, and are connected to their neighbors
 		
@@ -42,7 +42,8 @@ public abstract class ObstaclePathfinder : Pathfinder
 			// available positions are: your neighbors that are "moveable",
 			// minus any endpoints other pathers have scoped out
 			foreach (Vector3Int adjacent in pathableSurface.GetNeighbors(currentPos)) {
-				if (obstacles.Contains(adjacent)) continue;
+				if (obstacles.Contains(adjacent) && adjacent != targetPosition) continue;
+				
 				int costAt = pathableSurface.EdgeCost(currentPos, adjacent);
 				if (costAt == -1) continue;	// -1 indicates this area is impassable
 
@@ -59,7 +60,7 @@ public abstract class ObstaclePathfinder : Pathfinder
 		}
 		
 		// if we found the target, recount the path to get there
-		Path newPath = new Path();
+		T newPath = new T();
 		
 		if (foundTarget) {		
 			// init value only

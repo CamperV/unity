@@ -10,6 +10,8 @@ using Extensions;
 
 public class Plain : Terrain
 {
+	public override int tickCost { get => (int)(Constants.standardTickCost * 1.25f); }
+	
     public Plain(Vector3Int pos) {
 		position = pos;
 	}

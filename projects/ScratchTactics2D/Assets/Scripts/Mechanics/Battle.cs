@@ -16,7 +16,7 @@ public class Battle : MonoBehaviour
 	//
 	[HideInInspector] public TacticsGrid grid;
 	
-	[HideInInspector] public OverworldPlayer player;
+	[HideInInspector] public PlayerArmy player;
 	[HideInInspector] public Army other;
 	[HideInInspector] public List<Army> allOther;
 
@@ -36,11 +36,11 @@ public class Battle : MonoBehaviour
 		activeParticipants = new Dictionary<Controller, Army>();
 	}
 	
-	public void Init(OverworldPlayer playerEntity, Army otherEntity, Terrain playerTerrain, Terrain otherTerrain) {
+	public void Init(PlayerArmy playerEntity, Army otherEntity, Terrain playerTerrain, Terrain otherTerrain) {
 		player = playerEntity;
 		other = otherEntity;
 
-		(other as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
+		(other as EnemyArmy).state = Enum.EnemyState.inBattle;
 		allOther = new List<Army>{ other };
 
 		//
@@ -232,7 +232,7 @@ public class Battle : MonoBehaviour
 	}
 
 	public void AddParticipant(Army joiningEntity, Terrain joiningTerrain) {
-		(joiningEntity as OverworldEnemyBase).state = Enum.EnemyState.inBattle;
+		(joiningEntity as EnemyArmy).state = Enum.EnemyState.inBattle;
 		allOther.Add(joiningEntity);
 
 		// add to grid and reposition
@@ -258,8 +258,8 @@ public class Battle : MonoBehaviour
 		// register new units to existing controller
 		// but... keep tabs, because we need to use this to kill OverworldEntities
 		// TODO: kill overworld entities better, I guess
-		Controller existingEnemyController = activeControllers[other];
-		activeControllers[joiningEntity] = existingEnemyController;
+		Controller existingEnemyArmyController = activeControllers[other];
+		activeControllers[joiningEntity] = existingEnemyArmyController;
 		//
 
 		//
@@ -303,7 +303,7 @@ public class Battle : MonoBehaviour
 			Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid);
 			//
 			unit.ApplyStats(unitStats);
-			existingEnemyController.Register(unit);
+			existingEnemyArmyController.Register(unit);
 		}	
 	}
 

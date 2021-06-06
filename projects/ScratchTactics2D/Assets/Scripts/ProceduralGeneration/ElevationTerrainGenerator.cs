@@ -65,7 +65,7 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
             Vector3Int pos = new Vector3Int(_pos.x, _pos.y, 0);
 
             if (i > 0) {
-                Path path = new ElevationPathfinder(elevation).BFS(prevPos, pos);
+                Path path = new ElevationPathfinder(elevation).BFS<Path>(prevPos, pos);
                 
                 // while we're here, update the grid for the first pass
                 foreach (Vector3Int p in path.Unwind()) {

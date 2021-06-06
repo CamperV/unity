@@ -9,13 +9,13 @@ public class FlowFieldPathfinder : Pathfinder
 		pathableSurface = field;
 	}
 	
-	public Path BFS(Vector3Int targetPosition) {
+	public T BFS<T>(Vector3Int targetPosition) where T : Path, new() {
 		// this BFS moves backwards, from a targetPosition into a FlowField's origin
 		// init position
 		Vector3Int currentPos = targetPosition;
 
 		// this will be built while we traverse
-		Path newPath = new Path();
+		T newPath = new T();
 		newPath.AddFirst(currentPos);
 		
 		PriorityQueue<Vector3Int> pathQueue = new PriorityQueue<Vector3Int>();
