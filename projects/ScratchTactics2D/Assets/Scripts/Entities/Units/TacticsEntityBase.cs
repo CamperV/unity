@@ -39,7 +39,6 @@ public class TacticsEntityBase : MovingObject
 		T entity = Instantiate(prefab, Vector3.zero, Quaternion.identity) as T;
 			
 		entity.gridPosition = tilePos;
-		//entity.transform.position = grid.Grid2RealPos(entity.gridPosition);
 		entity.UpdateRealPosition(grid.Grid2RealPos(entity.gridPosition));
 		grid.UpdateOccupantAt(entity.gridPosition, entity);
 		return entity;

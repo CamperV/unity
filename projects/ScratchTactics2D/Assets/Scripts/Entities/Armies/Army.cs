@@ -18,7 +18,6 @@ public abstract class Army : MovingObject
 	protected readonly float timeToDie = 1.0f;
 	
 	public UnitController unitControllerPrefab;
-	//
 	public Dictionary<string, Unit> unitPrefabs = new Dictionary<string, Unit>();
 	public virtual List<string> defaultUnitTags { get; }
 
@@ -56,6 +55,15 @@ public abstract class Army : MovingObject
 		
 		// generate your units here (name, tags, etc)
 		GenerateUnitStats();
+	}
+
+	public static T Spawn<T>(T prefab, Vector3Int pos) where T : Army {
+		T army = Instantiate(prefab, Vector3.zero, Quaternion.identity) as T;
+		
+		army.gridPosition = pos;
+		army.UpdateRealPosition(GameManager.inst.overworld.Grid2RealPos(pos));
+		GameManager.inst.overworld.UpdateOccupantAt(pos, army);
+		return army;
 	}
 
 	public void ResetPosition(Vector3Int v) {

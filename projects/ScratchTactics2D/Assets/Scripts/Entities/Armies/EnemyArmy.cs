@@ -46,17 +46,17 @@ public abstract class EnemyArmy : Army
 	public abstract void OnAlert();
 	
 	// will only spawn into a spawnable tile
-	public static EnemyArmy Spawn(EnemyArmy prefab, int ID = -1) {
-		EnemyArmy enemy = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-		var grid = GameManager.inst.overworld;
+	// public static EnemyArmy Spawn(EnemyArmy prefab, int ID = -1) {
+	// 	EnemyArmy enemy = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+	// 	var grid = GameManager.inst.overworld;
 		
-		// this will auto-check occupancy
-		enemy.ResetPosition( grid.RandomTileWithinType(enemy.spawnable) );
-		grid.UpdateOccupantAt(enemy.gridPosition, enemy);
+	// 	// this will auto-check occupancy
+	// 	enemy.ResetPosition( grid.RandomTileWithinType(enemy.spawnable) );
+	// 	grid.UpdateOccupantAt(enemy.gridPosition, enemy);
 
-		enemy.ID = ID;
-		return enemy;
-	}
+	// 	enemy.ID = ID;
+	// 	return enemy;
+	// }
 	
     protected override void Awake() {
 		base.Awake();

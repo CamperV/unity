@@ -47,6 +47,11 @@ public class EnemyArmyController : Controller
 			   GameManager.inst.gameState == Enum.GameState.overworld;
 	}
 
+	public override void Register(MovingObject subject) {
+		base.Register(subject);
+		(subject as EnemyArmy).ID = registry.Count;
+	}
+
     void Update() {
         if (!MyPhaseActive()) return;
 		//

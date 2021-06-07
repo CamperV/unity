@@ -92,7 +92,7 @@ public class PlayerArmyController : Controller
 					StartCoroutine( PlayerTakeAction(actionToTake) );
 
 					// finally, start "consuming" the displayed path
-					if (!_pathToQueue.IsEmpty()) {
+					if (!_pathToQueue?.IsEmpty() ?? false) {
 						_pathToQueue.UnShowUntil(registeredPlayer.gridPosition);
 					}
 				}

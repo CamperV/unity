@@ -12,7 +12,8 @@ public class Overworld : GameGrid, IPathable
 {	
 	public int zoomLevel;	// in vertical tiles
 	public TerrainGenerator terrainGenerator;	// assigned prefab
-	public Dictionary<Vector3Int, Terrain> terrain;
+	private Dictionary<Vector3Int, Terrain> terrain;
+	public IEnumerable<Terrain> Terrain { get => terrain.Values; }
 
 	private OverlayTile selectTile;
 	

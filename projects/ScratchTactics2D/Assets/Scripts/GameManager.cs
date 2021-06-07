@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,8 +21,6 @@ public class GameManager : MonoBehaviour
 	//
 	public PlayerArmyController playerControllerPrefab;
 	public EnemyArmyController enemyControllerPrefab;
-	//
-	public EnemyArmy enemyPrefab;
 	
 	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public Overworld overworld;
@@ -70,11 +69,11 @@ public class GameManager : MonoBehaviour
 		player = PlayerArmy.Spawn(playerPrefab);
 		playerController.Register(player);
 		
-		// now, spawn the enemies
-		for (int i = 0; i < Random.Range(0, 15); i++) {
-			var enemy = EnemyArmy.Spawn(enemyPrefab, ID: i+1);
-			enemyController.Register(enemy);
+		// right now, only Overworld terrain can spawn enemies
+		foreach (var spawner in overworld.Terrain.OfType<IEnemyArmySpawner>()) {
+			bool _success = spawner.AttemptToSpawnArmy();
 		}
+		Debug.Log($"Spawned {enemyController.registry.Count} enemy armies");
 		
 		enemyController.SetTraversableTiles();
 		enemyController.InitFlowField(player.gridPosition);
