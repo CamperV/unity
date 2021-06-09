@@ -11,8 +11,9 @@ public abstract class Army : MovingObject
 	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;
 
-	public abstract HashSet<Type> spawnable { get; }
+	// army stats
 	public virtual int visionRange { get => FieldOfView.maxVisibility; }
+	public virtual float moveSpeed { get => 1.0f; }
 
 	// constants
 	protected readonly float timeToDie = 1.0f;

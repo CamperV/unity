@@ -102,7 +102,7 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
                 return elPair.Value;
         }
         // default case
-        return TileEnum.none;
+        return TileEnum.x;
     }
 
     protected Color ElevationToColor(float elevation) {
@@ -172,10 +172,8 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         return gradient;
     }
 
-    protected float[,] GenerateRandomDimples(int verticalThreshold = 0, int seed = -1) {
+    protected float[,] GenerateRandomDimples(int verticalThreshold = 0) {
         float[,] dimpleMap = new float[mapDimension.x, mapDimension.y];
-
-        if (seed != -1) Random.InitState(seed);
         int numDimples = Random.Range(0, (int)(mapDimension.y/20f));
 
         for (int d = 0; d < numDimples; d++) {

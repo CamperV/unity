@@ -33,17 +33,21 @@ public class Path
 	}
 	
 	public IEnumerable<Vector3Int> Unwind(int slice = 0) {
+		Debug.Log($"Unwinding a path of length {path.Count}");
 		LinkedListNode<Vector3Int> position = path.First;
-		do {
-			position = position.Next;
-			
+
+		while (true) {
 			// skip a certain number of tiles when unwinding
 			if (slice > 0) {
 				slice--;
 				continue;
 			}
 			yield return position.Value;
-		} while (position != path.Last);
+
+			if (position != path.Last) {
+				position = position.Next;
+			} else { break; }
+		}
 	}
 
 	public bool Contains(Vector3Int v) {

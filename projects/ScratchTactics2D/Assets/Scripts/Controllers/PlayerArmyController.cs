@@ -11,6 +11,7 @@ public class PlayerArmyController : Controller
 
 	public Queue<Func<Army, int>> actionQueue;
 	private PlayerArmy registeredPlayer { get => activeRegistry[0] as PlayerArmy; }
+	private ArmyPathfinder _pathfinder;
 	private OverworldPath _pathToQueue;
 	private bool actionQueueEmpty { get => actionQueue.Count == 0; }
 	
@@ -41,7 +42,15 @@ public class PlayerArmyController : Controller
 	public override bool MyPhaseActive() {
 		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.overworld;
 	}
+
+	public override void TriggerPhase() {
+		phaseActionState = Enum.PhaseActionState.waitingForInput;
+
+		// update your understanding of what you can and can't path through
+		_pathfinder = new ArmyPathfinder(GameManager.inst.enemyController.currentEnemyPositions, registeredPlayer.moveThreshold);
+	}
 	
+	private Vector3Int _overwriteMe;
 	void Update() {
 		if (!MyPhaseActive()) return;
 		KeyCode kc = CheckInput();
@@ -57,11 +66,18 @@ public class PlayerArmyController : Controller
 						Vector3Int mousePos = GameManager.inst.overworld.Real2GridPos(GameManager.inst.mouseManager.mouseWorldPos);
 
 						if (_pathToQueue == null || mousePos != _pathToQueue.end) {
-							_pathToQueue?.UnShow();
+							if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
 
-							_pathToQueue = new ArmyPathfinder(GameManager.inst.enemyController.currentEnemyPositions).BFS<OverworldPath>(registeredPlayer.gridPosition, mousePos);
-							_pathToQueue.interactFlag = Interactable(_pathToQueue.end);
-							_pathToQueue.Show();
+							_pathToQueue?.UnShow();
+							_pathToQueue = _pathfinder.NullableBFS(registeredPlayer.gridPosition, mousePos);
+
+							if (_pathToQueue != null) {
+								_pathToQueue.interactFlag = Interactable(_pathToQueue.end);
+								_pathToQueue.Show();
+							} else {
+								_overwriteMe = mousePos;
+								GameManager.inst.overworld.OverlayAt(mousePos, ScriptableObject.CreateInstance<XOverlayTile>() );
+							}
 						}
 					
 						// if the mouse was pressed on the Overworld while in mousemode
@@ -77,9 +93,14 @@ public class PlayerArmyController : Controller
 					// or, if there was a relevant keypress
 					} else if (actionBindings.ContainsKey(kc)) {
 						actionQueue.Enqueue(actionBindings[kc]);
+
 						_pathToQueue?.UnShow();
+						_pathToQueue = null;
+						if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
 					} else {
 						_pathToQueue?.UnShow();
+						_pathToQueue = null;
+						if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
 					}
 				}
 
@@ -117,7 +138,7 @@ public class PlayerArmyController : Controller
 	public void ClearActionQueue() {
 		actionQueue.Clear();
 		_pathToQueue?.UnShow();
-		_pathToQueue?.Clear();
+		_pathToQueue = null;
 	}
 
 	private KeyCode CheckInput() {

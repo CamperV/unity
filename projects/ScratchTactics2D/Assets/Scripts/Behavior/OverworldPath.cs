@@ -43,7 +43,9 @@ public class OverworldPath : Path
 	public void UnShowUntil(Vector3Int pos) {
 		GameManager.inst.overworld.ResetOverlayAt(pos);
 		if (pos != start) {
-			UnShowUntil( GetPrevious(pos) );
+			var m = GetPrevious(pos);
+			Debug.Log($"unshowing {m} ({start})");
+			UnShowUntil( m );
 		}
 	}
 }

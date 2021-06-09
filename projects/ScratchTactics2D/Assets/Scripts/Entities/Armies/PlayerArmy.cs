@@ -6,16 +6,7 @@ using Extensions;
 
 public class PlayerArmy : Army
 {
-	public override float moveSpeed { get => 1.0f; }
 	public int moveThreshold { get => Constants.standardTickCost*5; }
-
-	public override HashSet<Type> spawnable {
-		get {
-			return new HashSet<Type>() {
-				typeof(Village)
-			};
-		}
-	}
 	
 	// abstract implementations
 	public override List<string> defaultUnitTags {
@@ -31,7 +22,8 @@ public class PlayerArmy : Army
 	public static PlayerArmy Spawn(PlayerArmy prefab) {
 		PlayerArmy player = Instantiate(prefab);
 		
-		player.ResetPosition( GameManager.inst.overworld.RandomTileWithinType(player.spawnable) );
+		HashSet<Type> canSpawnInto = new HashSet<Type>(){ typeof(Village) };
+		player.ResetPosition( GameManager.inst.overworld.RandomTileWithinType(canSpawnInto) );
 		GameManager.inst.overworld.UpdateOccupantAt(player.gridPosition, player);
 		
 		return player;

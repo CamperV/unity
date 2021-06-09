@@ -7,13 +7,6 @@ using Random = UnityEngine.Random;
 public class BanditArmy : EnemyArmy
 {	
 	public override int detectionRange { get { return 3; } }
-	public override HashSet<Type> spawnable {
-		get {
-			return new HashSet<Type>() {
-				typeof(DeepForest)
-			};
-		}
-	}
 	
 	// abstract implementations
 	public override List<string> defaultUnitTags {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class ObstaclePathfinder : Pathfinder
 {
-	HashSet<Vector3Int> obstacles;
+	protected HashSet<Vector3Int> obstacles;
 
 	public ObstaclePathfinder(HashSet<Vector3Int> _obstacles) {
 		obstacles = _obstacles;
@@ -15,6 +15,9 @@ public abstract class ObstaclePathfinder : Pathfinder
 	}
 
 	public override T BFS<T>(Vector3Int startPosition, Vector3Int targetPosition) {
+		if (obstacles.Contains(targetPosition)) return null;
+		bool unreachable = true;
+
 		// this is a simple Best-Path-First BFS graph-search system
 		// Grid Positions are the Nodes, and are connected to their neighbors
 		
@@ -24,7 +27,6 @@ public abstract class ObstaclePathfinder : Pathfinder
 		// track path creation
 		Dictionary<Vector3Int, Vector3Int> cameFrom = new Dictionary<Vector3Int, Vector3Int>();
 		Dictionary<Vector3Int, int> distance = new Dictionary<Vector3Int, int>();
-		bool foundTarget = false;
 		
 		PriorityQueue<Vector3Int> pathQueue = new PriorityQueue<Vector3Int>();
 		pathQueue.Enqueue(0, currentPos);
@@ -35,7 +37,7 @@ public abstract class ObstaclePathfinder : Pathfinder
 			
 			// found the target, now recount the path
 			if (currentPos == targetPosition) {
-				foundTarget = true;
+				unreachable = false;
 				break;
 			}
 			
@@ -58,22 +60,22 @@ public abstract class ObstaclePathfinder : Pathfinder
 				}
 			}
 		}
+		if (unreachable) return null;
+		// else:
 		
 		// if we found the target, recount the path to get there
 		T newPath = new T();
-		
-		if (foundTarget) {		
-			// init value only
-			Vector3Int progenitor = targetPosition;
-			newPath.AddFirst(targetPosition); // space just outside of the target
+			
+		// init value only
+		Vector3Int progenitor = targetPosition;
+		newPath.AddFirst(targetPosition);
 
-			while (progenitor != startPosition) {
-				var newProgenitor = cameFrom[progenitor];
-				
-				// build the path in reverse, aka next steps (including target)
-				newPath.AddFirst(newProgenitor);
-				progenitor = newProgenitor;
-			}
+		while (progenitor != startPosition) {
+			var newProgenitor = cameFrom[progenitor];
+			
+			// build the path in reverse, aka next steps (including target)
+			newPath.AddFirst(newProgenitor);
+			progenitor = newProgenitor;
 		}
 		return newPath;
 	}

@@ -13,7 +13,6 @@ using MapTools;
 public class PerlinTerrainGenerator : ElevationTerrainGenerator
 {
     [Header("Perlin Noise Settings")]
-	public int seed;
 	public float perlinScale;
 	public int octaves;
     [Range(0, 4)]
@@ -29,7 +28,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         SaveTextureAsPNG(RawTexture(mountainMask), "mountainMask.png");
 
         // add dimples to add "natural" lakes
-        float[,] lakeMask = GenerateRandomDimples(verticalThreshold: (int)(mapDimension.y/4f), seed: seed);
+        float[,] lakeMask = GenerateRandomDimples(verticalThreshold: (int)(mapDimension.y/4f));
         SaveTextureAsPNG(RawTexture(lakeMask), "lakeMask.png");
         
         elevation = GeneratePerlinNoiseMap(mapDimension.x, mapDimension.y, octaves, scale: perlinScale, power: perlinPower);
@@ -98,8 +97,6 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // When changing noise scale, it zooms from top-right corner
         // This will make it zoom from the center
         Vector2 midpoint = new Vector2(dimX/2f, dimY/2f);
-
-        if (seed != -1) Random.InitState(seed);
         Vector2 randomOffset = new Vector2(Random.Range(-10000, 10000), Random.Range(-10000, 10000));
     
         for (int x = 0; x < dimX; x++) {

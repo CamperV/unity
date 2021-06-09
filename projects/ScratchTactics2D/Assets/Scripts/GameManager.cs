@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
 	// singleton
 	public static GameManager inst = null; // enforces singleton behavior
 	public Enum.GameState gameState { get; set; }
+
+	public int seed = -1;
 	
 	// prefabs to be instantiated
 	public Overworld overworldPrefab;
@@ -55,6 +57,8 @@ public class GameManager : MonoBehaviour
 	}
 	
 	void Init() {
+		if (seed != -1) Random.InitState(seed);
+		
 		overworld      = Instantiate(overworldPrefab, Vector3.zero, Quaternion.identity);
 		mouseManager   = Instantiate(mouseManagerPrefab);
 		phaseManager   = Instantiate(phaseManagerPrefab);
@@ -88,6 +92,7 @@ public class GameManager : MonoBehaviour
 		
 		gameState = Enum.GameState.overworld;
 		phaseManager.StartPhase(Enum.Phase.player);
+		playerController.TriggerPhase();
 	}
 	
 	public void EnterBattleState() {

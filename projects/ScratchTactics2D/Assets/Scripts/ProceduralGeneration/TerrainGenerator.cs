@@ -14,7 +14,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 	// NOTE:
 	// this does not contain an exhaustive list of tiles. ex: road tiles
 	public enum TileEnum {
-		none,
+		x,
 		deepWater, water,
 		sand,
 		plain,
@@ -71,8 +71,10 @@ public abstract class TerrainGenerator : MonoBehaviour
 			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
 			
 			// NoTile
-			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile),
-			(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile)
+			//(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile),
+			//(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile)
+			null,
+			null
 		};
 	}
 	
@@ -131,7 +133,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 				return TileEnum.peakNoTile;
 				break;
 			default:
-				return TileEnum.none;
+				return TileEnum.x;
 		}
 	}
 

@@ -44,6 +44,14 @@ public class EndpointOverlayTile : OverlayTile
 	}
 }
 
+public class XOverlayTile : OverlayTile
+{
+	public void OnEnable() {
+		sprite = ResourceLoader.GetSprite("cancel_icon");
+	}
+}
+
+// ISO
 public class SelectOverlayIsoTile : OverlayTile
 {
 	public void OnEnable() {

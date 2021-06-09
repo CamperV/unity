@@ -21,11 +21,6 @@ public abstract class EnemyArmy : Army
 
 	// OVERRIDABLES
 	public virtual int detectionRange { get { return 1; } }
-	public override HashSet<Type> spawnable {
-		get {
-			return new HashSet<Type>() { typeof(Plain) };
-		}
-	}
 
 	public override String ToString() {
 		return base.ToString() + $" [{ID}]";
@@ -44,19 +39,6 @@ public abstract class EnemyArmy : Army
 
 	public abstract void OnHit();
 	public abstract void OnAlert();
-	
-	// will only spawn into a spawnable tile
-	// public static EnemyArmy Spawn(EnemyArmy prefab, int ID = -1) {
-	// 	EnemyArmy enemy = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-	// 	var grid = GameManager.inst.overworld;
-		
-	// 	// this will auto-check occupancy
-	// 	enemy.ResetPosition( grid.RandomTileWithinType(enemy.spawnable) );
-	// 	grid.UpdateOccupantAt(enemy.gridPosition, enemy);
-
-	// 	enemy.ID = ID;
-	// 	return enemy;
-	// }
 	
     protected override void Awake() {
 		base.Awake();

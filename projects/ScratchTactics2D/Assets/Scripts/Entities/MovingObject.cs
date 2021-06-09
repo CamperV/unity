@@ -6,7 +6,9 @@ using Extensions;
 
 public abstract class MovingObject : MonoBehaviour
 {	
-	public virtual float moveSpeed { get { return 1.0f; } }
+	// we want it to take X seconds to go over one tile
+	public static float speedMultiplier = 1.0f;
+	private float fixedTimePerTile { get => 0.10f / speedMultiplier; }
 
 	protected Vector3Int _gridPosition;
 	[HideInInspector] public virtual Vector3Int gridPosition {
@@ -74,13 +76,11 @@ public abstract class MovingObject : MonoBehaviour
 	protected IEnumerator SmoothMovement(Vector3 endpoint) {
 		crtMovingFlag = true;
 
-		// we want it to take X seconds to go over one tile
-		float fixedTime = 0.10f;
 		float timeStep = 0.0f;
 		Vector3 startPos = transform.position;
 
 		while (timeStep < 1.0f) {
-			timeStep += (Time.deltaTime / fixedTime);
+			timeStep += (Time.deltaTime / fixedTimePerTile);
 			transform.position = Vector3.Lerp(startPos, endpoint, timeStep);
 			yield return null;
 		}
@@ -94,15 +94,12 @@ public abstract class MovingObject : MonoBehaviour
 	protected IEnumerator SmoothBump(Vector3 endpoint, float distanceScale) {
 		crtMovingFlag = true;
 
-		// we want it to take X seconds to go over one tile
-		float fixedTime = 0.05f;
-
 		Vector3 startPos = transform.position;
 		Vector3 peakPos = startPos + (endpoint - transform.position)/distanceScale;
 		
 		float timeStep = 0.0f;
 		while (timeStep < 1.0f) {
-			timeStep += (Time.deltaTime / fixedTime);
+			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
 			transform.position = Vector3.Lerp(startPos, peakPos, timeStep);			
 			yield return null;
 		}
@@ -110,7 +107,7 @@ public abstract class MovingObject : MonoBehaviour
 		// now for the return journey
 		timeStep = 0.0f;
 		while (timeStep < 1.0f)  {
-			timeStep += (Time.deltaTime / fixedTime);
+			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
 			transform.position = Vector3.Lerp(peakPos, startPos, timeStep);			
 			yield return null;
 		}
@@ -124,9 +121,6 @@ public abstract class MovingObject : MonoBehaviour
 		crtMovingFlag = true;
 		GameManager.inst.tacticsManager.resizeLock = true;
 
-		// we want it to take X seconds to go over one tile
-		float fixedTimePerTile = 0.10f;
-		//
 		Vector3 realNextPos = transform.position;
 		foreach (var nextPos in path.Unwind()) {
 			realNextPos = grid.Grid2RealPos(nextPos);
