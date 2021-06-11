@@ -33,9 +33,7 @@ public class Path
 	}
 	
 	public IEnumerable<Vector3Int> Unwind(int slice = 0) {
-		Debug.Log($"Unwinding a path of length {path.Count}");
 		LinkedListNode<Vector3Int> position = path.First;
-
 		while (true) {
 			// skip a certain number of tiles when unwinding
 			if (slice > 0) {

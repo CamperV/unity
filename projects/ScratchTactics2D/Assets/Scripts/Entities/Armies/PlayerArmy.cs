@@ -6,7 +6,7 @@ using Extensions;
 
 public class PlayerArmy : Army
 {
-	public int moveThreshold { get => Constants.standardTickCost*5; }
+	public int moveThreshold { get => Constants.standardTickCost*3; }
 	
 	// abstract implementations
 	public override List<string> defaultUnitTags {
@@ -47,7 +47,6 @@ public class PlayerArmy : Army
 
 	public void InitiateBattle(EnemyArmy combatant) {
 		StartCoroutine(ExecuteAfterMoving(() => {
-			// programmatically load in a TacticsGrid that matches what we need
 			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
 			Terrain enemyTerrain = GameManager.inst.overworld.TerrainAt(combatant.gridPosition);
 		

@@ -55,10 +55,6 @@ public class TacticsGrid : GameGrid
 		}
 		return null;
 	}
-
-	public override HashSet<Vector3Int> GetAllTilePos() {
-		return new HashSet<Vector3Int>(tacticsTileGrid.Keys);
-	}
 	
 	public override Vector3Int Real2GridPos(Vector3 realPos) {
 		return baseGrid.WorldToCell(realPos);

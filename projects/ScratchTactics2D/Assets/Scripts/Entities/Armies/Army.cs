@@ -31,9 +31,9 @@ public abstract class Army : MovingObject
 	public FieldOfView fov {
 		get => _fov;
 		set {
-			if (_fov != null) _fov.ClearDisplay(GameManager.inst.overworld);
+			//if (_fov != null) _fov.HideAll();
 			_fov = value;
-			_fov.Display(GameManager.inst.overworld);
+			_fov.Display();
 		}
 	}
 	
@@ -43,7 +43,7 @@ public abstract class Army : MovingObject
 		// make sure you also update FOV when moving
 		protected set {
 			_gridPosition = value;
-			fov = new FieldOfView(_gridPosition, visionRange, GameManager.inst.overworld);
+			fov = new FieldOfView(_gridPosition, visionRange);
 		}
 	}
 	
@@ -67,9 +67,13 @@ public abstract class Army : MovingObject
 		return army;
 	}
 
+	public override void UpdateRealPosition(Vector3 pos) {
+		transform.position = new Vector3(pos.x, pos.y, Constants.zSortingConstant);
+	}
+
 	public void ResetPosition(Vector3Int v) {
 		gridPosition = v;
-		transform.position = GameManager.inst.overworld.Grid2RealPos(gridPosition);
+		UpdateRealPosition(GameManager.inst.overworld.Grid2RealPos(gridPosition));
 	}
 
 	public Unit LoadUnitByTag(string tag) {

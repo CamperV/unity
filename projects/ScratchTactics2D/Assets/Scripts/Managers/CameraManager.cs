@@ -4,43 +4,57 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-	private static Transform trackingTarget;
-	private static Transform prevTrackingTarget;
+	public float snappiness;
+
+	private Camera assignedCamera { get => gameObject.GetComponent<Camera>(); }
+
 	private static Vector2 minBounds;
 	private static Vector2 maxBounds;
-	
-	public static void RefitStaticCamera(Vector3 pos, int height) {
-		Camera.main.transform.position = pos;
-		Camera.main.orthographicSize = (float)height / 2.0f;
+
+	private Transform trackingTarget;
+	private Vector3 trackingPosition {
+		get {
+			return (trackingTarget == null) ? transform.position : new Vector3(Mathf.Clamp(trackingTarget.position.x, minBounds.x, maxBounds.x),
+							   												   Mathf.Clamp(trackingTarget.position.y, minBounds.y, maxBounds.y),
+							   												   transform.position.z);
+		}
+	}
+	private float trackingSize;
+		
+	public void RefitCamera(int heightInTiles) {
+		trackingSize = heightInTiles / 1.5f;
+		assignedCamera.orthographicSize = trackingSize;
 	}
 	
-	public static void RefitCamera(int height) {
-		Camera.main.orthographicSize = (float)height / 1.5f;
-	}
-	
-	public static void SetBounds(Vector2 min, Vector2 max) {
+	public void SetBounds(Vector2 min, Vector2 max) {
 		minBounds = min;
 		maxBounds = max;
 	}
 	
-	public static void SetTracking(Transform toTrack) {
-		trackingTarget = toTrack;
-	}
-
-	public static void ResetTracking() {
-		if (prevTrackingTarget != null) {
-			trackingTarget = prevTrackingTarget;
-		}
+	public void SetTracking(Transform _trackingTarget) {
+		trackingTarget = _trackingTarget;
+		transform.position = trackingPosition;
 	}
 	
 	// performs constant tracking
 	void LateUpdate() {
-		if (trackingTarget != null) {
-			Vector3 pos = new Vector3(Mathf.Clamp(trackingTarget.position.x, minBounds.x, maxBounds.x),
-									Mathf.Clamp(trackingTarget.position.y, minBounds.y, maxBounds.y),
-									transform.position.z);
+		float snapSpeed = Time.deltaTime*snappiness;
+		float snapFactor = 0.01f;
+		
+		// update mouse wheel scale
+		trackingSize *= 1f / (1f + Input.GetAxis("Mouse ScrollWheel"));
+		if (Mathf.Abs(assignedCamera.orthographicSize - trackingSize) > snapFactor) {
 			
-			transform.position = pos;
+			assignedCamera.orthographicSize = Mathf.Lerp(assignedCamera.orthographicSize, trackingSize, snapSpeed);
+		} else {
+			assignedCamera.orthographicSize = trackingSize;
+		}
+
+		// update tracking
+		if (Vector3.Distance(transform.position, trackingPosition) > snapFactor) {
+			transform.position = Vector3.Lerp(transform.position, trackingPosition, snapSpeed);
+		} else {
+			transform.position = trackingPosition;
 		}
 	}
 }

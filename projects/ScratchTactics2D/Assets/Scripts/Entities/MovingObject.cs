@@ -7,7 +7,7 @@ using Extensions;
 public abstract class MovingObject : MonoBehaviour
 {	
 	// we want it to take X seconds to go over one tile
-	public static float speedMultiplier = 1.0f;
+	public static float speedMultiplier = 1f;
 	private float fixedTimePerTile { get => 0.10f / speedMultiplier; }
 
 	protected Vector3Int _gridPosition;
@@ -81,12 +81,12 @@ public abstract class MovingObject : MonoBehaviour
 
 		while (timeStep < 1.0f) {
 			timeStep += (Time.deltaTime / fixedTimePerTile);
-			transform.position = Vector3.Lerp(startPos, endpoint, timeStep);
+			UpdateRealPosition(Vector3.Lerp(startPos, endpoint, timeStep));
 			yield return null;
 		}
 		
 		// after the while loop is broken:
-		transform.position = endpoint;
+		UpdateRealPosition(endpoint);
 		crtMovingFlag = false;
 	}
 	
@@ -100,7 +100,7 @@ public abstract class MovingObject : MonoBehaviour
 		float timeStep = 0.0f;
 		while (timeStep < 1.0f) {
 			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
-			transform.position = Vector3.Lerp(startPos, peakPos, timeStep);			
+			UpdateRealPosition(Vector3.Lerp(startPos, peakPos, timeStep));
 			yield return null;
 		}
 
@@ -108,12 +108,12 @@ public abstract class MovingObject : MonoBehaviour
 		timeStep = 0.0f;
 		while (timeStep < 1.0f)  {
 			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
-			transform.position = Vector3.Lerp(peakPos, startPos, timeStep);			
+			UpdateRealPosition(Vector3.Lerp(peakPos, startPos, timeStep));
 			yield return null;
 		}
 		
 		// after the while loop is broken:
-		transform.position = startPos;
+		UpdateRealPosition(startPos);
 		crtMovingFlag = false;
 	}
 

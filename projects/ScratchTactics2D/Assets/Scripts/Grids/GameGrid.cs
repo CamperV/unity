@@ -203,5 +203,4 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 	// abstract zone
 	public abstract bool IsInBounds(Vector3Int tilePos);
 	public abstract GameTile GetTileAt(Vector3Int tilePos);
-	public abstract HashSet<Vector3Int> GetAllTilePos();
 }

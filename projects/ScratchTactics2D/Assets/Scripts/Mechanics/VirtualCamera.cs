@@ -51,6 +51,9 @@ public class VirtualCamera
     // mouse view control
     //
     public void ScrollUpdate() {
+        return;
+        // While we have the Debug camera scroll (InputListener), disable this
+
         if (!draggingView) {
             // calculate what the new scale WILL be
             // and calculate the scale ratio. Just use X, because our scale is uniform on all axes

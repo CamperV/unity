@@ -59,7 +59,7 @@ public class EnemyUnitController : UnitController
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				EndPhase(postPhaseDelay);
+				EndPhase();
 				break;
 				
 			// delay for phaseDelayTime, until you go into postPhase

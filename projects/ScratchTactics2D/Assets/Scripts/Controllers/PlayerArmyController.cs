@@ -55,6 +55,9 @@ public class PlayerArmyController : Controller
 		if (!MyPhaseActive()) return;
 		KeyCode kc = CheckInput();
 		
+		// previous cleanup
+		if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
+		
 		switch(phaseActionState) {
 			case Enum.PhaseActionState.waitingForInput:
 
@@ -66,8 +69,6 @@ public class PlayerArmyController : Controller
 						Vector3Int mousePos = GameManager.inst.overworld.Real2GridPos(GameManager.inst.mouseManager.mouseWorldPos);
 
 						if (_pathToQueue == null || mousePos != _pathToQueue.end) {
-							if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
-
 							_pathToQueue?.UnShow();
 							_pathToQueue = _pathfinder.NullableBFS(registeredPlayer.gridPosition, mousePos);
 
@@ -96,11 +97,11 @@ public class PlayerArmyController : Controller
 
 						_pathToQueue?.UnShow();
 						_pathToQueue = null;
-						if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
+						//if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
 					} else {
 						_pathToQueue?.UnShow();
 						_pathToQueue = null;
-						if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
+						//if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
 					}
 				}
 
@@ -155,7 +156,7 @@ public class PlayerArmyController : Controller
 		GameManager.inst.enemyController.AddTicksAll(ticksTaken);
 
 		yield return new WaitForSeconds(phaseDelayTime);
-
+		
 		StartCoroutine( registeredPlayer.ExecuteAfterMoving( () => {
 			phaseActionState = Enum.PhaseActionState.complete;
 		}) );

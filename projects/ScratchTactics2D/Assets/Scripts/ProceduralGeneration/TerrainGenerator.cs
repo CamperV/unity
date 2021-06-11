@@ -11,6 +11,9 @@ using MapTools;
 
 public abstract class TerrainGenerator : MonoBehaviour
 {
+	// this is used to link 2x2 tile replacements to their real tiles, post-hoc
+	private Dictionary<Vector3Int, Vector3Int> _2x2TileRef = new Dictionary<Vector3Int, Vector3Int>();
+
 	// NOTE:
 	// this does not contain an exhaustive list of tiles. ex: road tiles
 	public enum TileEnum {
@@ -71,8 +74,6 @@ public abstract class TerrainGenerator : MonoBehaviour
 			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
 			
 			// NoTile
-			//(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile),
-			//(ScriptableObject.CreateInstance<XWorldTile>() as XWorldTile)
 			null,
 			null
 		};
@@ -174,12 +175,10 @@ public abstract class TerrainGenerator : MonoBehaviour
 						break;
 					case TileEnum.mountain:
 					case TileEnum.mountain2x2:
-					case TileEnum.mountainNoTile:
 						terrain = new Mountain(pos);
 						break;
 					case TileEnum.peak:
 					case TileEnum.peak2x2:
-					case TileEnum.peakNoTile:
 						terrain = new Peak(pos);
 						break;
 					case TileEnum.villageRoad:
@@ -196,6 +195,14 @@ public abstract class TerrainGenerator : MonoBehaviour
 					case TileEnum.forestRoad:
 					case TileEnum.mountainRoad:
 						terrain = new Road(pos);
+						break;
+
+					// special cases
+					case TileEnum.mountainNoTile:
+						terrain = new Mountain(_2x2TileRef[pos]);
+						break;
+					case TileEnum.peakNoTile:
+						terrain = new Peak(_2x2TileRef[pos]);
 						break;
 				}
 				retVal[pos] = terrain;
@@ -267,6 +274,11 @@ public abstract class TerrainGenerator : MonoBehaviour
 						foreach (var v in pattern.YieldPatternExcept(origin, origin)) {
 							if (map.Contains(v.x, v.y)) {
 								map[v.x, v.y] = NoTileOption(toReplace);
+
+								// this is shamefully stateful, but...
+								// since we're here, store this (v->origin) relationship
+								// this will be used later to assign tiles for FoV hiding/revealing based on 2x2 things
+								_2x2TileRef[v] = origin;
 							}
 						}
 					}

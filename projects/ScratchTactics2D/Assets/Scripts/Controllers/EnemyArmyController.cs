@@ -18,7 +18,7 @@ public class EnemyArmyController : Controller
 	public HashSet<Vector3Int> traversablePositions = new HashSet<Vector3Int>();
 	public HashSet<Vector3Int> untraversablePositions {
 		get {
-			HashSet<Vector3Int> retVal = GameManager.inst.overworld.GetAllTilePos();
+			HashSet<Vector3Int> retVal = new HashSet<Vector3Int>(GameManager.inst.overworld.Positions);
 			retVal.ExceptWith(traversablePositions);
 			return retVal;
 		}
@@ -166,15 +166,19 @@ public class EnemyArmyController : Controller
 			}
 			
 			// don't delay if you're the last/idle
-			if (i == activeRegistry.Count-1 || subject.state == Enum.EnemyState.idle) {
-				yield return null;
-			} else {
-				yield return new WaitForSeconds(phaseDelayTime);
-			}
+			// if (i == activeRegistry.Count-1 || subject.state == Enum.EnemyState.idle) {
+			// 	yield return null;
+			// } else {
+			// 	yield return new WaitForSeconds(phaseDelayTime);
+			// }
+			// if (subject.state != Enum.EnemyState.idle) {
+			// 	yield return new WaitForSeconds(phaseDelayTime);
+			// }
 		}
 
 		// suitable pause to see that the units are moving again
-		if (keepPhaseAlive) yield return new WaitForSeconds(phaseDelayTime*10);
+		//if (keepPhaseAlive) yield return new WaitForSeconds(phaseDelayTime*10);
+		if (keepPhaseAlive) yield return new WaitForSeconds(0f);
 		crtActing = false;
 	}
 		

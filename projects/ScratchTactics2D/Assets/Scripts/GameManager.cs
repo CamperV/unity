@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
 	
 	public void EnterOverworldState() {
 		// refit/retrack camera
-		CameraManager.SetTracking(player.transform);
+		Camera.main.GetComponent<CameraManager>().SetTracking(player.transform);
 		
 		// show the overworld clearly
 		overworld.DisableTint();
@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
 	
 	public void EnterBattleState() {
 		// freeze camera
-		CameraManager.SetTracking(Camera.main.transform);
+		Camera.main.GetComponent<CameraManager>().SetTracking(Camera.main.transform);
 		
 		// tint overworld to give focus to battle
 		overworld.EnableTint();

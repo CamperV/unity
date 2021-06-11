@@ -5,20 +5,22 @@ using UnityEngine;
 using Extensions;
 
 public class UnitController : Controller
-{
-	public const float postPhaseDelay = 1.0f;
+{	
+	// this is seperate from PhasedObject.phaseDelayTime
+	// and thus, is not accelerated by the GameManager listener
+	public const float postPhaseDelayTime = 1.0f;
 		
 	public override void TriggerPhase() {
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 		activeRegistry.ForEach(u => ((Unit)u).OnStartTurn());
 	}
 
-	public override void EndPhase(float timeOverride = phaseDelayTime) {
+	public override void EndPhase() {
 		// then reset your phase, and mark as complete
-		StartCoroutine(Utils.DelayedExecute(timeOverride, () => {
+		StartCoroutine(Utils.DelayedExecute(postPhaseDelayTime, () => {
 			phaseActionState = Enum.PhaseActionState.postPhase;
 		}));
-		activeRegistry.ForEach(u => ((Unit)u).RefreshColor());
+		activeRegistry.ForEach(u => (u as Unit).RefreshColor());
 	}
 
 	// if any unit is active at all, don't end the phase

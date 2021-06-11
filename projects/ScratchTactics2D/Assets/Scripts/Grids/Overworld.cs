@@ -14,6 +14,7 @@ public class Overworld : GameGrid, IPathable
 	public TerrainGenerator terrainGenerator;	// assigned prefab
 	private Dictionary<Vector3Int, Terrain> terrain;
 	public IEnumerable<Terrain> Terrain { get => terrain.Values; }
+	public IEnumerable<Vector3Int> Positions { get => terrain.Keys; }
 
 	private OverlayTile selectTile;
 	
@@ -45,10 +46,6 @@ public class Overworld : GameGrid, IPathable
 		
 	public override GameTile GetTileAt(Vector3Int tilePos) {
 		return baseTilemap.GetTile(tilePos) as GameTile;
-	}
-
-	public override HashSet<Vector3Int> GetAllTilePos() {
-		return new HashSet<Vector3Int>(terrain.Keys);
 	}
 
 	public override void SelectAt(Vector3Int tilePos, Color? color = null) {
@@ -107,45 +104,26 @@ public class Overworld : GameGrid, IPathable
 	}
 
 	public void HighlightTile(Vector3Int tilePos, Color color) {
-		for (int z = 0; z < 2; z++) {
-			var v = new Vector3Int(tilePos.x, tilePos.y, z);
-			TintTile(baseTilemap, v, color);
-		}	
+		TintTile(baseTilemap, tilePos, color);
 	}
-	
-	public void HighlightTiles(HashSet<Vector3Int> tilePosSet, Color color) {
-		foreach (var tilePos in tilePosSet) {
-			HighlightTile(tilePos, color);
-		}
+
+	public void ResetHighlightTile(Vector3Int tilePos) {
+		ResetTintTile(baseTilemap, tilePos);
 	}
 	
 	public void ResetHighlightTiles(HashSet<Vector3Int> tilePosSet) {
 		foreach (var tilePos in tilePosSet) {
-			for (int z = 0; z < 2; z++) {
-				var v = new Vector3Int(tilePos.x, tilePos.y, z);
-				ResetTintTile(baseTilemap, v);
-			}
+			ResetTintTile(baseTilemap, tilePos);
 		}
 	}
 
 	public void ResetAllHighlightTiles() {
 		foreach (var tilePos in terrain.Keys) {
-			for (int z = 0; z < 2; z++) {
-				var v = new Vector3Int(tilePos.x, tilePos.y, z);
-				ResetTintTile(baseTilemap, v);
-			}
+			ResetTintTile(baseTilemap, tilePos);
 		}
 	}
 	
 	public override void TintTile(Tilemap tilemap, Vector3Int tilePos, Color color) {
-		// Vector3Int depthPos;
-		// if (terrain.ContainsKey(tilePos)) {
-		// 	var tile = terrain[tilePos].tile;
-		// 	depthPos = new Vector3Int(tilePos.x, tilePos.y, tile.depth);
-		// } else  {
-		// 	depthPos = tilePos;
-		// }
-
 		if (tilemap.GetTile(tilePos) != null) {
 			tilemap.SetTileFlags(tilePos, TileFlags.None);
 			tilemap.SetColor(tilePos, color);
@@ -177,13 +155,10 @@ public class Overworld : GameGrid, IPathable
 		// finalize outside
 		CreateTintBuffer( tg.GetMap() );
 		
-		// how many tiles do we want shown vertically?
-		CameraManager.RefitCamera(zoomLevel);
-		//CameraManager.RefitStaticCamera(new Vector3(tg.mapDimension.x/2f, tg.mapDimension.y/2f, -10f), tg.mapDimension.y+8);
-		
 		Vector2 minBounds = new Vector2(4, 2.5f);
 		Vector2 maxBounds = new Vector2(tg.mapDimension.x-4, (float)tg.mapDimension.y - 2.5f);
-		CameraManager.SetBounds(minBounds, maxBounds);
+		Camera.main.GetComponent<CameraManager>().SetBounds(minBounds, maxBounds);
+		Camera.main.GetComponent<CameraManager>().RefitCamera(zoomLevel);
     }
 
 	private void CreateTintBuffer(TerrainGenerator.TileEnum[,] map) {
@@ -210,14 +185,6 @@ public class Overworld : GameGrid, IPathable
 		}
 	}
 
-	public List<Vector3Int> LocationsOf<T>() where T : Terrain {
-		return terrain.Keys.ToList().Where( it => terrain[it].GetType() == typeof(T)).ToList();
-	}
-
-	public Type TypeAt(Vector3Int v) {
-		return terrain[v].GetType();
-	}
-
 	public void SetTerrainAt(Vector3Int v, Terrain t) {
 		terrain[v] = t;
 	}
@@ -239,7 +206,12 @@ public class Overworld : GameGrid, IPathable
 		ResetTintTile(underlayTilemap, tilePos);
 	}
 
-	public void HideAt(Vector3Int tilePos, float intensity = 0.15f) {
-		HighlightTile(tilePos, (intensity*Color.white).WithAlpha(1.0f));
+	// for pseudo-deprecated RandomTerrainGenerator
+	public List<Vector3Int> LocationsOf<T>() where T : Terrain {
+		return terrain.Keys.ToList().Where( it => terrain[it].GetType() == typeof(T)).ToList();
+	}
+
+	public Type TypeAt(Vector3Int v) {
+		return terrain[v].GetType();
 	}
 }

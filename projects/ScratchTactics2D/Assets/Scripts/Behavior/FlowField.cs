@@ -54,7 +54,9 @@ public class FlowField : IPathable
 	
 	// just grabs overworld for prototyping
 	public void DebugDisplay() {
-		GameManager.inst.overworld.ResetHighlightTiles(new HashSet<Vector3Int>(field.Keys));
+		foreach (var k in field.Keys) {
+			GameManager.inst.overworld.ResetHighlightTile(k);
+		}
 		
 		Dictionary<float, HashSet<Vector3Int>> toHighlight = new Dictionary<float, HashSet<Vector3Int>>();
 		
@@ -69,7 +71,9 @@ public class FlowField : IPathable
 			float scale = 0.05f;
 			Color color = new Color(1f-(scale*mag), 1f-(scale*mag), 1f-(scale*mag));
 			
-			GameManager.inst.overworld.HighlightTiles(toHighlight[mag], color);
+			foreach (var v in toHighlight[mag]) {
+				GameManager.inst.overworld.HighlightTile(v, color);
+			}
 		}
 	}
 
