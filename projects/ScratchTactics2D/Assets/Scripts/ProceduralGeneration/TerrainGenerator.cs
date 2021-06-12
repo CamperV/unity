@@ -199,10 +199,10 @@ public abstract class TerrainGenerator : MonoBehaviour
 
 					// special cases
 					case TileEnum.mountainNoTile:
-						terrain = new Mountain(_2x2TileRef[pos]);
+						terrain = new Mountain(pos, _2x2TileRef[pos]);
 						break;
 					case TileEnum.peakNoTile:
-						terrain = new Peak(_2x2TileRef[pos]);
+						terrain = new Peak(pos, _2x2TileRef[pos]);
 						break;
 				}
 				retVal[pos] = terrain;

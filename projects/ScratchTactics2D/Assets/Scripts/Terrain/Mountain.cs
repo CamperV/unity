@@ -10,11 +10,18 @@ using Extensions;
 
 public class Mountain : Terrain
 {
-	public override int occlusion { get => FieldOfView.maxVisibility; }
+	protected Vector3Int _tileRefPosition;
+	public override Vector3Int tileRefPosition { get => _tileRefPosition; }
+	public override int altitude { get => 2; }
 	public override int tickCost { get => Constants.standardTickCost * 5; }
 
 	public Mountain(){}
 	public Mountain(Vector3Int pos) {
 		position = pos;
+		_tileRefPosition = pos;
+	}
+	public Mountain(Vector3Int pos, Vector3Int tileRefPos) {
+		position = pos;
+		_tileRefPosition = tileRefPos;
 	}
 }

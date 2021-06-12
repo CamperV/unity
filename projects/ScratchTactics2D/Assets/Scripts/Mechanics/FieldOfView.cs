@@ -7,7 +7,7 @@ using System.Linq;
 
 public class FieldOfView
 {
-	public static int maxVisibility = 10; // in tiles
+	public static int maxVisibility = 4; // in tiles, includes the origin in radius
 	public static Overworld overworld { get => GameManager.inst.overworld; }
 	private static float intensity = 0.15f; // for hiding/revealing tiles
 
@@ -18,7 +18,46 @@ public class FieldOfView
 
 	public FieldOfView(Vector3Int _origin, int range) {
 		origin = _origin;
-		field = RaycastField(origin, range);
+		field = RadialField(origin, range);
+	}
+
+	private Dictionary<Vector3Int, int> RadialField(Vector3Int origin, int range) {
+		Dictionary<Vector3Int, int> _field = new Dictionary<Vector3Int, int> {
+			[origin] = 0
+		};
+
+		foreach(Vector3Int v in origin.RadiateSquare(range)) {
+			if (!overworld.IsInBounds(v) || !Visible(v, range)) continue;
+			if (VisibleCloseRange(v)) {
+				_field[v] = 1;
+				continue;
+			}
+
+			// hide if you're a forest which is surrounded by forests
+			if (overworld.TypeAt(v).MatchesType(typeof(Forest))) {
+				bool breakOut = true;
+				foreach (var t in TerrainPatternShape.NoCenterPlus.YieldPattern(v)) {
+					if (overworld.IsInBounds(t)) {
+						breakOut &= overworld.TypeAt(t).MatchesType(typeof(Forest));
+					}
+				}
+				if (breakOut) continue;
+			}
+
+			// by default, you are visible within the circle
+			_field[v] = 1;
+		}
+		return _field;
+	}
+
+	private bool Visible(Vector3Int p, int range) {
+		Vector3Int v = p - origin;
+		return (v.x*v.x) + (v.y*v.y) <= (range*range);
+	}
+
+	private bool VisibleCloseRange(Vector3Int p) {
+		Vector3Int v = p - origin;
+		return (v.x*v.x) + (v.y*v.y) <= (2*2);
 	}
 
 	private Dictionary<Vector3Int, int> RaycastField(Vector3Int origin, int range) {
@@ -41,23 +80,28 @@ public class FieldOfView
 	}
 
 	private int BresenhamCost(Vector3Int src, Vector3Int dest) {
-		Vector3Int unitDir = (dest - src).Unit();
-
 		int acc = 0;
-		foreach(var p in BresenhamLine(src, dest)) {
+		foreach (var p in BresenhamLine(src, dest)) {
 			if(p == src) continue;
-
-			// check diagonal squeezers
-			/*
-			int xOcc = overworld.TerrainAt( p - unitDir.X() ).occlusion;
-			int yOcc = overworld.TerrainAt( p - unitDir.Y() ).occlusion;
-			if (xOcc > 0 && yOcc > 0) {
-				acc += Mathf.Min(xOcc, yOcc);
-			}*/
 			
 			acc += overworld.TerrainAt(p).occlusion + 1;
 		}
 		return acc;
+	}
+
+	private bool IsOccluded(Vector3Int src, Vector3Int dest) {
+		// from origin to target tile
+		int targetHeight = overworld.TerrainAt(src).altitude;
+		foreach (var p in BresenhamLine(dest, src)) {
+			if (p == src) continue;
+			int h = overworld.TerrainAt(p).altitude;
+			if (targetHeight == 0) {
+				if (h > targetHeight) return true;
+			} else {
+				if (h >= targetHeight) return true;
+			}
+		}
+		return false;
 	}
 
 	public static IEnumerable<Vector3Int> BresenhamLine(Vector3Int src, Vector3Int dest) {
@@ -96,7 +140,46 @@ public class FieldOfView
         }
 	}
 
+	public static IEnumerable<Pair<Vector3Int, float>> BresenhamLineAA(Vector3Int src, Vector3Int dest) {
+		int x0 = src.x, x1 = dest.x;
+		int y0 = src.y, y1 = dest.y;
+		int dx = Mathf.Abs(x1 - x0), sx = (x0 < x1) ? 1 : -1;
+		int dy = Mathf.Abs(y1 - y0), sy = (y0 < y1) ? 1 : -1;
+
+		int e2, x2;
+		int err = dx - dy;
+		float ed = (dx + dy == 0f) ? 1f : Mathf.Sqrt((float)dx*dx + (float)dy*dy);
+
+		while (true) {
+			yield return new Pair<Vector3Int, float>(new Vector3Int(x0, y0, 0), Mathf.Abs(err-dx+dy)/ed);
+
+			e2 = err;
+			x2 = x0;
+
+			// x
+			if (e2*2 >= -dx) {
+				if (x0 == x1) break;
+				if (e2 + dy < ed) {
+					yield return new Pair<Vector3Int, float>(new Vector3Int(x0, y0+sy, 0), (e2+dy)/ed);
+				}
+				err -= dy;
+				x0 += sx;
+			}
+
+			// y
+			if (e2*2 <= dy) {
+				if (y0 == y1) break;
+				if (dx - e2 < ed) {
+					yield return new Pair<Vector3Int, float>(new Vector3Int(x2+sx, y0, 0), (dx-e2)/ed);
+				}
+				err += dx;
+				y0 += sy;
+			}
+		}
+	}
+
 	public void Display() {
+		return; 
 		// need to go over two passes, or at least in a certain order
 		// this is because the _2x2TileRefs will reveal out of order
 		foreach (var pos in overworld.Positions) {
@@ -109,13 +192,13 @@ public class FieldOfView
 		}
 	}
 
-	public static void HideAt(Vector3Int tilePos) {
-		Vector3Int posFromTerrain = overworld.TerrainAt(tilePos).position;
+	public void HideAt(Vector3Int tilePos) {
+		Vector3Int posFromTerrain = overworld.TerrainAt(tilePos).tileRefPosition;
 		overworld.HighlightTile(posFromTerrain, (intensity*Color.white).WithAlpha(1.0f));
 	}
 	
-	public static void RevealAt(Vector3Int tilePos) {
-		Vector3Int posFromTerrain = overworld.TerrainAt(tilePos).position;
+	public void RevealAt(Vector3Int tilePos) {
+		Vector3Int posFromTerrain = overworld.TerrainAt(tilePos).tileRefPosition;
 		overworld.ResetHighlightTile(posFromTerrain);
 	}
 

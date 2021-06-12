@@ -11,7 +11,10 @@ using Extensions;
 public abstract class Terrain
 {
 	public Vector3Int position;
+
+	public virtual Vector3Int tileRefPosition { get => position; }
 	public virtual int occlusion { get => 0; }
+	public virtual int altitude { get => 0; }
 	public virtual Vector2Int battleGridSize { get => new Vector2Int(8, 8); }
 	public virtual int tickCost { get => Constants.standardTickCost; }
 

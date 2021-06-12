@@ -45,18 +45,27 @@ public class MouseManager : MonoBehaviour
 		}
 		*/
 
-		// GameManager.inst.overworld.ResetAllHighlightTiles();
+		// foreach (var v in GameManager.inst.overworld.Positions) {
+		// 	GameManager.inst.overworld.ResetHighlightTile(v);
+		// }
 		
+		// foreach(var aaPair in FieldOfView.BresenhamLineAA(GameManager.inst.player.gridPosition, currentActiveGrid.Real2GridPos(mouseWorldPos))) {
+		// 	Vector3Int ln = aaPair.first;
+		// 	float tint = aaPair.second;
+		// 	if (GameManager.inst.overworld.IsInBounds(ln)) {
+		// 		GameManager.inst.overworld.HighlightTile(ln, tint*Color.white);
+				
+		// 		// if (ln == currentActiveGrid.Real2GridPos(mouseWorldPos)) {
+		// 		// 	// check diagonal squeezers
+		// 		// 	GameManager.inst.overworld.HighlightTile(ln - unitDir.X(), Constants.threatColorRed);
+		// 		// 	GameManager.inst.overworld.HighlightTile(ln - unitDir.Y(), Constants.threatColorRed);
+		// 		// }
+		// 	}
+		// }
 		// Vector3Int unitDir = (currentActiveGrid.Real2GridPos(mouseWorldPos) - GameManager.inst.player.gridPosition).Unit();
 		// foreach(Vector3Int ln in FieldOfView.BresenhamLine(GameManager.inst.player.gridPosition, currentActiveGrid.Real2GridPos(mouseWorldPos))) {
 		// 	if (GameManager.inst.overworld.IsInBounds(ln)) {
-		// 		GameManager.inst.overworld.HighlightTile(ln, Constants.threatColorYellow);
-				
-		// 		if (ln == currentActiveGrid.Real2GridPos(mouseWorldPos)) {
-		// 			// check diagonal squeezers
-		// 			GameManager.inst.overworld.HighlightTile(ln - unitDir.X(), Constants.threatColorRed);
-		// 			GameManager.inst.overworld.HighlightTile(ln - unitDir.Y(), Constants.threatColorRed);
-		// 		}
+		// 		GameManager.inst.overworld.HighlightTile(ln, Constants.threatColorIndigo);
 		// 	}
 		// }
 

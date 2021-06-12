@@ -10,9 +10,14 @@ using Extensions;
 
 public class Peak : Mountain
 {
-	public override int occlusion { get => FieldOfView.maxVisibility; }
+	public override int altitude { get => 3; }
 	
 	public Peak(Vector3Int pos) {
 		position = pos;
+		_tileRefPosition = pos;
+	}
+	public Peak(Vector3Int pos, Vector3Int tileRefPos) {
+		position = pos;
+		_tileRefPosition = tileRefPos;
 	}
 }
