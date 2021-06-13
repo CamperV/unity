@@ -318,4 +318,43 @@ public abstract class TerrainGenerator : MonoBehaviour
 			map[og.x, og.y] = replaceWith;
 		}
 	}
+
+	protected void PatternReplaceRandom(float probability, TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, params TileEnum[] patternContent) {
+		List<Vector3Int> secondPass = new List<Vector3Int>();
+
+		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
+			for (int y = map.GetLength(1)-1; y >= 0; y--) {
+				if (map[x, y] == toReplace) {
+					Vector3Int origin = new Vector3Int(x, y, 0);
+
+					// if all pos caught in pattern match any of the patternContent:
+					bool matchAllPositions = true;
+					foreach (var v in pattern.YieldPattern(origin)) {
+						// check bounds here for the first time
+						if (map.Contains(v.x, v.y)) {
+							bool matchAnyTypes = false;
+							foreach(var patternMatcher in patternContent) {
+								matchAnyTypes |= map[v.x, v.y] == patternMatcher;
+							}
+							matchAllPositions &= matchAnyTypes;
+						}
+					}
+
+					if (matchAllPositions) secondPass.Add(origin);
+				}
+			}
+		}
+
+		// perform all replacements in a second pass so that they do not affect one another
+		// BUT don't do all of them. Do them randomly
+		int cnt = 0;
+		foreach (var og in secondPass) {
+			float rng = Random.Range(0f, 1f);
+			if (rng <= probability) {
+				cnt++;
+				map[og.x, og.y] = replaceWith;
+			}
+		}
+		Debug.Log($"Spawned {cnt} {replaceWith}");
+	}
 }

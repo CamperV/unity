@@ -63,7 +63,6 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         for (int x = 0; x < forestProbabilityMap.width; x++) {
             for (int y = 0; y < forestProbabilityMap.height; y++) {
                 float val = forestProbabilityMap.At(x, y);
-                //float rng = Random.Range(0.55f, 0.90f);
                 float rng = Random.Range(0.40f, 0.90f);
                 if (rng <= val) {
                     map[x, y] = TileEnum.forest;
@@ -82,11 +81,18 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // in the future, have villages "prefer" certain areas, maybe using GetRidges(), or find places close to water, etc
         // this may be relegated to different types of villages
         int[,] spawnableVillageMask = (elevation as NoiseMap).GetRidges().BinaryThreshold(0.80f).Subtract( map.LocationsOf<TileEnum>(TileEnum.water, TileEnum.deepWater) );
+        SaveTextureAsPNG( RawTexture(spawnableVillageMask.ToFloat() ), "village_map.png");
         List<Vector2Int> villagePositions = spawnableVillageMask.Where(it => it == 1).ToList().RandomSelections<Vector2Int>(numVillages);
         //
         foreach(Vector2Int pos in villagePositions) {
             map[pos.x, pos.y] = TileEnum.village;
         }
+
+        // do Ruins here
+        // 1f indicates EVERY deepForest (surrounded by deepForest) you see will be replaced with a Ruins
+        // 0f means no ruins will appear
+        PatternReplaceRandom(0.05f, TerrainPatternShape.CenterPlus, TileEnum.deepForest, TileEnum.ruins,
+                             TileEnum.deepForest);
 		
         // road router in ElevationTerrainGenerator
         base.Preprocessing();
