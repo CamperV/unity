@@ -31,7 +31,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         float[,] lakeMask = GenerateRandomDimples(verticalThreshold: (int)(mapDimension.y/4f));
         SaveTextureAsPNG(RawTexture(lakeMask), "lakeMask.png");
         
-        elevation = GeneratePerlinNoiseMap(mapDimension.x, mapDimension.y, octaves, scale: perlinScale, power: perlinPower);
+        elevation = GeneratePerlinNoiseMap(mapDimension.x, mapDimension.y, octaves, scale: perlinScale, power: perlinPower, modulate: true);
         elevation.Add(beachMask).Add(mountainMask).Subtract(lakeMask);
         elevation.NormalizeMap();
         
@@ -57,13 +57,14 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // > generate a separate noise map, smoother, to generate forests
         // TODO: I really just kinda smooth-brained this one out: there's a better way to balance the multiple thresholds/rng here
         NoiseMap forestProbabilityMap = GeneratePerlinNoiseMap(mapDimension.x, mapDimension.y, 1, scale: perlinScale*2.0f, power: 0.75f);
-        forestProbabilityMap.Mask( elevation.Map.ClampBinaryThreshold(0.45f, 0.85f) );
+        forestProbabilityMap.Mask( elevation.Map.ClampBinaryThreshold(0.40f, 0.85f) );
         SaveTextureAsPNG(RawTexture(forestProbabilityMap.Map), "forest_map.png");
 
         for (int x = 0; x < forestProbabilityMap.width; x++) {
             for (int y = 0; y < forestProbabilityMap.height; y++) {
                 float val = forestProbabilityMap.At(x, y);
-                float rng = Random.Range(0.55f, 0.90f);
+                //float rng = Random.Range(0.55f, 0.90f);
+                float rng = Random.Range(0.40f, 0.90f);
                 if (rng <= val) {
                     map[x, y] = TileEnum.forest;
                 }
@@ -91,7 +92,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         base.Preprocessing();
     }
 
-    private NoiseMap GeneratePerlinNoiseMap(int dimX, int dimY, int numOctaves, float scale = 1.0f, float power = 1.0f) {
+    private NoiseMap GeneratePerlinNoiseMap(int dimX, int dimY, int numOctaves, float scale = 1.0f, float power = 1.0f, bool modulate = false) {
         NoiseMap noiseMap = new NoiseMap(dimX, dimY, numOctaves);
         
         // When changing noise scale, it zooms from top-right corner
@@ -106,8 +107,16 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
                 for (int o = 0; o < numOctaves; o++) {         
                     float octaveScale = Mathf.Pow(2f, o);  // 1, 2, 4, 8, etc
 
-                    float sampleX = (float)(x - midpoint.x)/scale;
-                    float sampleY = (float)(y - midpoint.y)/scale;
+                    // change the scale based on your y-location
+                    // this is to make "beaches" less "mountain-y"
+                    float relativeScale = scale;
+                    if (modulate) {
+                        float yRatio = 1f - Mathf.InverseLerp(0, dimY, y);
+                        relativeScale = (yRatio*2f + 1f) * scale;
+                    }
+
+                    float sampleX = (float)(x - midpoint.x)/relativeScale;
+                    float sampleY = (float)(y - midpoint.y)/relativeScale;
                     Vector2 sample = octaveScale * new Vector2(sampleX, sampleY) + randomOffset;
 
                     float perlinValue = Mathf.Pow( 1/octaveScale * Mathf.PerlinNoise(sample.x, sample.y), power);

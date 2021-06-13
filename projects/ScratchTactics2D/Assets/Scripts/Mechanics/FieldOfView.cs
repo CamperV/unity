@@ -7,9 +7,9 @@ using System.Linq;
 
 public class FieldOfView
 {
-	public static int maxVisibility = 4; // in tiles, includes the origin in radius
+	public static int maxVisibility = 5; // in tiles, includes the origin in radius
 	public static Overworld overworld { get => GameManager.inst.overworld; }
-	private static float intensity = 0.15f; // for hiding/revealing tiles
+	private static float intensity = 0.65f; // for hiding/revealing tiles
 
 	// this differs from a FlowField because it relies on line-of-site
 	// as such, instead of pathfinding, we'll calculate the LoS for every involved tile
@@ -35,13 +35,13 @@ public class FieldOfView
 
 			// hide if you're a forest which is surrounded by forests
 			if (overworld.TypeAt(v).MatchesType(typeof(Forest))) {
-				bool breakOut = true;
+				int breakCnt = 0;
 				foreach (var t in TerrainPatternShape.NoCenterPlus.YieldPattern(v)) {
 					if (overworld.IsInBounds(t)) {
-						breakOut &= overworld.TypeAt(t).MatchesType(typeof(Forest));
+						breakCnt += (overworld.TypeAt(t).MatchesType(typeof(Forest))) ? 1 : 0;
 					}
 				}
-				if (breakOut) continue;
+				if (breakCnt >= 3) continue;
 			}
 
 			// by default, you are visible within the circle
@@ -179,7 +179,6 @@ public class FieldOfView
 	}
 
 	public void Display() {
-		return; 
 		// need to go over two passes, or at least in a certain order
 		// this is because the _2x2TileRefs will reveal out of order
 		foreach (var pos in overworld.Positions) {
