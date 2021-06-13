@@ -294,7 +294,11 @@ public class VillageRoadWorldTile : WorldTile
 			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_7"),
 			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_8"),
 			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_9"),
-			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_10")
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_10"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_11"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_12"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_13"),
+			ResourceLoader.GetMultiSprite("Parchment/parchment_village_road", "parchment_village_road_14")
 		};
 		sprite = sprites[0];
 	}

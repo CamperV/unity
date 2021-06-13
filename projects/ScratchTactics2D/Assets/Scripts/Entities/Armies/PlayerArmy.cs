@@ -8,6 +8,29 @@ public class PlayerArmy : Army
 {
 	public int moveThreshold { get => Constants.standardTickCost*3; }
 	
+	// for moving around the Overworld
+	// why in this file? Because it will be updated every time gridPosition is updated
+	public virtual int visionRange { get => 8; }	// in tiles, includes the origin in radius
+
+	private FieldOfView _fov;
+	public FieldOfView fov {
+		get => _fov;
+		set {
+			_fov = value;
+			_fov.Display();
+		}
+	}
+	// for now, FieldOfView is only had by the PlayerArmy
+	[HideInInspector] public override Vector3Int gridPosition {
+		get => _gridPosition;
+
+		// make sure you also update FOV when moving
+		protected set {
+			_gridPosition = value;
+			fov = new FieldOfView(_gridPosition, visionRange);
+		}
+	}
+
 	// abstract implementations
 	public override List<string> defaultUnitTags {
 		get {

@@ -70,6 +70,13 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
                 // while we're here, update the grid for the first pass
                 foreach (Vector3Int p in path.Unwind()) {
                     switch (map[p.x, p.y]) {
+                        case TileEnum.road:
+                        case TileEnum.waterRoad:
+                        case TileEnum.forestRoad:
+                        case TileEnum.mountainRoad:
+                        case TileEnum.villageRoad:
+                            break;
+                        //
                         case TileEnum.water:
                         case TileEnum.deepWater:
                             map[p.x, p.y] = TileEnum.waterRoad;

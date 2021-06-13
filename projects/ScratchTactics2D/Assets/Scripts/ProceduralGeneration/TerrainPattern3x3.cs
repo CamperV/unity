@@ -48,7 +48,12 @@ public class TerrainPattern3x3 : TerrainPattern
             TerrainPattern3x3.NorthSouthWest,
             TerrainPattern3x3.NorthEastWest,
             TerrainPattern3x3.SouthEastWest,
-            TerrainPattern3x3.NorthSouthEastWest
+            TerrainPattern3x3.NorthSouthEastWest,
+            // new
+            TerrainPattern3x3.North,
+            TerrainPattern3x3.South,
+            TerrainPattern3x3.East,
+            TerrainPattern3x3.West
         };
         for(int i = 0; i < toMatchAgainst.Count; i++) {
             if (this.SetEquals(toMatchAgainst[i])) return i;

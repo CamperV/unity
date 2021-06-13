@@ -60,6 +60,6 @@ public class ElevationMap : IPathable
     }
 
     public int EdgeCost(Vector3Int src, Vector3Int dest) {
-        return (int)(100f * (Mathf.Abs(map[dest.x, dest.y] - map[src.x, src.y])));
+        return (int)(100f * (Mathf.Abs(map[dest.x, dest.y] - map[src.x, src.y]))) + 1;
     }
 }

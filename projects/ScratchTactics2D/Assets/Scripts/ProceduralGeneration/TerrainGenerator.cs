@@ -97,7 +97,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 
             // create Pattern of Road positions center
             TerrainPattern3x3 roadPattern = new TerrainPattern3x3();
-            foreach(Vector3Int neighbor in map.GetNeighbors(roadPos)) {
+            foreach (Vector3Int neighbor in map.GetNeighbors(roadPos)) {
                 if (map[neighbor.x, neighbor.y] == TileEnum.road 			||
 					map[neighbor.x, neighbor.y] == TileEnum.waterRoad 		||
 					map[neighbor.x, neighbor.y] == TileEnum.forestRoad 		||

@@ -7,7 +7,6 @@ using System.Linq;
 
 public class FieldOfView
 {
-	public static int maxVisibility = 5; // in tiles, includes the origin in radius
 	public static Overworld overworld { get => GameManager.inst.overworld; }
 	private static float intensity = 0.65f; // for hiding/revealing tiles
 
@@ -41,7 +40,7 @@ public class FieldOfView
 						breakCnt += (overworld.TypeAt(t).MatchesType(typeof(Forest))) ? 1 : 0;
 					}
 				}
-				if (breakCnt >= 3) continue;
+				if (breakCnt >= 2) continue;
 			}
 
 			// by default, you are visible within the circle

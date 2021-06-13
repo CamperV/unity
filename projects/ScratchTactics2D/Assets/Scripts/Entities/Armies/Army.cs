@@ -12,7 +12,6 @@ public abstract class Army : MovingObject
 	protected Animator animator;
 
 	// army stats
-	public virtual int visionRange { get => FieldOfView.maxVisibility; }
 	public virtual float moveSpeed { get => 1.0f; }
 
 	// constants
@@ -24,28 +23,6 @@ public abstract class Army : MovingObject
 
 	// this is where the "real" units are stored
 	public Dictionary<Guid, UnitStats> barracks = new Dictionary<Guid, UnitStats>();
-	
-	// for moving around the Overworld
-	// why in this file? Because it will be updated every time gridPosition is updated
-	private FieldOfView _fov;
-	public FieldOfView fov {
-		get => _fov;
-		set {
-			//if (_fov != null) _fov.HideAll();
-			_fov = value;
-			_fov.Display();
-		}
-	}
-	
-	[HideInInspector] public override Vector3Int gridPosition {
-		get => _gridPosition;
-
-		// make sure you also update FOV when moving
-		protected set {
-			_gridPosition = value;
-			fov = new FieldOfView(_gridPosition, visionRange);
-		}
-	}
 	
 	// child classes must specify which grid to travel on
 	public abstract bool GridMove(int xdir, int ydir);
