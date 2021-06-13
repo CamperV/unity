@@ -11,6 +11,7 @@ public class PlayerArmy : Army
 	// for moving around the Overworld
 	// why in this file? Because it will be updated every time gridPosition is updated
 	public virtual int visionRange { get => 8; }	// in tiles, includes the origin in radius
+	public virtual int closeVisionRange { get => 1; }	// in tiles, includes the origin in radius
 
 	private FieldOfView _fov;
 	public FieldOfView fov {
@@ -27,7 +28,7 @@ public class PlayerArmy : Army
 		// make sure you also update FOV when moving
 		protected set {
 			_gridPosition = value;
-			fov = new FieldOfView(_gridPosition, visionRange);
+			fov = new FieldOfView(_gridPosition, visionRange, closeVisionRange);
 		}
 	}
 

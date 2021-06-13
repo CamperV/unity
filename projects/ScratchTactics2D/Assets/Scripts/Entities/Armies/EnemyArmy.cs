@@ -131,7 +131,6 @@ public abstract class EnemyArmy : Army
 		// Also, standardize the "attack" bump. Don't make them move into a square
 		bool moveSuccess = false;
 		var tickCost = (selectedMove == flowField.origin) ? Constants.standardTickCost : grid.TerrainAt(selectedMove).tickCost;
-		
 		if (tickPool > 0 && tickCost <= tickPool) {
 			Vector3Int nextStep = ToPosition(selectedMove, 1);
 			moveSuccess = GridMove(nextStep.x, nextStep.y);
@@ -142,7 +141,7 @@ public abstract class EnemyArmy : Army
 		// return var is used to send a keepAlive signal to the phase
 		// if you've depleted your pool, send a false
 		// if you were able to move and the pool is not depleted, keep it alive
-		return moveSuccess;
+		return moveSuccess && tickPool >= Constants.standardTickCost;
 	}
 
 	public override bool GridMove(int xdir, int ydir) {

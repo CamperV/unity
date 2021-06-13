@@ -97,11 +97,9 @@ public class PlayerArmyController : Controller
 
 						_pathToQueue?.UnShow();
 						_pathToQueue = null;
-						//if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
 					} else {
 						_pathToQueue?.UnShow();
 						_pathToQueue = null;
-						//if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
 					}
 				}
 
@@ -111,7 +109,7 @@ public class PlayerArmyController : Controller
 					Func<Army, int> actionToTake = actionQueue.Dequeue();
 
 					phaseActionState = Enum.PhaseActionState.acting;
-					StartCoroutine( PlayerTakeAction(actionToTake) );
+					PlayerTakeAction(actionToTake);
 
 					// finally, start "consuming" the displayed path
 					if (!_pathToQueue?.IsEmpty() ?? false) {
@@ -149,14 +147,13 @@ public class PlayerArmyController : Controller
 		}
 		return KeyCode.None;
 	}
-	
-	private IEnumerator PlayerTakeAction(Func<Army, int> Action) {
+
+	private void PlayerTakeAction(Func<Army, int> Action) {
 		// we've taken an action... but what did it cost
 		int ticksTaken = Action(registeredPlayer);
 		GameManager.inst.enemyController.AddTicksAll(ticksTaken);
 
-		yield return new WaitForSeconds(phaseDelayTime);
-		
+		// this delays key presses too much, maybe
 		StartCoroutine( registeredPlayer.ExecuteAfterMoving( () => {
 			phaseActionState = Enum.PhaseActionState.complete;
 		}) );

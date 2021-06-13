@@ -106,6 +106,7 @@ public class EnemyArmyController : Controller
 	public override void TriggerPhase() {
 		base.TriggerPhase();
 		subjectsActingTrigger = true;
+		Debug.Log($"triggered enemy phase");
 	}
 	
 	public IEnumerator SubjectsTakeAction() {
@@ -117,7 +118,6 @@ public class EnemyArmyController : Controller
 		List<MovingObject> orderedRegistry = activeRegistry.OrderBy(it => (it as EnemyArmy).CalculateInitiative()).ToList();
 		for (int i = 0; i < orderedRegistry.Count; i++) {
 			EnemyArmy subject = orderedRegistry[i] as EnemyArmy;
-
 			switch(subject.state) {
 				case Enum.EnemyState.idle:
 					// alert! animation
@@ -135,6 +135,7 @@ public class EnemyArmyController : Controller
 				// this state requires ticks to function
 				// tickpool is managed in the subject class, but we can tell it to keep moving here
 				case Enum.EnemyState.followField:
+					Debug.Log($"processing enemy {subject} who can act");
 					// if we can attack, do that with a higher priority
 					if (subject.CanAttackPlayer()) {	// checks ticks
 						// ...and spends ticks
@@ -155,8 +156,10 @@ public class EnemyArmyController : Controller
 					} else {
 						FlowField subjectField = IndividualFlowField(subject);
 						keepPhaseAlive |= subject.FollowField(subjectField, GameManager.inst.player);
+						Debug.Log($"Followed field, keepPhaseAlive: {keepPhaseAlive}");
 						break;
 					}
+					while (subject.IsMoving()) yield return null; 
 
 				case Enum.EnemyState.inBattle:
 					Debug.Log($"{subject} will not do anything other than fight for its life, as it is currently.");
@@ -164,21 +167,10 @@ public class EnemyArmyController : Controller
 					
 				// end case
 			}
-			
-			// don't delay if you're the last/idle
-			// if (i == activeRegistry.Count-1 || subject.state == Enum.EnemyState.idle) {
-			// 	yield return null;
-			// } else {
-			// 	yield return new WaitForSeconds(phaseDelayTime);
-			// }
-			// if (subject.state != Enum.EnemyState.idle) {
-			// 	yield return new WaitForSeconds(phaseDelayTime);
-			// }
 		}
 
 		// suitable pause to see that the units are moving again
-		//if (keepPhaseAlive) yield return new WaitForSeconds(phaseDelayTime*10);
-		if (keepPhaseAlive) yield return new WaitForSeconds(0f);
+		if (keepPhaseAlive) yield return new WaitForSeconds(0.10f);
 		crtActing = false;
 	}
 		

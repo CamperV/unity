@@ -15,19 +15,21 @@ public class FieldOfView
 	public Vector3Int origin;
 	public Dictionary<Vector3Int, int> field;
 
-	public FieldOfView(Vector3Int _origin, int range) {
+	public FieldOfView(Vector3Int _origin, int range, int closeRange) {
 		origin = _origin;
-		field = RadialField(origin, range);
+		field = RadialField(origin, range, closeRange);
 	}
 
-	private Dictionary<Vector3Int, int> RadialField(Vector3Int origin, int range) {
+	private Dictionary<Vector3Int, int> RadialField(Vector3Int origin, int range, int closeRange) {
 		Dictionary<Vector3Int, int> _field = new Dictionary<Vector3Int, int> {
 			[origin] = 0
 		};
 
 		foreach(Vector3Int v in origin.RadiateSquare(range)) {
 			if (!overworld.IsInBounds(v) || !Visible(v, range)) continue;
-			if (VisibleCloseRange(v)) {
+
+			// always reveal if within closeRange
+			if (Visible(v, closeRange)) {
 				_field[v] = 1;
 				continue;
 			}
@@ -40,7 +42,7 @@ public class FieldOfView
 						breakCnt += (overworld.TypeAt(t).MatchesType(typeof(Forest))) ? 1 : 0;
 					}
 				}
-				if (breakCnt >= 2) continue;
+				if (breakCnt >= 4) continue;
 			}
 
 			// by default, you are visible within the circle
@@ -52,11 +54,6 @@ public class FieldOfView
 	private bool Visible(Vector3Int p, int range) {
 		Vector3Int v = p - origin;
 		return (v.x*v.x) + (v.y*v.y) <= (range*range);
-	}
-
-	private bool VisibleCloseRange(Vector3Int p) {
-		Vector3Int v = p - origin;
-		return (v.x*v.x) + (v.y*v.y) <= (2*2);
 	}
 
 	private Dictionary<Vector3Int, int> RaycastField(Vector3Int origin, int range) {

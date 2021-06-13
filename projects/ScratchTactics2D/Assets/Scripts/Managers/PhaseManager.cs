@@ -18,8 +18,6 @@ public class PhaseManager : MonoBehaviour
 		set => currentTurnByState[GameManager.inst.gameState] = value;
 	}
 
-	private PlayerArmyController playerControllerInst;
-	private EnemyArmyController enemyControllerInst;
 	private Dictionary<Enum.Phase, string> phaseStringRepr = new Dictionary<Enum.Phase, string>() {
 		[Enum.Phase.none] = "N/A",
 		[Enum.Phase.player] = "Player",
@@ -39,49 +37,36 @@ public class PhaseManager : MonoBehaviour
 	
 	// don't use Awake here, to avoid bootstrapping issues
     void Start() {
-		playerControllerInst = GameManager.inst.playerController;
-		enemyControllerInst = GameManager.inst.enemyController;
-
 		currentPhase = Enum.Phase.player;
 		currentTurn = 1;
     }
 
     void Update() {
+		// OVERWORLD-LEVEL PHASING
 		if (GameManager.inst.gameState == Enum.GameState.overworld) {
 			// wait for phase objects to signal, and change phase for them
-			if (currentPhase == Enum.Phase.player) {
-				if (playerControllerInst.phaseActionState == Enum.PhaseActionState.postPhase) {
-					OnPhaseEnd(currentPhase);
-					StartPhase(Enum.Phase.enemy);
-					enemyControllerInst.TriggerPhase();
-				}
-				//
-				// code spins here until player takes its phaseAction
-				//
-			}
-			else if (currentPhase == Enum.Phase.enemy) {
-				if (enemyControllerInst.phaseActionState == Enum.PhaseActionState.postPhase) {
-					OnPhaseEnd(currentPhase);
+			Controller activeController = GetControllerFromPhase(currentPhase);
+			if (activeController.phaseActionState == Enum.PhaseActionState.postPhase) {
+				OnPhaseEnd(currentPhase);
+				StartPhase(currentPhase.NextPhase());
+
+				// if there's already a battle in progress, rejoin it
+				var battle = GameManager.inst.tacticsManager.activeBattle;
+				if (battle?.isPaused ?? false) {						
+					battle.Resume();
+					
+					currentTurn++;
 					StartPhase(currentPhase.NextPhase());
+					battle.GetControllerFromPhase(currentPhase).TriggerPhase();
 
-					// if there's already a battle in progress, rejoin it
-					var battle = GameManager.inst.tacticsManager.activeBattle;
-					if (battle?.isPaused ?? false) {						
-						battle.Resume();
-						
-						currentTurn++;
-						StartPhase(Enum.Phase.player);
-						battle.GetControllerFromPhase(Enum.Phase.player).TriggerPhase();
-
-					// otherwise, give control back to the player
-					} else {					
-						playerControllerInst.TriggerPhase();
-					}
+				// otherwise, give control back to the player
+				} else {					
+					GetControllerFromPhase(currentPhase).TriggerPhase();
 				}
-				//
-				// code spins here until all enemies takes their phaseAction
-				//
 			}
+
+
+		// TACTICS-LEVEL PHASING
 		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
 			var battle = GameManager.inst.tacticsManager.activeBattle;
 
@@ -105,7 +90,7 @@ public class PhaseManager : MonoBehaviour
 						// have every two turns equal standardTickCost ticks
 						GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
 						StartPhase(Enum.Phase.enemy);
-						enemyControllerInst.TriggerPhase();
+						GameManager.inst.enemyController.TriggerPhase();
 					}));
 				} else {
 					OnPhaseEnd(currentPhase);
@@ -141,5 +126,15 @@ public class PhaseManager : MonoBehaviour
 			   currentPhase == Enum.Phase.enemy &&
 			   currentTurn % 2 == 0 &&
 			   GameManager.inst.enemyController.enemiesFollowing;
+	}
+
+	private Controller GetControllerFromPhase(Enum.Phase phase) {
+		switch (phase) {
+			case Enum.Phase.player:
+				return GameManager.inst.playerController;
+			case Enum.Phase.enemy:
+				return GameManager.inst.enemyController;
+		}
+		return null;
 	}
 }
