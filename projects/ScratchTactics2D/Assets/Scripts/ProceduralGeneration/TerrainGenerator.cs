@@ -23,8 +23,10 @@ public abstract class TerrainGenerator : MonoBehaviour
 		plain,
 		forest, deepForest,
 		foothill, mountain, mountain2x2, peak, peak2x2,
+		//
 		village,
 		ruins,
+		fortress,
 		// NoTile section
 		mountainNoTile, peakNoTile,
 
@@ -70,8 +72,8 @@ public abstract class TerrainGenerator : MonoBehaviour
 			(ScriptableObject.CreateInstance<Peak2x2WorldTile>() as Peak2x2WorldTile),
 			//
 			(ScriptableObject.CreateInstance<VillageWorldTile>() as VillageWorldTile),
-			//
 			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
+			(ScriptableObject.CreateInstance<FortressWorldTile>() as FortressWorldTile),
 			
 			// NoTile
 			null,
@@ -187,6 +189,9 @@ public abstract class TerrainGenerator : MonoBehaviour
 						break;
 					case TileEnum.ruins:
 						terrain = new Ruins(pos);
+						break;
+					case TileEnum.fortress:
+						terrain = new Fortress(pos);
 						break;
 					// fall-through here
 					// don't include villageRoad

@@ -93,6 +93,12 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // 0f means no ruins will appear
         PatternReplaceRandom(0.05f, TerrainPatternShape.CenterPlus, TileEnum.deepForest, TileEnum.ruins,
                              TileEnum.deepForest);
+
+        // do Fortresses here
+        // 1f indicates EVERY deepForest (surrounded by deepForest) you see will be replaced with a Ruins
+        // 0f means no ruins will appear
+        // PatternReplaceRandom(0.05f, TerrainPatternShape.CenterPlus, TileEnum.deepForest, TileEnum.fortress,
+        //                      TileEnum.mountain, TileEnum.peak);
 		
         // road router in ElevationTerrainGenerator
         base.Preprocessing();

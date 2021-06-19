@@ -754,8 +754,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   accelerator: 304
-  movementAccel: 2
-  phaseAccel: 10
+  movementAccel: 1
+  phaseDelayTimeAccel: 0
 --- !u!4 &1480208796
 Transform:
   m_ObjectHideFlags: 0
@@ -967,7 +967,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b824d2c15c78d845ab1cf15109c0ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 123456
+  seed: 12345
   overworldPrefab: {fileID: 6013225397290577684, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
   playerPrefab: {fileID: 5140243916379933852, guid: e378b7eb70c68894abdf51437ee7749a, type: 3}
   phaseManagerPrefab: {fileID: 6692847297558468328, guid: af94431e23b50634bb543ba8bffeee85, type: 3}

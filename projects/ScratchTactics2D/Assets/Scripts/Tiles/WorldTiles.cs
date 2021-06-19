@@ -48,6 +48,18 @@ public class RuinsWorldTile : WorldTile
 	}
 }
 
+public class FortressWorldTile : WorldTile
+{
+	public override int probability { get { return 1; } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("Parchment/parchment_fortress")
+		};
+		sprite = sprites[0];
+	}
+}
+
 public class ForestWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }
