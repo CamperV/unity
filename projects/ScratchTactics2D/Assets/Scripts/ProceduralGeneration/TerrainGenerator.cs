@@ -362,4 +362,55 @@ public abstract class TerrainGenerator : MonoBehaviour
 		}
 		Debug.Log($"Spawned {cnt} {replaceWith}");
 	}
+
+	protected void PatternReplaceConditional(float probability, TerrainPattern pattern, Func<TileEnum, bool> toReplaceCondition, TileEnum replaceWith,
+											 params Pair<Func<TileEnum, bool>, int>[] conditions) {
+		List<Vector3Int> secondPass = new List<Vector3Int>();
+
+		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
+			for (int y = map.GetLength(1)-1; y >= 0; y--) {
+				if (toReplaceCondition(map[x, y])) {
+					Vector3Int origin = new Vector3Int(x, y, 0);
+
+					// for each origin we check, we need to create a new copy of the conditions parameter array
+					// otherwise, the values we check will persist for the entire duration of this function call
+					// (which is only once per map generation)
+					//
+					// best way to avoid copy the refs
+					int[] indexedConditionCounts = new int[conditions.Length];
+					for (int i = 0; i < conditions.Length; i++) {
+						indexedConditionCounts[i] = conditions[i].second;
+					}
+
+					// constraints dict represents how many times each TileEnum MUST show up, at least
+					// each time you see a valid TileEnum in the pattern, decrement
+					foreach (var v in pattern.YieldPattern(origin)) {
+						if (map.Contains(v.x, v.y)) {
+							// this is pass by val, so hopefully this works
+							for (int c = 0; c < conditions.Length; c++) {
+								var conditionPair = conditions[c];
+								if (conditionPair.first(map[v.x, v.y])) {
+									indexedConditionCounts[c]--;
+								}
+							}
+						}
+					}
+
+					if (indexedConditionCounts.All( it => it < 1 )) secondPass.Add(origin);
+				}
+			}
+		}
+
+		// perform all replacements in a second pass so that they do not affect one another
+		// BUT don't do all of them. Do them randomly
+		int cnt = 0;
+		foreach (var og in secondPass) {
+			float rng = Random.Range(0f, 1f);
+			if (rng <= probability) {
+				cnt++;
+				map[og.x, og.y] = replaceWith;
+			}
+		}
+		Debug.Log($"Spawned {cnt} {replaceWith}");
+	}
 }

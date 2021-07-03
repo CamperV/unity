@@ -106,7 +106,6 @@ public class EnemyArmyController : Controller
 	public override void TriggerPhase() {
 		base.TriggerPhase();
 		subjectsActingTrigger = true;
-		Debug.Log($"triggered enemy phase");
 	}
 	
 	public IEnumerator SubjectsTakeAction() {

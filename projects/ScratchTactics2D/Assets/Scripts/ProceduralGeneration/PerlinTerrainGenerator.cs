@@ -95,10 +95,16 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
                              TileEnum.deepForest);
 
         // do Fortresses here
-        // 1f indicates EVERY deepForest (surrounded by deepForest) you see will be replaced with a Ruins
-        // 0f means no ruins will appear
-        // PatternReplaceRandom(0.05f, TerrainPatternShape.CenterPlus, TileEnum.deepForest, TileEnum.fortress,
-        //                      TileEnum.mountain, TileEnum.peak);
+        // patternreplace touching at least one Mountain and at least one 
+        // these conditions are lambdas that are run on each member of a Pattern surrounding the target
+        // the second number in the Pair is how many times this must become true to be valid
+        // Here: a fortress will be created if there is at least one mountain/peak touching it, and at least one NON mountain/peak touching it (5% of the time)
+        var fortressCondition1 = new Pair<Func<TileEnum, bool>, int>((it) => { return it == TileEnum.mountain || it == TileEnum.peak; }, 2);
+        var fortressCondition2 = new Pair<Func<TileEnum, bool>, int>((it) => { return !fortressCondition1.first(it); }, 1);
+
+        // this defines which TileEnums to target
+        Func<TileEnum, bool> whichTileEnumCondition = (it) => { return fortressCondition2.first(it); };
+        PatternReplaceConditional(0.05f, TerrainPatternShape.NoCenterPlus, whichTileEnumCondition, TileEnum.fortress, fortressCondition1, fortressCondition2);
 		
         // road router in ElevationTerrainGenerator
         base.Preprocessing();
