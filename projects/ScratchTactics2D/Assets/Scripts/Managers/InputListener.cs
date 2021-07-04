@@ -8,7 +8,7 @@ public class InputListener : MonoBehaviour
     public float movementAccel;
 	public float phaseDelayTimeAccel;
 	
-	private float _phaseDelayTime = 0.10f;
+	private float _phaseDelayTime = 0.00f;
 
 	void Start() {
 		PhasedObject.phaseDelayTime = _phaseDelayTime;

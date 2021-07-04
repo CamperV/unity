@@ -42,17 +42,6 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         /* .75 -> */ [1.00f] = new Color(1.00f, 1.00f, 1.00f, 1.00f)     // white
     };
 
-    protected override void Preprocessing() {
-        // link the villages via roads
-		CreateRoadsBetweenWaypoints( map.LocationsOf<TileEnum>(TileEnum.village)
-										.Where(it => it == 1)
-										.Select(it => new Vector3Int(it.x, it.y, 0))
-										.ToList() );
-        
-        // mountain pattern replacers in TerrainGenerator
-        base.Preprocessing();
-    }
-
     // what makes this protected?
     // A: the usage of "elevation" as the pathfinding mechanism
     protected void CreateRoadsBetweenWaypoints(List<Vector3Int> waypoints) {	

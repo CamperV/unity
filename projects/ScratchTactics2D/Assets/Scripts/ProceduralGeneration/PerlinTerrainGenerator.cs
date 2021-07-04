@@ -49,10 +49,6 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
 
     // Preprocessing is run before ApplyMap
     protected override void Preprocessing() {
-        //
-        // smooth beach?
-        //
-
         // seed + grow forests
         // > generate a separate noise map, smoother, to generate forests
         // TODO: I really just kinda smooth-brained this one out: there's a better way to balance the multiple thresholds/rng here
@@ -91,7 +87,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // do Ruins here
         // 1f indicates EVERY deepForest (surrounded by deepForest) you see will be replaced with a Ruins
         // 0f means no ruins will appear
-        PatternReplaceRandom(0.05f, TerrainPatternShape.CenterPlus, TileEnum.deepForest, TileEnum.ruins,
+        PatternReplaceRandom(0.25f, TerrainPatternShape.CenterPlus, TileEnum.deepForest, TileEnum.ruins,
                              TileEnum.deepForest);
 
         // do Fortresses here
@@ -99,15 +95,49 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // these conditions are lambdas that are run on each member of a Pattern surrounding the target
         // the second number in the Pair is how many times this must become true to be valid
         // Here: a fortress will be created if there is at least one mountain/peak touching it, and at least one NON mountain/peak touching it (5% of the time)
-        var fortressCondition1 = new Pair<Func<TileEnum, bool>, int>((it) => { return it == TileEnum.mountain || it == TileEnum.peak; }, 2);
-        var fortressCondition2 = new Pair<Func<TileEnum, bool>, int>((it) => { return !fortressCondition1.first(it); }, 1);
-
-        // this defines which TileEnums to target
-        Func<TileEnum, bool> whichTileEnumCondition = (it) => { return fortressCondition2.first(it); };
-        PatternReplaceConditional(0.05f, TerrainPatternShape.NoCenterPlus, whichTileEnumCondition, TileEnum.fortress, fortressCondition1, fortressCondition2);
+        var fortressCondition1 = new Pair<Func<TileEnum, bool>, int>(it => it == TileEnum.mountain || it == TileEnum.peak, 2);
+        var fortressCondition2 = new Pair<Func<TileEnum, bool>, int>(it => !fortressCondition1.first(it), 1);
+        PatternReplaceConditional(0.05f, TerrainPatternShape.NoCenterPlus, it => fortressCondition2.first(it),
+                                  TileEnum.fortress, fortressCondition1, fortressCondition2);
 		
+        // do Camps here
+        // for now, just pretty much random
+        var campCondition1 = new Pair<Func<TileEnum, bool>, int>(it => it != TileEnum.mountain && it != TileEnum.peak, 2);
+        PatternReplaceConditional(0.01f, TerrainPatternShape.NoCenterPlus, it => it == TileEnum.forest || it == TileEnum.deepForest,
+                                  TileEnum.camp, campCondition1);
+
         // road router in ElevationTerrainGenerator
-        base.Preprocessing();
+        // link the villages via roads
+		CreateRoadsBetweenWaypoints( map.LocationsOf<TileEnum>(TileEnum.village)
+										.Where(it => it == 1)
+										.Select(it => new Vector3Int(it.x, it.y, 0))
+										.ToList() );
+        
+        // do BanditCamps here
+        // as a function of distance from/to a Road
+        int[,] spawnableBanditCampMask = new int[map.GetLength(0), map.GetLength(1)];
+        int[,] checkDistanceAgainst = map.LocationsOf<TileEnum>(TileEnum.road, TileEnum.waterRoad, TileEnum.forestRoad, TileEnum.mountainRoad, TileEnum.villageRoad);
+
+        // for each point, calculate the total distances from all specified locations, then normalize it
+        foreach (var road in checkDistanceAgainst.Where(it => it == 1)) {
+            foreach (var vp in road.Radiate(5)) {
+                if (checkDistanceAgainst.Contains<int>(vp.x, vp.y) && checkDistanceAgainst[vp.x, vp.y] != 1) {
+                    spawnableBanditCampMask[vp.x, vp.y] = 1;
+                }
+            }
+        }
+        SaveTextureAsPNG( RawTexture(spawnableBanditCampMask.ToFloat()), "distance_from_road_map.png");
+        List<Vector2Int> banditCampPositions = spawnableBanditCampMask.Where(it => it == 1).ToList().RandomSelections<Vector2Int>(numBanditCamps);
+        //
+        foreach(Vector2Int pos in banditCampPositions) {
+            map[pos.x, pos.y] = TileEnum.banditCamp;
+        }
+
+        // Finally,
+        // replace 2x2 mountains with large mountain tiles
+		// create bottom-left 2x2 pattern for each mountain
+		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2, TileEnum.peak);
+		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2, TileEnum.mountain);
     }
 
     private NoiseMap GeneratePerlinNoiseMap(int dimX, int dimY, int numOctaves, float scale = 1.0f, float power = 1.0f, bool modulate = false) {
@@ -137,7 +167,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
                     float sampleY = (float)(y - midpoint.y)/relativeScale;
                     Vector2 sample = octaveScale * new Vector2(sampleX, sampleY) + randomOffset;
 
-                    float perlinValue = Mathf.Pow( 1/octaveScale * Mathf.PerlinNoise(sample.x, sample.y), power);
+                    float perlinValue = Mathf.Pow(1/octaveScale * Mathf.PerlinNoise(sample.x, sample.y), power);
                     noiseMap.octaves[o, x, y] = perlinValue;
                 }
             }

@@ -26,6 +26,7 @@ public class SandWorldTile : WorldTile
 	}
 }
 
+// POI
 public class VillageWorldTile : WorldTile
 {
 	public void OnEnable() {
@@ -36,6 +37,7 @@ public class VillageWorldTile : WorldTile
 	}
 }
 
+// POI
 public class RuinsWorldTile : WorldTile
 {
 	public override int probability { get { return 1; } }
@@ -48,6 +50,7 @@ public class RuinsWorldTile : WorldTile
 	}
 }
 
+// POI
 public class FortressWorldTile : WorldTile
 {
 	public override int probability { get { return 1; } }
@@ -55,6 +58,32 @@ public class FortressWorldTile : WorldTile
 	public void OnEnable() {
 		sprites = new List<Sprite>() {
 			ResourceLoader.GetSprite("Parchment/parchment_fortress")
+		};
+		sprite = sprites[0];
+	}
+}
+
+// POI
+public class CampWorldTile : WorldTile
+{
+	public override int probability { get { return 1; } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("Parchment/parchment_camp")
+		};
+		sprite = sprites[0];
+	}
+}
+
+// POI
+public class BanditCampWorldTile : WorldTile
+{
+	public override int probability { get { return 1; } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("Parchment/parchment_bandit_camp")
 		};
 		sprite = sprites[0];
 	}

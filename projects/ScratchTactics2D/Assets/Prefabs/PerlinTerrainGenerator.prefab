@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapDimension: {x: 50, y: 200}
   numVillages: 10
-  seed: 12345
+  numBanditCamps: 15
   perlinScale: 6
   octaves: 2
   perlinPower: 1

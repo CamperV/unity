@@ -22,13 +22,38 @@ namespace Extensions
             }
         }
 
+        // Vector2Int
+        public static IEnumerable<Vector2Int> Radiate(this Vector2Int v, int range) {
+            List<Vector2Int> toEnumerate = new List<Vector2Int>();
+            Queue<Vector2Int> queue = new Queue<Vector2Int>();
+            queue.Enqueue(v);
+
+            while(queue.Count > 0) {
+                Vector2Int curr = queue.Dequeue();
+                if (toEnumerate.Contains(curr)) continue; 
+                if (curr != v) toEnumerate.Add(curr);
+
+                // add all surrounding tiles to the retval, but only do this $range times
+                if (curr.ManhattanDistance(v) < range) {
+                    queue.Enqueue(curr + Vector2Int.up);
+                    queue.Enqueue(curr + Vector2Int.right);
+                    queue.Enqueue(curr + Vector2Int.down);
+                    queue.Enqueue(curr + Vector2Int.left);
+                }
+            }
+
+            // now spill the beans
+            foreach (var e in toEnumerate) {
+                yield return e; 
+            }
+        }
+
         // Vector3Int
         public static IEnumerable<Vector3Int> Radiate(this Vector3Int v, int range) {
             List<Vector3Int> toEnumerate = new List<Vector3Int>();
             Queue<Vector3Int> queue = new Queue<Vector3Int>();
             queue.Enqueue(v);
 
-            // let's avoid recursion in C#, at least in relatively-unknown-extension-space, yeah?
             while(queue.Count > 0) {
                 Vector3Int curr = queue.Dequeue();
                 if (toEnumerate.Contains(curr)) continue; 
@@ -310,6 +335,10 @@ namespace Extensions
             float[,] r = new float[f.GetLength(0), f.GetLength(1)];
             float min = f.Min();
             float max = f.Max();
+            if (min == max) {
+                min = 0f;
+                max = 1f;
+            }
 
             for (int x = 0; x < f.GetLength(0); x++) {
                 for (int y = 0; y < f.GetLength(1); y++) {

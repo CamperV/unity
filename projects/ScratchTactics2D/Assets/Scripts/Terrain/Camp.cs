@@ -8,11 +8,9 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public class DeepForest : Forest, IEnemyArmySpawner
+public class Camp : Terrain
 {
-	public override int tickCost { get => (int)(Constants.standardTickCost * 2.5f); }
-	
-	public DeepForest(Vector3Int pos) {
+	public Camp(Vector3Int pos) {
 		position = pos;
 	}
 }

@@ -37,7 +37,8 @@ public abstract class Terrain
 	}
 
 	public bool AttemptToSpawnArmy() {
-		float rng = Random.Range(0f, 100f);
+		// Unity's float!float is inclusive for both sides
+		float rng = Random.Range(float.Epsilon, 100f);
 
 		string armyTagToSpawn = null;
 	    foreach (KeyValuePair<float, string> spawnPair in spawnRates.OrderBy(p => p.Key)) {

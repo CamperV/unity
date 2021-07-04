@@ -27,6 +27,8 @@ public abstract class TerrainGenerator : MonoBehaviour
 		village,
 		ruins,
 		fortress,
+		camp,
+		banditCamp,
 		// NoTile section
 		mountainNoTile, peakNoTile,
 
@@ -43,6 +45,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 
 	// generation parameters
 	public int numVillages;
+	public int numBanditCamps;
 
 	protected static WorldTile[] tileOptions;
 	public Action<Vector3Int, WorldTile> TileSetter;
@@ -71,9 +74,12 @@ public abstract class TerrainGenerator : MonoBehaviour
 			(ScriptableObject.CreateInstance<PeakWorldTile>() as PeakWorldTile),
 			(ScriptableObject.CreateInstance<Peak2x2WorldTile>() as Peak2x2WorldTile),
 			//
+			// POI
 			(ScriptableObject.CreateInstance<VillageWorldTile>() as VillageWorldTile),
 			(ScriptableObject.CreateInstance<RuinsWorldTile>() as RuinsWorldTile),
 			(ScriptableObject.CreateInstance<FortressWorldTile>() as FortressWorldTile),
+			(ScriptableObject.CreateInstance<CampWorldTile>() as CampWorldTile),
+			(ScriptableObject.CreateInstance<BanditCampWorldTile>() as BanditCampWorldTile),
 			
 			// NoTile
 			null,
@@ -193,6 +199,12 @@ public abstract class TerrainGenerator : MonoBehaviour
 					case TileEnum.fortress:
 						terrain = new Fortress(pos);
 						break;
+					case TileEnum.camp:
+						terrain = new Camp(pos);
+						break;
+					case TileEnum.banditCamp:
+						terrain = new BanditCamp(pos);
+						break;
 					// fall-through here
 					// don't include villageRoad
 					case TileEnum.waterRoad:
@@ -245,12 +257,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 		Postprocessing();
 	}
 
-    protected virtual void Preprocessing() {
-        // replace 2x2 mountains with large mountain tiles
-		// create bottom-left 2x2 pattern for each mountain
-		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2, TileEnum.peak);
-		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2, TileEnum.mountain);
-    }
+    protected virtual void Preprocessing() {}
 	protected virtual void Postprocessing() {}
 	
 	protected void PatternReplaceMultiple(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, params TileEnum[] patternContent) {

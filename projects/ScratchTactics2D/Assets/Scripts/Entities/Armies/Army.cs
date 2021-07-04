@@ -78,7 +78,6 @@ public abstract class Army : MovingObject
 
 			// now save the unit in our barracks
 			barracks[defaultStats.ID] = defaultStats;
-			Debug.Log($"{this} generated {barracks[defaultStats.ID]}");
 		}
 	}
 
