@@ -18,15 +18,8 @@ public abstract class Terrain
 	public virtual Vector2Int battleGridSize { get => new Vector2Int(8, 8); }
 	public virtual int tickCost { get => Constants.standardTickCost; }
 
-	private TacticsTile _tacticsTile;
-	public virtual TacticsTile tacticsTile {
-		get {
-			if (_tacticsTile == null) {
-				_tacticsTile = ScriptableObject.CreateInstance<GrassIsoTile>();
-			}
-			return _tacticsTile;
-		}
-	}
+	protected TacticsTile _tacticsTile;
+	public abstract TacticsTile tacticsTile { get; }
 
 	// IEnemyArmySpawner definitions
 	public Controller receivingController { get => GameManager.inst.enemyController; }
