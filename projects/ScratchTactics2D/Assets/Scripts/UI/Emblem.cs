@@ -10,12 +10,14 @@ public class Emblem : UnitUIElement
 
     public static Sprite FromWeapon(Weapon weapon) {
         switch (weapon.tag) {
-            case "WeaponSlash":
+            case "SlashWeapon":
                 return ResourceLoader.GetSprite("slash_emblem");
-            case "WeaponPierce":
+            case "PierceWeapon":
                 return ResourceLoader.GetSprite("pierce_emblem");
-            case "WeaponBlunt":
+            case "BluntWeapon":
                 return ResourceLoader.GetSprite("strike_emblem");
+            case "MissileWeapon":
+                return ResourceLoader.GetSprite("blank_portrait");
             default:
                 Debug.Log($"No valid weapon tag named {weapon.tag}");
                 Debug.Assert(false);

@@ -40,7 +40,7 @@ SpriteRenderer:
   m_SortingLayerID: -1026887529
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2011081452543692480, guid: 0d9d7655beaaaa84892b3615e4155338, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -48,7 +48,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &8796498940265689709
@@ -139,7 +139,7 @@ PrefabInstance:
     - target: {fileID: 3996583895950419961, guid: a43cfd85df7d62f419123b637cdcfa13, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 1d38495971210974a8d68b2287cd4035, type: 2}
+      objectReference: {fileID: 22100000, guid: c2365ffa7cc47e749bd58d89a8ee5866, type: 2}
     - target: {fileID: 4261332921861523792, guid: a43cfd85df7d62f419123b637cdcfa13, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.1

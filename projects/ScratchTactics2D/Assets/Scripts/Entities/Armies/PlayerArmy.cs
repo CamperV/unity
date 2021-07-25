@@ -36,9 +36,10 @@ public class PlayerArmy : Army
 	public override List<string> defaultUnitTags {
 		get {
 			return new List<string>() {
-				"UnitMercenary",
-				"UnitMercenary",
-				"UnitMercenary"
+				"KnightPlayerUnit",
+				"ArcherPlayerUnit",
+				"BanditPlayerUnit",
+				"SpearmanPlayerUnit",
 			};
 		}
 	}

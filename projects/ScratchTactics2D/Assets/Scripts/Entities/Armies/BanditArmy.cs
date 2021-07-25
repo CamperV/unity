@@ -6,14 +6,16 @@ using Random = UnityEngine.Random;
 
 public class BanditArmy : EnemyArmy
 {	
-	public override int detectionRange { get { return 2; } }
+	public override int detectionRange { get { return 3; } }
 	
 	// abstract implementations
 	public override List<string> defaultUnitTags {
 		get {
 			return new List<string>() {
-				"UnitSkeleton",
-				"UnitSkeleton"
+				"BanditEnemyUnit",
+				"BanditEnemyUnit",
+				"ArcherEnemyUnit",
+				"ArcherEnemyUnit",
 			};
 		}
 	}
@@ -23,6 +25,6 @@ public class BanditArmy : EnemyArmy
 	}
 	
 	public override void OnAlert() {
-		animator.SetTrigger("SkeletonAlert");
+		//animator.SetTrigger("SkeletonAlert");
 	}
 }
