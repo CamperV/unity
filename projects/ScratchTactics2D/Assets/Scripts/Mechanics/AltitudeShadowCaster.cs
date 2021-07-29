@@ -11,22 +11,27 @@ public class AltitudeShadowCaster
     private int y;
     private int radius;
     private Func<int, int, bool> IsOpaque;
-    private Action<int, int> SetFoV;
+    private Action<int, int> SetFOV;
+    //
+    public HashSet<Vector2Int> validSet;
 
-    public AltitudeShadowCaster(Vector3Int origin, int _radius, Func<int, int, bool> _isOpaque, Action<int, int> _setFoV) {
+    public AltitudeShadowCaster(Vector3Int origin, int _radius, Func<int, int, bool> _IsOpaque, Action<int, int> _SetFOV, HashSet<Vector2Int> _validSet) {
         x = origin.x;
         y = origin.y;
         radius = _radius;
-        IsOpaque = _isOpaque;
-        SetFoV = _setFoV;
+        IsOpaque = _IsOpaque;
+        SetFOV = _SetFOV;
+        
+        // optional, all valid if null
+        validSet = _validSet;
     }
 
     // Takes a circle in the form of a center point and radius, and a function that
-    // can tell whether a given cell is opaque. Calls the setFoV action on
+    // can tell whether a given cell is opaque. Calls the setFOV action on
     // every cell that is both within the radius and visible from the center. 
     public void CastShadows() {
         Func<int, int, bool> opaque = TranslateOrigin(IsOpaque, x, y);
-        Action<int, int> fov = TranslateOrigin(SetFoV, x, y);
+        Action<int, int> fov = TranslateOrigin(SetFOV, x, y);
 
         for (int octant = 0; octant < 8; ++octant) {
             ComputeFieldOfViewInOctantZero( TranslateOctant(opaque, octant), 
@@ -34,7 +39,7 @@ public class AltitudeShadowCaster
         }
     }
 
-    private void ComputeFieldOfViewInOctantZero(Func<int, int, bool> isOpaque, Action<int, int> setFieldOfView) {
+    private void ComputeFieldOfViewInOctantZero(Func<int, int, bool> IsOpaque, Action<int, int> SetFieldOfView) {
         var queue = new Queue<ColumnPortion>();
         queue.Enqueue(new ColumnPortion(0, new DirectionVector(1, 0), new DirectionVector(1, 1)));
 
@@ -42,7 +47,7 @@ public class AltitudeShadowCaster
             var current = queue.Dequeue();
             if (current.X > radius) continue;
 
-            ComputeFoVForColumnPortion(current.X, current.TopVector, current.BottomVector, isOpaque, setFieldOfView, queue);
+            ComputeFOVForColumnPortion(current.X, current.TopVector, current.BottomVector, IsOpaque, SetFieldOfView, queue);
         }
     }
 
@@ -50,7 +55,8 @@ public class AltitudeShadowCaster
     // portion that are within the radius as in the field of view, and 
     // (2) it computes which portions of the following column are in the 
     // field of view, and puts them on a work queue for later processing. 
-    private void ComputeFoVForColumnPortion(int x, DirectionVector topVector, DirectionVector bottomVector, Func<int, int, bool> isOpaque, Action<int, int> setFieldOfView, Queue<ColumnPortion> queue) {
+    private void ComputeFOVForColumnPortion(int x, DirectionVector topVector, DirectionVector bottomVector,
+                                            Func<int, int, bool> IsOpaque, Action<int, int> SetFieldOfView, Queue<ColumnPortion> queue) {
         // Search for transitions from opaque to transparent or
         // transparent to opaque and use those to determine what
         // portions of the *next* column are visible from the origin.
@@ -92,10 +98,10 @@ public class AltitudeShadowCaster
         // is much harder to implement.
         bool? wasLastCellOpaque = null;
         for (int y = topY; y >= bottomY; --y) {
-            bool inRadius = IsInRadius(x, y, radius);
-            if (inRadius) {
+            bool valid = IsInRadius(x, y);
+            if (valid) {
                 // The current cell is in the field of view.
-                setFieldOfView(x, y);
+                SetFieldOfView(x, y);
             }
 
             // A cell that was too far away to be seen is effectively
@@ -103,7 +109,7 @@ public class AltitudeShadowCaster
             // in the next column, so we might as well treat it as 
             // an opaque cell and not scan the cells that are also too
             // far away in the next column.
-            bool currentIsOpaque = !inRadius || isOpaque(x, y);
+            bool currentIsOpaque = !valid || IsOpaque(x, y);
             if (wasLastCellOpaque != null) {
                 if (currentIsOpaque) {
                     // We've found a boundary from transparent to opaque. Make a note
@@ -146,8 +152,8 @@ public class AltitudeShadowCaster
     }
 
     // Is the lower-left corner of cell (x,y) within the radius?
-    private static bool IsInRadius(int x, int y, int length) {
-        return (2 * x - 1) * (2 * x - 1) + (2 * y - 1) * (2 * y - 1) <= 4 * length * length;
+    private bool IsInRadius(int x, int y) {
+        return (2 * x - 1) * (2 * x - 1) + (2 * y - 1) * (2 * y - 1) <= 4 * radius * radius;
     }
 
     private struct DirectionVector {

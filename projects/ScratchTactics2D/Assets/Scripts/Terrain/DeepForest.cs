@@ -10,6 +10,7 @@ using Extensions;
 
 public class DeepForest : Forest, IEnemyArmySpawner
 {
+	public override int occlusion { get => 3; }
 	public override int tickCost { get => (int)(Constants.standardTickCost * 2.5f); }
 	
 	public DeepForest(Vector3Int pos) {

@@ -7,53 +7,55 @@ using System.Linq;
 
 public class FieldOfView
 {
-	public static Overworld overworld { get => GameManager.inst.overworld; }
-	private static float intensity = 0.65f; // for hiding/revealing tiles
+	public static int maxVisibility = 10;	// gets interpolated for occlusion/display values
+	private static float intensity = 0.35f; // for hiding/revealing tiles
+	private static Overworld overworld { get => GameManager.inst.overworld; }
 
 	// this differs from a FlowField because it relies on line-of-site
 	// as such, instead of pathfinding, we'll calculate the LoS for every involved tile
 	public Vector3Int origin;
 	public Dictionary<Vector3Int, int> field;
 
-	public FieldOfView(Vector3Int _origin, int range, int closeRange) {
+	public FieldOfView(Vector3Int _origin, int range) {
 		origin = _origin;
-		field = RadialField(origin, range, closeRange);
+		//
+		field = RaycastField(origin, range);
+		//
+		// field = new Dictionary<Vector3Int, int>();
+
+		// // cast over several rounds, corresponding to altitude
+		// int minAltitude = overworld.Terrain.Min(it => it.altitude);
+		// int maxAltitude = overworld.Terrain.Max(it => it.altitude);
+
+		// //for (int alt = maxAltitude; alt > 0; alt--) {
+		// for (int alt = minAltitude+1; alt < maxAltitude+1; alt++) {	
+		// 	HashSet<Vector2Int> validSet = new HashSet<Vector2Int>(
+		// 		overworld.Terrain.Where(it => it.altitude == alt || it.altitude == alt - 1)
+		// 						 .Select(it => new Vector2Int(it.position.x, it.position.y))
+		// 						 .ToList()
+		// 	);
+
+		// 	AltitudeShadowCaster asc = new AltitudeShadowCaster(origin, range,
+		// 		/* IsOpaque */ 	(x, y) => { return overworld.TerrainAt(new Vector3Int(x, y, 0)).altitude == alt; },
+		// 		/* SetFOV */ 	(x, y) => {
+		// 			if (validSet.Contains(new Vector2Int(x, y))) {
+		// 				field[new Vector3Int(x, y, 0)] = 1;
+		// 			}
+		// 		},
+		// 		validSet
+		// 	);
+		// 	asc.CastShadows();
+		// 	break;
+		// }
+
 	}
 
-	private Dictionary<Vector3Int, int> RadialField(Vector3Int origin, int range, int closeRange) {
-		Dictionary<Vector3Int, int> _field = new Dictionary<Vector3Int, int> {
-			[origin] = 0
-		};
-
-		foreach(Vector3Int v in origin.RadiateSquare(range)) {
-			if (!overworld.IsInBounds(v) || !Visible(v, range)) continue;
-
-			// always reveal if within closeRange
-			if (Visible(v, closeRange)) {
-				_field[v] = 1;
-				continue;
-			}
-
-			// hide if you're a forest which is surrounded by forests
-			if (overworld.TypeAt(v).MatchesType(typeof(Forest))) {
-				int breakCnt = 0;
-				foreach (var t in TerrainPatternShape.NoCenterPlus.YieldPattern(v)) {
-					if (overworld.IsInBounds(t)) {
-						breakCnt += (overworld.TypeAt(t).MatchesType(typeof(Forest))) ? 1 : 0;
-					}
-				}
-				if (breakCnt >= 4) continue;
-			}
-
-			// by default, you are visible within the circle
-			_field[v] = 1;
+	public int OcclusionAt(Vector3Int pos) {
+		if (field.ContainsKey(pos)) {
+			return field[pos];
+		} else {
+			return -1;
 		}
-		return _field;
-	}
-
-	private bool Visible(Vector3Int p, int range) {
-		Vector3Int v = p - origin;
-		return (v.x*v.x) + (v.y*v.y) <= (range*range);
 	}
 
 	private Dictionary<Vector3Int, int> RaycastField(Vector3Int origin, int range) {
@@ -62,42 +64,59 @@ public class FieldOfView
 		};
 
 		// reverse raycast
-		foreach(Vector3Int v in origin.RadiateSquare(range)) {
+		foreach(Vector3Int v in origin.RadiateCircle(range)) {
 			if (!overworld.IsInBounds(v) || _field.ContainsKey(v)) continue;
 			
 			// draw a line between this tile and the origin
 			// get all tiles along the line, and count up their occlusion + total with the number of tiles covered
 			int occlusion = BresenhamCost(v, origin);
-			if (occlusion <= range) {
-				_field[v] = occlusion;
+
+			// snap to certain levels of occlusion: Visible, Obscured, Hidden
+			switch (occlusion) {
+				case 0:
+				case 1:
+					break;
+				case 2:
+				case 3:
+					occlusion = 3;
+					break;
+				case 4:
+				case 5:
+				case 6:
+				case 7:
+					occlusion = 6;
+					break;
+				case 8:
+				case 9:
+				case 10:
+					occlusion = 10;
+					break;
 			}
+			_field[v] = occlusion;
 		}
 		return _field;
 	}
 
-	private int BresenhamCost(Vector3Int src, Vector3Int dest) {
+	private int BresenhamCost(Vector3Int v, Vector3Int origin) {
 		int acc = 0;
-		foreach (var p in BresenhamLine(src, dest)) {
-			if(p == src) continue;
-			
-			acc += overworld.TerrainAt(p).occlusion + 1;
-		}
-		return acc;
-	}
+		int vAlt = overworld.TerrainAt(v).altitude;
+		int originAlt = overworld.TerrainAt(origin).altitude;
+		int vDiff = Mathf.Abs(originAlt - vAlt);
 
-	private bool IsOccluded(Vector3Int src, Vector3Int dest) {
-		// from origin to target tile
-		int targetHeight = overworld.TerrainAt(src).altitude;
-		foreach (var p in BresenhamLine(dest, src)) {
-			if (p == src) continue;
-			int h = overworld.TerrainAt(p).altitude;
-			if (targetHeight == 0) {
-				if (h > targetHeight) return true;
-			} else {
-				if (h >= targetHeight) return true;
-			}
+		foreach (Vector3Int p in BresenhamLine(v, origin)) {
+			if(p == origin || p == v) continue;
+			int pAlt = overworld.TerrainAt(p).altitude;
+
+			// don't be occluded by something that you're taller than
+			if (vAlt > pAlt) continue;
+			
+			// if you're occluded by something taller
+			if (pAlt > vAlt) return FieldOfView.maxVisibility;
+			
+			// else, merely you're occluded or in range
+			acc += overworld.TerrainAt(p).occlusion;
 		}
-		return false;
+		return Mathf.Min(FieldOfView.maxVisibility, acc);
 	}
 
 	public static IEnumerable<Vector3Int> BresenhamLine(Vector3Int src, Vector3Int dest) {
@@ -175,26 +194,36 @@ public class FieldOfView
 	}
 
 	public void Display() {
-		// need to go over two passes, or at least in a certain order
-		// this is because the _2x2TileRefs will reveal out of order
+		// keep track of the occlusion assigned to each revealed tile
+		// always choose the smallest, if it already exists
+		// this is to make sure that a partially reveal 2x2 tileRef will always be revealed
+		Dictionary<Vector3Int, int> assignedOcc = new Dictionary<Vector3Int, int>();
+
 		foreach (var pos in overworld.Positions) {
-			HideAt(pos);
-		}
-		foreach (var pos in overworld.Positions) {
+			Vector3Int posFromTerrain = overworld.TerrainAt(pos).tileRefPosition;
+
+			// if you need to be revealed:
 			if (field.ContainsKey(pos)) {
-				RevealAt(pos);
+				int occlusion = field[pos];
+
+				// always take the smallest occlusion if previously stored
+				if (assignedOcc.ContainsKey(posFromTerrain)) {
+					occlusion = Mathf.Min(occlusion, assignedOcc[posFromTerrain]);
+				}
+				assignedOcc[posFromTerrain] = occlusion;
+
+				// interpolate the occlusion via maxVisibility and use the float for intensity
+				float i = Mathf.InverseLerp(0, maxVisibility, maxVisibility - occlusion);
+				//HideAt(posFromTerrain, Mathf.Lerp(intensity, 1.0f, i));
+				HideAt(posFromTerrain, Mathf.Lerp(intensity, 1.0f, i));
+			} else {
+				HideAt(posFromTerrain, 0f);
 			}
 		}
 	}
 
-	public void HideAt(Vector3Int tilePos) {
-		Vector3Int posFromTerrain = overworld.TerrainAt(tilePos).tileRefPosition;
-		overworld.HighlightTile(posFromTerrain, (intensity*Color.white).WithAlpha(1.0f));
-	}
-	
-	public void RevealAt(Vector3Int tilePos) {
-		Vector3Int posFromTerrain = overworld.TerrainAt(tilePos).tileRefPosition;
-		overworld.ResetHighlightTile(posFromTerrain);
+	public void HideAt(Vector3Int tilePos, float _intensity) {
+		overworld.HighlightTile(tilePos, (_intensity*Color.white).WithAlpha(1.0f));
 	}
 
 	// DEPRECATED

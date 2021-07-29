@@ -182,12 +182,16 @@ public abstract class TerrainGenerator : MonoBehaviour
 						terrain = new Foothill(pos);
 						break;
 					case TileEnum.mountain:
-					case TileEnum.mountain2x2:
 						terrain = new Mountain(pos);
 						break;
+					case TileEnum.mountain2x2:
+						terrain = new Mountain2x2(pos);
+						break;
 					case TileEnum.peak:
-					case TileEnum.peak2x2:
 						terrain = new Peak(pos);
+						break;
+					case TileEnum.peak2x2:
+						terrain = new Peak2x2(pos);
 						break;
 					case TileEnum.villageRoad:
 					case TileEnum.village:
@@ -216,10 +220,10 @@ public abstract class TerrainGenerator : MonoBehaviour
 
 					// special cases
 					case TileEnum.mountainNoTile:
-						terrain = new Mountain(pos, _2x2TileRef[pos]);
+						terrain = new Mountain2x2(pos, _2x2TileRef[pos]);
 						break;
 					case TileEnum.peakNoTile:
-						terrain = new Peak(pos, _2x2TileRef[pos]);
+						terrain = new Peak2x2(pos, _2x2TileRef[pos]);
 						break;
 				}
 				retVal[pos] = terrain;

@@ -12,6 +12,7 @@ public class Peak : Mountain
 {
 	public override int altitude { get => 3; }
 	
+	public Peak(){}
 	public Peak(Vector3Int pos) {
 		position = pos;
 		_tileRefPosition = pos;

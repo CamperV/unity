@@ -24,7 +24,7 @@ public class MouseManager : MonoBehaviour
 			} else {
 				gridPos = currentActiveGrid.Real2GridPos(mouseWorldPos);
 			}
-			Debug.Log($"gridPos: {gridPos} [{GameManager.inst.overworld.TerrainAt(gridPos)?.GetType()}]");
+			Debug.Log($"gridPos: {gridPos} [{GameManager.inst.overworld.TerrainAt(gridPos)?.GetType()}] [{GameManager.inst.player.fov.OcclusionAt(gridPos)}]");
 		}
 		/*
 

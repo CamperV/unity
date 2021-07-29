@@ -10,8 +10,8 @@ using Extensions;
 
 public class Foothill : Terrain
 {
-	public override int altitude { get => 1; }
 	public override int occlusion { get => 1; }
+	public override int altitude { get => 0; }
 	public override int tickCost { get => (int)(Constants.standardTickCost * 1.5f); }
 
 	public Foothill(Vector3Int pos) {

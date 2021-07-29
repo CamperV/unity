@@ -10,6 +10,7 @@ using Extensions;
 
 public class Forest : Terrain
 {
+	public override int occlusion { get => 2; }
 	public override int tickCost { get => Constants.standardTickCost * 2; }
 
 	public Forest(){}
