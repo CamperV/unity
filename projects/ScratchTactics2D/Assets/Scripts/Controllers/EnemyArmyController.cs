@@ -65,7 +65,7 @@ public class EnemyArmyController : Controller
 					
 					// update player position
 					playerPosLastTurn = lastKnownPlayerPos;
-					lastKnownPlayerPos = GameManager.inst.player.gridPosition;
+					lastKnownPlayerPos = GlobalPlayerState.inst.currentGridPosition;
 					
 					// update the field once for all
 					// and then, we'll update them again every time a subject moves
@@ -174,7 +174,7 @@ public class EnemyArmyController : Controller
 	}
 		
 	public bool HasPlayerMoved() {
-		return playerPosLastTurn != GameManager.inst.player.gridPosition;
+		return playerPosLastTurn != GlobalPlayerState.inst.currentGridPosition;
 	}
 	
 	public void SetTraversableTiles() {

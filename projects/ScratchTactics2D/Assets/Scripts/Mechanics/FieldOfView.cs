@@ -8,46 +8,30 @@ using System.Linq;
 public class FieldOfView
 {
 	public static int maxVisibility = 10;	// gets interpolated for occlusion/display values
-	private static float intensity = 0.35f; // for hiding/revealing tiles
+	private static float intensity = 0.20f; // for hiding/revealing tiles
 	private static Overworld overworld { get => GameManager.inst.overworld; }
 
 	// this differs from a FlowField because it relies on line-of-site
 	// as such, instead of pathfinding, we'll calculate the LoS for every involved tile
 	public Vector3Int origin;
-	public Dictionary<Vector3Int, int> field;
+
+	private Dictionary<Vector3Int, int> _field;
+	private Dictionary<Vector3Int, int> field {
+		get => _field;
+		set {
+			_field = value;
+			Debug.Log($"Set a new FoV for Player");
+
+			foreach (Vector3Int pos in field.Keys) {
+				GlobalPlayerState.inst.previouslyRevealedOverworldPositions.Add(pos);
+			}
+		}
+	}
 
 	public FieldOfView(Vector3Int _origin, int range) {
 		origin = _origin;
 		//
 		field = RaycastField(origin, range);
-		//
-		// field = new Dictionary<Vector3Int, int>();
-
-		// // cast over several rounds, corresponding to altitude
-		// int minAltitude = overworld.Terrain.Min(it => it.altitude);
-		// int maxAltitude = overworld.Terrain.Max(it => it.altitude);
-
-		// //for (int alt = maxAltitude; alt > 0; alt--) {
-		// for (int alt = minAltitude+1; alt < maxAltitude+1; alt++) {	
-		// 	HashSet<Vector2Int> validSet = new HashSet<Vector2Int>(
-		// 		overworld.Terrain.Where(it => it.altitude == alt || it.altitude == alt - 1)
-		// 						 .Select(it => new Vector2Int(it.position.x, it.position.y))
-		// 						 .ToList()
-		// 	);
-
-		// 	AltitudeShadowCaster asc = new AltitudeShadowCaster(origin, range,
-		// 		/* IsOpaque */ 	(x, y) => { return overworld.TerrainAt(new Vector3Int(x, y, 0)).altitude == alt; },
-		// 		/* SetFOV */ 	(x, y) => {
-		// 			if (validSet.Contains(new Vector2Int(x, y))) {
-		// 				field[new Vector3Int(x, y, 0)] = 1;
-		// 			}
-		// 		},
-		// 		validSet
-		// 	);
-		// 	asc.CastShadows();
-		// 	break;
-		// }
-
 	}
 
 	public int OcclusionAt(Vector3Int pos) {
@@ -73,23 +57,24 @@ public class FieldOfView
 
 			// snap to certain levels of occlusion: Visible, Obscured, Hidden
 			switch (occlusion) {
-				case 0:
+				case 0:				// Visible
 				case 1:
+					occlusion = 0;
 					break;
 				case 2:
 				case 3:
-					occlusion = 3;
+					occlusion = 3;	// Partially Obscured
 					break;
 				case 4:
 				case 5:
 				case 6:
 				case 7:
-					occlusion = 6;
+					occlusion = 6; // Obscured
 					break;
 				case 8:
 				case 9:
 				case 10:
-					occlusion = 10;
+					occlusion = 10; // Hidden
 					break;
 			}
 			_field[v] = occlusion;
@@ -214,8 +199,9 @@ public class FieldOfView
 
 				// interpolate the occlusion via maxVisibility and use the float for intensity
 				float i = Mathf.InverseLerp(0, maxVisibility, maxVisibility - occlusion);
-				//HideAt(posFromTerrain, Mathf.Lerp(intensity, 1.0f, i));
 				HideAt(posFromTerrain, Mathf.Lerp(intensity, 1.0f, i));
+			} else if (GlobalPlayerState.inst.previouslyRevealedOverworldPositions.Contains(pos)) {
+				HideAt(posFromTerrain, intensity);
 			} else {
 				HideAt(posFromTerrain, 0f);
 			}
@@ -226,47 +212,36 @@ public class FieldOfView
 		overworld.HighlightTile(tilePos, (_intensity*Color.white).WithAlpha(1.0f));
 	}
 
-	// DEPRECATED
-	// private int MinimumRaycastCost(Vector3Int src, Vector3Int dest) {
-	// 	Vector3 realSrc = overworld.Grid2RealPos(src);
-	// 	Vector3 realDest = overworld.Grid2RealPos(dest);
-	// 	float buffer = overworld.GetComponent<Grid>().cellSize.x / 20.0f;
-	// 	float xs = overworld.GetComponent<Grid>().cellSize.x / 2.0f + buffer;
-	// 	float ys = overworld.GetComponent<Grid>().cellSize.y / 2.0f + buffer;
 
-	// 	List<Vector3> extremeties = new List<Vector3> {
-	// 		realSrc,
-	// 		realSrc + new Vector3(xs, ys, 0),
-	// 		realSrc + new Vector3(xs, -ys, 0),
-	// 		realSrc + new Vector3(-xs, -ys, 0),
-	// 		realSrc + new Vector3(-xs, ys, 0)
-	// 	};
+	// deprecated
+	private void CastAltitudeShadows() {		
+		field = new Dictionary<Vector3Int, int>();
 
-	// 	int res = src.ManhattanDistance(dest)*2;
-	// 	return extremeties.Select( ex => RaycastCost(ex, realDest, resolution: res) ).Min();
-	// }
+		// cast over several rounds, corresponding to altitude
+		int minAltitude = overworld.Terrain.Min(it => it.altitude);
+		int maxAltitude = overworld.Terrain.Max(it => it.altitude);
 
-	// // this is way too expensive
-	// private int RaycastCost(Vector3 src, Vector3 dest, int resolution = 10) {
-	// 	HashSet<Vector3Int> alongRay = new HashSet<Vector3Int>();
+		//for (int alt = maxAltitude; alt > 0; alt--) {
+		for (int alt = minAltitude+1; alt < maxAltitude+1; alt++) {	
+			HashSet<Vector2Int> validSet = new HashSet<Vector2Int>(
+				overworld.Terrain.Where(it => it.altitude == alt || it.altitude == alt - 1)
+								 .Select(it => new Vector2Int(it.position.x, it.position.y))
+								 .ToList()
+			);
 
-	// 	foreach (var step in src.SteppedInterpEx(dest, resolution)) {
-	// 		alongRay.Add( overworld.Real2GridPos(step) );
-	// 	}
+			new AltitudeShadowCaster(origin, maxVisibility,
+				/* IsOpaque */
+				(x, y) => {
+					return overworld.TerrainAt(new Vector3Int(x, y, 0)).altitude == alt;
+				},
 
-	// 	// now return the count of tiles and the extra incurred cost
-	// 	return alongRay.Aggregate(0, (acc, it) =>  acc + overworld.TerrainAt(it).occlusion ) + alongRay.Count;
-	// }
-
-	// public static IEnumerable<Vector3Int> RaycastLine(Vector3 src, Vector3 dest, int resolution = 10) {
-	// 	HashSet<Vector3Int> alongRay = new HashSet<Vector3Int>();
-
-	// 	foreach (var step in src.SteppedInterpEx(dest, resolution)) {
-	// 		alongRay.Add( overworld.Real2GridPos(step) );
-	// 	}
-
-	// 	foreach (var v in alongRay) {
-	// 		yield return v;
-	// 	}
-	// }
+				/* SetFOV */
+				(x, y) => {
+					if (validSet.Contains(new Vector2Int(x, y))) {
+						field[new Vector3Int(x, y, 0)] = 1;
+					}
+				}
+			).CastShadows();
+		}
+	}
 }

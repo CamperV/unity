@@ -129,8 +129,8 @@ public class Overworld : GameGrid, IPathable
 			tilemap.SetColor(tilePos, color);
 			return;
 		} else {
-			// Debug.Log("Not a valid Tint target");
-			// Debug.Assert(false);
+			Debug.Log("Not a valid Tint target");
+			Debug.Assert(false);
 		}
 	}
 	

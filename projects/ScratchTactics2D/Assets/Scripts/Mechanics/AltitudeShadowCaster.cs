@@ -12,18 +12,13 @@ public class AltitudeShadowCaster
     private int radius;
     private Func<int, int, bool> IsOpaque;
     private Action<int, int> SetFOV;
-    //
-    public HashSet<Vector2Int> validSet;
 
-    public AltitudeShadowCaster(Vector3Int origin, int _radius, Func<int, int, bool> _IsOpaque, Action<int, int> _SetFOV, HashSet<Vector2Int> _validSet) {
+    public AltitudeShadowCaster(Vector3Int origin, int _radius, Func<int, int, bool> _IsOpaque, Action<int, int> _SetFOV) {
         x = origin.x;
         y = origin.y;
         radius = _radius;
         IsOpaque = _IsOpaque;
         SetFOV = _SetFOV;
-        
-        // optional, all valid if null
-        validSet = _validSet;
     }
 
     // Takes a circle in the form of a center point and radius, and a function that
