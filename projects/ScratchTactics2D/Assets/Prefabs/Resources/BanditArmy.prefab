@@ -147,7 +147,7 @@ PrefabInstance:
     - target: {fileID: 5990071663189878202, guid: a43cfd85df7d62f419123b637cdcfa13, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 1aa6f7ee44a204c43af3ee286908690f, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7947989547980606386, guid: a43cfd85df7d62f419123b637cdcfa13, type: 3}
       propertyPath: m_fontColor.b
       value: 0.96746206

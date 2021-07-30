@@ -4,12 +4,6 @@ using System;
 using UnityEngine;
 
 
-public interface IPathable
-{
-	IEnumerable<Vector3Int> GetNeighbors(Vector3Int v);
-	int EdgeCost(Vector3Int src, Vector3Int dest);
-}
-
 public abstract class Pathfinder
 {
 	public IPathable pathableSurface;

@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 using Extensions;
 using TMPro;
 
-public abstract class EnemyArmy : Army
+public abstract class EnemyArmy : Army, IVisible
 {
 	// for visualization debug
 	private int _ID = -1;
@@ -16,6 +16,50 @@ public abstract class EnemyArmy : Army
 		set {
 	    	GetComponentsInChildren<TextMeshPro>()[0].SetText(value.ToString());
 			_ID = value;
+		}
+	}
+
+	private RuntimeAnimatorController defaultAnimator;
+	private RuntimeAnimatorController hiddenAnimator;
+
+	// IVisible definitions
+	private Enum.VisibleState _visible;
+	public Enum.VisibleState visible {
+		get => _visible;
+		set {
+			_visible = value;
+			switch (value) {
+				case Enum.VisibleState.visible:
+				case Enum.VisibleState.partiallyObscured:
+					spriteRenderer.color = Color.white.WithAlpha(1.0f);
+					animator.runtimeAnimatorController = defaultAnimator;
+					break;
+				case Enum.VisibleState.obscured:
+ 					animator.runtimeAnimatorController = hiddenAnimator;
+					break;
+				case Enum.VisibleState.hidden:
+					spriteRenderer.color = Color.white.WithAlpha(0.0f);
+					break;
+			}
+		}
+	}
+
+	// we update the visibility twice:
+	// 1) when the player changes its FOV, update all
+	// 2) when an IVisible moves
+	[HideInInspector] public override Vector3Int gridPosition {
+		get => _gridPosition;
+
+		// make sure you also update FOV when moving
+		protected set {
+			_gridPosition = value;
+
+			FieldOfView fov = GlobalPlayerState.inst.army.fov;
+			if (fov.field.ContainsKey(_gridPosition)) {
+				visible = fov.field[_gridPosition];
+			} else {
+				visible = Enum.VisibleState.hidden;
+			}
 		}
 	}
 
@@ -34,7 +78,7 @@ public abstract class EnemyArmy : Army
 	// enemy can theoretically move
 	private int tickPool { get; set; }
 	
-	public Enum.EnemyState state;
+	public Enum.EnemyArmyState state;
 	private EnemyArmyController parentController { get => GameManager.inst.enemyController; }
 
 	public abstract void OnHit();
@@ -48,10 +92,13 @@ public abstract class EnemyArmy : Army
 		// devug visualization
 		GetComponentsInChildren<MeshRenderer>()[0].sortingLayerName = "Overworld Entities";
 		GetComponentsInChildren<MeshRenderer>()[0].sortingOrder = 0;
+
+		defaultAnimator = animator.runtimeAnimatorController;
+		hiddenAnimator = Resources.Load<RuntimeAnimatorController>("Icons/UnknownArmy");
     }
 	
     protected void Start() {
-		state = Enum.EnemyState.idle;
+		state = Enum.EnemyArmyState.idle;
     }
 	
 	public void TakeIdleAction() {

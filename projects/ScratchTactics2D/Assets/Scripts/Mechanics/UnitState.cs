@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using Extensions;
 
-public class UnitStats
+public class UnitState
 {
     public Guid ID;
 
@@ -26,12 +26,12 @@ public class UnitStats
     public Inventory inventory;
 
     // use the bare constructor for readability when creating default stats 
-    public UnitStats() { }
+    public UnitState() { }
     public override string ToString() {
-        return $"UnitStats=>{unitName}/{unitTag}/S{STRENGTH}.D{DEXTERITY}.H{_HP}/{VITALITY}.M{MOVE}";
+        return $"UnitState=>{unitName}/{unitTag}/S{STRENGTH}.D{DEXTERITY}.H{_HP}/{VITALITY}.M{MOVE}";
     }
 
-    public UnitStats DeriveRemaining() {
+    public UnitState DeriveRemaining() {
         // after construction, assign the remaining stats
         _HP = VITALITY;
         _CAPACITY = STRENGTH;

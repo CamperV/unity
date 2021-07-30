@@ -11,17 +11,22 @@ public class FieldOfView
 	private static float intensity = 0.20f; // for hiding/revealing tiles
 	private static Overworld overworld { get => GameManager.inst.overworld; }
 
+	private static Dictionary<Enum.VisibleState, int> visThresholds = new Dictionary<Enum.VisibleState, int>{
+		[Enum.VisibleState.visible] 		  = 1,
+		[Enum.VisibleState.partiallyObscured] = 3,
+		[Enum.VisibleState.obscured] 		  = 7,
+		[Enum.VisibleState.hidden]			  = 10
+	};
+
 	// this differs from a FlowField because it relies on line-of-site
 	// as such, instead of pathfinding, we'll calculate the LoS for every involved tile
 	public Vector3Int origin;
 
-	private Dictionary<Vector3Int, int> _field;
-	private Dictionary<Vector3Int, int> field {
+	private Dictionary<Vector3Int, Enum.VisibleState> _field;
+	public Dictionary<Vector3Int, Enum.VisibleState> field {
 		get => _field;
 		set {
 			_field = value;
-			Debug.Log($"Set a new FoV for Player");
-
 			foreach (Vector3Int pos in field.Keys) {
 				GlobalPlayerState.inst.previouslyRevealedOverworldPositions.Add(pos);
 			}
@@ -34,16 +39,16 @@ public class FieldOfView
 		field = RaycastField(origin, range);
 	}
 
-	public int OcclusionAt(Vector3Int pos) {
+	public Enum.VisibleState OcclusionAt(Vector3Int pos) {
 		if (field.ContainsKey(pos)) {
 			return field[pos];
 		} else {
-			return -1;
+			return Enum.VisibleState.hidden;
 		}
 	}
 
-	private Dictionary<Vector3Int, int> RaycastField(Vector3Int origin, int range) {
-		Dictionary<Vector3Int, int> _field = new Dictionary<Vector3Int, int> {
+	private Dictionary<Vector3Int, Enum.VisibleState> RaycastField(Vector3Int origin, int range) {
+		Dictionary<Vector3Int, Enum.VisibleState> _field = new Dictionary<Vector3Int, Enum.VisibleState> {
 			[origin] = 0
 		};
 
@@ -56,28 +61,39 @@ public class FieldOfView
 			int occlusion = BresenhamCost(v, origin);
 
 			// snap to certain levels of occlusion: Visible, Obscured, Hidden
-			switch (occlusion) {
-				case 0:				// Visible
-				case 1:
-					occlusion = 0;
-					break;
-				case 2:
-				case 3:
-					occlusion = 3;	// Partially Obscured
-					break;
-				case 4:
-				case 5:
-				case 6:
-				case 7:
-					occlusion = 6; // Obscured
-					break;
-				case 8:
-				case 9:
-				case 10:
-					occlusion = 10; // Hidden
-					break;
+			// switch (occlusion) {
+			// 	case 0:				// Visible
+			// 	case 1:
+			// 		occlusion = Enum.VisibleState.visible;
+			// 		break;
+			// 	case 2:
+			// 	case 3:
+			// 		occlusion = Enum.VisibleState.partiallyObscured;	// Partially Obscured
+			// 		break;
+			// 	case 4:
+			// 	case 5:
+			// 	case 6:
+			// 	case 7:
+			// 		occlusion = Enum.VisibleState.obscured; // Obscured
+			// 		break;
+			// 	case 8:
+			// 	case 9:
+			// 	case 10:
+			// 		occlusion = Enum.VisibleState.hidden; // Hidden
+			// 		break;
+			// }
+
+			Enum.VisibleState visibility = Enum.VisibleState.hidden;
+			if (occlusion <= visThresholds[Enum.VisibleState.visible]) {
+				visibility = Enum.VisibleState.visible;
+			} else if (occlusion <= visThresholds[Enum.VisibleState.partiallyObscured]) {
+				visibility = Enum.VisibleState.partiallyObscured;
+			} else if (occlusion <= visThresholds[Enum.VisibleState.obscured]) {
+				visibility = Enum.VisibleState.obscured;
+			} else if (occlusion <= visThresholds[Enum.VisibleState.hidden]) {
+				visibility = Enum.VisibleState.hidden;
 			}
-			_field[v] = occlusion;
+			_field[v] = visibility;
 		}
 		return _field;
 	}
@@ -189,7 +205,7 @@ public class FieldOfView
 
 			// if you need to be revealed:
 			if (field.ContainsKey(pos)) {
-				int occlusion = field[pos];
+				int occlusion = visThresholds[field[pos]];
 
 				// always take the smallest occlusion if previously stored
 				if (assignedOcc.ContainsKey(posFromTerrain)) {
@@ -208,14 +224,13 @@ public class FieldOfView
 		}
 	}
 
-	public void HideAt(Vector3Int tilePos, float _intensity) {
+	private void HideAt(Vector3Int tilePos, float _intensity) {
 		overworld.HighlightTile(tilePos, (_intensity*Color.white).WithAlpha(1.0f));
 	}
 
-
 	// deprecated
 	private void CastAltitudeShadows() {		
-		field = new Dictionary<Vector3Int, int>();
+		field = new Dictionary<Vector3Int, Enum.VisibleState>();
 
 		// cast over several rounds, corresponding to altitude
 		int minAltitude = overworld.Terrain.Min(it => it.altitude);
@@ -238,7 +253,7 @@ public class FieldOfView
 				/* SetFOV */
 				(x, y) => {
 					if (validSet.Contains(new Vector2Int(x, y))) {
-						field[new Vector3Int(x, y, 0)] = 1;
+						field[new Vector3Int(x, y, 0)] = Enum.VisibleState.visible;
 					}
 				}
 			).CastShadows();

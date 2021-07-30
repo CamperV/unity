@@ -6,6 +6,7 @@ using Extensions;
 
 public class PlayerArmy : Army
 {
+	// this cost is insurmountable to the PlayerArmy
 	public int moveThreshold { get => Constants.standardTickCost*3; }
 	
 	// for moving around the Overworld
@@ -18,6 +19,7 @@ public class PlayerArmy : Army
 		set {
 			_fov = value;
 			_fov.Display();
+			GameManager.inst.overworld.UpdateVisibility(_fov);
 		}
 	}
 	// for now, FieldOfView is only had by the PlayerArmy

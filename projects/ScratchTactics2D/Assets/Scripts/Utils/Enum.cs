@@ -11,7 +11,11 @@ namespace Enum {
 	public enum Phase {none, player, enemy};
 	public enum PhaseActionState {waitingForInput, acting, complete, postPhaseDelay, postPhase};
 	//
-	public enum EnemyState {idle, followField, inBattle};
+	public enum EnemyArmyState {idle, followField, inBattle};
+	
+	// For armies on the overworld
+	public enum VisibleState {visible, partiallyObscured, obscured, hidden};
+
 	public enum PlayerUnitState {idle, menu, moveSelection, attackSelection};
 
 	// Contextual Interaction states

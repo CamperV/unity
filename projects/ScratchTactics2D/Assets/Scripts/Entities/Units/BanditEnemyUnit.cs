@@ -6,9 +6,9 @@ using UnityEngine;
 public class BanditEnemyUnit : EnemyUnit
 {
     // default unit stats
-    public static UnitStats defaultStats {
+    public static UnitState defaultState {
         get {
-            return new UnitStats {
+            return new UnitState {
                 unitTag = "BanditEnemyUnit",
 
                 VITALITY  = 20,
@@ -25,9 +25,9 @@ public class BanditEnemyUnit : EnemyUnit
         }
     }
 
-    private UnitStats _unitStats;
-    public override UnitStats unitStats {
-        get => _unitStats ?? BanditEnemyUnit.defaultStats;
+    private UnitState _unitStats;
+    public override UnitState unitStats {
+        get => _unitStats ?? BanditEnemyUnit.defaultState;
         set => _unitStats = value;
     }
 }

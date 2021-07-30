@@ -5,13 +5,14 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Extensions;
 
 public abstract class Army : MovingObject
 {
 	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;
 
-	// army stats
+	// army stats/state
 	public virtual float moveSpeed { get => 1.0f; }
 
 	// constants
@@ -22,7 +23,8 @@ public abstract class Army : MovingObject
 	public virtual List<string> defaultUnitTags { get; }
 
 	// this is where the "real" units are stored
-	public Dictionary<Guid, UnitStats> barracks = new Dictionary<Guid, UnitStats>();
+	private Dictionary<Guid, UnitState> barracks = new Dictionary<Guid, UnitState>();
+	public int numUnits { get => barracks.Count; }
 	
 	// child classes must specify which grid to travel on
 	public abstract bool GridMove(int xdir, int ydir);
@@ -32,7 +34,7 @@ public abstract class Army : MovingObject
 		animator = GetComponent<Animator>();
 		
 		// generate your units here (name, tags, etc)
-		GenerateUnitStats();
+		PopulateBarracksFromTags(defaultUnitTags);
 	}
 
 	public static T Spawn<T>(T prefab, Vector3Int pos) where T : Army {
@@ -68,23 +70,39 @@ public abstract class Army : MovingObject
 		return unitTags.Select(it => LoadUnitByTag(it)).ToList();
 	}
 
-	public void GenerateUnitStats() {
-		foreach (string tag in defaultUnitTags) {
-			PropertyInfo defaultProp = Type.GetType(tag).GetProperty("defaultStats");
-			UnitStats defaultStats = (UnitStats)defaultProp.GetValue(null, null);
+	public void PopulateBarracksFromTags(List<string> unitTags) {
+		foreach (string tag in unitTags) {
+			PropertyInfo defaultProp = Type.GetType(tag).GetProperty("defaultState");
+			UnitState defaultState = (UnitState)defaultProp.GetValue(null, null);
 			//
-			defaultStats.ID = Guid.NewGuid();
-			defaultStats.unitName = $"{tag} Jeremy {Random.Range(0, 101)}";
+			defaultState.ID = Guid.NewGuid();
+			defaultState.unitName = $"{tag} Jeremy {Random.Range(0, 101)}";
 
 			// now save the unit in our barracks
-			barracks[defaultStats.ID] = defaultStats;
+			EnlistUnit(defaultState);
 		}
 	}
 
 	//
 	//
-	public void RemoveUnit(Guid id) {
-		barracks.Remove(id);
+	public void EnlistUnit(UnitState unitStats) {
+		barracks[unitStats.ID] = unitStats;
+	}
+	public void EnlistUnit(Unit unit) {
+		barracks[unit.unitStats.ID] = unit.unitStats;
+	}
+
+	public void DischargeUnit(UnitState unitStats) {
+		barracks.Remove(unitStats.ID);
+	}
+	public void DischargeUnit(Unit unit) {
+		barracks.Remove(unit.unitStats.ID);
+	}
+
+	public IEnumerable<UnitState> GetUnits() {
+		foreach (var us in barracks.Values) {
+			yield return us;
+		}
 	}
 
 	public void Die() {

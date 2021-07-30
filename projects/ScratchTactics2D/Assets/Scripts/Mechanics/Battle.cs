@@ -40,7 +40,7 @@ public class Battle : MonoBehaviour
 		player = playerEntity;
 		other = otherEntity;
 
-		(other as EnemyArmy).state = Enum.EnemyState.inBattle;
+		(other as EnemyArmy).state = Enum.EnemyArmyState.inBattle;
 		allOther = new List<Army>{ other };
 
 		//
@@ -126,12 +126,12 @@ public class Battle : MonoBehaviour
 		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
-		var playerSpawnPositions = spawnZones.first.GetPositions().RandomSelections<Vector3Int>(player.barracks.Count);
+		var playerSpawnPositions = spawnZones.first.GetPositions().RandomSelections<Vector3Int>(player.numUnits);
 
 		// the player will maintain a barracks of units
 		// the player has reference to each prefab needed, so we instantiate a prefab here
 		// then apply the actual relevant stats
-		foreach (UnitStats unitStats in player.barracks.Values) {
+		foreach (UnitState unitStats in player.GetUnits()) {
 			var uPrefab = player.LoadUnitByTag(unitStats.unitTag);
 			PlayerUnit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, playerSpawnPositions.PopAt(0), grid) as PlayerUnit;
 			//
@@ -141,9 +141,9 @@ public class Battle : MonoBehaviour
 
 		// LoadUnitsByTag will look up if an appropriate prefab has already been loaded from the Resources folder
 		// if it has, it will instantiate it. If not, it will load first
-		var otherSpawnPositions = spawnZones.second.GetPositions().RandomSelections<Vector3Int>(other.barracks.Count);
+		var otherSpawnPositions = spawnZones.second.GetPositions().RandomSelections<Vector3Int>(other.numUnits);
 
-		foreach (UnitStats unitStats in other.barracks.Values) {
+		foreach (UnitState unitStats in other.GetUnits()) {
 			var uPrefab = other.LoadUnitByTag(unitStats.unitTag);
 			EnemyUnit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, otherSpawnPositions.PopAt(0), grid) as EnemyUnit;
 			//
@@ -232,7 +232,7 @@ public class Battle : MonoBehaviour
 	}
 
 	public void AddParticipant(Army joiningEntity, Terrain joiningTerrain) {
-		(joiningEntity as EnemyArmy).state = Enum.EnemyState.inBattle;
+		(joiningEntity as EnemyArmy).state = Enum.EnemyArmyState.inBattle;
 		allOther.Add(joiningEntity);
 
 		// add to grid and reposition
@@ -297,8 +297,8 @@ public class Battle : MonoBehaviour
 		// spawn those units
 		// register them 
 		//
-		var spawnPositions = spawnZone.GetPositions().RandomSelections<Vector3Int>(joiningEntity.barracks.Count);
-		foreach (UnitStats unitStats in joiningEntity.barracks.Values) {
+		var spawnPositions = spawnZone.GetPositions().RandomSelections<Vector3Int>(joiningEntity.numUnits);
+		foreach (UnitState unitStats in joiningEntity.GetUnits()) {
 			var uPrefab = joiningEntity.LoadUnitByTag(unitStats.unitTag);
 			Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid);
 			//

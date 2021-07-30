@@ -6,9 +6,9 @@ using UnityEngine;
 public class KnightPlayerUnit : PlayerUnit
 {
     // default unit stats
-    public static UnitStats defaultStats {
+    public static UnitState defaultState {
         get {
-            return new UnitStats {
+            return new UnitState {
                 unitTag = "KnightPlayerUnit",
 
                 VITALITY  = 18,
@@ -24,9 +24,9 @@ public class KnightPlayerUnit : PlayerUnit
         }
     }
 
-    private UnitStats _unitStats;
-    public override UnitStats unitStats {
-        get => _unitStats ?? KnightPlayerUnit.defaultStats;
+    private UnitState _unitStats;
+    public override UnitState unitStats {
+        get => _unitStats ?? KnightPlayerUnit.defaultState;
         set => _unitStats = value;
     }
 }

@@ -17,7 +17,6 @@ public class Overworld : GameGrid, IPathable
 	public IEnumerable<Vector3Int> Positions { get => terrain.Keys; }
 
 	private OverlayTile selectTile;
-	
 	private Canvas tintCanvas;
 	
 	protected override void Awake() {
@@ -138,9 +137,37 @@ public class Overworld : GameGrid, IPathable
 		tilemap.SetTileFlags(tilePos, TileFlags.None);
 		tilemap.SetColor(tilePos, new Color(1, 1, 1, 1));
 	}
+
+	public void HighlightTileTween(Vector3Int tilePos, Color color) {
+		if (baseTilemap.GetColor(tilePos) != color) {
+			StartCoroutine( TintTileTween(tilePos, color) );
+		}
+	}
+
+	private IEnumerator TintTileTween(Vector3Int tilePos, Color color) {
+		Color initColor = baseTilemap.GetColor(tilePos);
+
+		float c = 0.0f;
+		while (c < 1.0f) {
+			HighlightTile(tilePos, Color.Lerp(initColor, color, c));
+			c += 0.05f;
+			yield return null;
+		}
+	}
 	
 	public void ClearOverlayTiles() {
 		overlayTilemap.ClearAllTiles();
+	}
+
+	// given a FOV, update all entities' visibility states
+	public void UpdateVisibility(FieldOfView fov) {
+		foreach (EnemyArmy army in FindObjectsOfType<EnemyArmy>().OfType<IVisible>()) {
+			if (fov.field.ContainsKey(army.gridPosition)) {
+				army.visible = fov.field[army.gridPosition];
+			} else {
+				army.visible = Enum.VisibleState.hidden;
+			}
+		}
 	}
 	
 	public void GenerateWorld() {	

@@ -6,9 +6,9 @@ using UnityEngine;
 public class SpearmanEnemyUnit : EnemyUnit
 {
     // default unit stats
-    public static UnitStats defaultStats {
+    public static UnitState defaultState {
         get {
-            return new UnitStats {
+            return new UnitState {
                 unitTag = "SpearmanEnemyUnit",
 
                 VITALITY  = 20,
@@ -24,9 +24,9 @@ public class SpearmanEnemyUnit : EnemyUnit
         }
     }
 
-    private UnitStats _unitStats;
-    public override UnitStats unitStats {
-        get => _unitStats ?? SpearmanEnemyUnit.defaultStats;
+    private UnitState _unitStats;
+    public override UnitState unitStats {
+        get => _unitStats ?? SpearmanEnemyUnit.defaultState;
         set => _unitStats = value;
     }
 }

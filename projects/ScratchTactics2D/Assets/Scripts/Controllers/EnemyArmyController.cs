@@ -29,7 +29,7 @@ public class EnemyArmyController : Controller
 	}
 
 	public bool enemiesFollowing {
-		get => activeRegistry.Where(it => (it as EnemyArmy).state == Enum.EnemyState.followField).Any();
+		get => activeRegistry.Where(it => (it as EnemyArmy).state == Enum.EnemyArmyState.followField).Any();
 	}
 
 	protected override void Awake() {
@@ -118,10 +118,10 @@ public class EnemyArmyController : Controller
 		for (int i = 0; i < orderedRegistry.Count; i++) {
 			EnemyArmy subject = orderedRegistry[i] as EnemyArmy;
 			switch(subject.state) {
-				case Enum.EnemyState.idle:
+				case Enum.EnemyArmyState.idle:
 					// alert! animation
 					if (subject.InDetectionRange(flowFieldToPlayer)) {
-						subject.state = Enum.EnemyState.followField;
+						subject.state = Enum.EnemyArmyState.followField;
 						subject.OnAlert();
 
 						// also tell the PlayerArmyController to clear its queue
@@ -133,7 +133,7 @@ public class EnemyArmyController : Controller
 				
 				// this state requires ticks to function
 				// tickpool is managed in the subject class, but we can tell it to keep moving here
-				case Enum.EnemyState.followField:
+				case Enum.EnemyArmyState.followField:
 					Debug.Log($"processing enemy {subject} who can act");
 					// if we can attack, do that with a higher priority
 					if (subject.CanAttackPlayer()) {	// checks ticks
@@ -160,7 +160,7 @@ public class EnemyArmyController : Controller
 					}
 					while (subject.IsMoving()) yield return null; 
 
-				case Enum.EnemyState.inBattle:
+				case Enum.EnemyArmyState.inBattle:
 					Debug.Log($"{subject} will not do anything other than fight for its life, as it is currently.");
 					break;
 					
@@ -256,7 +256,7 @@ public class EnemyArmyController : Controller
 		// only receive ticks if you are currently activated, and moving
 		// if you're inBattle or idle, do not receive ticks
 		foreach (EnemyArmy en in activeRegistry) {
-			if (en.state == Enum.EnemyState.followField) {
+			if (en.state == Enum.EnemyArmyState.followField) {
 				en.AddTicks(ticks);
 			}
 		}

@@ -36,9 +36,9 @@ public abstract class Unit : TacticsEntityBase
 	public Weapon equippedWeapon { get => unitStats.inventory.equippedWeapon; }
 
 	// Attribute Area
-	// defaultStats is static, and will be defined by the final class
+	// defaultState is static, and will be defined by the final class
 	public Sprite portrait;	// via Inspector
-	public abstract UnitStats unitStats { get; set; }
+	public abstract UnitState unitStats { get; set; }
 	public Guid ID { get => unitStats.ID; }
 
 	public int VITALITY {
@@ -150,7 +150,7 @@ public abstract class Unit : TacticsEntityBase
 		optionAvailability[option] = setting;
 	}
 
-	public void ApplyStats(UnitStats stats) {
+	public void ApplyStats(UnitState stats) {
 		unitStats = stats;
 
 		unitUI.UpdateWeaponEmblem(equippedWeapon);
@@ -332,7 +332,7 @@ public abstract class Unit : TacticsEntityBase
 		// but won't be removed from the actual Army unless we force it
 		var battle = GameManager.inst.tacticsManager.activeBattle;
 		Army oe = battle.GetArmyFromController(parentController);
-		oe.RemoveUnit(ID);
+		oe.DischargeUnit(this);
 	}
 
 	public override IEnumerator FadeDown(float fixedTime) {
