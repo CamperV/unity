@@ -36,16 +36,13 @@ public class Battle : MonoBehaviour
 		activeParticipants = new Dictionary<Controller, Army>();
 	}
 	
-	public void Init(PlayerArmy playerEntity, Army otherEntity, Terrain playerTerrain, Terrain otherTerrain) {
+	public void Init(PlayerArmy playerEntity, Army otherEntity) {
 		player = playerEntity;
 		other = otherEntity;
 
 		(other as EnemyArmy).state = Enum.EnemyArmyState.inBattle;
 		allOther = new List<Army>{ other };
 
-		//
-		PopulateGridAndReposition(playerTerrain, otherTerrain);
-		//
 		// register controllers for units to be registered to
 		// we fully re-instantiate controllers each time. Including the player
 		// we don't necessarily want OverworldEntities to have unit controllers outside of a battle
@@ -61,9 +58,6 @@ public class Battle : MonoBehaviour
 				activeParticipants[controller] = participant;
 			}
 		}
-		//
-		SpawnObstacles();
-		SpawnAllUnits();
 	}
 
 	public void StartBattleOnPhase(Enum.Phase startingPhase) {
@@ -76,7 +70,7 @@ public class Battle : MonoBehaviour
 	
 	// we can only start a Battle with two participants
 	// however, others can join(?)
-	private void PopulateGridAndReposition(Terrain playerTerrain, Terrain otherTerrain) {				
+	public void CreateDominoTacticsGrid(Terrain playerTerrain, Terrain otherTerrain) {				
 		// determine orientations
 		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
 			[Vector3Int.up] = new List<Vector3Int>() {
@@ -118,11 +112,9 @@ public class Battle : MonoBehaviour
 		grid.transform.position = offsetPos;
 	}
 	
-	private void SpawnAllUnits() {
+	public void SpawnAllUnits() {
 		// number of spawnZones is equal to the number of worldParticpants (2)
 		Pair<SpawnZone, SpawnZone> spawnZones = GetSpawnZones();
-		spawnZones.first.Display();
-		spawnZones.second.Display();
 		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
@@ -152,7 +144,7 @@ public class Battle : MonoBehaviour
 		}
 	}
 
-	private void SpawnObstacles() {
+	public void SpawnObstacles() {
 		Zone spawnZone = Zone.WithinGrid(grid, Vector3Int.zero, grid.GetDimensions() - Vector3Int.one);
 		var spawnPositions = spawnZone.GetPositions().RandomSelections<Vector3Int>(Random.Range(5, 10));
 
@@ -339,18 +331,6 @@ public class Battle : MonoBehaviour
 		} else {
 			return null;
 		}
-	}
-	
-	public Army GetArmyFromPhase(Enum.Phase phase) {
-		if (phase == Enum.Phase.player) {
-			return player;
-		} else if (phase == Enum.Phase.enemy) {
-			return other;
-		}
-
-		// default,
-		Debug.Log($"Phase {phase} is causing a default return for OE");
-		return other;
 	}
 
 	// this will only work with 2-participant battles, if one side dies, it's over

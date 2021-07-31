@@ -33,12 +33,19 @@ public abstract class EnemyArmy : Army, IVisible
 				case Enum.VisibleState.partiallyObscured:
 					spriteRenderer.color = Color.white.WithAlpha(1.0f);
 					animator.runtimeAnimatorController = defaultAnimator;
+					// debug text
+					GetComponentsInChildren<TextMeshPro>()[0].color = GetComponentsInChildren<TextMeshPro>()[0].color.WithAlpha(1.0f);
 					break;
 				case Enum.VisibleState.obscured:
+					spriteRenderer.color = Color.white.WithAlpha(1.0f);
  					animator.runtimeAnimatorController = hiddenAnimator;
+					 // debug text
+					 GetComponentsInChildren<TextMeshPro>()[0].color = GetComponentsInChildren<TextMeshPro>()[0].color.WithAlpha(0.0f);
 					break;
 				case Enum.VisibleState.hidden:
 					spriteRenderer.color = Color.white.WithAlpha(0.0f);
+					// debug text
+					GetComponentsInChildren<TextMeshPro>()[0].color = GetComponentsInChildren<TextMeshPro>()[0].color.WithAlpha(0.0f);
 					break;
 			}
 		}

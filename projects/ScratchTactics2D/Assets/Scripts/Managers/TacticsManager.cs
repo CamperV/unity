@@ -112,7 +112,12 @@ public class TacticsManager : MonoBehaviour
 									Camera.main.transform.position.y,
 									0);		
 		activeBattle = Instantiate(battlePrefab, cameraPos, Quaternion.identity);
-		activeBattle.Init(player, other, playerTerrain, enemyTerrain);
+		activeBattle.Init(player, other);
+
+		// to create Domino style
+		activeBattle.CreateDominoTacticsGrid(playerTerrain, enemyTerrain);
+		activeBattle.SpawnObstacles();
+		activeBattle.SpawnAllUnits();
 		//
 		virtualCamera = new VirtualCamera(activeBattle);
 		virtualCamera.Zoom(1.0f);
