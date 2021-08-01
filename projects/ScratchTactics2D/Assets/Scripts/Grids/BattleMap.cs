@@ -37,9 +37,12 @@ public class BattleMap : MonoBehaviour
 		return baseTilemap.GetTile(tilePos) as TacticsTile;
 	}
 
-	public List<Vector3Int> GetSpawnLocations() {
+	public IEnumerable<Vector3Int> GetPositionsOfType<T>() where T : TacticsTile {
 		// get all set tiles in the tilemap
 		// determine their types, and return the appropriate ones
-		return new List<Vector3Int>();
+		foreach (var tilePos in Positions) {
+			var tile = baseTilemap.GetTile<T>(tilePos);
+			if (tile != null) yield return tilePos;
+		}
 	}
 }

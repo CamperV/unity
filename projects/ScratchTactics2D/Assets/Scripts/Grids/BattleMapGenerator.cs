@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using Extensions;
 
 public static class BattleMapGenerator
 {
@@ -61,48 +62,35 @@ public static class BattleMapGenerator
 		["Forest:Forest"] = new List<string>{"ForestForest_0"}
 	};
 
-	private enum TacticsTileEnum {
-		water,
-		grass, grassRough, grassRock,
-		forest, forestRough, forestTree,
-		mountain
-	};
-
-	private static TacticsTile[] tileOptions = new TacticsTile[]{
-		ScriptableObject.CreateInstance<WaterTacticsTile>(),
-		//
-		ScriptableObject.CreateInstance<GrassTacticsTile>(),
-		ScriptableObject.CreateInstance<GrassRoughTacticsTile>(),
-		ScriptableObject.CreateInstance<GrassRockTacticsTile>(),
-		//
-		ScriptableObject.CreateInstance<ForestTacticsTile>(),
-		ScriptableObject.CreateInstance<ForestBrushTacticsTile>(),
-		ScriptableObject.CreateInstance<ForestTreeTacticsTile>(),
-		//
-		ScriptableObject.CreateInstance<MountainTacticsTile>()
-	};
-	
-	private static TacticsTile TileOption(TacticsTileEnum tileType) {
-		return tileOptions[(int)tileType];
-	}
-
 	public static List<BattleMap> GetMapsFromDesignator(string designator) {
 		List<BattleMap> retVal = new List<BattleMap>();
 
-		Debug.Log($"Querying desig {designator}");
-		if (prefabDesignators.ContainsKey(designator)) {
-			foreach (string tag in prefabDesignators[designator]) {
-				BattleMap bmPrefab = Resources.Load<BattleMap>("Tilemaps/" + tag);
-				retVal.Add(bmPrefab);
-			}
-		} else {
-			List<string> des = new List<string>{"PlainPlain_0"};
-			foreach (string tag in des) {
-				BattleMap bmPrefab = Resources.Load<BattleMap>("Tilemaps/" + tag);
-				retVal.Add(bmPrefab);
-			}
+		List<string> prefabDes = prefabDesignators.GetValueOtherwise(designator, new List<string>{"PlainPlain_0"});
+		foreach (string tag in prefabDes) {
+			BattleMap bmPrefab = Resources.Load<BattleMap>("Tilemaps/" + tag);
+			retVal.Add(bmPrefab);
 		}
 		return retVal;
+	}
+
+	// orientation here refers to the player
+	// i.e., an orientation of Vector3Int.down implies the following: (Enemy v Player)
+	//		___
+	//	   | E |
+	//	    ---
+	//	   | P |
+	//      ---
+	public static Zone GetZoneFromOrientation(BattleMap battleMap, Vector3Int orientation) {
+		List<Vector3Int> positions = new List<Vector3Int>();
+
+		// get either spawn zone 1 (near) or spawn zone 2 (far)
+		// transforming E/W is done outside this function
+		if (orientation == Vector3Int.down || orientation == Vector3Int.left) {
+			positions = battleMap.GetPositionsOfType<SpawnMarkerTacticsTile>().ToList();
+		} else if (orientation == Vector3Int.up || orientation == Vector3Int.right) {
+			positions = battleMap.GetPositionsOfType<SpawnMarkerTacticsTile>().ToList();
+		}
+		return new Zone(positions);
 	}
 
 	public static void ApplyMap(BattleMap battleMap, Action<Vector3Int, TacticsTile> TileSetter) {

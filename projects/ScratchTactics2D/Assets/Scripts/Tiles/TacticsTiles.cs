@@ -195,7 +195,7 @@ public class MountainTacticsTile : TacticsTile
 // OVERLAY ZONE
 public class SpawnMarkerTacticsTile : TacticsTile
 {
-	public override string spriteName { get => "spawn_marker_iso";}
+	public override string spriteName { get => "spawn_marker_iso"; }
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/SpawnMarkerTacticsTile", false, 1)]
@@ -216,7 +216,7 @@ public class SpawnMarkerTacticsTile : TacticsTile
 
 public class DockingMarkerTacticsTile : TacticsTile
 {
-	public override string spriteName { get => "docking_marker_iso";}
+	public override string spriteName { get => "docking_marker_iso"; }
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/DockingMarkerTacticsTile", false, 1)]

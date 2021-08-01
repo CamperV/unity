@@ -7,6 +7,7 @@ using Extensions;
 
 public class Zone
 {
+    public IEnumerable<Vector3Int> Positions { get => GetPositions(); }
     protected HashSet<Vector3Int> positions;
     public Vector3Int min;
     public Vector3Int max;
@@ -39,6 +40,12 @@ public class Zone
                     positions.Add(new Vector3Int(x, y, z));
                 }
             }
+        }
+    }
+    public Zone(IEnumerable<Vector3Int> _positions) {        
+        positions = new HashSet<Vector3Int>();
+        foreach (var pos in _positions) {
+            positions.Add(pos);
         }
     }
 

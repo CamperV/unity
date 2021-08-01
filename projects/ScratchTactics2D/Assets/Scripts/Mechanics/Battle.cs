@@ -18,7 +18,7 @@ public class Battle : MonoBehaviour
 	private BattleMap battleMap;
 	
 	[HideInInspector] public PlayerArmy player;
-	[HideInInspector] public Army other;
+	[HideInInspector] public EnemyArmy other;
 	[HideInInspector] public List<Army> allOther;
 
 	[HideInInspector] public Vector3Int playerGridOffset;
@@ -37,11 +37,11 @@ public class Battle : MonoBehaviour
 		activeParticipants = new Dictionary<Controller, Army>();
 	}
 	
-	public void Init(PlayerArmy playerEntity, Army otherEntity) {
+	public void Init(PlayerArmy playerEntity, EnemyArmy otherEntity) {
 		player = playerEntity;
 		other = otherEntity;
 
-		(other as EnemyArmy).state = Enum.EnemyArmyState.inBattle;
+		other.state = Enum.EnemyArmyState.inBattle;
 		allOther = new List<Army>{ other };
 
 		// register controllers for units to be registered to
@@ -78,12 +78,10 @@ public class Battle : MonoBehaviour
 		// otherwise the GO is marked as inactive and we can't query it
 		battleMap = Instantiate( battleMaps.PopRandom<BattleMap>() );
 		BattleMapGenerator.ApplyMap(battleMap, grid.SetAppropriateTile);
+		
+		// clean up
 		grid.baseTilemap.CompressBounds();
 		grid.baseTilemap.RefreshAllTiles();
-
-		// after all battle participants have generated their TileMaps, apply the contents of the tacticsTileGrid to the baseTilemap
-		// then compress the bounds afterwards
-		//grid.ApplyTileGrid();
 		
 		// determine correct centering factor
 		// move to center after the tilemap has been filled
@@ -91,6 +89,23 @@ public class Battle : MonoBehaviour
 		Vector3 offsetPos = transform.position - (gridCenter - transform.position);
 		
 		grid.transform.position = offsetPos;
+	}
+
+	public void SpawnUnits(Army army, Zone spawnZone) {		
+		// do spawn-y things and add them to the activeUnit registry
+		// in the future, assign them to a Director (either player control or AI)
+		var spawnPositions = spawnZone.Positions.ToList().RandomSelections<Vector3Int>(army.numUnits);
+
+		// the army will maintain a barracks of units
+		// the army has reference to each prefab needed, so we instantiate a prefab here
+		// then apply the actual relevant stats
+		foreach (UnitState unitStats in army.GetUnits()) {
+			var uPrefab = army.LoadUnitByTag("Units/" + unitStats.unitTag);
+			Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid) as Unit;
+			//
+			unit.ApplyStats(unitStats);
+			GetController(player).Register(unit);
+		}
 	}
 	
 	// we can only start a Battle with two participants
@@ -137,9 +152,9 @@ public class Battle : MonoBehaviour
 		grid.transform.position = offsetPos;
 	}
 	
-	public void SpawnAllUnits() {
+	public void SpawnAllUnitsDomino() {
 		// number of spawnZones is equal to the number of worldParticpants (2)
-		Pair<SpawnZone, SpawnZone> spawnZones = GetSpawnZones();
+		Pair<SpawnZone, SpawnZone> spawnZones = GetSpawnZonesDomino();
 		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
@@ -169,7 +184,7 @@ public class Battle : MonoBehaviour
 		}
 	}
 
-	public void SpawnObstacles() {
+	public void SpawnObstaclesDomino() {
 		Zone spawnZone = Zone.WithinGrid(grid, Vector3Int.zero, grid.GetDimensions() - Vector3Int.one);
 		var spawnPositions = spawnZone.GetPositions().RandomSelections<Vector3Int>(Random.Range(5, 10));
 
@@ -181,7 +196,7 @@ public class Battle : MonoBehaviour
 		}
 	}
 
-	private Pair<SpawnZone, SpawnZone> GetSpawnZones() {
+	private Pair<SpawnZone, SpawnZone> GetSpawnZonesDomino() {
 		//
 		// IMPORTANT: the north/suth/east/west scaling (0.4 currently) is linked to the size of the spawn zones
 		// if you're going to do this programmatically in the future, probably just switch to vector rotation

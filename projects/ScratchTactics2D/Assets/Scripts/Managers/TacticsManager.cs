@@ -115,6 +115,9 @@ public class TacticsManager : MonoBehaviour
 		activeBattle.Init(player, other);
 		activeBattle.LoadBattleMap(playerTerrain, otherTerrain);
 
+		//activeBattle.SpawnUnits(player, playerSpawnZone);
+		//activeBattle.SpawnUnits(other, otherSpawnZone);
+
 		// to create Domino style
 		// activeBattle.CreateDominoTacticsGrid(playerTerrain, otherTerrain);
 		// activeBattle.SpawnObstacles();
