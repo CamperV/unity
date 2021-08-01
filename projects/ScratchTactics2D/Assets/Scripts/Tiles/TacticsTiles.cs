@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+//-------------------------------------------------------------------//
+public abstract class TacticsTile : Tile
+{
+	// returns an integer that signifies the cost of entering this tile
+	public virtual int cost { get => Constants.standardTickCost; }
+	public List<Sprite> sprites;
+}
+//-------------------------------------------------------------------//
 
 public class GrassIsoTile : TacticsTile
 {

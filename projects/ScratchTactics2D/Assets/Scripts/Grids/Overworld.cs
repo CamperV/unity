@@ -43,8 +43,8 @@ public class Overworld : GameGrid, IPathable
 		return terrain.ContainsKey(tilePos);
 	}
 		
-	public override GameTile GetTileAt(Vector3Int tilePos) {
-		return baseTilemap.GetTile(tilePos) as GameTile;
+	public override Tile GetTileAt(Vector3Int tilePos) {
+		return baseTilemap.GetTile(tilePos) as Tile;
 	}
 
 	public override void SelectAt(Vector3Int tilePos, Color? color = null) {

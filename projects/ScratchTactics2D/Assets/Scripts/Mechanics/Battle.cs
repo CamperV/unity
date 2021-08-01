@@ -15,6 +15,7 @@ public class Battle : MonoBehaviour
 	[HideInInspector] public Controller defaultController;
 	//
 	[HideInInspector] public TacticsGrid grid;
+	private BattleMap battleMap;
 	
 	[HideInInspector] public PlayerArmy player;
 	[HideInInspector] public Army other;
@@ -67,10 +68,31 @@ public class Battle : MonoBehaviour
 		GameManager.inst.phaseManager.currentTurn = 1;
 		GetControllerFromPhase(startingPhase).TriggerPhase();
 	}
+
+	public void LoadBattleMap(Terrain playerTerrain, Terrain otherTerrain) {
+		string terrainDesignator = $"{playerTerrain.tag}:{otherTerrain.tag}";
+		List<BattleMap> battleMaps = BattleMap.GetMapsFromDesignator(terrainDesignator);
+
+		// our current method: random
+		battleMap = battleMaps.RandomSelections<BattleMap>(1)[0];
+
+
+
+		// after all battle participants have generated their TileMaps, apply the contents of the tacticsTileGrid to the baseTilemap
+		// then compress the bounds afterwards
+		grid.ApplyTileMap();
+		
+		// determine correct centering factor
+		// move to center after the tilemap has been filled
+		Vector3 gridCenter = grid.GetGridCenterReal();
+		Vector3 offsetPos = transform.position - (gridCenter - transform.position);
+		
+		grid.transform.position = offsetPos;
+	}
 	
 	// we can only start a Battle with two participants
 	// however, others can join(?)
-	public void CreateDominoTacticsGrid(Terrain playerTerrain, Terrain otherTerrain) {				
+	public void CreateDominoTacticsGrid(Terrain playerTerrain, Terrain otherTerrain) {	
 		// determine orientations
 		Dictionary<Vector3Int, List<Vector3Int>> orientationDict = new Dictionary<Vector3Int, List<Vector3Int>>() {
 			[Vector3Int.up] = new List<Vector3Int>() {
@@ -124,7 +146,7 @@ public class Battle : MonoBehaviour
 		// the player has reference to each prefab needed, so we instantiate a prefab here
 		// then apply the actual relevant stats
 		foreach (UnitState unitStats in player.GetUnits()) {
-			var uPrefab = player.LoadUnitByTag(unitStats.unitTag);
+			var uPrefab = player.LoadUnitByTag("Units/" + unitStats.unitTag);
 			PlayerUnit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, playerSpawnPositions.PopAt(0), grid) as PlayerUnit;
 			//
 			unit.ApplyStats(unitStats);
@@ -136,7 +158,7 @@ public class Battle : MonoBehaviour
 		var otherSpawnPositions = spawnZones.second.GetPositions().RandomSelections<Vector3Int>(other.numUnits);
 
 		foreach (UnitState unitStats in other.GetUnits()) {
-			var uPrefab = other.LoadUnitByTag(unitStats.unitTag);
+			var uPrefab = other.LoadUnitByTag("Units/" + unitStats.unitTag);
 			EnemyUnit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, otherSpawnPositions.PopAt(0), grid) as EnemyUnit;
 			//
 			unit.ApplyStats(unitStats);
@@ -291,7 +313,7 @@ public class Battle : MonoBehaviour
 		//
 		var spawnPositions = spawnZone.GetPositions().RandomSelections<Vector3Int>(joiningEntity.numUnits);
 		foreach (UnitState unitStats in joiningEntity.GetUnits()) {
-			var uPrefab = joiningEntity.LoadUnitByTag(unitStats.unitTag);
+			var uPrefab = joiningEntity.LoadUnitByTag("Units/" + unitStats.unitTag);
 			Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid);
 			//
 			unit.ApplyStats(unitStats);

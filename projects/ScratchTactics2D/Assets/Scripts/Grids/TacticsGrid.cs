@@ -49,7 +49,7 @@ public class TacticsGrid : GameGrid
 		return tacticsTileGrid.ContainsKey(tilePos);
 	}
 	
-	public override GameTile GetTileAt(Vector3Int tilePos) {
+	public override Tile GetTileAt(Vector3Int tilePos) {
 		if (tacticsTileGrid.ContainsKey(tilePos)) {
 			return tacticsTileGrid[tilePos];
 		}

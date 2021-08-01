@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+//-------------------------------------//
+public abstract class OverlayTile : Tile
+{
+	public List<Sprite> sprites;
+	public void SetSprite(int i) {
+		sprite = sprites[i];
+	}
+}
+//-------------------------------------//
 
 public class SelectOverlayTile : OverlayTile
 {

@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+//--------------------------------//
+public abstract class UITile : Tile 
+{
+	public List<Sprite> sprites;
+	public void SetSprite(int i) {
+		sprite = sprites[i];
+	}
+}
+//--------------------------------//
+
 public class HealthPipTile : UITile
 {
 	public void OnEnable() {

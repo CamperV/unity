@@ -11,6 +11,7 @@ using Extensions;
 public abstract class Terrain
 {
 	public Vector3Int position;
+	public string tag { get => this.GetType().Name; }
 
 	public virtual Vector3Int tileRefPosition { get => position; }
 	public virtual int occlusion { get => 0; }
@@ -18,6 +19,7 @@ public abstract class Terrain
 	public virtual Vector2Int battleGridSize { get => new Vector2Int(8, 8); }
 	public virtual int tickCost { get => Constants.standardTickCost; }
 
+	// soon to be deprecated
 	protected TacticsTile _tacticsTile;
 	public abstract TacticsTile tacticsTile { get; }
 
@@ -42,7 +44,7 @@ public abstract class Terrain
 		if (armyTagToSpawn == null) return false;
 
 		// otherwise:
-		EnemyArmy armyPrefab = EnemyArmySpawner.LoadArmyByTag(armyTagToSpawn);
+		EnemyArmy armyPrefab = EnemyArmySpawner.LoadArmyByTag("Armies/" + armyTagToSpawn);
 		EnemyArmy army = Army.Spawn<EnemyArmy>(armyPrefab, position);
 
 		// this will update the ID value

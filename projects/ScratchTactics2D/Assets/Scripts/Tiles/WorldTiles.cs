@@ -3,6 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+//----------------------------------------------------------------//
+public abstract class WorldTile : Tile
+{
+	// returns a probability from 0-99 that this tile is generated
+	public virtual int probability { get => 0; }
+	
+	// utility methods for getting specific worldtile sprites
+	public List<Sprite> sprites;
+	public void SetSprite(int i) {
+		sprite = sprites[i];
+	}
+}
+//----------------------------------------------------------------//
 
 public class GrassWorldTile : WorldTile
 {

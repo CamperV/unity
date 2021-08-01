@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5096903053251312008}
   - component: {fileID: 3996583895950419961}
   m_Layer: 9
-  m_Name: OverworldEnemyBase
+  m_Name: EnemyArmy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
