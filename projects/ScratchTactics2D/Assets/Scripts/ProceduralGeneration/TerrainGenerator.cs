@@ -16,7 +16,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 
 	// NOTE:
 	// this does not contain an exhaustive list of tiles. ex: road tiles
-	public enum TileEnum {
+	public enum WorldTileEnum {
 		x,
 		deepWater, water,
 		sand,
@@ -41,7 +41,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 	};
 
 	public Vector2Int mapDimension;
-	protected TileEnum[,] map;
+	protected WorldTileEnum[,] map;
 
 	// generation parameters
 	public int numVillages;
@@ -91,7 +91,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 		TileSetter = tileSetter;
 	}
 	
-	public static WorldTile TileOption(TileEnum tileType) {
+	public static WorldTile TileOption(WorldTileEnum tileType) {
 		return tileOptions[(int)tileType];
 	}
 	public WorldTile TileOption(int x, int y) {
@@ -106,24 +106,24 @@ public abstract class TerrainGenerator : MonoBehaviour
             // create Pattern of Road positions center
             TerrainPattern3x3 roadPattern = new TerrainPattern3x3();
             foreach (Vector3Int neighbor in map.GetNeighbors(roadPos)) {
-                if (map[neighbor.x, neighbor.y] == TileEnum.road 			||
-					map[neighbor.x, neighbor.y] == TileEnum.waterRoad 		||
-					map[neighbor.x, neighbor.y] == TileEnum.forestRoad 		||
-					map[neighbor.x, neighbor.y] == TileEnum.mountainRoad 	||
-					map[neighbor.x, neighbor.y] == TileEnum.villageRoad) {
+                if (map[neighbor.x, neighbor.y] == WorldTileEnum.road 			||
+					map[neighbor.x, neighbor.y] == WorldTileEnum.waterRoad 		||
+					map[neighbor.x, neighbor.y] == WorldTileEnum.forestRoad 		||
+					map[neighbor.x, neighbor.y] == WorldTileEnum.mountainRoad 	||
+					map[neighbor.x, neighbor.y] == WorldTileEnum.villageRoad) {
                     roadPattern.Add( neighbor - roadPos );	
                 }
             }
 
-			// now grab appropriate tile based on road TileEnum
+			// now grab appropriate tile based on road WorldTileEnum
 			switch (map[x, y]) {
-				case TileEnum.waterRoad:
+				case WorldTileEnum.waterRoad:
 					return roadPattern.GetPatternTile<WaterRoadWorldTile>();
-				case TileEnum.forestRoad:
+				case WorldTileEnum.forestRoad:
 					return roadPattern.GetPatternTile<ForestRoadWorldTile>();
-				case TileEnum.mountainRoad:
+				case WorldTileEnum.mountainRoad:
 					return roadPattern.GetPatternTile<MountainRoadWorldTile>();
-				case TileEnum.villageRoad:
+				case WorldTileEnum.villageRoad:
 					return roadPattern.GetPatternTile<VillageRoadWorldTile>();
 				default:
 					return roadPattern.GetPatternTile<RoadWorldTile>();
@@ -131,26 +131,26 @@ public abstract class TerrainGenerator : MonoBehaviour
 		}
 	}
 
-	public static TileEnum NoTileOption(TileEnum tileType) {
+	public static WorldTileEnum NoTileOption(WorldTileEnum tileType) {
 		switch (tileType) {
-			case TileEnum.mountain:
-			case TileEnum.mountain2x2:
-				return TileEnum.mountainNoTile;
+			case WorldTileEnum.mountain:
+			case WorldTileEnum.mountain2x2:
+				return WorldTileEnum.mountainNoTile;
 				break;
-			case TileEnum.peak:
-			case TileEnum.peak2x2:
-				return TileEnum.peakNoTile;
+			case WorldTileEnum.peak:
+			case WorldTileEnum.peak2x2:
+				return WorldTileEnum.peakNoTile;
 				break;
 			default:
-				return TileEnum.x;
+				return WorldTileEnum.x;
 		}
 	}
 
-	public TileEnum[,] GetMap() {
+	public WorldTileEnum[,] GetMap() {
 		return map;
 	}
 
-	// convert and return the TileEnum map into a terrain map
+	// convert and return the WorldTileEnum map into a terrain map
 	public Dictionary<Vector3Int, Terrain> GetTerrain() {
 		Dictionary<Vector3Int, Terrain> retVal = new Dictionary<Vector3Int, Terrain>();
 
@@ -160,69 +160,69 @@ public abstract class TerrainGenerator : MonoBehaviour
 				Vector3Int pos = new Vector3Int(x, y, 0);
 
 				switch (map[x, y]) {
-					case TileEnum.deepWater:
+					case WorldTileEnum.deepWater:
 						terrain = new DeepWater(pos);
 						break;
-					case TileEnum.water:
+					case WorldTileEnum.water:
 						terrain = new Water(pos);
 						break;
-					case TileEnum.sand:
+					case WorldTileEnum.sand:
 						terrain = new Sand(pos);
 						break;
-					case TileEnum.plain:
+					case WorldTileEnum.plain:
 						terrain = new Plain(pos);
 						break;
-					case TileEnum.forest:
+					case WorldTileEnum.forest:
 						terrain = new Forest(pos);
 						break;
-					case TileEnum.deepForest:
+					case WorldTileEnum.deepForest:
 						terrain = new DeepForest(pos);
 						break;
-					case TileEnum.foothill:
+					case WorldTileEnum.foothill:
 						terrain = new Foothill(pos);
 						break;
-					case TileEnum.mountain:
+					case WorldTileEnum.mountain:
 						terrain = new Mountain(pos);
 						break;
-					case TileEnum.mountain2x2:
+					case WorldTileEnum.mountain2x2:
 						terrain = new Mountain2x2(pos);
 						break;
-					case TileEnum.peak:
+					case WorldTileEnum.peak:
 						terrain = new Peak(pos);
 						break;
-					case TileEnum.peak2x2:
+					case WorldTileEnum.peak2x2:
 						terrain = new Peak2x2(pos);
 						break;
-					case TileEnum.villageRoad:
-					case TileEnum.village:
+					case WorldTileEnum.villageRoad:
+					case WorldTileEnum.village:
 						terrain = new Village(pos);
 						break;
-					case TileEnum.ruins:
+					case WorldTileEnum.ruins:
 						terrain = new Ruins(pos);
 						break;
-					case TileEnum.fortress:
+					case WorldTileEnum.fortress:
 						terrain = new Fortress(pos);
 						break;
-					case TileEnum.camp:
+					case WorldTileEnum.camp:
 						terrain = new Camp(pos);
 						break;
-					case TileEnum.banditCamp:
+					case WorldTileEnum.banditCamp:
 						terrain = new BanditCamp(pos);
 						break;
 					// fall-through here
 					// don't include villageRoad
-					case TileEnum.waterRoad:
-					case TileEnum.road:
-					case TileEnum.forestRoad:
-					case TileEnum.mountainRoad:
+					case WorldTileEnum.waterRoad:
+					case WorldTileEnum.road:
+					case WorldTileEnum.forestRoad:
+					case WorldTileEnum.mountainRoad:
 						terrain = new Road(pos);
 						break;
 
 					// special cases
-					case TileEnum.mountainNoTile:
+					case WorldTileEnum.mountainNoTile:
 						terrain = new Mountain2x2(pos, _2x2TileRef[pos]);
 						break;
-					case TileEnum.peakNoTile:
+					case WorldTileEnum.peakNoTile:
 						terrain = new Peak2x2(pos, _2x2TileRef[pos]);
 						break;
 				}
@@ -264,7 +264,7 @@ public abstract class TerrainGenerator : MonoBehaviour
     protected virtual void Preprocessing() {}
 	protected virtual void Postprocessing() {}
 	
-	protected void PatternReplaceMultiple(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, params TileEnum[] patternContent) {
+	protected void PatternReplaceMultiple(TerrainPattern pattern, WorldTileEnum toReplace, WorldTileEnum replaceWith, params WorldTileEnum[] patternContent) {
 		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
 			for (int y = map.GetLength(1)-1; y >= 0; y--) {
 				if (map[x, y] == toReplace) {
@@ -303,7 +303,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 		}
 	}
 
-	protected void PatternReplaceSingle(TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, params TileEnum[] patternContent) {
+	protected void PatternReplaceSingle(TerrainPattern pattern, WorldTileEnum toReplace, WorldTileEnum replaceWith, params WorldTileEnum[] patternContent) {
 		List<Vector3Int> secondPass = new List<Vector3Int>();
 
 		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
@@ -335,7 +335,7 @@ public abstract class TerrainGenerator : MonoBehaviour
 		}
 	}
 
-	protected void PatternReplaceRandom(float probability, TerrainPattern pattern, TileEnum toReplace, TileEnum replaceWith, params TileEnum[] patternContent) {
+	protected void PatternReplaceRandom(float probability, TerrainPattern pattern, WorldTileEnum toReplace, WorldTileEnum replaceWith, params WorldTileEnum[] patternContent) {
 		List<Vector3Int> secondPass = new List<Vector3Int>();
 
 		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
@@ -374,8 +374,8 @@ public abstract class TerrainGenerator : MonoBehaviour
 		Debug.Log($"Spawned {cnt} {replaceWith}");
 	}
 
-	protected void PatternReplaceConditional(float probability, TerrainPattern pattern, Func<TileEnum, bool> toReplaceCondition, TileEnum replaceWith,
-											 params Pair<Func<TileEnum, bool>, int>[] conditions) {
+	protected void PatternReplaceConditional(float probability, TerrainPattern pattern, Func<WorldTileEnum, bool> toReplaceCondition, WorldTileEnum replaceWith,
+											 params Pair<Func<WorldTileEnum, bool>, int>[] conditions) {
 		List<Vector3Int> secondPass = new List<Vector3Int>();
 
 		for (int x = map.GetLength(0)-1; x >= 0 ; x--) {
@@ -393,8 +393,8 @@ public abstract class TerrainGenerator : MonoBehaviour
 						indexedConditionCounts[i] = conditions[i].second;
 					}
 
-					// constraints dict represents how many times each TileEnum MUST show up, at least
-					// each time you see a valid TileEnum in the pattern, decrement
+					// constraints dict represents how many times each WorldTileEnum MUST show up, at least
+					// each time you see a valid WorldTileEnum in the pattern, decrement
 					foreach (var v in pattern.YieldPattern(origin)) {
 						if (map.Contains(v.x, v.y)) {
 							// this is pass by val, so hopefully this works

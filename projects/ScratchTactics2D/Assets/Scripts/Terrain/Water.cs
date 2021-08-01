@@ -20,7 +20,7 @@ public class Water : Terrain
     public override TacticsTile tacticsTile {
 		get {
 			if (_tacticsTile == null) {
-				_tacticsTile = ScriptableObject.CreateInstance<WaterIsoTile>();
+				_tacticsTile = ScriptableObject.CreateInstance<WaterTacticsTile>();
 			}
 			return _tacticsTile;
 		}

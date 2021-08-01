@@ -39,7 +39,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         SaveTextureAsPNG( RawTexture(elevation.Map), "noise_map.png");
         SaveTextureAsPNG( ColorizedTexture(elevation.Map), "terrain_map.png");
     	
-        map = new TileEnum[mapDimension.x, mapDimension.y];
+        map = new WorldTileEnum[mapDimension.x, mapDimension.y];
 		for (int i = 0; i < map.GetLength(0); i++) {
 			for (int j = 0; j < map.GetLength(1); j++) {
 				map[i, j] = ElevationToTile( elevation.At(i, j) );
@@ -61,54 +61,54 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
                 float val = forestProbabilityMap.At(x, y);
                 float rng = Random.Range(0.40f, 0.90f);
                 if (rng <= val) {
-                    map[x, y] = TileEnum.forest;
+                    map[x, y] = WorldTileEnum.forest;
                 }
             }
         }
         // now, pattern match and create deepForest, where a forest is touching a forest in each cardinal direction
         // TODO: this is currently replacing while going - modify to use another method here
         // we're getting checkerboard
-        PatternReplaceSingle(TerrainPatternShape.CenterPlus, TileEnum.forest, TileEnum.deepForest,
-                             TileEnum.forest, TileEnum.mountain, TileEnum.mountain2x2, TileEnum.peak, TileEnum.peak2x2);    
+        PatternReplaceSingle(TerrainPatternShape.CenterPlus, WorldTileEnum.forest, WorldTileEnum.deepForest,
+                             WorldTileEnum.forest, WorldTileEnum.mountain, WorldTileEnum.mountain2x2, WorldTileEnum.peak, WorldTileEnum.peak2x2);    
 
         // add PoI and roads to them
         // create villages
         // For now, simply spawn where there aren't moutains/water
         // in the future, have villages "prefer" certain areas, maybe using GetRidges(), or find places close to water, etc
         // this may be relegated to different types of villages
-        int[,] spawnableVillageMask = (elevation as NoiseMap).GetRidges().BinaryThreshold(0.80f).Subtract( map.LocationsOf<TileEnum>(TileEnum.water, TileEnum.deepWater) );
+        int[,] spawnableVillageMask = (elevation as NoiseMap).GetRidges().BinaryThreshold(0.80f).Subtract( map.LocationsOf<WorldTileEnum>(WorldTileEnum.water, WorldTileEnum.deepWater) );
         SaveTextureAsPNG( RawTexture(spawnableVillageMask.ToFloat() ), "village_map.png");
         List<Vector2Int> villagePositions = spawnableVillageMask.Where(it => it == 1).ToList().RandomSelections<Vector2Int>(numVillages);
         //
         foreach(Vector2Int pos in villagePositions) {
-            map[pos.x, pos.y] = TileEnum.village;
+            map[pos.x, pos.y] = WorldTileEnum.village;
         }
 
         // do Ruins here
         // 1f indicates EVERY deepForest (surrounded by deepForest) you see will be replaced with a Ruins
         // 0f means no ruins will appear
-        PatternReplaceRandom(0.25f, TerrainPatternShape.CenterPlus, TileEnum.deepForest, TileEnum.ruins,
-                             TileEnum.deepForest);
+        PatternReplaceRandom(0.25f, TerrainPatternShape.CenterPlus, WorldTileEnum.deepForest, WorldTileEnum.ruins,
+                             WorldTileEnum.deepForest);
 
         // do Fortresses here
         // patternreplace touching at least one Mountain and at least one 
         // these conditions are lambdas that are run on each member of a Pattern surrounding the target
         // the second number in the Pair is how many times this must become true to be valid
         // Here: a fortress will be created if there is at least one mountain/peak touching it, and at least one NON mountain/peak touching it (5% of the time)
-        var fortressCondition1 = new Pair<Func<TileEnum, bool>, int>(it => it == TileEnum.mountain || it == TileEnum.peak, 2);
-        var fortressCondition2 = new Pair<Func<TileEnum, bool>, int>(it => !fortressCondition1.first(it), 1);
+        var fortressCondition1 = new Pair<Func<WorldTileEnum, bool>, int>(it => it == WorldTileEnum.mountain || it == WorldTileEnum.peak, 2);
+        var fortressCondition2 = new Pair<Func<WorldTileEnum, bool>, int>(it => !fortressCondition1.first(it), 1);
         PatternReplaceConditional(0.05f, TerrainPatternShape.NoCenterPlus, it => fortressCondition2.first(it),
-                                  TileEnum.fortress, fortressCondition1, fortressCondition2);
+                                  WorldTileEnum.fortress, fortressCondition1, fortressCondition2);
 		
         // do Camps here
         // for now, just pretty much random
-        var campCondition1 = new Pair<Func<TileEnum, bool>, int>(it => it != TileEnum.mountain && it != TileEnum.peak, 2);
-        PatternReplaceConditional(0.01f, TerrainPatternShape.NoCenterPlus, it => it == TileEnum.forest || it == TileEnum.deepForest,
-                                  TileEnum.camp, campCondition1);
+        var campCondition1 = new Pair<Func<WorldTileEnum, bool>, int>(it => it != WorldTileEnum.mountain && it != WorldTileEnum.peak, 2);
+        PatternReplaceConditional(0.01f, TerrainPatternShape.NoCenterPlus, it => it == WorldTileEnum.forest || it == WorldTileEnum.deepForest,
+                                  WorldTileEnum.camp, campCondition1);
 
         // road router in ElevationTerrainGenerator
         // link the villages via roads
-		CreateRoadsBetweenWaypoints( map.LocationsOf<TileEnum>(TileEnum.village)
+		CreateRoadsBetweenWaypoints( map.LocationsOf<WorldTileEnum>(WorldTileEnum.village)
 										.Where(it => it == 1)
 										.Select(it => new Vector3Int(it.x, it.y, 0))
 										.ToList() );
@@ -116,7 +116,7 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         // do BanditCamps here
         // as a function of distance from/to a Road
         int[,] spawnableBanditCampMask = new int[map.GetLength(0), map.GetLength(1)];
-        int[,] checkDistanceAgainst = map.LocationsOf<TileEnum>(TileEnum.road, TileEnum.waterRoad, TileEnum.forestRoad, TileEnum.mountainRoad, TileEnum.villageRoad);
+        int[,] checkDistanceAgainst = map.LocationsOf<WorldTileEnum>(WorldTileEnum.road, WorldTileEnum.waterRoad, WorldTileEnum.forestRoad, WorldTileEnum.mountainRoad, WorldTileEnum.villageRoad);
 
         // for each point, calculate the total distances from all specified locations, then normalize it
         foreach (var road in checkDistanceAgainst.Where(it => it == 1)) {
@@ -130,14 +130,14 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
         List<Vector2Int> banditCampPositions = spawnableBanditCampMask.Where(it => it == 1).ToList().RandomSelections<Vector2Int>(numBanditCamps);
         //
         foreach(Vector2Int pos in banditCampPositions) {
-            map[pos.x, pos.y] = TileEnum.banditCamp;
+            map[pos.x, pos.y] = WorldTileEnum.banditCamp;
         }
 
         // Finally,
         // replace 2x2 mountains with large mountain tiles
 		// create bottom-left 2x2 pattern for each mountain
-		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.peak, TileEnum.peak2x2, TileEnum.peak);
-		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, TileEnum.mountain, TileEnum.mountain2x2, TileEnum.mountain);
+		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, WorldTileEnum.peak, WorldTileEnum.peak2x2, WorldTileEnum.peak);
+		PatternReplaceMultiple(TerrainPatternShape.BottomLeftSquare, WorldTileEnum.mountain, WorldTileEnum.mountain2x2, WorldTileEnum.mountain);
     }
 
     private NoiseMap GeneratePerlinNoiseMap(int dimX, int dimY, int numOctaves, float scale = 1.0f, float power = 1.0f, bool modulate = false) {

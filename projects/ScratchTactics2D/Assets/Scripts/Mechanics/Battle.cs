@@ -71,16 +71,19 @@ public class Battle : MonoBehaviour
 
 	public void LoadBattleMap(Terrain playerTerrain, Terrain otherTerrain) {
 		string terrainDesignator = $"{playerTerrain.tag}:{otherTerrain.tag}";
-		List<BattleMap> battleMaps = BattleMap.GetMapsFromDesignator(terrainDesignator);
+		List<BattleMap> battleMaps = BattleMapGenerator.GetMapsFromDesignator(terrainDesignator);
 
 		// our current method: random
-		battleMap = battleMaps.RandomSelections<BattleMap>(1)[0];
-
-
+		// note that we need to Instantiate to get certain fields from the Components
+		// otherwise the GO is marked as inactive and we can't query it
+		battleMap = Instantiate( battleMaps.PopRandom<BattleMap>() );
+		BattleMapGenerator.ApplyMap(battleMap, grid.SetAppropriateTile);
+		grid.baseTilemap.CompressBounds();
+		grid.baseTilemap.RefreshAllTiles();
 
 		// after all battle participants have generated their TileMaps, apply the contents of the tacticsTileGrid to the baseTilemap
 		// then compress the bounds afterwards
-		grid.ApplyTileMap();
+		//grid.ApplyTileGrid();
 		
 		// determine correct centering factor
 		// move to center after the tilemap has been filled
@@ -124,7 +127,7 @@ public class Battle : MonoBehaviour
 		
 		// after all battle participants have generated their TileMaps, apply the contents of the tacticsTileGrid to the baseTilemap
 		// then compress the bounds afterwards
-		grid.ApplyTileMap();
+		grid.ApplyTileGrid();
 		
 		// determine correct centering factor
 		// move to center after the tilemap has been filled
@@ -262,7 +265,7 @@ public class Battle : MonoBehaviour
 		// this Tile's Map gets added to the overall baseTilemap of TacticsGrid
 		Debug.Log($"Creating a new battleground with offset {offset}");
 		grid.CreateDominoTileMap(offset, joiningTerrain);
-		grid.ApplyTileMap(noCompress: false);
+		grid.ApplyTileGrid(noCompress: false);
 		//
 		Vector3 gridCenter = grid.GetGridCenterReal();
 		Vector3 offsetPos = transform.position - (gridCenter - transform.position);

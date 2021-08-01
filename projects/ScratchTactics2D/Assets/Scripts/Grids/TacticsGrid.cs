@@ -7,12 +7,9 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class TacticsGrid : GameGrid
-{
-	public int mapDimensionX;
-	public int mapDimensionY;
-	
+{	
+	// deprecated
 	private Dictionary<Vector3Int, TacticsTile> tacticsTileGrid;
-	private Grid baseGrid;
 
 	private OverlayTile waypointOverlayTile;
 	private OverlayTile selectionOverlayTile;
@@ -20,11 +17,11 @@ public class TacticsGrid : GameGrid
     protected override void Awake() {
 		base.Awake();
 
+		// deprecated
 		tacticsTileGrid = new Dictionary<Vector3Int, TacticsTile>();
-		baseGrid = GetComponent<Grid>();
 
 		waypointOverlayTile = PathOverlayIsoTile.GetTileWithSprite(1);
-		selectionOverlayTile = ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile;
+		selectionOverlayTile = (ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile);
 	}
 
 	// IPathable definitions
@@ -46,18 +43,15 @@ public class TacticsGrid : GameGrid
     }
 	
 	public override bool IsInBounds(Vector3Int tilePos) {
-		return tacticsTileGrid.ContainsKey(tilePos);
+		return translation2D.ContainsKey(new Vector2Int(tilePos.x, tilePos.y));
 	}
-	
+		
 	public override Tile GetTileAt(Vector3Int tilePos) {
-		if (tacticsTileGrid.ContainsKey(tilePos)) {
-			return tacticsTileGrid[tilePos];
-		}
-		return null;
+		return baseTilemap.GetTile(tilePos) as Tile;
 	}
 	
 	public override Vector3Int Real2GridPos(Vector3 realPos) {
-		return baseGrid.WorldToCell(realPos);
+		return GetComponent<Grid>().WorldToCell(realPos);
 	}
 	//
 	// END OVERRIDE ZONE
@@ -81,6 +75,12 @@ public class TacticsGrid : GameGrid
 		ResetTintTile(underlayTilemap, tilePos);
 	}
 
+	public void SetAppropriateTile(Vector3Int tilePos, TacticsTile tile) {
+		translation2D[new Vector2Int(tilePos.x, tilePos.y)] = tilePos;
+		baseTilemap.SetTile(tilePos, tile);
+		Debug.Log($"Set tile {tile} at {tilePos}");
+	}
+
     public void CreateDominoTileMap(Vector3Int offset, Terrain originTerrain) {
 		var newOrigin = baseTilemap.origin + offset;
 
@@ -93,7 +93,7 @@ public class TacticsGrid : GameGrid
 		}
 	}
 	
-	public void ApplyTileMap(bool noCompress = false) {
+	public void ApplyTileGrid(bool noCompress = false) {
 		Debug.Assert(tacticsTileGrid.Count != 0);
 		
 		foreach(var pair in tacticsTileGrid.OrderBy(k => k.Key.x)) {

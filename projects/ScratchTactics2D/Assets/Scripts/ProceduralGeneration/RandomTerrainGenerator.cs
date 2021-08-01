@@ -14,7 +14,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 	// so when Overworld is generated, it will check if the tile is:
 	//  grass first, then dirt, then water, then mountain
 	public override void GenerateMap() {
-		map = new TileEnum[mapDimension.x, mapDimension.y];
+		map = new WorldTileEnum[mapDimension.x, mapDimension.y];
 		
 		// randomly select all other tiles
 		for (int i = 0; i < map.GetLength(0); i++) {
@@ -29,7 +29,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 					if (rng <= probCounter) break;
 				}
 				Debug.Assert(probCounter <= 100);
-				map[i, j] = (TileEnum)selection;
+				map[i, j] = (WorldTileEnum)selection;
 			}
 		}
 	}
@@ -45,19 +45,19 @@ public class RandomTerrainGenerator : TerrainGenerator
 
 	private void LinkMountainRanges() {
 		// choose some %age of mountains to link
-		List<Vector3Int> posList = PositionsOfType(TileEnum.mountain);
+		List<Vector3Int> posList = PositionsOfType(WorldTileEnum.mountain);
 		foreach (var mnt in posList) { GameManager.inst.overworld.SetTerrainAt(mnt, new Mountain(mnt)); }
 		List<Vector3Int> toLink = posList.RandomSelections<Vector3Int>((int)(posList.Count/2));
 		
 		// for each linking mountain, find the closest next mountain, and link to it
 		foreach(Vector3Int startMountain in toLink) {
-			Vector3Int endMountain = ClosestOfType(startMountain, TileEnum.mountain);
+			Vector3Int endMountain = ClosestOfType(startMountain, WorldTileEnum.mountain);
 			
 			// create paths between them
 			// for each path, replace the tile with a mountain tile
 			Path mRange = new ArmyPathfinder().BFS<Path>(startMountain, endMountain);
 			foreach (Vector3Int mntPos in mRange.Unwind()) {
-				TileSetter(mntPos, TileOption(TileEnum.mountain));
+				TileSetter(mntPos, TileOption(WorldTileEnum.mountain));
 				GameManager.inst.overworld.SetTerrainAt(mntPos, new Mountain(mntPos));
 			}
 		}
@@ -65,7 +65,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 
 	private void CreateForests(int lowerBound = 4, int upperBound = 9) {
 		// choose random grass points to make into lakes
-		List<Vector3Int> posList = PositionsOfType(TileEnum.forest);
+		List<Vector3Int> posList = PositionsOfType(WorldTileEnum.forest);
 		foreach (var frt in posList) { GameManager.inst.overworld.SetTerrainAt(frt, new Forest(frt)); }
 
 		// flood fill each of these areas with randomized tile counts
@@ -77,7 +77,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 			FlowField fField = pf.FlowField<FlowField>(origin, range: forestRange*Constants.standardTickCost, numElements: forestSize);
 			
 			foreach(Vector3Int frt in fField.field.Keys) {
-				TileSetter(frt, TileOption(TileEnum.forest));
+				TileSetter(frt, TileOption(WorldTileEnum.forest));
 				GameManager.inst.overworld.SetTerrainAt(frt, new Forest(frt));
 			}
 		}
@@ -85,7 +85,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 	
 	private void CreateLakes(int lowerBound = 4, int upperBound = 9) {
 		// choose random grass points to make into lakes
-		List<Vector3Int> posList = PositionsOfType(TileEnum.water);
+		List<Vector3Int> posList = PositionsOfType(WorldTileEnum.water);
 		foreach (var wtr in posList) { GameManager.inst.overworld.SetTerrainAt(wtr, new Water(wtr)); }
 
 		// flood fill each of these areas with randomized tile counts
@@ -97,7 +97,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 			FlowField fField = pf.FlowField<FlowField>(lakeOrigin, range: lakeRange*Constants.standardTickCost, numElements: lakeSize);
 			
 			foreach(Vector3Int lakePos in fField.field.Keys) {
-				TileSetter(lakePos, TileOption(TileEnum.water));
+				TileSetter(lakePos, TileOption(WorldTileEnum.water));
 				GameManager.inst.overworld.SetTerrainAt(lakePos, new Water(lakePos));
 			}
 		}
@@ -109,7 +109,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 				surrounded &= (GameManager.inst.overworld.TypeAt(neighbor).MatchesType( typeof(Plain) ) &&
 							   GameManager.inst.overworld.TypeAt(neighbor).MatchesType( typeof(Forest) ));
 			}
-			if (surrounded) TileSetter(tilePos, TileOption(TileEnum.deepWater));
+			if (surrounded) TileSetter(tilePos, TileOption(WorldTileEnum.deepWater));
 		}
 	}
 
@@ -124,20 +124,20 @@ public class RandomTerrainGenerator : TerrainGenerator
 		// first village
 		// the rest are randomized
 		Vector3Int firstVillagePos = new Vector3Int(1, Random.Range(1, mapDimension.y-1), 0);
-		TileSetter(firstVillagePos, TileOption(TileEnum.village));
+		TileSetter(firstVillagePos, TileOption(WorldTileEnum.village));
 		GameManager.inst.overworld.SetTerrainAt(firstVillagePos, new Village(firstVillagePos));
 
 		Vector3Int lastVillagePos  = new Vector3Int(mapDimension.x-1, Random.Range(1, mapDimension.y-1), 0);
-		TileSetter(lastVillagePos, TileOption(TileEnum.village));
+		TileSetter(lastVillagePos, TileOption(WorldTileEnum.village));
 		GameManager.inst.overworld.SetTerrainAt(lastVillagePos, new Village(lastVillagePos));
 
-		foreach (Vector3Int villagePos in PositionsOfType(TileEnum.plain).RandomSelections<Vector3Int>(num-2)) {
-			TileSetter(villagePos, TileOption(TileEnum.village));
+		foreach (Vector3Int villagePos in PositionsOfType(WorldTileEnum.plain).RandomSelections<Vector3Int>(num-2)) {
+			TileSetter(villagePos, TileOption(WorldTileEnum.village));
 			GameManager.inst.overworld.SetTerrainAt(villagePos, new Village(villagePos));
 		}
 	}
 
-	private List<Vector3Int> PositionsOfType(TileEnum type) {
+	private List<Vector3Int> PositionsOfType(WorldTileEnum type) {
 		List<Vector3Int> positionList = new List<Vector3Int>();
 		
 		for (int x = 0; x < map.GetLength(0); x++) {
@@ -150,7 +150,7 @@ public class RandomTerrainGenerator : TerrainGenerator
 		return positionList;
 	}
 	
-	private Vector3Int ClosestOfType(Vector3Int startPos, TileEnum type) {
+	private Vector3Int ClosestOfType(Vector3Int startPos, WorldTileEnum type) {
 		Vector3Int retVal = startPos;
 		float currDist = (float)(map.GetLength(0) + 1);
 		

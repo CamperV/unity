@@ -188,7 +188,7 @@ public class Overworld : GameGrid, IPathable
 		Camera.main.GetComponent<CameraManager>().RefitCamera(zoomLevel);
     }
 
-	private void CreateTintBuffer(TerrainGenerator.TileEnum[,] map) {
+	private void CreateTintBuffer(TerrainGenerator.WorldTileEnum[,] map) {
 		int buffer = 5;
 		
 		int xUpper = map.GetLength(0);
@@ -199,7 +199,7 @@ public class Overworld : GameGrid, IPathable
 				
 				// set the WorldTile in the actual tilemap
 				Vector3Int tilePos = new Vector3Int(x, y, 0);
-				baseTilemap.SetTile(tilePos, TerrainGenerator.TileOption(TerrainGenerator.TileEnum.x));
+				baseTilemap.SetTile(tilePos, TerrainGenerator.TileOption(TerrainGenerator.WorldTileEnum.x));
 
 				if ((x >= -1 && x <= xUpper+1) && (y >= -1 && y <= yUpper+1)) {
 					TintTile(baseTilemap, tilePos, new Color(0.90f, 0.90f, 0.90f));

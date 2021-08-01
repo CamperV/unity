@@ -25,7 +25,7 @@ public class Peak : Mountain
     public override TacticsTile tacticsTile {
 		get {
 			if (_tacticsTile == null) {
-				_tacticsTile = ScriptableObject.CreateInstance<MountainIsoTile>();
+				_tacticsTile = ScriptableObject.CreateInstance<MountainTacticsTile>();
 			}
 			return _tacticsTile;
 		}

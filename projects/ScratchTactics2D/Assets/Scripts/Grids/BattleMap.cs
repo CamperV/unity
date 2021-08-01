@@ -8,77 +8,33 @@ using Random = UnityEngine.Random;
 
 public class BattleMap : MonoBehaviour
 {
-	// Create bespoke terrain:terrain maps, and their "boarding pods"
-
-	/////////////////////
-	// TERRAIN:TERRAIN //
-	/////////////////////
-	// need two orientations for each (don't need to be identical)
-	// Plain:Plain
-	// Plain:Forest
-	// Plain:Foothill
-	// Plain:Road
-	// 
-	// Forest:Forest
-	// Forest:Foothill
-	// Forest:Road
-	//
-	// Foothill:Foothill
-	// Foothill:Road
-	//
-	// Road:Road
-
-	// Later:
-	// Plain:Sand
-	// Forest:Sand
-	// Foothill:Sand
-	// Sand:Road
-	// Sand:Sand
-
-
-	////////////////
-	// CONTEXTUAL //
-	////////////////
-	// adjacent Mountains
-	// adjacent Water
-
-	////////////
-	// UNIQUE //
-	////////////
-	// Fortress
-	// Ruins
-	// BanditCamps
-	// Camps
-	// Bridges(?)
-
 	private Tilemap baseTilemap;
 	private Tilemap overlayTilemap;
+
+	public IEnumerable<Vector3Int> Positions { get => GetPositions(); }
 
 	void Awake() {
 		baseTilemap = GetComponent<Tilemap>();
 		overlayTilemap = GetComponentsInChildren<Tilemap>()[0];
+
+		baseTilemap.CompressBounds();
+		baseTilemap.RefreshAllTiles();
+		overlayTilemap.CompressBounds();
+		overlayTilemap.RefreshAllTiles();
 	}
 
-	private static Dictionary<string, List<string>> prefabDesignators = new Dictionary<string, List<string>>{
-		["Plain:Plain"]   = new List<string>{"PlainPlain_0"},
-		["Plain:Forest"]  = new List<string>{"PlainForest_0"},
-
-		["Forest:Forest"] = new List<string>{"ForestForest_0"}
-	};
-
-	public static List<BattleMap> GetMapsFromDesignator(string designator) {
-		List<BattleMap> retVal = new List<BattleMap>();
-
-		// note that we need to Instantiate to get certain fields from the Components
-		// otherwise the GO is marked as inactive and we can't query it
-		if (prefabDesignators.ContainsKey(designator)) {
-			foreach (string tag in prefabDesignators[designator]) {
-				BattleMap bmPrefab = Resources.Load<BattleMap>("Tilemaps/" + tag);
-				retVal.Add( Instantiate(bmPrefab) );
+	private IEnumerable<Vector3Int> GetPositions() {
+		foreach (var pos in baseTilemap.cellBounds.allPositionsWithin) {
+			Vector3Int v = new Vector3Int(pos.x, pos.y, pos.z);
+			if (baseTilemap.HasTile(v)) {
+				Debug.Log($"found pos {v}");
+				yield return v;
 			}
 		}
+	}
 
-		return retVal;
+	public TacticsTile GetTileAt(Vector3Int tilePos) {
+		return baseTilemap.GetTile(tilePos) as TacticsTile;
 	}
 
 	public List<Vector3Int> GetSpawnLocations() {

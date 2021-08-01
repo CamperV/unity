@@ -22,14 +22,14 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
     }
 
     // these are the elevtaion thresholds for placing each tile
-    protected Dictionary<float, TileEnum> tileElevation = new Dictionary<float, TileEnum>{
-        [0.20f] = TileEnum.deepWater,
-        [0.25f] = TileEnum.water,
-        [0.30f] = TileEnum.sand,
-        [0.65f] = TileEnum.plain,
-        [0.75f] = TileEnum.foothill,
-        [0.80f] = TileEnum.mountain,
-        [1.00f] = TileEnum.peak
+    protected Dictionary<float, WorldTileEnum> tileElevation = new Dictionary<float, WorldTileEnum>{
+        [0.20f] = WorldTileEnum.deepWater,
+        [0.25f] = WorldTileEnum.water,
+        [0.30f] = WorldTileEnum.sand,
+        [0.65f] = WorldTileEnum.plain,
+        [0.75f] = WorldTileEnum.foothill,
+        [0.80f] = WorldTileEnum.mountain,
+        [1.00f] = WorldTileEnum.peak
     };
 
     protected Dictionary<float, Color> colorElevation = new Dictionary<float, Color>{
@@ -59,30 +59,30 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
                 // while we're here, update the grid for the first pass
                 foreach (Vector3Int p in path.Unwind()) {
                     switch (map[p.x, p.y]) {
-                        case TileEnum.road:
-                        case TileEnum.waterRoad:
-                        case TileEnum.forestRoad:
-                        case TileEnum.mountainRoad:
-                        case TileEnum.villageRoad:
+                        case WorldTileEnum.road:
+                        case WorldTileEnum.waterRoad:
+                        case WorldTileEnum.forestRoad:
+                        case WorldTileEnum.mountainRoad:
+                        case WorldTileEnum.villageRoad:
                             break;
                         //
-                        case TileEnum.water:
-                        case TileEnum.deepWater:
-                            map[p.x, p.y] = TileEnum.waterRoad;
+                        case WorldTileEnum.water:
+                        case WorldTileEnum.deepWater:
+                            map[p.x, p.y] = WorldTileEnum.waterRoad;
                             break;
-                        case TileEnum.forest:
-                        case TileEnum.deepForest:
-                            map[p.x, p.y] = TileEnum.forestRoad;
+                        case WorldTileEnum.forest:
+                        case WorldTileEnum.deepForest:
+                            map[p.x, p.y] = WorldTileEnum.forestRoad;
                             break;
-                        case TileEnum.mountain:
-                        case TileEnum.peak:
-                            map[p.x, p.y] = TileEnum.mountainRoad;
+                        case WorldTileEnum.mountain:
+                        case WorldTileEnum.peak:
+                            map[p.x, p.y] = WorldTileEnum.mountainRoad;
                             break;
-                        case TileEnum.village:
-                            map[p.x, p.y] = TileEnum.villageRoad;
+                        case WorldTileEnum.village:
+                            map[p.x, p.y] = WorldTileEnum.villageRoad;
                             break;
                         default:
-                            map[p.x, p.y] = TileEnum.road;
+                            map[p.x, p.y] = WorldTileEnum.road;
                             break;
                     }
                 }
@@ -92,13 +92,13 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         }
     }
 
-    protected TileEnum ElevationToTile(float elevation) {
-        foreach (KeyValuePair<float, TileEnum> elPair in tileElevation.OrderBy(p => p.Key)) {
+    protected WorldTileEnum ElevationToTile(float elevation) {
+        foreach (KeyValuePair<float, WorldTileEnum> elPair in tileElevation.OrderBy(p => p.Key)) {
             if (elevation <= elPair.Key)
                 return elPair.Value;
         }
         // default case
-        return TileEnum.x;
+        return WorldTileEnum.x;
     }
 
     protected Color ElevationToColor(float elevation) {

@@ -63,10 +63,6 @@ public class TacticsEntityBase : MovingObject
 		return spriteRenderer.sprite;
 	}
 
-	// public override bool GridMove(int xdir, int ydir) {
-	// 	return base.AttemptGridMove(xdir, ydir, GameManager.inst.tacticsManager.GetActiveGrid());
-	// }
-
 	public override void UpdateRealPosition(Vector3 pos) {
 		transform.position = pos + new Vector3(0, 0, zHeight);
 	}

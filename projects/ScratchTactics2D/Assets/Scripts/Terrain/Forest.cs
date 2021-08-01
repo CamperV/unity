@@ -21,7 +21,7 @@ public class Forest : Terrain
     public override TacticsTile tacticsTile {
 		get {
 			if (_tacticsTile == null) {
-				_tacticsTile = ScriptableObject.CreateInstance<ForestIsoTile>();
+				_tacticsTile = ScriptableObject.CreateInstance<ForestTacticsTile>();
 			}
 			return _tacticsTile;
 		}

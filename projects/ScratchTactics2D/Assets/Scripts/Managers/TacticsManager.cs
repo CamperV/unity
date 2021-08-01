@@ -107,17 +107,18 @@ public class TacticsManager : MonoBehaviour
 	// NOTE: we can only ever start a battle with two participants
 	// because of the interleaving of Overworld turns and Tactics turns, even if there WOULD be more than one enemy active,
 	// it still won't be included in the battle until it can take its turn
-	public void CreateActiveBattle(PlayerArmy player, EnemyArmy other, Terrain playerTerrain, Terrain enemyTerrain, Enum.Phase initiatingPhase) {
+	public void CreateActiveBattle(PlayerArmy player, EnemyArmy other, Terrain playerTerrain, Terrain otherTerrain, Enum.Phase initiatingPhase) {
 		var cameraPos = new Vector3(Camera.main.transform.position.x,
 									Camera.main.transform.position.y,
 									0);		
 		activeBattle = Instantiate(battlePrefab, cameraPos, Quaternion.identity);
 		activeBattle.Init(player, other);
+		activeBattle.LoadBattleMap(playerTerrain, otherTerrain);
 
 		// to create Domino style
-		activeBattle.CreateDominoTacticsGrid(playerTerrain, enemyTerrain);
-		activeBattle.SpawnObstacles();
-		activeBattle.SpawnAllUnits();
+		// activeBattle.CreateDominoTacticsGrid(playerTerrain, otherTerrain);
+		// activeBattle.SpawnObstacles();
+		// activeBattle.SpawnAllUnits();
 		//
 		virtualCamera = new VirtualCamera(activeBattle);
 		virtualCamera.Zoom(1.0f);
@@ -133,7 +134,7 @@ public class TacticsManager : MonoBehaviour
 		foreach (var defeatedEntity in defeatedEntities) {
 			defeatedEntity.Die();
 		}
-		DestroyActiveBattle();
+		//DestroyActiveBattle();
 	}
 	
 	public void DestroyActiveBattle() {
