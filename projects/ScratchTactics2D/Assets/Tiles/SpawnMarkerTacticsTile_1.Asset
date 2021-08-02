@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: DockingMarkerTacticsTile
-  m_EditorClassIdentifier: Assembly-CSharp::DockingMarkerTacticsTile
-  m_Sprite: {fileID: 0}
+  m_Name: SpawnMarkerTacticsTile_1
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnMarkerTacticsTile_1
+  m_Sprite: {fileID: 21300000, guid: d9e02a034f4801244a5fa640d78509b2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
@@ -35,4 +35,4 @@ MonoBehaviour:
   m_Flags: 1
   m_ColliderType: 1
   sprites:
-  - {fileID: 0}
+  - {fileID: 21300000, guid: d9e02a034f4801244a5fa640d78509b2, type: 3}

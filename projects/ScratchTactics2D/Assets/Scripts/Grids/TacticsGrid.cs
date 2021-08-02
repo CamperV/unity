@@ -78,7 +78,6 @@ public class TacticsGrid : GameGrid
 	public void SetAppropriateTile(Vector3Int tilePos, TacticsTile tile) {
 		translation2D[new Vector2Int(tilePos.x, tilePos.y)] = tilePos;
 		baseTilemap.SetTile(tilePos, tile);
-		Debug.Log($"Set tile {tile} at {tilePos}");
 	}
 
     public void CreateDominoTileMap(Vector3Int offset, Terrain originTerrain) {

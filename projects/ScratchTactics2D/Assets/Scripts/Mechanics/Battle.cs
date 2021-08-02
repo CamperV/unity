@@ -91,7 +91,16 @@ public class Battle : MonoBehaviour
 		grid.transform.position = offsetPos;
 	}
 
-	public void SpawnUnits(Army army, Zone spawnZone) {		
+	public void SpawnAllUnits() {
+		Zone playerSpawnZone = battleMap.GetSpawnZoneFromOrientation(other.gridPosition - player.gridPosition);
+		Zone otherSpawnZone = battleMap.GetSpawnZoneFromOrientation(player.gridPosition - other.gridPosition);
+		Debug.Assert(playerSpawnZone != otherSpawnZone);
+
+		SpawnUnits(player, playerSpawnZone);
+		SpawnUnits(other, otherSpawnZone);
+	}
+
+	private void SpawnUnits(Army army, Zone spawnZone) {		
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
 		var spawnPositions = spawnZone.Positions.ToList().RandomSelections<Vector3Int>(army.numUnits);

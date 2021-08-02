@@ -73,26 +73,6 @@ public static class BattleMapGenerator
 		return retVal;
 	}
 
-	// orientation here refers to the player
-	// i.e., an orientation of Vector3Int.down implies the following: (Enemy v Player)
-	//		___
-	//	   | E |
-	//	    ---
-	//	   | P |
-	//      ---
-	public static Zone GetZoneFromOrientation(BattleMap battleMap, Vector3Int orientation) {
-		List<Vector3Int> positions = new List<Vector3Int>();
-
-		// get either spawn zone 1 (near) or spawn zone 2 (far)
-		// transforming E/W is done outside this function
-		if (orientation == Vector3Int.down || orientation == Vector3Int.left) {
-			positions = battleMap.GetPositionsOfType<SpawnMarkerTacticsTile>().ToList();
-		} else if (orientation == Vector3Int.up || orientation == Vector3Int.right) {
-			positions = battleMap.GetPositionsOfType<SpawnMarkerTacticsTile>().ToList();
-		}
-		return new Zone(positions);
-	}
-
 	public static void ApplyMap(BattleMap battleMap, Action<Vector3Int, TacticsTile> TileSetter) {
 		foreach (Vector3Int tilePos in battleMap.Positions) {
 			TileSetter(tilePos, battleMap.GetTileAt(tilePos));

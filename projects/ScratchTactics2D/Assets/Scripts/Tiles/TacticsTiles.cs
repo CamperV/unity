@@ -193,42 +193,126 @@ public class MountainTacticsTile : TacticsTile
 }
 
 // OVERLAY ZONE
-public class SpawnMarkerTacticsTile : TacticsTile
+public class SpawnMarkerTacticsTile_0 : TacticsTile
 {
-	public override string spriteName { get => "spawn_marker_iso"; }
+	public override string spriteName { get => "spawn_marker_iso_0"; }
 
 #if UNITY_EDITOR
-    [MenuItem("Assets/Create/CustomAssets/SpawnMarkerTacticsTile", false, 1)]
+    [MenuItem("Assets/Create/CustomAssets/SpawnMarkerTacticsTile_0", false, 1)]
 	private static void Create(){
-		string path = EditorUtility.SaveFilePanelInProject("Save SpawnMarkerTacticsTile", "SpawnMarkerTacticsTile", "Asset", "Save SpawnMarkerTacticsTile", "Custom Assets/Tiles");
+		string path = EditorUtility.SaveFilePanelInProject("Save SpawnMarkerTacticsTile_0", "SpawnMarkerTacticsTile_0", "Asset", "Save SpawnMarkerTacticsTile_0", "Custom Assets/Tiles");
 		// check that path exists in project
 		if (path == "") {
-			Debug.Log($"Path {path} is not available in Project to create a new SpawnMarkerTacticsTile Instance");
+			Debug.Log($"Path {path} is not available in Project to create a new SpawnMarkerTacticsTile_0 Instance");
 			return;
 		}
 
-		AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<SpawnMarkerTacticsTile>(), path);
+		AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<SpawnMarkerTacticsTile_0>(), path);
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
 	}
 #endif
 }
 
-public class DockingMarkerTacticsTile : TacticsTile
+public class SpawnMarkerTacticsTile_1 : TacticsTile
 {
-	public override string spriteName { get => "docking_marker_iso"; }
+	public override string spriteName { get => "spawn_marker_iso_1"; }
 
 #if UNITY_EDITOR
-    [MenuItem("Assets/Create/CustomAssets/DockingMarkerTacticsTile", false, 1)]
+    [MenuItem("Assets/Create/CustomAssets/SpawnMarkerTacticsTile_1", false, 1)]
 	private static void Create(){
-		string path = EditorUtility.SaveFilePanelInProject("Save DockingMarkerTacticsTile", "DockingMarkerTacticsTile", "Asset", "Save DockingMarkerTacticsTile", "Custom Assets/Tiles");
+		string path = EditorUtility.SaveFilePanelInProject("Save SpawnMarkerTacticsTile_1", "SpawnMarkerTacticsTile_1", "Asset", "Save SpawnMarkerTacticsTile_1", "Custom Assets/Tiles");
 		// check that path exists in project
 		if (path == "") {
-			Debug.Log($"Path {path} is not available in Project to create a new DockingMarkerTacticsTile Instance");
+			Debug.Log($"Path {path} is not available in Project to create a new SpawnMarkerTacticsTile_1 Instance");
 			return;
 		}
 
-		AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<DockingMarkerTacticsTile>(), path);
+		AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<SpawnMarkerTacticsTile_1>(), path);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
+	}
+#endif
+}
+
+public class DockingMarkerTacticsTile_0 : TacticsTile
+{
+	public override string spriteName { get => "docking_marker_iso_0"; }
+
+#if UNITY_EDITOR
+    [MenuItem("Assets/Create/CustomAssets/DockingMarkerTacticsTile_0", false, 1)]
+	private static void Create(){
+		string path = EditorUtility.SaveFilePanelInProject("Save DockingMarkerTacticsTile_0", "DockingMarkerTacticsTile_0", "Asset", "Save DockingMarkerTacticsTile_0", "Custom Assets/Tiles");
+		// check that path exists in project
+		if (path == "") {
+			Debug.Log($"Path {path} is not available in Project to create a new DockingMarkerTacticsTile_0 Instance");
+			return;
+		}
+
+		AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<DockingMarkerTacticsTile_0>(), path);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
+	}
+#endif
+}
+
+public class DockingMarkerTacticsTile_1 : TacticsTile
+{
+	public override string spriteName { get => "docking_marker_iso_1"; }
+
+#if UNITY_EDITOR
+    [MenuItem("Assets/Create/CustomAssets/DockingMarkerTacticsTile_1", false, 1)]
+	private static void Create(){
+		string path = EditorUtility.SaveFilePanelInProject("Save DockingMarkerTacticsTile_1", "DockingMarkerTacticsTile_1", "Asset", "Save DockingMarkerTacticsTile_1", "Custom Assets/Tiles");
+		// check that path exists in project
+		if (path == "") {
+			Debug.Log($"Path {path} is not available in Project to create a new DockingMarkerTacticsTile_1 Instance");
+			return;
+		}
+
+		AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<DockingMarkerTacticsTile_1>(), path);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
+	}
+#endif
+}
+
+public class DockingMarkerTacticsTile_2 : TacticsTile
+{
+	public override string spriteName { get => "docking_marker_iso_2"; }
+
+#if UNITY_EDITOR
+    [MenuItem("Assets/Create/CustomAssets/DockingMarkerTacticsTile_2", false, 1)]
+	private static void Create(){
+		string path = EditorUtility.SaveFilePanelInProject("Save DockingMarkerTacticsTile_2", "DockingMarkerTacticsTile_2", "Asset", "Save DockingMarkerTacticsTile_2", "Custom Assets/Tiles");
+		// check that path exists in project
+		if (path == "") {
+			Debug.Log($"Path {path} is not available in Project to create a new DockingMarkerTacticsTile_2 Instance");
+			return;
+		}
+
+		AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<DockingMarkerTacticsTile_2>(), path);
+		AssetDatabase.SaveAssets();
+		AssetDatabase.Refresh();
+	}
+#endif
+}
+
+public class DockingMarkerTacticsTile_3 : TacticsTile
+{
+	public override string spriteName { get => "docking_marker_iso_3"; }
+
+#if UNITY_EDITOR
+    [MenuItem("Assets/Create/CustomAssets/DockingMarkerTacticsTile_3", false, 1)]
+	private static void Create(){
+		string path = EditorUtility.SaveFilePanelInProject("Save DockingMarkerTacticsTile_3", "DockingMarkerTacticsTile_3", "Asset", "Save DockingMarkerTacticsTile_3", "Custom Assets/Tiles");
+		// check that path exists in project
+		if (path == "") {
+			Debug.Log($"Path {path} is not available in Project to create a new DockingMarkerTacticsTile_3 Instance");
+			return;
+		}
+
+		AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<DockingMarkerTacticsTile_3>(), path);
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
 	}
