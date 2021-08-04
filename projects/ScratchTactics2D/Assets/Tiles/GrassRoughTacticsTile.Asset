@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: a834dc4f2be2f8b47a714c9ac079da57, type: 3}
   m_Name: GrassRoughTacticsTile
-  m_EditorClassIdentifier: Assembly-CSharp::GrassRoughTacticsTile
+  m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: ef418fa6e5c8c2d48ae2c83cb6e3f99a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
@@ -34,5 +34,4 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  sprites:
-  - {fileID: 21300000, guid: ef418fa6e5c8c2d48ae2c83cb6e3f99a, type: 3}
+  cost: 100

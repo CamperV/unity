@@ -115,6 +115,7 @@ public class TacticsManager : MonoBehaviour
 		activeBattle.Init(player, other);
 		activeBattle.LoadBattleMap(playerTerrain, otherTerrain);
 		activeBattle.SpawnAllUnits();
+		activeBattle.PostInit();
 
 		// to create Domino style
 		// activeBattle.CreateDominoTacticsGrid(playerTerrain, otherTerrain);
@@ -135,7 +136,7 @@ public class TacticsManager : MonoBehaviour
 		foreach (var defeatedEntity in defeatedEntities) {
 			defeatedEntity.Die();
 		}
-		//DestroyActiveBattle();
+		DestroyActiveBattle();
 	}
 	
 	public void DestroyActiveBattle() {

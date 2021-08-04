@@ -14,8 +14,8 @@ public class BattleMap : MonoBehaviour
 	public IEnumerable<Vector3Int> Positions { get => GetPositions(baseTilemap); }
 
 	void Awake() {
-		baseTilemap = GetComponent<Tilemap>();
-		overlayTilemap = GetComponentsInChildren<Tilemap>()[0];
+		baseTilemap = GetComponentsInChildren<Tilemap>()[0];
+		overlayTilemap = GetComponentsInChildren<Tilemap>()[1];
 
 		baseTilemap.CompressBounds();
 		baseTilemap.RefreshAllTiles();
@@ -62,10 +62,7 @@ public class BattleMap : MonoBehaviour
 		// determine their types, and return the appropriate ones
 		foreach (var tilePos in GetPositions(tilemap)) {
 			var tile = tilemap.GetTile<T>(tilePos);
-			if (tile != null) {
-				Debug.Log($"Found tile {tile} at {tilePos}");
-				yield return tilePos;
-			}
+			if (tile != null) yield return tilePos;
 		}
 	}
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerArmyController : Controller
 {
+	public KeyCode mouseMoveKey;
+
 	// possible actions for Player and their bindings
 	private Dictionary<KeyCode, Func<Army, int>> actionBindings = new Dictionary<KeyCode, Func<Army, int>>();
 	private Dictionary<Vector3Int, Func<Army, int>> directionMapping = new Dictionary<Vector3Int, Func<Army, int>>();
@@ -65,7 +67,7 @@ public class PlayerArmyController : Controller
 				// this also allows for interupts (i.e. you've been spotted by an enemy, or are blocked)
 				if (actionQueueEmpty) {
 					// input mode is determined here
-					if (Input.GetKey(KeyCode.LeftControl)) {
+					if (Input.GetKey(mouseMoveKey)) {
 						Vector3Int mousePos = GameManager.inst.overworld.Real2GridPos(GameManager.inst.mouseManager.mouseWorldPos);
 
 						if (_pathToQueue == null || mousePos != _pathToQueue.end) {

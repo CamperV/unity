@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 4255fe96afb20af4aa979df900ccb4f7, type: 3}
   m_Name: GrassRockTacticsTile
-  m_EditorClassIdentifier: Assembly-CSharp::GrassRockTacticsTile
+  m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: 082052e6113b42c4897555d276da4d3e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
@@ -34,5 +34,4 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  sprites:
-  - {fileID: 21300000, guid: 082052e6113b42c4897555d276da4d3e, type: 3}
+  cost: -1

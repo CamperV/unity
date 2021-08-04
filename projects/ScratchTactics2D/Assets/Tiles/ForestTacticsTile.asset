@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34466ddd20f8e6a458505a76fc96267b, type: 3}
-  m_Name: SpawnMarkerTacticsTile_0
+  m_Script: {fileID: 11500000, guid: 1b2100aaa7ac51a4bbc910c73eae8471, type: 3}
+  m_Name: ForestTacticsTile
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: ec8b9637c4cbafb4c979083575a39591, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5bbb8bd3a20f84c478ee6a776c2cee04, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

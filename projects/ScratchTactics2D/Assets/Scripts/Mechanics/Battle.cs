@@ -61,6 +61,10 @@ public class Battle : MonoBehaviour
 		}
 	}
 
+	public void PostInit() {
+		battleMap.gameObject.SetActive(false);
+	}
+
 	public void StartBattleOnPhase(Enum.Phase startingPhase) {
 		GameManager.inst.phaseManager.StartPhase(startingPhase);
 		
@@ -94,7 +98,6 @@ public class Battle : MonoBehaviour
 	public void SpawnAllUnits() {
 		Zone playerSpawnZone = battleMap.GetSpawnZoneFromOrientation(other.gridPosition - player.gridPosition);
 		Zone otherSpawnZone = battleMap.GetSpawnZoneFromOrientation(player.gridPosition - other.gridPosition);
-		Debug.Assert(playerSpawnZone != otherSpawnZone);
 
 		SpawnUnits(player, playerSpawnZone);
 		SpawnUnits(other, otherSpawnZone);
@@ -113,7 +116,7 @@ public class Battle : MonoBehaviour
 			Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid) as Unit;
 			//
 			unit.ApplyStats(unitStats);
-			GetController(player).Register(unit);
+			GetController(army).Register(unit);
 		}
 	}
 	
