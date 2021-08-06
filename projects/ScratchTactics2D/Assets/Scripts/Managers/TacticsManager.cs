@@ -10,14 +10,10 @@ public class TacticsManager : MonoBehaviour
 	public Battle battlePrefab;
 	[HideInInspector] public Battle activeBattle;
 
-	public VirtualCamera virtualCamera;
 	public bool resizeLock;
 
 	// only one Unit can be in focus at any given time
 	public Unit focusSingleton { get; private set; }
-	
-	// for preventing race conditions when starting battles
-	public bool _bFlag = false;
 
 	void Awake() {
 		resizeLock = false;
@@ -26,16 +22,20 @@ public class TacticsManager : MonoBehaviour
     void Update() {
 		// while "in-battle" wait for key commands to exit state
 		if (GameManager.inst.gameState == Enum.GameState.battle) {
+
+			// prematurely destroy battle
 			if (Input.GetKeyDown(KeyCode.Space)) {
 				Debug.Log("Exiting Battle...");
 				
 				DestroyActiveBattle();
 			}
 
-			// virtualCamera will have its own battle ref
-			if (GameManager.inst.phaseManager.currentPhase == Enum.Phase.player && !resizeLock) {
-				virtualCamera.DragUpdate();
-				virtualCamera.ScrollUpdate();
+			// NOTE!!!! this is not updating player positions or translation2D. FIX
+			if (Input.GetKeyDown(KeyCode.E)) {
+				BattleMap.RotateTilemap(GetActiveGrid().baseTilemap, v => new Vector3Int(v.y, -v.x, v.z));
+			}
+			if (Input.GetKeyDown(KeyCode.Q)) {
+				BattleMap.RotateTilemap(GetActiveGrid().baseTilemap, v => new Vector3Int(-v.y, v.x, v.z));
 			}
 
 			// focus control:
@@ -53,8 +53,7 @@ public class TacticsManager : MonoBehaviour
 				}
 			}
 
-			//
-			// finally, Ghost Control
+			// Ghost Control
 			var grid = GetActiveGrid();
 			var descendingInBattle = activeBattle.GetRegisteredInBattle().OrderByDescending(it => it.gridPosition.y);
 
@@ -121,10 +120,6 @@ public class TacticsManager : MonoBehaviour
 		// activeBattle.CreateDominoTacticsGrid(playerTerrain, otherTerrain);
 		// activeBattle.SpawnObstacles();
 		// activeBattle.SpawnAllUnits();
-		//
-		virtualCamera = new VirtualCamera(activeBattle);
-		virtualCamera.Zoom(1.0f);
-
 		activeBattle.StartBattleOnPhase(initiatingPhase);
 	}
 

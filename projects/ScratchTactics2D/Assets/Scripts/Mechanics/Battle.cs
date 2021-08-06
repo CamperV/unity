@@ -75,12 +75,16 @@ public class Battle : MonoBehaviour
 
 	public void LoadBattleMap(Terrain playerTerrain, Terrain otherTerrain) {
 		string terrainDesignator = $"{playerTerrain.tag}:{otherTerrain.tag}";
+		Debug.Log($"finding designator {terrainDesignator}");
 		List<BattleMap> battleMaps = BattleMapGenerator.GetMapsFromDesignator(terrainDesignator);
 
 		// our current method: random
 		// note that we need to Instantiate to get certain fields from the Components
 		// otherwise the GO is marked as inactive and we can't query it
 		battleMap = Instantiate( battleMaps.PopRandom<BattleMap>() );
+
+		Vector3Int orientation = playerTerrain.position - otherTerrain.position;
+		battleMap.RotateBattleMap(orientation);
 		BattleMapGenerator.ApplyMap(battleMap, grid.SetAppropriateTile);
 		
 		// clean up

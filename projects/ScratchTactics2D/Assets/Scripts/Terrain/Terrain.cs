@@ -11,7 +11,7 @@ using Extensions;
 public abstract class Terrain
 {
 	public Vector3Int position;
-	public string tag { get => this.GetType().Name; }
+	public virtual string tag { get => this.GetType().Name; }
 
 	public virtual Vector3Int tileRefPosition { get => position; }
 	public virtual int occlusion { get => 0; }

@@ -534,6 +534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snappiness: 5
+  debugKey: 306
 --- !u!1 &1135628360
 GameObject:
   m_ObjectHideFlags: 0

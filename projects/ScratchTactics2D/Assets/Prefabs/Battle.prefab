@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4020751215874785105}
   - component: {fileID: 3021327120891181652}
+  - component: {fileID: 4834987923432450543}
   m_Layer: 8
   m_Name: Battle
   m_TagString: Untagged
@@ -58,6 +59,18 @@ MonoBehaviour:
   playerGridOffset: {x: 0, y: 0, z: 0}
   savedTurn: 0
   isPaused: 0
+--- !u!114 &4834987923432450543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220231495522711647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 782a38c8a7903844aa65221fbc1a16d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &831110151278361556
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,8 +133,6 @@ MonoBehaviour:
   baseTilemap: {fileID: 0}
   underlayTilemap: {fileID: 0}
   overlayTilemap: {fileID: 0}
-  mapDimensionX: 0
-  mapDimensionY: 0
 --- !u!1 &2752310964297596388
 GameObject:
   m_ObjectHideFlags: 0

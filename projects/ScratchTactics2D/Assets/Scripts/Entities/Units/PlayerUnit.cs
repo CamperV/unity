@@ -70,7 +70,7 @@ public abstract class PlayerUnit : Unit
 	}
 
 	private void EnterState(Enum.PlayerUnitState state) {
-		GameManager.inst.tacticsManager.virtualCamera.ReleaseLock();
+		GameManager.inst.tacticsManager.activeBattle.GetComponent<BattleCamera>().ReleaseLock();
 		actionState = state;
 
 		switch(actionState) {
@@ -99,7 +99,7 @@ public abstract class PlayerUnit : Unit
 				// because right now
 				DisplayStandingThreatRange();
 
-				// if outside of bounds where EngagementPreviews work, move the VirtualCamera around
+				// if outside of bounds where EngagementPreviews work, move the BattleCamera around
 				var screenPosition = Camera.main.WorldToScreenPoint(transform.position);
 				var xBounds = new Pair<float, float>(Screen.width * 0.25f, Screen.width * 0.75f);
 				var yBounds = new Pair<float, float>(Screen.height * 0.40f, Screen.height * 0.75f);
@@ -107,9 +107,9 @@ public abstract class PlayerUnit : Unit
 					screenPosition.y < yBounds.first || screenPosition.y > yBounds.second) {
 					
 					// also zoom in or out depending on 0.5 < x < 1.5
-					var currZoom = GameManager.inst.tacticsManager.virtualCamera.currentZoomLevel;
+					var currZoom = GameManager.inst.tacticsManager.activeBattle.GetComponent<BattleCamera>().currentZoomLevel;
 					float toZoom = Mathf.Max(0.5f, Mathf.Min(1.5f, currZoom)); 
-					GameManager.inst.tacticsManager.virtualCamera.ZoomToAndLock(transform.position, toZoom);
+					GameManager.inst.tacticsManager.activeBattle.GetComponent<BattleCamera>().ZoomToAndLock(transform.position, toZoom);
 				}
 				break;
 		}

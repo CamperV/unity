@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
 	public float snappiness;
+	public KeyCode debugKey;
 
 	private Camera assignedCamera { get => gameObject.GetComponent<Camera>(); }
 
@@ -42,13 +43,17 @@ public class CameraManager : MonoBehaviour
 		float snapFactor = 0.01f;
 		
 		// update mouse wheel scale
-		trackingSize *= 1f / (1f + Input.GetAxis("Mouse ScrollWheel"));
+		// only when holding our debug key, however
+		if (Input.GetKey(debugKey)) {
+			trackingSize *= 1f / (1f + Input.GetAxis("Mouse ScrollWheel"));
+		}
 		if (Mathf.Abs(assignedCamera.orthographicSize - trackingSize) > snapFactor) {
 			
 			assignedCamera.orthographicSize = Mathf.Lerp(assignedCamera.orthographicSize, trackingSize, snapSpeed);
 		} else {
 			assignedCamera.orthographicSize = trackingSize;
 		}
+
 
 		// update tracking
 		if (Vector3.Distance(transform.position, trackingPosition) > snapFactor) {

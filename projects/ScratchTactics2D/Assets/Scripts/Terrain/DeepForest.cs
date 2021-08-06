@@ -10,6 +10,8 @@ using Extensions;
 
 public class DeepForest : Forest, IEnemyArmySpawner
 {
+	public override string tag { get => "Forest"; }
+
 	public override int occlusion { get => 3; }
 	public override int tickCost { get => (int)(Constants.standardTickCost * 2.5f); }
 	
