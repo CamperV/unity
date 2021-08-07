@@ -70,15 +70,33 @@ public class BattleMap : MonoBehaviour
 		Dictionary<Vector3Int, TacticsTile> wasTile = new Dictionary<Vector3Int, TacticsTile>();
 
 		foreach (Vector3Int tilePos in GetPositions(tilemap)) {
-			wasTile[tilePos] = tilemap.GetTile(tilePos) as TacticsTile; // this can't be null by definition
+			wasTile[tilePos] = (tilemap.GetTile(tilePos) as TacticsTile); // this can't be null by definition
 			rotated[tilePos] = RotateFunc(tilePos);
 			tilemap.SetTile(tilePos, null);
 		}
 		foreach (Vector3Int tilePos in wasTile.Keys) {
 			tilemap.SetTile(rotated[tilePos], wasTile[tilePos]);
 		}
+
 		tilemap.CompressBounds();
 		tilemap.RefreshAllTiles();
+
+		// get the new grid center
+		Vector3Int floorCell = new Vector3Int((int)Mathf.Floor(tilemap.cellBounds.center.x-1),
+											  (int)Mathf.Floor(tilemap.cellBounds.center.y-1), 0);
+		Vector3Int ceilCell  = new Vector3Int((int)Mathf.Ceil(tilemap.cellBounds.center.x),
+										   	  (int)Mathf.Ceil(tilemap.cellBounds.center.y), 0);
+		Vector3 gridCenter = (tilemap.GetCellCenterWorld(floorCell) + tilemap.GetCellCenterWorld(ceilCell)) / 2.0f;
+	    Vector3 offset = GameManager.inst.tacticsManager.activeBattle.GetComponent<BattleCamera>().focalPivot - gridCenter;
+
+		// each tile goes from tilePos -> rotated[tilePos]
+		foreach (Vector3Int _from in rotated.Keys) {
+			Vector3 from = tilemap.GetCellCenterWorld(_from);
+			Vector3 to = tilemap.GetCellCenterWorld(rotated[_from]);
+			
+			MovingSprite anim = MovingSprite.ConstructWith(from, wasTile[_from].sprite);
+			anim.SendToAndDestruct(to + offset);
+		}
 	}
 
 	private IEnumerable<Vector3Int> GetPositionsOfType<T>(Tilemap tilemap) where T : TacticsTile {

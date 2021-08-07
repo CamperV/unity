@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class BattleCamera : MonoBehaviour
 {
-    private Battle battle;
-    private Vector3 focalPoint;
-    private Vector3 focalPivot;
+    public Battle battle;
+    public Vector3 focalPoint;
+    public Vector3 focalPivot;
 
     private Vector3 dragOffset;
     private bool draggingView;
@@ -18,14 +18,17 @@ public class BattleCamera : MonoBehaviour
 
     public float currentZoomLevel { get => battle.transform.localScale.x; }
 
-	private Dictionary<KeyCode, Action> actionBindings = new Dictionary<KeyCode, Action>();
+	private Dictionary<KeyCode, Action> getKeyActionBindings = new Dictionary<KeyCode, Action>();
+    private Dictionary<KeyCode, Action> getKeyDownActionBindings = new Dictionary<KeyCode, Action>();
     private bool ScreenDrag { get => Input.GetMouseButton(1); }
+    private Func<Vector3Int, Vector3Int> RotateLeft  = v => new Vector3Int(v.y, -v.x, v.z);
+    private Func<Vector3Int, Vector3Int> RotateRight  = v => new Vector3Int(-v.y, v.x, v.z);
 
     void Awake() {
         battle = GetComponent<Battle>();
         focalPoint = battle.transform.position; // the battle will be constantly moved to align with this focal point
         focalPivot = battle.transform.position; // this will be init'd to the center of the screen (and never touched again)
-        Zoom(1.5f); // default zoom level
+        Zoom(1.0f); // default zoom level
 
         dragOffset = Vector3.zero;
         draggingView = false;
@@ -34,10 +37,23 @@ public class BattleCamera : MonoBehaviour
         lockedScale = Vector3.one;
         viewLock = false;
 
-		actionBindings[KeyCode.W] = () => Pan(Vector3.up, rate: 6f);
-		actionBindings[KeyCode.A] = () => Pan(Vector3.left, rate: 8f);
-		actionBindings[KeyCode.S] = () => Pan(Vector3.down, rate: 6f);
-		actionBindings[KeyCode.D] = () => Pan(Vector3.right, rate: 8f);
+		getKeyActionBindings[KeyCode.W] = () => Pan(Vector3.up, rate: 6f);
+		getKeyActionBindings[KeyCode.A] = () => Pan(Vector3.left, rate: 8f);
+		getKeyActionBindings[KeyCode.S] = () => Pan(Vector3.down, rate: 6f);
+		getKeyActionBindings[KeyCode.D] = () => Pan(Vector3.right, rate: 8f);
+        //
+        getKeyDownActionBindings[KeyCode.Q] = () => {
+            Rotate(RotateRight);
+            var offset = focalPivot - battle.grid.GetGridCenterReal();
+            battle.transform.position += offset;
+            focalPoint -= offset;
+        };
+        getKeyDownActionBindings[KeyCode.E] = () => {
+            Rotate(RotateLeft);
+            var offset = focalPivot - battle.grid.GetGridCenterReal();
+            battle.transform.position += offset;
+            focalPoint -= offset;
+        };
     }
 
     void Update() {
@@ -45,8 +61,13 @@ public class BattleCamera : MonoBehaviour
         //ScrollUpdate();
 
         // this allows each held action to update the focalPoint
-        foreach (KeyCode kc in actionBindings.Keys) {
-			if (Input.GetKey(kc)) actionBindings[kc]();
+        foreach (KeyCode kc in getKeyActionBindings.Keys) {
+			if (Input.GetKey(kc)) getKeyActionBindings[kc]();
+		}
+
+        // this allows each KeyDown action to update, but doesn't check if held
+        foreach (KeyCode kc in getKeyDownActionBindings.Keys) {
+			if (Input.GetKeyDown(kc)) getKeyDownActionBindings[kc]();
 		}
     }
 
@@ -133,8 +154,31 @@ public class BattleCamera : MonoBehaviour
     // this is a flat speed, with no acceleration
     // all "acceleration" is from the battle -> focal Lerp
     // use Tile.deltaTime to decouple from frame rate
-    public void Pan(Vector3 unitDirection, float rate = 1f) {
+    private void Pan(Vector3 unitDirection, float rate = 1f) {
         focalPoint = focalPoint + (Time.deltaTime*rate)*unitDirection;
+    }
+
+    private void Rotate(Func<Vector3Int, Vector3Int> Transformer) {
+        BattleMap.RotateTilemap(battle.grid.baseTilemap, Transformer);
+
+        // update tacticsGrid translation2D
+		Dictionary<Vector2Int, Vector3Int> _translation2D = new Dictionary<Vector2Int, Vector3Int>();
+		foreach (Vector3Int tilePos in battle.grid.translation2D.Values) {
+            Vector3Int rotated = Transformer(tilePos);
+			_translation2D[new Vector2Int(rotated.x, rotated.y)] = rotated;
+		}
+        battle.grid.translation2D = _translation2D;
+
+        // then change each units gridPosition
+        // then occupancyGrid
+        // then update real position
+        Dictionary<Vector3Int, Component> _occupancyGrid = new Dictionary<Vector3Int, Component>();
+        foreach(MovingObject mo in battle.GetRegisteredInBattle()) {
+            Vector3Int rotated = Transformer(mo.gridPosition);
+            _occupancyGrid[rotated] = mo;
+            mo.UpdateGridPosition(rotated, battle.grid);
+        }
+    	battle.grid.occupancyGrid = _occupancyGrid;
     }
 
     private IEnumerator SmoothCameraMovement(float fixedTime, Vector3 toPosition, Vector3 toScale) {

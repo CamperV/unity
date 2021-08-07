@@ -26,7 +26,7 @@ public abstract class MovingObject : MonoBehaviour
 		return gameObject.activeInHierarchy;
 	}
 	
-	protected Vector3Int ToPosition(Vector3Int pos, int speed) {
+	protected Vector3Int StepToPosition(Vector3Int pos, int speed) {
 		return new Vector3Int(Mathf.Clamp(pos.x - gridPosition.x,  -speed, speed),
 							  Mathf.Clamp(pos.y - gridPosition.y,  -speed, speed),
 							  Mathf.Clamp(pos.z - gridPosition.z,  -speed, speed));
@@ -46,7 +46,7 @@ public abstract class MovingObject : MonoBehaviour
 
 			if (occupant == null) {
 				// SUCCESS!
-				Move(xdir, ydir, grid);
+				MoveDirection(xdir, ydir, grid);
 						
 				if (crtMovingFlag) StopCoroutine(crtMovement);
 				crtMovement = StartCoroutine( SmoothMovement(endpoint) );
@@ -62,7 +62,7 @@ public abstract class MovingObject : MonoBehaviour
 		return null;
 	}
 	
-	private void Move(int xdir, int ydir, GameGrid grid) {
+	private void MoveDirection(int xdir, int ydir, GameGrid grid) {
 		Vector3Int endPos = gridPosition.GridPosInDirection(grid, new Vector2Int(xdir, ydir));
 
 		// we can move: instantly update the grid w/ this info to block further inquiry
@@ -73,14 +73,15 @@ public abstract class MovingObject : MonoBehaviour
 	}
 	
 	// this is like a Python-generator: Coroutine
-	protected IEnumerator SmoothMovement(Vector3 endpoint) {
+	protected IEnumerator SmoothMovement(Vector3 endpoint, float _fixedTime = -1f) {
 		crtMovingFlag = true;
 
 		float timeStep = 0.0f;
 		Vector3 startPos = transform.position;
 
+		float fixedTime = (_fixedTime == -1f) ? fixedTimePerTile : _fixedTime;
 		while (timeStep < 1.0f) {
-			timeStep += (Time.deltaTime / fixedTimePerTile);
+			timeStep += (Time.deltaTime / fixedTime);
 			UpdateRealPosition(Vector3.Lerp(startPos, endpoint, timeStep));
 			yield return null;
 		}
@@ -148,6 +149,11 @@ public abstract class MovingObject : MonoBehaviour
 		VoidAction();
 	}
 	
+	public void UpdateGridPosition(Vector3Int pos, GameGrid grid) {
+		gridPosition = pos;
+        UpdateRealPosition(grid.Grid2RealPos(gridPosition));
+	}
+
 	public virtual bool IsMoving() { return crtMovingFlag; }
 	public virtual void UpdateRealPosition(Vector3 pos) {
 		transform.position = pos;

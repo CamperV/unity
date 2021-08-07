@@ -7,18 +7,12 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class TacticsGrid : GameGrid
-{	
-	// deprecated
-	private Dictionary<Vector3Int, TacticsTile> tacticsTileGrid;
-
+{
 	private OverlayTile waypointOverlayTile;
 	private OverlayTile selectionOverlayTile;
 	
     protected override void Awake() {
 		base.Awake();
-
-		// deprecated
-		tacticsTileGrid = new Dictionary<Vector3Int, TacticsTile>();
 
 		waypointOverlayTile = PathOverlayIsoTile.GetTileWithSprite(1);
 		selectionOverlayTile = (ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile);
@@ -78,48 +72,6 @@ public class TacticsGrid : GameGrid
 	public void SetAppropriateTile(Vector3Int tilePos, TacticsTile tile) {
 		translation2D[new Vector2Int(tilePos.x, tilePos.y)] = tilePos;
 		baseTilemap.SetTile(tilePos, tile);
-	}
-
-    public void CreateDominoTileMap(Vector3Int offset, Terrain originTerrain) {
-		var newOrigin = baseTilemap.origin + offset;
-
-		for (int x = 0; x < originTerrain.battleGridSize.x; x++) {
-			for (int y = 0; y < originTerrain.battleGridSize.y; y++) {
-				Vector3Int pos = newOrigin + new Vector3Int(x, y, Random.Range(0, 2));
-				tacticsTileGrid[pos] = originTerrain.tacticsTile;
-				translation2D[new Vector2Int(pos.x, pos.y)] = pos;
-			}
-		}
-	}
-	
-	public void ApplyTileGrid(bool noCompress = false) {
-		Debug.Assert(tacticsTileGrid.Count != 0);
-		
-		foreach(var pair in tacticsTileGrid.OrderBy(k => k.Key.x)) {
-			baseTilemap.SetTile(pair.Key, pair.Value);
-		}
-
-		if (noCompress) return;
-		baseTilemap.CompressBounds();
-		baseTilemap.RefreshAllTiles();
-
-		// after refreshing all tiles, set rudimentary shading
-		float tintScale = 0.20f;
-		int maxZ = tacticsTileGrid.Keys.Max(it => it.z);
-		foreach(var pair in tacticsTileGrid) {
-			// tint the lower tiles by a step value, to create some shade
-			// and fill out the tiles all the way to the bottom (of the screen, so like 10 for now)
-			for (int i = pair.Key.z; i > -3; i--) {
-				Vector3Int lower = new Vector3Int(pair.Key.x, pair.Key.y, i);
-				baseTilemap.SetTile(lower, pair.Value);
-
-				baseTilemap.SetTileFlags(lower, TileFlags.None);
-				float tint = 1.0f - (tintScale * (maxZ - i));
-				//float a = (i > -3) ? 1.0f : 1.0f - ( (tintScale/2.0f) * (-3 - i));
-				float a = 1.0f;
-				baseTilemap.SetColor(lower, new Color(tint, tint, tint, a));
-			}
-		}
 	}
 	
 	public Vector3Int GetDimensions() {

@@ -12,8 +12,8 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 	[HideInInspector] public Tilemap underlayTilemap;
 	[HideInInspector] public Tilemap overlayTilemap;
 	
-	private Dictionary<Vector3Int, Component> occupancyGrid;
-	protected Dictionary<Vector2Int, Vector3Int> translation2D;
+	public Dictionary<Vector3Int, Component> occupancyGrid;
+	public Dictionary<Vector2Int, Vector3Int> translation2D;
 	//
 	
 	protected virtual void Awake() {				

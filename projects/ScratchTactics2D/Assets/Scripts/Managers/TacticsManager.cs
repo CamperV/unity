@@ -26,16 +26,7 @@ public class TacticsManager : MonoBehaviour
 			// prematurely destroy battle
 			if (Input.GetKeyDown(KeyCode.Space)) {
 				Debug.Log("Exiting Battle...");
-				
-				DestroyActiveBattle();
-			}
-
-			// NOTE!!!! this is not updating player positions or translation2D. FIX
-			if (Input.GetKeyDown(KeyCode.E)) {
-				BattleMap.RotateTilemap(GetActiveGrid().baseTilemap, v => new Vector3Int(v.y, -v.x, v.z));
-			}
-			if (Input.GetKeyDown(KeyCode.Q)) {
-				BattleMap.RotateTilemap(GetActiveGrid().baseTilemap, v => new Vector3Int(-v.y, v.x, v.z));
+				activeBattle.Destroy();
 			}
 
 			// focus control:
@@ -107,9 +98,7 @@ public class TacticsManager : MonoBehaviour
 	// because of the interleaving of Overworld turns and Tactics turns, even if there WOULD be more than one enemy active,
 	// it still won't be included in the battle until it can take its turn
 	public void CreateActiveBattle(PlayerArmy player, EnemyArmy other, Terrain playerTerrain, Terrain otherTerrain, Enum.Phase initiatingPhase) {
-		var cameraPos = new Vector3(Camera.main.transform.position.x,
-									Camera.main.transform.position.y,
-									0);		
+		var cameraPos = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);		
 		activeBattle = Instantiate(battlePrefab, cameraPos, Quaternion.identity);
 		activeBattle.Init(player, other);
 		activeBattle.LoadBattleMap(playerTerrain, otherTerrain);
@@ -125,23 +114,6 @@ public class TacticsManager : MonoBehaviour
 
 	public void AddToActiveBattle(EnemyArmy other, Terrain otherTerrain) {
 		activeBattle.AddParticipant(other, otherTerrain);
-	}
-
-	public void ResolveActiveBattle(List<Army> defeatedEntities) {
-		foreach (var defeatedEntity in defeatedEntities) {
-			defeatedEntity.Die();
-		}
-		DestroyActiveBattle();
-	}
-	
-	public void DestroyActiveBattle() {
-		Destroy(activeBattle.grid.gameObject);
-		Destroy(activeBattle.gameObject);
-		//
-		MenuManager.inst.CleanUpBattleMenus();
-		//
-		UIManager.inst.EnableBattlePhaseDisplay(false);
-		GameManager.inst.EnterOverworldState();
 	}
 
 	public Unit GetNewFocus() {

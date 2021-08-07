@@ -186,7 +186,7 @@ public abstract class EnemyArmy : Army, IVisible
 		bool moveSuccess = false;
 		var tickCost = (selectedMove == flowField.origin) ? Constants.standardTickCost : grid.TerrainAt(selectedMove).tickCost;
 		if (tickPool > 0 && tickCost <= tickPool) {
-			Vector3Int nextStep = ToPosition(selectedMove, 1);
+			Vector3Int nextStep = StepToPosition(selectedMove, 1);
 			moveSuccess = GridMove(nextStep.x, nextStep.y);
 			//
 			SpendTicks(tickCost);

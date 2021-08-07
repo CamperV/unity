@@ -58,6 +58,7 @@ public static class BattleMapGenerator
 	private static Dictionary<string, List<string>> prefabDesignators = new Dictionary<string, List<string>>{
 		["Plain:Plain"]   = new List<string>{"PlainPlain_0"},
 		["Plain:Forest"]  = new List<string>{"PlainForest_0"},
+		["Forest:Plain"]  = new List<string>{"PlainForest_0"},
 
 		["Forest:Forest"] = new List<string>{"ForestForest_0"}
 	};

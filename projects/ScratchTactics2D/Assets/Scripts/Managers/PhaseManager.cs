@@ -72,7 +72,7 @@ public class PhaseManager : MonoBehaviour
 
 			// before doing anything, check flags to see if the battle should be terminated
 			if (battle.CheckBattleEndState()) {
-				GameManager.inst.tacticsManager.ResolveActiveBattle(battle.GetDefeated());
+				battle.Resolve(battle.GetDefeated());
 				return; // jump out of the update loop early
 			}
 
