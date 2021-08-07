@@ -156,7 +156,7 @@ public class PlayerArmyController : Controller
 		GameManager.inst.enemyController.AddTicksAll(ticksTaken);
 
 		// this delays key presses too much, maybe
-		StartCoroutine( SpriteAnimator.ExecuteAfterMoving(registeredPlayer, () => {
+		StartCoroutine( registeredPlayer.spriteAnimator.ExecuteAfterMoving(() => {
 			phaseActionState = Enum.PhaseActionState.complete;
 		}) );
 	}

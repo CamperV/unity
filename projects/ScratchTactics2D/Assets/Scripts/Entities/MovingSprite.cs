@@ -10,6 +10,7 @@ public class MovingSprite : MovingGridObject
 		GameObject go = new GameObject("MovingSprite");
 		go.transform.position = pos;
 		go.AddComponent<SpriteRenderer>();
+		go.AddComponent<SpriteAnimator>();
 		go.AddComponent<MovingSprite>();
 
 		go.GetComponent<SpriteRenderer>().sprite = sprite;
@@ -18,7 +19,7 @@ public class MovingSprite : MovingGridObject
 	}
 
 	public void SendToAndDestruct(Vector3 toPosition) {
-		StartCoroutine( SpriteAnimator.SmoothMovement(this, toPosition, 1f) );
-		StartCoroutine( SpriteAnimator.ExecuteAfterMoving(this, () => Destroy(gameObject)) );
+		StartCoroutine( GetComponent<SpriteAnimator>().SmoothMovement(toPosition, 1f) );
+		StartCoroutine( GetComponent<SpriteAnimator>().ExecuteAfterMoving(() => Destroy(gameObject)) );
 	}
 }

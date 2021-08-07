@@ -4,8 +4,13 @@ using System;
 using UnityEngine;
 using Extensions;
 
+[RequireComponent(typeof(SpriteAnimator))]
 public abstract class MovingGridObject : MonoBehaviour, IMovable
 {	
+	// friendly components for helping
+	protected SpriteRenderer spriteRenderer { get => GetComponent<SpriteRenderer>(); }
+	public SpriteAnimator spriteAnimator { get => GetComponent<SpriteAnimator>(); }
+
 	protected Vector3Int _gridPosition;
 	[HideInInspector] public virtual Vector3Int gridPosition {
 		get => _gridPosition;
@@ -15,25 +20,11 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 	}
 	
 	protected Coroutine crtMovement;
-	//
+
 	// IMovable defs
-	public Transform safeTransform { get => GetComponent<Transform>(); }
-
-	protected int _movementStack;
-	public int movementStack {
-		get => _movementStack;
-		set {
-			Debug.Assert(value > -1);
-			_movementStack = value;
-		}
-	}
-	public bool isMoving { get => movementStack > 0; }
-
 	public virtual void UpdateRealPosition(Vector3 pos) {
 		transform.position = pos;
 	}
-	// IMovable defs
-	//
 	
 	public void UpdateGridPosition(Vector3Int pos, GameGrid grid) {
 		gridPosition = pos;
@@ -51,7 +42,7 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 	}
 	
 	public void BumpTowards(Vector3Int target, GameGrid grid, float distanceScale = 5.0f) {
-		StartCoroutine( SpriteAnimator.SmoothBump(this, grid.Grid2RealPos(target), distanceScale) );
+		StartCoroutine( spriteAnimator.SmoothBump(grid.Grid2RealPos(target), distanceScale) );
 	}
 			
 	// move only if you can, return non-null if you can't move and there is a Component blocking you
@@ -66,15 +57,15 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 				// SUCCESS!
 				MoveDirection(xdir, ydir, grid);
 						
-				if (isMoving) StopCoroutine(crtMovement);
-				crtMovement = StartCoroutine( SpriteAnimator.SmoothMovement(this, endpoint) );
+				if (spriteAnimator.isMoving) StopCoroutine(crtMovement);
+				crtMovement = StartCoroutine( spriteAnimator.SmoothMovement(endpoint) );
 			}
 			return occupant;
 
 		// No success, you're out of bounds
 		} else {
-			if (isMoving) StopCoroutine(crtMovement);
-			crtMovement = StartCoroutine( SpriteAnimator.SmoothBump(this, endpoint, 5.0f) );
+			if (spriteAnimator.isMoving) StopCoroutine(crtMovement);
+			crtMovement = StartCoroutine( spriteAnimator.SmoothBump(endpoint, 5.0f) );
 		}
 
 		return null;

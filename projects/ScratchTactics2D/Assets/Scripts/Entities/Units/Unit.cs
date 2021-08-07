@@ -254,7 +254,7 @@ public abstract class Unit : TacticsEntityBase
 		TacticsGrid grid = GameManager.inst.tacticsManager.GetActiveGrid();
 
 		// movement animation
-		StartCoroutine( SpriteAnimator.SmoothMovementPath(this, viaPath, grid) );
+		StartCoroutine( spriteAnimator.SmoothMovementPath(viaPath, grid) );
 
 		grid.UpdateOccupantAt(gridPosition, null);
 		grid.UpdateOccupantAt(target, this);
@@ -308,16 +308,16 @@ public abstract class Unit : TacticsEntityBase
 	private bool SufferDamage(int incomingDamage, bool isCritical = false) {
 		_HP -= incomingDamage;
 
-		StartCoroutine( SpriteAnimator.FlashColor(this, Constants.threatColorRed) );
-		StartCoroutine( SpriteAnimator.Shake(this, (isCritical) ? 0.15f : 0.075f) );
+		StartCoroutine( spriteAnimator.FlashColor(Constants.threatColorRed) );
+		StartCoroutine( spriteAnimator.Shake((isCritical) ? 0.15f : 0.075f) );
 
 		unitUI.DisplayDamageMessage(incomingDamage.ToString(), emphasize: isCritical);
 		return _HP > 0;
 	}
 	
 	public void TriggerDeathAnimation() {
-		StartCoroutine( SpriteAnimator.ExecuteAfterAnimating(this, () => {
-			StartCoroutine( SpriteAnimator.FadeDown(this, timeToDie) );
+		StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
+			StartCoroutine( spriteAnimator.FadeDown(timeToDie) );
 		}));
 	}
 
@@ -334,20 +334,4 @@ public abstract class Unit : TacticsEntityBase
 		Army oe = battle.GetArmyFromController(parentController);
 		oe.DischargeUnit(this);
 	}
-
-	// public override IEnumerator FadeDown(float fixedTime) {
-	// 	animationStack++;
-	// 	//
-
-	// 	float timeRatio = 0.0f;
-	// 	while (timeRatio < 1.0f) {
-	// 		timeRatio += (Time.deltaTime / fixedTime);
-	// 		spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
-	// 		unitUI.SetTransparency(1.0f - timeRatio);
-	// 		yield return null;
-	// 	}
-
-	// 	//
-	// 	animationStack--;
-	// }
 }

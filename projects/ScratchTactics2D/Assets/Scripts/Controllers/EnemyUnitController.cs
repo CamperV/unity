@@ -113,7 +113,7 @@ public class EnemyUnitController : UnitController
 				subject.TraverseTo(pathToTarget.end, pathToTarget);
 
 				// spin until this subject is entirely done moving
-				while (subject.isMoving) { yield return null; }
+				while (subject.spriteAnimator.isMoving) { yield return null; }
 			}
 
 			if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, targetPosition)) {

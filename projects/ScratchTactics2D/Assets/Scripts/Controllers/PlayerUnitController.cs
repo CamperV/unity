@@ -64,7 +64,7 @@ public class PlayerUnitController : UnitController
 							// overlay tile for movement selections
 							// constantly recalculate the shortest path to mouse via FlowField
 							// on mouse down, start a coroutine to move along the path
-							if (!currentSelection.isMoving)
+							if (!currentSelection.spriteAnimator.isMoving)
 								DrawValidMoveForSelection(currentSelection.moveRange);
 							break;
 
@@ -187,7 +187,7 @@ public class PlayerUnitController : UnitController
 								currentSelection.TraverseTo(target, currentSelectionFieldPath);
 
 								// on end
-								StartCoroutine( SpriteAnimator.ExecuteAfterMoving(currentSelection, () => {
+								StartCoroutine( currentSelection.spriteAnimator.ExecuteAfterMoving(() => {
 									currentSelection.LockSelection();
 									currentSelection.EnterNextState(orEndTurn: true);
 								}));

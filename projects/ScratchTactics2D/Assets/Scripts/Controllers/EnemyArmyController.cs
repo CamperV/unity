@@ -158,7 +158,7 @@ public class EnemyArmyController : Controller
 						Debug.Log($"Followed field, keepPhaseAlive: {keepPhaseAlive}");
 						break;
 					}
-					while (subject.isMoving) yield return null; 
+					while (subject.spriteAnimator.isMoving) yield return null; 
 
 				case Enum.EnemyArmyState.inBattle:
 					Debug.Log($"{subject} will not do anything other than fight for its life, as it is currently.");

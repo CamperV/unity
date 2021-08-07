@@ -72,7 +72,7 @@ public class PlayerArmy : Army
 	}
 
 	public void InitiateBattle(EnemyArmy combatant) {
-		StartCoroutine( SpriteAnimator.ExecuteAfterMoving(this, () => {
+		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => {
 			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
 			Terrain enemyTerrain = GameManager.inst.overworld.TerrainAt(combatant.gridPosition);
 		

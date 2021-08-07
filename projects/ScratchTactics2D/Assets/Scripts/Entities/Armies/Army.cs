@@ -9,7 +9,6 @@ using Extensions;
 
 public abstract class Army : MovingGridObject
 {
-	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;
 
 	// army stats/state
@@ -30,7 +29,6 @@ public abstract class Army : MovingGridObject
 	public abstract bool GridMove(int xdir, int ydir);
 
 	protected virtual void Awake() {
-		spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
 		
 		// generate your units here (name, tags, etc)
@@ -110,19 +108,6 @@ public abstract class Army : MovingGridObject
 		// when faded, remove gameObject
 		Debug.Log($"{this} has died :(");
 		GameManager.inst.overworld.UpdateOccupantAt(gridPosition, null);
-		StartCoroutine(FadeDownToInactive(timeToDie));
-	}
-
-	public IEnumerator FadeDownToInactive(float fixedTime) {
-		float timeRatio = 0.0f;
-		Color ogColor = spriteRenderer.color;
-
-		while (timeRatio < 1.0f) {
-			timeRatio += (Time.deltaTime / fixedTime);
-
-			spriteRenderer.color = new Color(ogColor.r, ogColor.g, ogColor.b, (1.0f - timeRatio));
-			yield return null;
-		}
-		gameObject.SetActive(false);
+		StartCoroutine(spriteAnimator.FadeDownToInactive(timeToDie));
 	}
 }

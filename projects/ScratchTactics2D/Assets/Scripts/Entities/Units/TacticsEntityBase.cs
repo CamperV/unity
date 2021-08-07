@@ -5,25 +5,11 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public class TacticsEntityBase : MovingGridObject, IAnimatable
+public class TacticsEntityBase : MovingGridObject
 {
 	// constants for fade time, etc
 	protected readonly float timeToDie = 1.0f;
 	protected Animator animator;
-
-	// IAnimatble defs
-	private SpriteRenderer _spriteRenderer;
-	public SpriteRenderer spriteRenderer { get => _spriteRenderer; }
-
-	protected int _animationStack;
-	public int animationStack {
-		get => _animationStack;
-		set {
-			Debug.Assert(value > -1);
-			_animationStack = value;
-		}
-	}
-	public bool isAnimating { get => animationStack > 0; }
 
 	protected BoxCollider2D boxCollider2D;
 	private bool _ghosted = false;
@@ -48,7 +34,6 @@ public class TacticsEntityBase : MovingGridObject, IAnimatable
 	}
 	
 	protected virtual void Awake() {
-		_spriteRenderer = GetComponent<SpriteRenderer>();
 		animator = GetComponent<Animator>();
 		
 		// set sprite properties
@@ -84,93 +69,4 @@ public class TacticsEntityBase : MovingGridObject, IAnimatable
 										 spriteRenderer.color.b,
 										 val);
 	}
-
-	// //
-	// // Animation Coroutines
-	// //
-	// public bool isAnimating() {
-	// 	return animationStack > 0;
-	// }
-
-	// public IEnumerator ExecuteAfterAnimating(Action VoidAction) {
-	// 	while (animationStack > 0) {
-	// 		yield return null;
-	// 	}
-	// 	VoidAction();
-	// }
-
-	// public virtual IEnumerator FadeDown(float fixedTime) {
-	// 	animationStack++;
-	// 	//
-
-	// 	float timeRatio = 0.0f;
-	// 	while (timeRatio < 1.0f) {
-	// 		timeRatio += (Time.deltaTime / fixedTime);
-	// 		spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
-	// 		yield return null;
-	// 	}
-
-	// 	//
-	// 	animationStack--;
-	// }
-	
-	// public IEnumerator FlashColor(Color color) {
-	// 	animationStack++;
-	// 	//
-
-	// 	var ogColor = spriteRenderer.color;
-
-	// 	float fixedTime = 1.0f;
-	// 	float timeRatio = 0.0f;
-		
-	// 	while (timeRatio < 1.0f) {
-	// 		timeRatio += (Time.deltaTime / fixedTime);
-
-	// 		var colorDiff = ogColor - ((1.0f - timeRatio) * (ogColor - color));
-	// 		spriteRenderer.color = colorDiff.WithAlpha(1.0f);
-
-	// 		yield return null;
-	// 	}
-	// 	spriteRenderer.color = ogColor;
-
-	// 	//
-	// 	animationStack--;
-	// }
-
-	// // not relative to time: shake only 3 times, wait a static amt of time
-	// public IEnumerator Shake(float radius) {
-	// 	animationStack++;
-	// 	//
-
-	// 	// I would love to do this in a one-liner...
-	// 	// (Select, etc) but due to Unity's choices, you cant' ToList a transform for its enumerated children
-	// 	// this should preserve order...?
-	// 	var ogPosition = transform.position;
-	// 	var childOgPositions = new List<Vector3>();
-	// 	foreach (Transform child in transform) childOgPositions.Add(child.position);
-	// 	int index;
-
-	// 	for (int i=0; i<3; i++) {
-	// 		Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
-	// 		transform.position = ogPosition + offset;
-
-	// 		// reverse offset all children, so only the main Unit shakes
-	// 		index = 0;
-	// 		foreach (Transform child in transform) {
-	// 			child.position = childOgPositions[index] - offset;
-	// 			index++;
-	// 		}
-	// 		radius /= 2f;
-	// 		yield return new WaitForSeconds(0.05f);
-	// 	}
-	// 	transform.position = ogPosition;
-	// 	index = 0;
-	// 	foreach (Transform child in transform) {
-	// 		child.position = childOgPositions[index];
-	// 		index++;
-	// 	}
-
-	// 	//
-	// 	animationStack--;
-	// }
 }

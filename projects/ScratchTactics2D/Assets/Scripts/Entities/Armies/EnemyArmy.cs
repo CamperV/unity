@@ -217,7 +217,7 @@ public abstract class EnemyArmy : Army, IVisible
 		SpendTicks(tickPool);
 		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.overworld);
 
-		StartCoroutine( SpriteAnimator.ExecuteAfterMoving(this, () => {
+		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => {
 			// programmatically load in a TacticsGrid that matches what we need
 			Terrain thisTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
 			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(GameManager.inst.player.gridPosition);
@@ -233,7 +233,7 @@ public abstract class EnemyArmy : Army, IVisible
 		SpendTicks(tickPool);
 		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.overworld);
 
-		StartCoroutine( SpriteAnimator.ExecuteAfterMoving(this, () => {
+		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => {
 			// programmatically load in a TacticsGrid that matches what we need
 			Terrain thisTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);		
 			GameManager.inst.tacticsManager.AddToActiveBattle(this, thisTerrain);
