@@ -199,6 +199,24 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 		}
 		
 	}
+
+	public Dictionary<Vector3Int, T> GetTilemapDict<T>(Tilemap tilemap) where T : Tile {
+		Dictionary<Vector3Int, T> retVal = new Dictionary<Vector3Int, T>();
+
+		foreach (var pos in tilemap.cellBounds.allPositionsWithin) {
+			Vector3Int v = new Vector3Int(pos.x, pos.y, pos.z);
+			var tile = tilemap.GetTile<T>(v);
+			if (tile != null) retVal[v] = tile;
+		}
+		return retVal;
+	}
+
+	public static IEnumerable<Vector3Int> GetPositions(Tilemap tilemap) {
+		foreach (var pos in tilemap.cellBounds.allPositionsWithin) {
+			Vector3Int v = new Vector3Int(pos.x, pos.y, pos.z);
+			if (tilemap.HasTile(v)) yield return v;
+		}
+	}
 	
 	// abstract zone
 	public abstract bool IsInBounds(Vector3Int tilePos);

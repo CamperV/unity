@@ -47,7 +47,7 @@ public class SpriteAnimator : MonoBehaviour
 
 		// else if you don't have this component, construct a default Updater
 		} else {
-			PositionUpdater = (v) => transform.position = v;
+			PositionUpdater = v => transform.position = v;
 		}
 		
 	}
@@ -95,6 +95,22 @@ public class SpriteAnimator : MonoBehaviour
 		//
 		animationStack--;
 		gameObject.SetActive(false);
+	}
+
+	public IEnumerator FadeDownToDestroy(float fixedTime) {
+		animationStack++;
+		//
+
+		float timeRatio = 0.0f;
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+			spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
+			yield return null;
+		}
+
+		//
+		animationStack--;
+		Destroy(gameObject);
 	}
 	
 	public IEnumerator FlashColor(Color color) {

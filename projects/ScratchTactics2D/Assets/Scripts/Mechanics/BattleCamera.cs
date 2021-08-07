@@ -42,22 +42,8 @@ public class BattleCamera : MonoBehaviour
 		getKeyActionBindings[KeyCode.S] = () => Pan(Vector3.down, rate: 6f);
 		getKeyActionBindings[KeyCode.D] = () => Pan(Vector3.right, rate: 8f);
         //
-        getKeyDownActionBindings[KeyCode.Q] = () => {
-            Rotate(RotateRight);
-
-            // move the battle back to the center of the screen
-            var offset = focalPivot - battle.grid.GetGridCenterReal();
-            battle.transform.position += offset;
-            focalPoint -= offset;
-        };
-        getKeyDownActionBindings[KeyCode.E] = () => {
-            Rotate(RotateLeft);
-
-            // move the battle back to the center of the screen
-            var offset = focalPivot - battle.grid.GetGridCenterReal();
-            battle.transform.position += offset;
-            focalPoint -= offset;
-        };
+        getKeyDownActionBindings[KeyCode.Q] = () => Rotate(RotateRight);
+        getKeyDownActionBindings[KeyCode.E] = () => Rotate(RotateLeft);
     }
 
     void Update() {
@@ -162,8 +148,30 @@ public class BattleCamera : MonoBehaviour
         focalPoint = focalPoint + (Time.deltaTime*rate)*unitDirection;
     }
 
+    // this rotates the Tilemap
+    // animates it
+    // updates the appropriate data structures
     private void Rotate(Func<Vector3Int, Vector3Int> Transformer) {
+        // record current tiles at current locations for anim part 1
+        var prerotationTileDict = battle.grid.GetTilemapDict<TacticsTile>(battle.grid.baseTilemap);
+        var prerotationPosition = battle.grid.GetGridCenterReal();
         BattleMap.RotateTilemap(battle.grid.baseTilemap, Transformer);
+        
+        // finally, move the battle grid back to where it was pre-rotation
+        Vector3 correctionVector = battle.grid.GetGridCenterReal() - prerotationPosition;
+        battle.transform.position -= correctionVector;
+        focalPoint += correctionVector;
+
+		// animate the motion by spawning sprites and going _from -> _to
+		foreach (Vector3Int _from in prerotationTileDict.Keys) {
+            Vector3Int _to = Transformer(_from);
+			Vector3 from = battle.grid.baseTilemap.GetCellCenterWorld(_from);
+			Vector3 to = battle.grid.baseTilemap.GetCellCenterWorld(_to);
+			
+			MovingSprite anim = MovingSprite.ConstructWith(from + correctionVector, prerotationTileDict[_from].sprite, "Tactics Entities");
+			anim.SendToAndDestruct(to, 1f);
+		}
+        battle.InvisibleFor(1f);
 
         // update tacticsGrid translation2D
 		Dictionary<Vector2Int, Vector3Int> _translation2D = new Dictionary<Vector2Int, Vector3Int>();

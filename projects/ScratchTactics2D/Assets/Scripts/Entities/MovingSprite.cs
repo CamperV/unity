@@ -4,9 +4,9 @@ using System;
 using UnityEngine;
 using Extensions;
 
-public class MovingSprite : MovingGridObject
+public class MovingSprite : MonoBehaviour
 {	
-	public static MovingSprite ConstructWith(Vector3 pos, Sprite sprite) {
+	public static MovingSprite ConstructWith(Vector3 pos, Sprite sprite, string layer) {
 		GameObject go = new GameObject("MovingSprite");
 		go.transform.position = pos;
 		go.AddComponent<SpriteRenderer>();
@@ -14,12 +14,13 @@ public class MovingSprite : MovingGridObject
 		go.AddComponent<MovingSprite>();
 
 		go.GetComponent<SpriteRenderer>().sprite = sprite;
-		go.GetComponent<SpriteRenderer>().sortingLayerName = "Tactics Entities";
+		go.GetComponent<SpriteRenderer>().sortingLayerName = layer;
 		return go.GetComponent<MovingSprite>();
 	}
 
-	public void SendToAndDestruct(Vector3 toPosition) {
-		StartCoroutine( GetComponent<SpriteAnimator>().SmoothMovement(toPosition, 1f) );
+	public void SendToAndDestruct(Vector3 toPosition, float fixedTime) {
+		StartCoroutine( GetComponent<SpriteAnimator>().SmoothMovement(toPosition, fixedTime) );
+		StartCoroutine( GetComponent<SpriteAnimator>().FadeDown(fixedTime) );
 		StartCoroutine( GetComponent<SpriteAnimator>().ExecuteAfterMoving(() => Destroy(gameObject)) );
 	}
 }

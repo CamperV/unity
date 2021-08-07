@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Extensions;
 using Random = UnityEngine.Random;
 
@@ -204,6 +205,24 @@ public class Battle : MonoBehaviour
 		return new List<Army>(); // battle continues		
 	}
 
+	public void InvisibleFor(float fixedTime) {
+		ColorAll(Color.black.WithAlpha(0.0f));
+		StartCoroutine( Utils.DelayedExecute(fixedTime, () => ColorAll(Color.white.WithAlpha(1.0f))) );
+	}
+
+	private void ColorAll(Color color) {
+		SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+		foreach (SpriteRenderer sr in renderers) {
+			sr.color = color;
+		}
+		Tilemap[] tilemaps = GetComponentsInChildren<Tilemap>();
+		foreach (Tilemap tm in tilemaps) {
+			foreach (Vector3Int pos in GameGrid.GetPositions(tm)) {
+				grid.TintTile(tm, pos, color);
+			}
+		}
+	}
+
 	// pause, hand control off to the GameManager.overworld state
 	public void Pause() {
 		savedTurn = GameManager.inst.phaseManager.currentTurn;
@@ -226,23 +245,5 @@ public class Battle : MonoBehaviour
 		GameManager.inst.overworld.EnableTint();
 		GameManager.inst.overworld.ClearOverlayTiles();
 		GameManager.inst.gameState = Enum.GameState.battle;
-	}
-
-
-
-
-	// moveable sprite
-	public IEnumerator SM(Transform transform, Vector3 endPos) {
-		float timeStep = 0.0f;
-		Vector3 startPos = transform.position;
-
-		while (timeStep < 1.0f) {
-			timeStep += (Time.deltaTime / 0.10f);
-			transform.position = Vector3.Lerp(startPos, endPos, timeStep);
-			yield return null;
-		}
-		
-		// after the while loop is broken:
-		transform.position = endPos;
 	}
 }
