@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using Extensions;
 
-public class MovingSprite : MovingObject
+public class MovingSprite : MovingGridObject
 {	
 	public static MovingSprite ConstructWith(Vector3 pos, Sprite sprite) {
 		GameObject go = new GameObject("MovingSprite");
@@ -18,7 +18,7 @@ public class MovingSprite : MovingObject
 	}
 
 	public void SendToAndDestruct(Vector3 toPosition) {
-		StartCoroutine( SmoothMovement(toPosition, _fixedTime: 1f) );
-		StartCoroutine( ExecuteAfterMoving(() => Destroy(gameObject)) );
+		StartCoroutine( SpriteAnimator.SmoothMovement(this, toPosition, 1f) );
+		StartCoroutine( SpriteAnimator.ExecuteAfterMoving(this, () => Destroy(gameObject)) );
 	}
 }

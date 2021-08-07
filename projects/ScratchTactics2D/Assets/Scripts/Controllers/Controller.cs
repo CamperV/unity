@@ -6,18 +6,18 @@ using Extensions;
 
 public class Controller : PhasedObject
 {
-	public List<MovingObject> registry;
-	public List<MovingObject> activeRegistry {
+	public List<MovingGridObject> registry;
+	public List<MovingGridObject> activeRegistry {
 		get {
 			return registry.Where(it => it.IsActive()).ToList();
 		}
 	}
 
 	protected virtual void Awake() {		
-		registry = new List<MovingObject>();
+		registry = new List<MovingGridObject>();
     }
 	
-	public virtual void Register(MovingObject subject) {
+	public virtual void Register(MovingGridObject subject) {
 		registry.Add(subject);
 
 		if (subject.transform.parent != null) {

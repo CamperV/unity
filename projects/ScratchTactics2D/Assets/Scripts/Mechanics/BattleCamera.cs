@@ -44,12 +44,16 @@ public class BattleCamera : MonoBehaviour
         //
         getKeyDownActionBindings[KeyCode.Q] = () => {
             Rotate(RotateRight);
+
+            // move the battle back to the center of the screen
             var offset = focalPivot - battle.grid.GetGridCenterReal();
             battle.transform.position += offset;
             focalPoint -= offset;
         };
         getKeyDownActionBindings[KeyCode.E] = () => {
             Rotate(RotateLeft);
+
+            // move the battle back to the center of the screen
             var offset = focalPivot - battle.grid.GetGridCenterReal();
             battle.transform.position += offset;
             focalPoint -= offset;
@@ -173,7 +177,7 @@ public class BattleCamera : MonoBehaviour
         // then occupancyGrid
         // then update real position
         Dictionary<Vector3Int, Component> _occupancyGrid = new Dictionary<Vector3Int, Component>();
-        foreach(MovingObject mo in battle.GetRegisteredInBattle()) {
+        foreach(MovingGridObject mo in battle.GetRegisteredInBattle()) {
             Vector3Int rotated = Transformer(mo.gridPosition);
             _occupancyGrid[rotated] = mo;
             mo.UpdateGridPosition(rotated, battle.grid);

@@ -16,11 +16,11 @@ public class InputListener : MonoBehaviour
 
 	void Update() {
 		if (Input.GetKeyDown(accelerator)) {
-			MovingObject.speedMultiplier *= movementAccel;
+			SpriteAnimator.speedMultiplier *= movementAccel;
 			PhasedObject.phaseDelayTime = phaseDelayTimeAccel;
 		}
         if (Input.GetKeyUp(accelerator)) {
-			MovingObject.speedMultiplier /= movementAccel;
+			SpriteAnimator.speedMultiplier /= movementAccel;
 			PhasedObject.phaseDelayTime = _phaseDelayTime;
 		}
     }

@@ -21,7 +21,7 @@ public abstract class UIElement : MonoBehaviour
 	//
 	// Animation Coroutines
 	//
-	public bool IsAnimating() {
+	public bool isAnimating() {
 		return animationStack > 0;
 	}
 

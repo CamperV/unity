@@ -27,7 +27,7 @@ public class EnemyUnitController : UnitController
 		subjectsActingTrigger = true;
 	}
 
-	public override void Register(MovingObject subject) {
+	public override void Register(MovingGridObject subject) {
 		base.Register(subject);
 		//
 		Unit unit = subject as Unit;
@@ -72,7 +72,7 @@ public class EnemyUnitController : UnitController
 	public IEnumerator SubjectsTakeAction() {
 		// cache the playerController to pull from its registry
 		var playerController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(Enum.Phase.player);
-		List<MovingObject> activeRegistryClone = new List<MovingObject>(activeRegistry);
+		List<MovingGridObject> activeRegistryClone = new List<MovingGridObject>(activeRegistry);
 
 		for (int i = 0; i < activeRegistryClone.Count; i++) {
 			Unit subject = (Unit)activeRegistryClone[i];
@@ -113,7 +113,7 @@ public class EnemyUnitController : UnitController
 				subject.TraverseTo(pathToTarget.end, pathToTarget);
 
 				// spin until this subject is entirely done moving
-				while (subject.IsMoving()) { yield return null; }
+				while (subject.isMoving) { yield return null; }
 			}
 
 			if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, targetPosition)) {
@@ -139,12 +139,12 @@ public class EnemyUnitController : UnitController
 		}
 	}
 
-	private Vector3Int GetTargetInAttackRange(Unit subject, List<MovingObject> targets) {
+	private Vector3Int GetTargetInAttackRange(Unit subject, List<MovingGridObject> targets) {
 		var attackTargets = targets.FindAll(it => subject.attackRange.field.ContainsKey(it.gridPosition));
 		return (attackTargets.Any()) ? GetClosestTarget(subject, attackTargets) : -1*Vector3Int.one;
 	}
 
-	private Vector3Int GetClosestTarget(Unit subject, List<MovingObject> targets) {
+	private Vector3Int GetClosestTarget(Unit subject, List<MovingGridObject> targets) {
 		var minDist = targets.Min(it => it.gridPosition.ManhattanDistance(subject.gridPosition));
 		return targets.First(it => it.gridPosition.ManhattanDistance(subject.gridPosition) == minDist).gridPosition;
 	}

@@ -154,7 +154,7 @@ public class Battle : MonoBehaviour
 		return activeControllers.Values.ToList();
 	}
 
-	public List<MovingObject> GetRegisteredInBattle() {
+	public List<MovingGridObject> GetRegisteredInBattle() {
 		return activeControllers.Values.SelectMany(con => con.activeRegistry).ToList();
 	}
 

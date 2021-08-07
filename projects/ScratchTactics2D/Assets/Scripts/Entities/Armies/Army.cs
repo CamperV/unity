@@ -7,7 +7,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public abstract class Army : MovingObject
+public abstract class Army : MovingGridObject
 {
 	protected SpriteRenderer spriteRenderer;
 	protected Animator animator;

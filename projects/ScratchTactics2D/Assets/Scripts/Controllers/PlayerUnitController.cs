@@ -34,7 +34,7 @@ public class PlayerUnitController : UnitController
 		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle;
 	}
 
-	public override void Register(MovingObject subject) {
+	public override void Register(MovingGridObject subject) {
 		base.Register(subject);
 		//
 		PlayerUnit unit = subject as PlayerUnit;
@@ -187,7 +187,7 @@ public class PlayerUnitController : UnitController
 								currentSelection.TraverseTo(target, currentSelectionFieldPath);
 
 								// on end
-								StartCoroutine(currentSelection.ExecuteAfterMoving(() => {
+								StartCoroutine( SpriteAnimator.ExecuteAfterMoving(currentSelection, () => {
 									currentSelection.LockSelection();
 									currentSelection.EnterNextState(orEndTurn: true);
 								}));
@@ -280,7 +280,7 @@ public class PlayerUnitController : UnitController
 		phaseActionState = Enum.PhaseActionState.complete;
 	}
 
-	private bool PossibleValidAttack(Unit subject, List<MovingObject> potentialTargets) {
+	private bool PossibleValidAttack(Unit subject, List<MovingGridObject> potentialTargets) {
 		subject.UpdateThreatRange();
 		return potentialTargets.FindAll(
 			it => it != subject && subject.attackRange.field.ContainsKey(it.gridPosition)

@@ -41,11 +41,11 @@ public class EngagementResults
     public IEnumerator ResolveCasualties() {
         if (!defenderSurvived) {
             defender.TriggerDeathAnimation();
-            while (defender.IsAnimating()) yield return null;
+            while (defender.isAnimating) yield return null;
         }
         if (!aggressorSurvived) {
             aggressor.TriggerDeathAnimation();
-            while (aggressor.IsAnimating()) yield return null;
+            while (aggressor.isAnimating) yield return null;
         }
 
         if (!defenderSurvived) defender.DeathCleanUp();

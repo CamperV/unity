@@ -47,7 +47,7 @@ public class EnemyArmyController : Controller
 			   GameManager.inst.gameState == Enum.GameState.overworld;
 	}
 
-	public override void Register(MovingObject subject) {
+	public override void Register(MovingGridObject subject) {
 		base.Register(subject);
 		(subject as EnemyArmy).ID = registry.Count;
 	}
@@ -114,7 +114,7 @@ public class EnemyArmyController : Controller
 		keepPhaseAlive = false;
 		crtActing = true;
 
-		List<MovingObject> orderedRegistry = activeRegistry.OrderBy(it => (it as EnemyArmy).CalculateInitiative()).ToList();
+		List<MovingGridObject> orderedRegistry = activeRegistry.OrderBy(it => (it as EnemyArmy).CalculateInitiative()).ToList();
 		for (int i = 0; i < orderedRegistry.Count; i++) {
 			EnemyArmy subject = orderedRegistry[i] as EnemyArmy;
 			switch(subject.state) {
@@ -158,7 +158,7 @@ public class EnemyArmyController : Controller
 						Debug.Log($"Followed field, keepPhaseAlive: {keepPhaseAlive}");
 						break;
 					}
-					while (subject.IsMoving()) yield return null; 
+					while (subject.isMoving) yield return null; 
 
 				case Enum.EnemyArmyState.inBattle:
 					Debug.Log($"{subject} will not do anything other than fight for its life, as it is currently.");

@@ -31,14 +31,14 @@ public class UnitController : Controller
 		return true;
 	}
 	
-	public List<MovingObject> GetOpposing() {
+	public List<MovingGridObject> GetOpposing() {
 		var advPhase = myPhase.NextPhase();
 		var advController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(advPhase);
 		return advController.activeRegistry;
 	}
 
 	public virtual HashSet<Vector3Int> GetObstacles() {
-		// the controller must dictate to the Unit/MovingObject what counts as obstacles for it
+		// the controller must dictate to the Unit/MovingGridObject what counts as obstacles for it
 		var uPositions = GetOpposing().Select(it => it.gridPosition);
 		return new HashSet<Vector3Int>(uPositions);
 	}
