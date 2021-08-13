@@ -15,7 +15,7 @@ public static class DominoBattle
 	// 		for (int y = 0; y < originTerrain.battleGridSize.y; y++) {
 	// 			Vector3Int pos = newOrigin + new Vector3Int(x, y, Random.Range(0, 2));
 	// 			tacticsTileGrid[pos] = originTerrain.tacticsTile;
-	// 			translation2D[new Vector2Int(pos.x, pos.y)] = pos;
+	// 			surface[new Vector2Int(pos.x, pos.y)] = pos;
 	// 		}
 	// 	}
 	// }

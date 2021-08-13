@@ -10,7 +10,7 @@ using UnityEditor;
 public abstract class TacticsTile : Tile
 {
 	// returns an integer that signifies the cost of entering this tile
-	public int cost = Constants.standardTickCost;
+	public virtual int cost { get => 1; }
 
 	//public virtual string spriteName { get; }
 	//public List<Sprite> sprites;

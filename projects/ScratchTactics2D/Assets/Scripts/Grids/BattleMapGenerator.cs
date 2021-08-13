@@ -77,7 +77,7 @@ public static class BattleMapGenerator
 
 	public static void ApplyMap(BattleMap battleMap, Action<Vector3Int, TacticsTile> TileSetter) {
 		foreach (Vector3Int tilePos in battleMap.Positions) {
-			TileSetter(tilePos, battleMap.GetTileAt(tilePos));
+			TileSetter(tilePos, battleMap.GetBattleMapTile(tilePos));
 		}
 	}
 }

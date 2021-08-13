@@ -13,7 +13,6 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 	[HideInInspector] public Tilemap overlayTilemap;
 	
 	public Dictionary<Vector3Int, Component> occupancyGrid;
-	public Dictionary<Vector2Int, Vector3Int> translation2D;
 	//
 	
 	protected virtual void Awake() {				
@@ -25,7 +24,6 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 		overlayTilemap  = tilemapComponents[2];
 
 		occupancyGrid = new Dictionary<Vector3Int, Component>();
-		translation2D = new Dictionary<Vector2Int, Vector3Int>();
 	}
 
 	// IPathable Definitions
@@ -56,24 +54,8 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 		return new Vector3Int(toModify.x, toModify.y, 0);
 	}
 
-	public HashSet<Vector3Int> GetEightNeighbors(Vector3Int tilePos) {
-		List<Vector2Int> cardinal = new List<Vector2Int> {
-			Vector2Int.up,
-			Vector2Int.right,
-			Vector2Int.down,
-			Vector2Int.left,
-			Vector2Int.up + Vector2Int.right,
-			Vector2Int.down + Vector2Int.right,
-			Vector2Int.up + Vector2Int.left,
-			Vector2Int.down + Vector2Int.left
-		};
-		
-		HashSet<Vector3Int> retHash = new HashSet<Vector3Int>();
-		foreach (Vector2Int cPos in cardinal) {
-			Vector3Int pos = To3D(new Vector2Int(tilePos.x, tilePos.y) + cPos);
-			if (IsInBounds(pos)) retHash.Add(pos);
-		}
-		return retHash;
+	public virtual Vector3Int To3D(Vector2Int v) {
+		return new Vector3Int(v.x, v.y, 0);		
 	}
 
 	public void OverlayAt(Vector3Int tilePos, OverlayTile tile) {
@@ -191,15 +173,6 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 		return allPositions;
 	}
 
-	public Vector3Int To3D(Vector2Int v) {
-		if (translation2D.ContainsKey(v)) {
-			return translation2D[v];
-		} else {
-			return new Vector3Int(v.x, v.y, 0);
-		}
-		
-	}
-
 	public Dictionary<Vector3Int, T> GetTilemapDict<T>(Tilemap tilemap) where T : Tile {
 		Dictionary<Vector3Int, T> retVal = new Dictionary<Vector3Int, T>();
 
@@ -220,5 +193,4 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 	
 	// abstract zone
 	public abstract bool IsInBounds(Vector3Int tilePos);
-	public abstract Tile GetTileAt(Vector3Int tilePos);
 }

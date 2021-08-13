@@ -71,6 +71,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 782a38c8a7903844aa65221fbc1a16d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  battle: {fileID: 0}
+  focalPoint: {x: 0, y: 0, z: 0}
+  focalPivot: {x: 0, y: 0, z: 0}
 --- !u!1 &831110151278361556
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,7 +117,7 @@ Grid:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 831110151278361556}
   m_Enabled: 1
-  m_CellSize: {x: 1, y: 0.5, z: 0.75}
+  m_CellSize: {x: 1, y: 0.5, z: 1}
   m_CellGap: {x: 0, y: 0, z: -0}
   m_CellLayout: 3
   m_CellSwizzle: 0

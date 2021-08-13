@@ -9,7 +9,7 @@ public class BattlePath : Path
 	private OverlayTile pathTile;
 
 	public BattlePath() {
-		pathEndTile = (ScriptableObject.CreateInstance<WaypointOverlayIsoTile>() as WaypointOverlayIsoTile);
+		pathEndTile = PathOverlayIsoTile.GetTileWithSprite(1);
 		pathTile 	= (ScriptableObject.CreateInstance<PathOverlayIsoTile>() as PathOverlayIsoTile);
 	}
 

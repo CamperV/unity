@@ -23,7 +23,7 @@ public class BattleMap : MonoBehaviour
 		overlayTilemap.RefreshAllTiles();
 	}
 
-	public TacticsTile GetTileAt(Vector3Int tilePos) {
+	public TacticsTile GetBattleMapTile(Vector3Int tilePos) {
 		return baseTilemap.GetTile(tilePos) as TacticsTile;
 	}
 

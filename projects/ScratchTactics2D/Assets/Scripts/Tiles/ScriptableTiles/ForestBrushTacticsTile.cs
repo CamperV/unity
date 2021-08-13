@@ -8,7 +8,7 @@ using UnityEditor;
 
 public class ForestBrushTacticsTile : TacticsTile
 {
-	//public override string spriteName { get => "brush_forest_tile_iso_0"; }
+	public override int cost { get => 2; }
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/ForestBrushTacticsTile", false, 1)]

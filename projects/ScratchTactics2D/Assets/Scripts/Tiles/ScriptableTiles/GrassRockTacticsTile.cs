@@ -8,7 +8,7 @@ using UnityEditor;
 
 public class GrassRockTacticsTile : TacticsTile
 {
-	//public override string spriteName { get => "rock_grass_tile_iso_0"; }
+	public override int cost { get => -1; }
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/GrassRockTacticsTile", false, 1)]

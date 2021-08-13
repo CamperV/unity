@@ -52,13 +52,13 @@ public class PlayerArmyController : Controller
 		_pathfinder = new ArmyPathfinder(GameManager.inst.enemyController.currentEnemyPositions, registeredPlayer.moveThreshold);
 	}
 	
-	private Vector3Int _overwriteMe;
+	private Vector3Int _prevMousePos;
 	void Update() {
 		if (!MyPhaseActive()) return;
 		KeyCode kc = CheckInput();
 		
 		// previous cleanup
-		if (_overwriteMe != null) GameManager.inst.overworld.ResetOverlayAt(_overwriteMe);
+		if (_prevMousePos != null) GameManager.inst.overworld.ResetOverlayAt(_prevMousePos);
 		
 		switch(phaseActionState) {
 			case Enum.PhaseActionState.waitingForInput:
@@ -78,7 +78,7 @@ public class PlayerArmyController : Controller
 								_pathToQueue.interactFlag = Interactable(_pathToQueue.end);
 								_pathToQueue.Show();
 							} else {
-								_overwriteMe = mousePos;
+								_prevMousePos = mousePos;
 								GameManager.inst.overworld.OverlayAt(mousePos, ScriptableObject.CreateInstance<XOverlayTile>() );
 							}
 						}

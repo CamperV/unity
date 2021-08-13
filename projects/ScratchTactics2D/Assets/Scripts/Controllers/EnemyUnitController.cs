@@ -101,7 +101,11 @@ public class EnemyUnitController : UnitController
 				// CAVEAT: we can't just clip it
 				// if we do, we can have enemies standing in the same place.
 				// instead, we have to do the laborious thing, and REpath-find to the new clipped position
+				Debug.Log($"{subject}@{subject.gridPosition} found {optimalPosition} to attack {targetPosition}");
 				Path pathToTarget = new UnitPathfinder(subject.obstacles).BFS<Path>(subject.gridPosition, optimalPosition);
+				if (pathToTarget == null) {
+					Debug.Log($"A path does not exist :(");
+				}
 				pathToTarget.Clip(subject.moveRange);
 
 				// if the clipped path already has someone there... radiate again to find another place to stand nearby

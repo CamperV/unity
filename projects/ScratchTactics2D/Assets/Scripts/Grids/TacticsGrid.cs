@@ -8,14 +8,28 @@ using Random = UnityEngine.Random;
 
 public class TacticsGrid : GameGrid
 {
+	// Y-Cell scale:
+	// 0.5 is dimetric
+	// 0.57735 this is true isometric
+
 	private OverlayTile waypointOverlayTile;
 	private OverlayTile selectionOverlayTile;
+
+	public Dictionary<Vector2Int, Vector3Int> surface;
 	
     protected override void Awake() {
 		base.Awake();
+		surface = new Dictionary<Vector2Int, Vector3Int>();
 
 		waypointOverlayTile = PathOverlayIsoTile.GetTileWithSprite(1);
 		selectionOverlayTile = (ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile);
+	}
+
+	// for debug
+	void Update() {
+		if (Input.GetMouseButtonDown(0)) {
+			GetMouseToGridPos();
+		}
 	}
 
 	// IPathable definitions
@@ -33,15 +47,20 @@ public class TacticsGrid : GameGrid
 		}
 	}
 	public override int EdgeCost(Vector3Int src, Vector3Int dest) {
-        return 1;
+        return (baseTilemap.GetTile(dest) as TacticsTile).cost;
     }
 	
 	public override bool IsInBounds(Vector3Int tilePos) {
-		return translation2D.ContainsKey(new Vector2Int(tilePos.x, tilePos.y));
+		Vector2Int in2D = new Vector2Int(tilePos.x, tilePos.y);
+		return surface.ContainsKey(in2D) && surface[in2D] == tilePos;
 	}
-		
-	public override Tile GetTileAt(Vector3Int tilePos) {
-		return baseTilemap.GetTile(tilePos) as Tile;
+
+	public override Vector3Int To3D(Vector2Int v) {
+		if (surface.ContainsKey(v)) {
+			return surface[v];
+		} else {
+			return new Vector3Int(v.x, v.y, 0);
+		}
 	}
 	
 	public override Vector3Int Real2GridPos(Vector3 realPos) {
@@ -50,6 +69,36 @@ public class TacticsGrid : GameGrid
 	//
 	// END OVERRIDE ZONE
 	//
+
+	public Vector3Int? GetMouseToGridPos() {
+		Ray zRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+		return CustomRaycastZ(zRay);
+	}
+
+	// use this to cast from the camera to the Tilemap, and find the first tile that exists in our surface
+	private Vector3Int? CustomRaycastZ(Ray ray) {
+		
+		// we negate this step, because coming from the camera -> 0 it is looking for the wrong z value re: isometric tiles
+		Vector3 origin = ray.origin;
+		Vector3 final = ray.GetPoint(-ray.origin.z / ray.direction.z);
+		Vector3 invOrigin = new Vector3(ray.origin.x, ray.origin.y, -ray.origin.z);
+
+		// calculate the number of interpSteps based on distance + how many cells could exist here, then pad it by mult x 3
+		float distance = (final.z - origin.z);	// distance from Camera to z=0
+		Vector3 cellSize = GetComponent<Grid>().cellSize;
+		int interpSteps = (int)(3f * (distance / cellSize.z));
+
+		for (float i = 0f; i <= interpSteps; i++) {
+			float interp = i / interpSteps;
+			Vector3 step = Vector3.Lerp(invOrigin, final, interp);
+
+			Vector3Int currentGridPos = Real2GridPos(step);
+			if (IsInBounds(currentGridPos)) {
+				return currentGridPos;
+			}
+		}
+		return null;
+	}
 
 	public void SelectAtAlternate(Vector3Int tilePos) {
 		OverlayAt(tilePos, waypointOverlayTile);
@@ -70,7 +119,7 @@ public class TacticsGrid : GameGrid
 	}
 
 	public void SetAppropriateTile(Vector3Int tilePos, TacticsTile tile) {
-		translation2D[new Vector2Int(tilePos.x, tilePos.y)] = tilePos;
+		surface[new Vector2Int(tilePos.x, tilePos.y)] = tilePos;
 		baseTilemap.SetTile(tilePos, tile);
 	}
 	
@@ -97,10 +146,6 @@ public class TacticsGrid : GameGrid
 	
 	public Vector3 GetTilemapOrigin() {
 		return baseTilemap.GetCellCenterWorld(baseTilemap.origin);
-	}
-
-	public List<Vector3Int> GetSurfacePositions() {
-		return translation2D.Values.ToList();
 	}
 
 	public Bounds GetBounds() {

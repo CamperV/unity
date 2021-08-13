@@ -8,7 +8,7 @@ using UnityEditor;
 
 public class WaterTacticsTile : TacticsTile
 {
-	//public override string spriteName { get => "water_tile_iso_0"; }
+	public override int cost { get => -1; }
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/WaterTacticsTile", false, 1)]

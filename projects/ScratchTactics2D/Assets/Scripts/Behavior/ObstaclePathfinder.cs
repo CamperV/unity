@@ -95,9 +95,11 @@ public abstract class ObstaclePathfinder : Pathfinder
 			foreach (Vector3Int adjacent in pathableSurface.GetNeighbors(currentPos)) {
 				if (distance.Count > numElements) continue;
 				if (obstacles.Contains(adjacent)) continue;
+				int costAt = pathableSurface.EdgeCost(currentPos, adjacent);
+				if (costAt == -1) continue;	// -1 indicates this area is impassable
 				
 				int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;
-				var updatedCost = distSoFar + pathableSurface.EdgeCost(currentPos, adjacent);
+				var updatedCost = distSoFar + costAt;
 				if (updatedCost > range) continue;
 				
 				if (!distance.ContainsKey(adjacent) || updatedCost < distance[adjacent]) {

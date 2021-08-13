@@ -16,6 +16,7 @@ public class BattleCamera : MonoBehaviour
     private Vector3 lockedPosition;
     private Vector3 lockedScale;
     private bool viewLock;
+    private bool rotateLock;
 
     public float currentZoomLevel { get => battle.transform.localScale.x; }
 
@@ -153,6 +154,8 @@ public class BattleCamera : MonoBehaviour
     // animates it
     // updates the appropriate data structures
     private void Rotate(Func<Vector3Int, Vector3Int> Transformer) {
+        if (rotateLock) return;
+
         // record current tiles at current locations for anim part 1
         var prerotationTileDict = battle.grid.GetTilemapDict<TacticsTile>(battle.grid.baseTilemap);
         var prerotationPosition = battle.grid.GetGridCenterReal();
@@ -166,13 +169,13 @@ public class BattleCamera : MonoBehaviour
 		// animate the motion by spawning sprites and going _from -> _to
         StartCoroutine( AnimateRotation(prerotationTileDict, correctionVector, Transformer) );
 
-        // update tacticsGrid translation2D
-		Dictionary<Vector2Int, Vector3Int> _translation2D = new Dictionary<Vector2Int, Vector3Int>();
-		foreach (Vector3Int tilePos in battle.grid.translation2D.Values) {
+        // update tacticsGrid surface
+		Dictionary<Vector2Int, Vector3Int> _surface = new Dictionary<Vector2Int, Vector3Int>();
+		foreach (Vector3Int tilePos in battle.grid.surface.Values) {
             Vector3Int rotated = Transformer(tilePos);
-			_translation2D[new Vector2Int(rotated.x, rotated.y)] = rotated;
+			_surface[new Vector2Int(rotated.x, rotated.y)] = rotated;
 		}
-        battle.grid.translation2D = _translation2D;
+        battle.grid.surface = _surface;
 
         // then change each units gridPosition
         // then occupancyGrid
@@ -187,11 +190,14 @@ public class BattleCamera : MonoBehaviour
     }
 
     private IEnumerator AnimateRotation(Dictionary<Vector3Int, TacticsTile> prerotationTileDict, Vector3 offset, Func<Vector3Int, Vector3Int> Transformer) {
+        rotateLock = true;
+
         float traversalTime = 0.25f;
         float delayTime = 0.0f;
         
         float totalTime = (delayTime * prerotationTileDict.Keys.Count) + traversalTime;
         battle.InvisibleFor(totalTime);
+        StartCoroutine( Utils.DelayedExecute(totalTime+.05f, () => rotateLock = false) );
 
         // animate all the tiles first
     	foreach (Vector3Int _from in prerotationTileDict.Keys) {

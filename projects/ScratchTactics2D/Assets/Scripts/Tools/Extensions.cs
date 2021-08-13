@@ -75,7 +75,7 @@ namespace Extensions
         }
 
         // Vector3Int
-        public static IEnumerable<Vector3Int> GridRadiate(this Vector3Int v, GameGrid grid, int range) {
+        public static IEnumerable<Vector3Int> GridRadiate(this Vector3Int v, TacticsGrid grid, int range) {
             List<Vector2Int> toEnumerate = new List<Vector2Int>();
             Queue<Vector2Int> queue = new Queue<Vector2Int>();
             Vector2Int _v = new Vector2Int(v.x, v.y);

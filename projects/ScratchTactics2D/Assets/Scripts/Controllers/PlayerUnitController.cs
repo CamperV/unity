@@ -6,23 +6,17 @@ using UnityEngine;
 
 public class PlayerUnitController : UnitController
 {
-	private PathOverlayIsoTile pathOverlayTile;
-
 	private PlayerUnit currentSelection;
 	private BattlePath currentSelectionFieldPath;
-	private TacticsGrid grid;
+	private TacticsGrid grid { get => GameManager.inst.tacticsManager.GetActiveGrid(); }
 
 	// possible actions for PlayerUnits and their bindings
 	private Dictionary<KeyCode, Action> actionBindings = new Dictionary<KeyCode, Action>();
-
 	private Enum.InteractState interactState;
 	
 	protected override void Awake() {
 		base.Awake();
 		myPhase = Enum.Phase.player;
-		grid = GameManager.inst.tacticsManager.GetActiveGrid();
-		
-		pathOverlayTile = PathOverlayIsoTile.GetTileWithSprite(0);
 
 		// this needs to be done at run-time
 		actionBindings[KeyCode.Mouse0] = Interact;
@@ -103,8 +97,7 @@ public class PlayerUnitController : UnitController
 	private void DrawValidMoveForSelection(MoveRange mRange) {
 		currentSelectionFieldPath?.UnShow();
 		//
-		var mm = GameManager.inst.mouseManager;
-		var gridPos = mm.GetMouseToGridPos(grid) ?? mRange.origin;
+		var gridPos = grid.GetMouseToGridPos() ?? mRange.origin;
 
 		// while the origin is a ValidMove, don't draw it
 		if (gridPos != mRange.origin && mRange.ValidMove(gridPos)) {
@@ -303,7 +296,7 @@ public class PlayerUnitController : UnitController
 			}
 		};
 
-		return GameManager.inst.mouseManager.GetMouseToGridPos(grid) ?? Constants.unselectableVector3Int;
+		return grid.GetMouseToGridPos() ?? Constants.unselectableVector3Int;
 	}
 
 	public override HashSet<Vector3Int> GetObstacles() {		

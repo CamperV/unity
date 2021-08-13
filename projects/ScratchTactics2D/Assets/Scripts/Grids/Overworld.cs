@@ -42,10 +42,6 @@ public class Overworld : GameGrid, IPathable
 	public override bool IsInBounds(Vector3Int tilePos) {
 		return terrain.ContainsKey(tilePos);
 	}
-		
-	public override Tile GetTileAt(Vector3Int tilePos) {
-		return baseTilemap.GetTile(tilePos) as Tile;
-	}
 
 	public override void SelectAt(Vector3Int tilePos, Color? color = null) {
 		OverlayAt(tilePos, selectTile);
@@ -68,7 +64,6 @@ public class Overworld : GameGrid, IPathable
 	public void SetAppropriateTile(Vector3Int tilePos, WorldTile tile) {	
 		// set in the WorldTile dictionary for easy path cost lookup
 		Debug.Assert(tilePos.z == 0);
-		translation2D[new Vector2Int(tilePos.x, tilePos.y)] = tilePos;
 		baseTilemap.SetTile(tilePos, tile);
 	}
 
@@ -85,20 +80,6 @@ public class Overworld : GameGrid, IPathable
 			}
 			retVal = pool.PopRandom<Vector3Int>();
 		} while (!VacantAt(retVal));
-		return retVal;
-	}
-	
-	public Vector3Int RandomTileExceptType(HashSet<Type> except) {
-		int upperX = terrain.Keys.Select(it => it.x).Max();
-		int upperY = terrain.Keys.Select(it => it.y).Max();
-		int x;
-		int y;
-		Vector3Int retVal;
-		do {
-			x = Random.Range(0, upperX);
-			y = Random.Range(0, upperY);
-			retVal = new Vector3Int(x, y, 0);
-		} while (!VacantAt(retVal) || except.Contains(GetTileAt(retVal).GetType()));
 		return retVal;
 	}
 
