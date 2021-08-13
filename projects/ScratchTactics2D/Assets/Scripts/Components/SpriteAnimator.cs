@@ -81,7 +81,7 @@ public class SpriteAnimator : MonoBehaviour
 		animationStack--;
 	}
 
-	public IEnumerator FadeDownToInactive(float fixedTime) {
+	public IEnumerator FadeDownThen(float fixedTime, Action PostExec) {
 		animationStack++;
 		//
 
@@ -94,10 +94,10 @@ public class SpriteAnimator : MonoBehaviour
 
 		//
 		animationStack--;
-		gameObject.SetActive(false);
+		PostExec();
 	}
 
-	public IEnumerator FadeDownToDestroy(float fixedTime) {
+	public IEnumerator FadeDownThenDestroy(float fixedTime) {
 		animationStack++;
 		//
 
@@ -112,11 +112,41 @@ public class SpriteAnimator : MonoBehaviour
 		animationStack--;
 		Destroy(gameObject);
 	}
+
+	public IEnumerator FadeUp(float fixedTime) {
+		animationStack++;
+		//
+
+		float timeRatio = 0.0f;
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+			spriteRenderer.color = spriteRenderer.color.WithAlpha(timeRatio);
+			yield return null;
+		}
+
+		//
+		animationStack--;
+	}
+
+	public IEnumerator TweenColor(Color color, float fixedTime) {
+		animationStack++;
+		//
+		var ogColor = spriteRenderer.color;
+
+		float timeRatio = 0.0f;
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+			spriteRenderer.color = Color.Lerp(ogColor, color, timeRatio).WithAlpha(1.0f);
+			yield return null;
+		}
+
+		//
+		animationStack--;
+	}
 	
 	public IEnumerator FlashColor(Color color) {
 		animationStack++;
 		//
-
 		var ogColor = spriteRenderer.color;
 
 		float fixedTime = 1.0f;
@@ -245,5 +275,28 @@ public class SpriteAnimator : MonoBehaviour
         //
 		movementStack--;
 		GameManager.inst.tacticsManager.resizeLock = false;
+	}
+
+	public IEnumerator SmoothMovementArc(Vector3 endpoint, Vector3 pivot, float _fixedTime = -1f) {
+		movementStack++;
+        //
+
+		float timeStep = 0.0f;
+		Vector3 startPos = transform.position;
+
+	    Vector3 startPosRelPivot = startPos - pivot;
+        Vector3 endPosRelPivot = endpoint - pivot;
+
+        float fixedTime = (_fixedTime == -1f) ? fixedTimePerTile : _fixedTime;
+		while (timeStep < 1.0f) {
+			timeStep += (Time.deltaTime / fixedTime);
+			PositionUpdater(Vector3.Slerp(startPosRelPivot, endPosRelPivot, timeStep) + pivot);
+			//PositionUpdater(Vector3.Lerp(startPos, endpoint, timeStep));
+			yield return null;
+		}
+		
+		// after the while loop is broken:
+		PositionUpdater(endpoint);
+		movementStack--;
 	}
 }

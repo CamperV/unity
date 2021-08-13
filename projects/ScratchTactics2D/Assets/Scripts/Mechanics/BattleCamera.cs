@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using System.Linq;
 
 public class BattleCamera : MonoBehaviour
 {
@@ -163,15 +164,7 @@ public class BattleCamera : MonoBehaviour
         focalPoint += correctionVector;
 
 		// animate the motion by spawning sprites and going _from -> _to
-		foreach (Vector3Int _from in prerotationTileDict.Keys) {
-            Vector3Int _to = Transformer(_from);
-			Vector3 from = battle.grid.baseTilemap.GetCellCenterWorld(_from);
-			Vector3 to = battle.grid.baseTilemap.GetCellCenterWorld(_to);
-			
-			MovingSprite anim = MovingSprite.ConstructWith(from + correctionVector, prerotationTileDict[_from].sprite, "Tactics Entities");
-			anim.SendToAndDestruct(to, 1f);
-		}
-        battle.InvisibleFor(1f);
+        StartCoroutine( AnimateRotation(prerotationTileDict, correctionVector, Transformer) );
 
         // update tacticsGrid translation2D
 		Dictionary<Vector2Int, Vector3Int> _translation2D = new Dictionary<Vector2Int, Vector3Int>();
@@ -191,6 +184,39 @@ public class BattleCamera : MonoBehaviour
             mo.UpdateGridPosition(rotated, battle.grid);
         }
     	battle.grid.occupancyGrid = _occupancyGrid;
+    }
+
+    private IEnumerator AnimateRotation(Dictionary<Vector3Int, TacticsTile> prerotationTileDict, Vector3 offset, Func<Vector3Int, Vector3Int> Transformer) {
+        float traversalTime = 0.25f;
+        float delayTime = 0.0f;
+        
+        float totalTime = (delayTime * prerotationTileDict.Keys.Count) + traversalTime;
+        battle.InvisibleFor(totalTime);
+
+        // animate all the tiles first
+    	foreach (Vector3Int _from in prerotationTileDict.Keys) {
+            Vector3Int _to = Transformer(_from);
+			Vector3 from = battle.grid.baseTilemap.GetCellCenterWorld(_from) + offset;
+			Vector3 to = battle.grid.baseTilemap.GetCellCenterWorld(_to);
+			
+			MovingSprite anim = MovingSprite.ConstructWith(from, prerotationTileDict[_from].sprite, "Tactics Entities", battle.transform);
+            anim.SendToAndDestroy(to, traversalTime);
+            //anim.SendToAndDestroyArc(to, battle.grid.GetGridCenterReal(), traversalTime);
+		}
+
+        // now animate anything left that has a Sprite
+    	TacticsEntityBase[] entities = GetComponentsInChildren<TacticsEntityBase>();
+        Vector3 sortingOffset =  new Vector3(0, -0.01f, 0); // for units and such, we need them to be on top of their own tile, but not obscuring others. we aren't using Z here
+		foreach (TacticsEntityBase e in entities) {
+			Vector3Int _to = Transformer(e.gridPosition);
+			Vector3 from = battle.grid.baseTilemap.GetCellCenterWorld(e.gridPosition) + offset + sortingOffset;
+			Vector3 to = battle.grid.baseTilemap.GetCellCenterWorld(_to) + sortingOffset;
+
+        	MovingSprite anim = MovingSprite.ConstructWith(from, e.GetComponent<SpriteRenderer>().sprite, "Tactics Entities", battle.transform);
+            anim.transform.localScale = e.transform.localScale;
+            anim.SendToAndDestroy(to, traversalTime);
+		}
+        yield return null;
     }
 
     private IEnumerator SmoothCameraMovement(float fixedTime, Vector3 toPosition, Vector3 toScale) {

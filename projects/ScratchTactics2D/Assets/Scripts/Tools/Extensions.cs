@@ -230,6 +230,30 @@ namespace Extensions
             }
         }
 
+        // Vector3
+        public static Vector3 Clamp(this Vector3 v, float clampVal) {
+            return new Vector3(Mathf.Clamp(v.x,  -clampVal, clampVal),
+                               Mathf.Clamp(v.y,  -clampVal, clampVal),
+                               Mathf.Clamp(v.z,  -clampVal, clampVal));
+        }
+
+        // Vector3
+        public static Vector2 Trim(this Vector3 v, string ax) {
+            switch (ax) {
+                case "x":
+                case "X":
+                    return new Vector2(v.y, v.z);
+                case "y":
+                case "Y":
+                    return new Vector2(v.x, v.z);
+                case "z":
+                case "Z":
+                    return new Vector2(v.x, v.y);
+                default:
+                    return new Vector2(v.x, v.y);
+            }
+        }
+
         // List
         public static T PopAt<T>(this List<T> list, int index) {
             T r = list[index];

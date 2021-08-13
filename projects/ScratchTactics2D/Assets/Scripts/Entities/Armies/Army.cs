@@ -108,6 +108,8 @@ public abstract class Army : MovingGridObject
 		// when faded, remove gameObject
 		Debug.Log($"{this} has died :(");
 		GameManager.inst.overworld.UpdateOccupantAt(gridPosition, null);
-		StartCoroutine(spriteAnimator.FadeDownToInactive(timeToDie));
+		StartCoroutine( spriteAnimator.FadeDownThen(timeToDie, () => {
+			gameObject.SetActive(false);
+		}) );
 	}
 }

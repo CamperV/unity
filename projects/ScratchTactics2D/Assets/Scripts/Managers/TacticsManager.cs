@@ -28,6 +28,7 @@ public class TacticsManager : MonoBehaviour
 				Debug.Log("Exiting Battle...");
 				activeBattle.Destroy();
 			}
+			return;
 
 			// focus control:
 			// move it all into once-per-frame centralized check, because we can't guarantee 

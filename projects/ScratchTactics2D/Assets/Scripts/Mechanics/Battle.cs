@@ -206,8 +206,8 @@ public class Battle : MonoBehaviour
 	}
 
 	public void InvisibleFor(float fixedTime) {
-		ColorAll(Color.black.WithAlpha(0.0f));
-		StartCoroutine( Utils.DelayedExecute(fixedTime, () => ColorAll(Color.white.WithAlpha(1.0f))) );
+		ColorAll(Color.white.WithAlpha(0.0f));
+		StartCoroutine( Utils.DelayedExecute(fixedTime, () => ColorAll(Color.white)) );
 	}
 
 	private void ColorAll(Color color) {
