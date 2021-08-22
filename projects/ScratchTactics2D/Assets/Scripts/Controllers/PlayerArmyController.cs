@@ -49,7 +49,7 @@ public class PlayerArmyController : Controller
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 
 		// update your understanding of what you can and can't path through
-		_pathfinder = new ArmyPathfinder(GameManager.inst.enemyController.currentEnemyPositions, registeredPlayer.moveThreshold);
+		_pathfinder = new ArmyPathfinder(GameManager.inst.enemyController.currentEnemyPositions, PlayerArmy.moveThreshold);
 	}
 	
 	private Vector3Int _prevMousePos;

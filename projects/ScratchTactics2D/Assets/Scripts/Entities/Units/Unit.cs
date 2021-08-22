@@ -9,10 +9,11 @@ using Extensions;
 public abstract class Unit : TacticsEntityBase
 {
 	// flags, constants, etc
-	private readonly float spriteScaleFactor = 0.55f;
+	private readonly float spriteScaleFactor = 0.65f;
 	public bool selectionLock { get; protected set; }
+	
 	[HideInInspector] public bool inFocus {
-		get => GameManager.inst.tacticsManager.focusSingleton == this;
+		get => Battle.focusSingleton == this;
 	}
 
 	public bool inMildFocus = false;
@@ -33,49 +34,49 @@ public abstract class Unit : TacticsEntityBase
 	public HashSet<Vector3Int> obstacles { get => parentController.GetObstacles(); }
 
 	// Equipment management
-	public Weapon equippedWeapon { get => unitStats.inventory.equippedWeapon; }
+	public Weapon equippedWeapon { get => unitState.inventory.equippedWeapon; }
 
 	// Attribute Area
 	// defaultState is static, and will be defined by the final class
 	public Sprite portrait;	// via Inspector
-	public abstract UnitState unitStats { get; set; }
-	public Guid ID { get => unitStats.ID; }
+	public abstract UnitState unitState { get; set; }
+	public Guid ID { get => unitState.ID; }
 
 	public int VITALITY {
-		get => unitStats.VITALITY;
+		get => unitState.VITALITY;
 		set {
-			unitStats.VITALITY = value;
+			unitState.VITALITY = value;
 			unitUI.healthBar.maxPips = value;
 		}
 	}
     public int STRENGTH {
-		get => unitStats.STRENGTH;
-		set => unitStats.STRENGTH = value;
+		get => unitState.STRENGTH;
+		set => unitState.STRENGTH = value;
 	}
     public int DEXTERITY {
-		get => unitStats.DEXTERITY;
-		set => unitStats.DEXTERITY = value;
+		get => unitState.DEXTERITY;
+		set => unitState.DEXTERITY = value;
 	}
     public int REFLEX {
-		get => unitStats.REFLEX;
-		set => unitStats.REFLEX = value;
+		get => unitState.REFLEX;
+		set => unitState.REFLEX = value;
 	}
     public int MOVE {
-		get => unitStats.MOVE;
-		set => unitStats.MOVE = value;
+		get => unitState.MOVE;
+		set => unitState.MOVE = value;
 	}
 
 	// derived stat: calculate from equipped weapon + modifiers
 	public int _HP {
-		get => unitStats._HP;
+		get => unitState._HP;
 		set {
-			unitStats._HP = value;
-			unitUI.UpdateHealthBarThenFade(unitStats._HP);
+			unitState._HP = value;
+			unitUI.UpdateHealthBarThenFade(unitState._HP);
 		}
 	}
     public int _CAPACITY {
-		get => unitStats._CAPACITY;
-		set => unitStats._CAPACITY = value;
+		get => unitState._CAPACITY;
+		set => unitState._CAPACITY = value;
 	}
     public int _RANGE {
 		get => equippedWeapon?.REACH ?? 1;
@@ -121,6 +122,8 @@ public abstract class Unit : TacticsEntityBase
 		} else {
 			ClearDisplayThreatRange();
 		}
+		
+		GetComponent<SpriteOutlineBehavior>().SetOutline(takeFocus);
 	}
 
 	// self terminating
@@ -129,12 +132,12 @@ public abstract class Unit : TacticsEntityBase
 			inMildFocus = true;	// prevents ghosting
 
 			// add the lil selection square
-			GameManager.inst.GetActiveGrid().UnderlayAt(gridPosition, Constants.threatColorYellow);
+			GameManager.inst.tacticsManager.GetActiveGrid().UnderlayAt(gridPosition, Constants.threatColorYellow);
 		} else {
 			inMildFocus = false;
 
 			// just in case
-			GameManager.inst.GetActiveGrid().ResetUnderlayAt(gridPosition);
+			GameManager.inst.tacticsManager.GetActiveGrid().ResetUnderlayAt(gridPosition);
 		}
 	}
 	
@@ -150,8 +153,8 @@ public abstract class Unit : TacticsEntityBase
 		optionAvailability[option] = setting;
 	}
 
-	public void ApplyStats(UnitState stats) {
-		unitStats = stats;
+	public void ApplyState(UnitState state) {
+		unitState = state;
 
 		unitUI.UpdateWeaponEmblem(equippedWeapon);
 		unitUI.UpdateHealthBar(_HP);
@@ -183,7 +186,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void DisplayThreatRange() {
-		var grid = GameManager.inst.GetActiveGrid();
+		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
@@ -203,7 +206,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void DisplayStandingThreatRange() {
-		var grid = GameManager.inst.GetActiveGrid();
+		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
@@ -218,7 +221,7 @@ public abstract class Unit : TacticsEntityBase
 	public void ClearDisplayThreatRange() {
 		if (selectionLock) return;
 
-		var grid = GameManager.inst.GetActiveGrid();
+		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 		//moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
@@ -262,7 +265,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public bool InStandingAttackRange(Vector3Int target) {
-		return gridPosition.GridRadiate(GameManager.inst.GetActiveGrid(), _RANGE).ToList().Contains(target);
+		return gridPosition.GridRadiate(GameManager.inst.tacticsManager.GetActiveGrid(), _RANGE).ToList().Contains(target);
 	}
 
 	public Attack GenerateAttack(bool isAggressor = true) {

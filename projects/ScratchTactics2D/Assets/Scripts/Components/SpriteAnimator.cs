@@ -253,7 +253,6 @@ public class SpriteAnimator : MonoBehaviour
 
 	public IEnumerator SmoothMovementPath(Path path, GameGrid grid) {
 		movementStack++;
-		GameManager.inst.tacticsManager.resizeLock = true;
         //
 
 		Vector3 realNextPos = transform.position;
@@ -274,7 +273,6 @@ public class SpriteAnimator : MonoBehaviour
 
         //
 		movementStack--;
-		GameManager.inst.tacticsManager.resizeLock = false;
 	}
 
 	public IEnumerator SmoothMovementArc(Vector3 endpoint, Vector3 pivot, float _fixedTime = -1f) {

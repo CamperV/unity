@@ -9,6 +9,10 @@ using TMPro;
 
 public abstract class EnemyArmy : Army, IVisible
 {
+	public override string tag { get => "EnemyArmy"; }
+
+	public static int globalMoveThreshold { get => Constants.standardTickCost*3; }
+
 	// for visualization debug
 	private int _ID = -1;
 	public int ID {
@@ -218,11 +222,11 @@ public abstract class EnemyArmy : Army, IVisible
 		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.overworld);
 
 		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => {
+			GameManager.inst.EnterBattleState();
+
 			// programmatically load in a TacticsGrid that matches what we need
 			Terrain thisTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
 			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(GameManager.inst.player.gridPosition);
-		
-			GameManager.inst.EnterBattleState();
 			GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTerrain, thisTerrain, Enum.Phase.enemy);
 		}));
 	}

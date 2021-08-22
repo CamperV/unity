@@ -16,13 +16,4 @@ public class Water : Terrain
 	public Water(Vector3Int pos) {
 		position = pos;
 	}
-
-    public override TacticsTile tacticsTile {
-		get {
-			if (_tacticsTile == null) {
-				_tacticsTile = ScriptableObject.CreateInstance<WaterTacticsTile>();
-			}
-			return _tacticsTile;
-		}
-	}
 }

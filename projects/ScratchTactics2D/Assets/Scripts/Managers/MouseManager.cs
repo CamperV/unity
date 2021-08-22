@@ -13,6 +13,5 @@ public class MouseManager : MonoBehaviour
 		// get the collision point of the ray with the z = 0 plane
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		mouseWorldPos = ray.GetPoint(-ray.origin.z / ray.direction.z);
-		//currentActiveGrid = GameManager.inst.GetActiveGrid();
     }
 }

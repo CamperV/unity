@@ -107,19 +107,4 @@ public class GameManager : MonoBehaviour
 		gameState = Enum.GameState.battle;
 		phaseManager.StartPhase(Enum.Phase.none);
 	}
-
-	// convenience
-	// public GameGrid GetActiveGrid() {
-	// 	switch (gameState) {
-	// 		case Enum.GameState.overworld:
-	// 			return overworld;
-	// 		case Enum.GameState.battle:
-	// 			return tacticsManager.GetActiveGrid();
-	// 		default:
-	// 			return overworld;
-	// 	}
-	// }
-	public TacticsGrid GetActiveGrid() {
-		return tacticsManager.GetActiveGrid();
-	}
 }

@@ -24,9 +24,9 @@ public class SpearmanEnemyUnit : EnemyUnit
         }
     }
 
-    private UnitState _unitStats;
-    public override UnitState unitStats {
-        get => _unitStats ?? SpearmanEnemyUnit.defaultState;
-        set => _unitStats = value;
+    private UnitState _unitState;
+    public override UnitState unitState {
+        get => _unitState ?? SpearmanEnemyUnit.defaultState;
+        set => _unitState = value;
     }
 }

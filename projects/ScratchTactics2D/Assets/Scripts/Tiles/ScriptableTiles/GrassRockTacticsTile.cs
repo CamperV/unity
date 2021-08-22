@@ -9,6 +9,7 @@ using UnityEditor;
 public class GrassRockTacticsTile : TacticsTile
 {
 	public override int cost { get => -1; }
+	// public override float zHeight { get => 2; }
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/GrassRockTacticsTile", false, 1)]

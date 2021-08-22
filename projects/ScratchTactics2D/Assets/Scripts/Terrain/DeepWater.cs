@@ -13,13 +13,4 @@ public class DeepWater : Water
 	public DeepWater(Vector3Int pos) {
 		position = pos;
 	}
-
-	public override TacticsTile tacticsTile {
-		get {
-			if (_tacticsTile == null) {
-				_tacticsTile = ScriptableObject.CreateInstance<ForestTacticsTile>();
-			}
-			return _tacticsTile;
-		}
-	}
 }

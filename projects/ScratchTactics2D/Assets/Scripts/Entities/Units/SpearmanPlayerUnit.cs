@@ -24,9 +24,9 @@ public class SpearmanPlayerUnit : PlayerUnit
         }
     }
 
-    private UnitState _unitStats;
-    public override UnitState unitStats {
-        get => _unitStats ?? SpearmanPlayerUnit.defaultState;
-        set => _unitStats = value;
+    private UnitState _unitState;
+    public override UnitState unitState {
+        get => _unitState ?? SpearmanPlayerUnit.defaultState;
+        set => _unitState = value;
     }
 }

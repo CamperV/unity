@@ -24,9 +24,9 @@ public class KnightPlayerUnit : PlayerUnit
         }
     }
 
-    private UnitState _unitStats;
-    public override UnitState unitStats {
-        get => _unitStats ?? KnightPlayerUnit.defaultState;
-        set => _unitStats = value;
+    private UnitState _unitState;
+    public override UnitState unitState {
+        get => _unitState ?? KnightPlayerUnit.defaultState;
+        set => _unitState = value;
     }
 }

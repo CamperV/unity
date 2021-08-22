@@ -47,7 +47,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 220231495522711647}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff453e65bb1edeb448f76ec9861f6e6d, type: 3}
+  m_Script: {fileID: 11500000, guid: 461ddbbe27113914c997245fd3b6fd3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   defaultControllerPrefab: {fileID: 5007282424744042210, guid: 8f44ac671b19b08478b75c1609a95db8, type: 3}
@@ -56,9 +56,9 @@ MonoBehaviour:
   player: {fileID: 0}
   other: {fileID: 0}
   allOther: []
-  playerGridOffset: {x: 0, y: 0, z: 0}
   savedTurn: 0
   isPaused: 0
+  hidden: 0
 --- !u!114 &4834987923432450543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,6 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 782a38c8a7903844aa65221fbc1a16d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationTime: 0.3
   battle: {fileID: 0}
   focalPoint: {x: 0, y: 0, z: 0}
   focalPivot: {x: 0, y: 0, z: 0}
@@ -343,7 +344,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 091b938c2bd16594ca840cf3226209d7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

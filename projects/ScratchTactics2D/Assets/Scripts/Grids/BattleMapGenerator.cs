@@ -64,6 +64,15 @@ public static class BattleMapGenerator
 		["Forest:Forest"] = new List<string>{"ForestForest_0"}
 	};
 
+	private static Dictionary<string, List<string>> dockerDesignators = new Dictionary<string, List<string>>{
+		["Plain:Plain"]   = new List<string>{"PlainDocker_0"},
+		
+		["Plain:Forest"]  = new List<string>{"PlainDocker_0"},
+		["Forest:Plain"]  = new List<string>{"ForestDocker_0"},
+
+		["Forest:Forest"] = new List<string>{"ForestDocker_0"}
+	};
+
 	public static List<BattleMap> GetMapsFromDesignator(string designator) {
 		List<BattleMap> retVal = new List<BattleMap>();
 
@@ -75,9 +84,28 @@ public static class BattleMapGenerator
 		return retVal;
 	}
 
+	public static List<BattleMap> GetDockersFromDesignator(string designator) {
+		List<BattleMap> retVal = new List<BattleMap>();
+
+		List<string> prefabDes = dockerDesignators.GetValueOtherwise(designator, new List<string>{"PlainDocker_0"});
+		foreach (string tag in prefabDes) {
+			BattleMap bmPrefab = Resources.Load<BattleMap>("Tilemaps/" + tag);
+			retVal.Add(bmPrefab);
+		}
+		return retVal;
+	}
+
 	public static void ApplyMap(BattleMap battleMap, Action<Vector3Int, TacticsTile> TileSetter) {
 		foreach (Vector3Int tilePos in battleMap.Positions) {
 			TileSetter(tilePos, battleMap.GetBattleMapTile(tilePos));
+		}
+	}
+
+	// simply override with offset instead of Optional
+	// this is because Vector3Int is not nullable, must be compile-time constant, generally not worth
+	public static void ApplyMap(BattleMap battleMap, Action<Vector3Int, TacticsTile> TileSetter, Vector3Int offset) {
+		foreach (Vector3Int tilePos in battleMap.Positions) {
+			TileSetter(tilePos + offset, battleMap.GetBattleMapTile(tilePos));
 		}
 	}
 }

@@ -19,10 +19,6 @@ public abstract class Terrain
 	public virtual Vector2Int battleGridSize { get => new Vector2Int(8, 8); }
 	public virtual int tickCost { get => Constants.standardTickCost; }
 
-	// soon to be deprecated
-	protected TacticsTile _tacticsTile;
-	public abstract TacticsTile tacticsTile { get; }
-
 	// IEnemyArmySpawner definitions
 	public Controller receivingController { get => GameManager.inst.enemyController; }
 	public virtual Dictionary<float, string> spawnRates {

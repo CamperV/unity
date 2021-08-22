@@ -6,8 +6,10 @@ using Extensions;
 
 public class PlayerArmy : Army
 {
+	public override string tag { get => "PlayerArmy"; }
+
 	// this cost is insurmountable to the PlayerArmy
-	public int moveThreshold { get => Constants.standardTickCost*3; }
+	public static int moveThreshold { get => Constants.standardTickCost*3; }
 	
 	// for moving around the Overworld
 	// why in this file? Because it will be updated every time gridPosition is updated
@@ -72,6 +74,8 @@ public class PlayerArmy : Army
 	}
 
 	public void InitiateBattle(EnemyArmy combatant) {
+		combatant.state = Enum.EnemyArmyState.inBattle;
+
 		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => {
 			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
 			Terrain enemyTerrain = GameManager.inst.overworld.TerrainAt(combatant.gridPosition);

@@ -117,6 +117,7 @@ public class EnemyArmyController : Controller
 		List<MovingGridObject> orderedRegistry = activeRegistry.OrderBy(it => (it as EnemyArmy).CalculateInitiative()).ToList();
 		for (int i = 0; i < orderedRegistry.Count; i++) {
 			EnemyArmy subject = orderedRegistry[i] as EnemyArmy;
+
 			switch(subject.state) {
 				case Enum.EnemyArmyState.idle:
 					// alert! animation
@@ -125,6 +126,7 @@ public class EnemyArmyController : Controller
 						subject.OnAlert();
 
 						// also tell the PlayerArmyController to clear its queue
+						// this gives the player a chance to jump out of a pre-determined path (mouse-move)
 						GameManager.inst.playerController.ClearActionQueue();
 					} else {
 						subject.TakeIdleAction();
@@ -137,18 +139,23 @@ public class EnemyArmyController : Controller
 					Debug.Log($"processing enemy {subject} who can act");
 					// if we can attack, do that with a higher priority
 					if (subject.CanAttackPlayer()) {	// checks ticks
+						Debug.Log($"{subject} can attack player");
+
 						// ...and spends ticks
+						Debug.Log($"{subject} checks activeBattle is null: {GameManager.inst.tacticsManager.activeBattle == null}");
 						if (GameManager.inst.tacticsManager.activeBattle) {
+							Debug.Log($"Decided to join");
 							subject.OnAlert();
 							subject.JoinBattle();
 						} else {
+							Debug.Log($"Fine then, I'll do it myself");
 							subject.InitiateBattle();
 						}
+						subject.state = Enum.EnemyArmyState.inBattle;
 
 						// since initing/joining a battle takes all ticks:
 						// (does nothing of course), just here for clarity
 						keepPhaseAlive |= false;
-						break;
 
 					// otherwise, move via FlowField
 					// checks and spends ticks
@@ -156,12 +163,11 @@ public class EnemyArmyController : Controller
 						FlowField subjectField = IndividualFlowField(subject);
 						keepPhaseAlive |= subject.FollowField(subjectField, GameManager.inst.player);
 						Debug.Log($"Followed field, keepPhaseAlive: {keepPhaseAlive}");
-						break;
 					}
-					while (subject.spriteAnimator.isMoving) yield return null; 
+					while (subject.spriteAnimator.isMoving) yield return null;
+					break;
 
 				case Enum.EnemyArmyState.inBattle:
-					Debug.Log($"{subject} will not do anything other than fight for its life, as it is currently.");
 					break;
 					
 				// end case
@@ -211,13 +217,13 @@ public class EnemyArmyController : Controller
 	}
 	
 	public void InitFlowField(Vector3Int initOrigin) {
-		flowFieldToPlayer = new ArmyPathfinder(untraversablePositions).FlowField<FlowField>(initOrigin);
+		flowFieldToPlayer = new ArmyPathfinder(untraversablePositions, EnemyArmy.globalMoveThreshold).FlowField<FlowField>(initOrigin);
 	}
 	
 	private void UpdateFlowField() {
 		FlowField prevFlowFieldToPlayer = flowFieldToPlayer;
 		
-		flowFieldToPlayer = new ArmyPathfinder(untraversablePositions).FlowField<FlowField>(lastKnownPlayerPos);
+		flowFieldToPlayer = new ArmyPathfinder(untraversablePositions, EnemyArmy.globalMoveThreshold).FlowField<FlowField>(lastKnownPlayerPos);
 		flowFieldToPlayer.Absorb(prevFlowFieldToPlayer);
 	}
 
@@ -228,7 +234,11 @@ public class EnemyArmyController : Controller
 
 		foreach (Vector3Int enemyPos in currentEnemyPositions) {
 			if (enemyPos == subject.gridPosition) continue;
-			patchedFlowField.field[enemyPos] += 100;
+			if (patchedFlowField.field.ContainsKey(enemyPos)) {
+				patchedFlowField.field[enemyPos] += EnemyArmy.globalMoveThreshold;
+			} else {
+				patchedFlowField.field[enemyPos] = EnemyArmy.globalMoveThreshold;
+			}
 		}
 		return patchedFlowField;
 	}

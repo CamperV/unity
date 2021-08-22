@@ -25,9 +25,9 @@ public class BanditEnemyUnit : EnemyUnit
         }
     }
 
-    private UnitState _unitStats;
-    public override UnitState unitStats {
-        get => _unitStats ?? BanditEnemyUnit.defaultState;
-        set => _unitStats = value;
+    private UnitState _unitState;
+    public override UnitState unitState {
+        get => _unitState ?? BanditEnemyUnit.defaultState;
+        set => _unitState = value;
     }
 }

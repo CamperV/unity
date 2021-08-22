@@ -14,15 +14,6 @@ public class BanditCamp : Terrain, IEnemyArmySpawner
 		position = pos;
 	}
 
-	public override TacticsTile tacticsTile {
-		get {
-			if (_tacticsTile == null) {
-				_tacticsTile = ScriptableObject.CreateInstance<GrassTacticsTile>();
-			}
-			return _tacticsTile;
-		}
-	}
-
 	// IEnemyArmySpawner definitions
 	public override Dictionary<float, string> spawnRates {
 		get => new Dictionary<float, string>{

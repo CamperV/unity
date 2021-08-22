@@ -13,13 +13,4 @@ public class Village : Terrain
 	public Village(Vector3Int pos) {
 		position = pos;
 	}
-
-    public override TacticsTile tacticsTile {
-		get {
-			if (_tacticsTile == null) {
-				_tacticsTile = ScriptableObject.CreateInstance<GrassTacticsTile>();
-			}
-			return _tacticsTile;
-		}
-	}
 }

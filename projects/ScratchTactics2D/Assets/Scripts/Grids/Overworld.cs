@@ -42,16 +42,6 @@ public class Overworld : GameGrid, IPathable
 	public override bool IsInBounds(Vector3Int tilePos) {
 		return terrain.ContainsKey(tilePos);
 	}
-
-	public override void SelectAt(Vector3Int tilePos, Color? color = null) {
-		OverlayAt(tilePos, selectTile);
-		StartCoroutine(FadeUp(overlayTilemap, tilePos));
-	}
-	
-	public override void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.10f) {
-		// this will nullify the tilePos after fading
-		StartCoroutine(FadeDownToNull(overlayTilemap, tilePos, fadeRate));
-	}
 	
 	public void EnableTint() {
 		tintCanvas.gameObject.SetActive(true);

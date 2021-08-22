@@ -21,13 +21,4 @@ public class Peak : Mountain
 		position = pos;
 		_tileRefPosition = tileRefPos;
 	}
-
-    public override TacticsTile tacticsTile {
-		get {
-			if (_tacticsTile == null) {
-				_tacticsTile = ScriptableObject.CreateInstance<MountainTacticsTile>();
-			}
-			return _tacticsTile;
-		}
-	}
 }

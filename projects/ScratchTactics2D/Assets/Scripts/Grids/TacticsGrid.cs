@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
+using Extensions;
 
 public class TacticsGrid : GameGrid
 {
@@ -16,6 +17,7 @@ public class TacticsGrid : GameGrid
 	private OverlayTile selectionOverlayTile;
 
 	public Dictionary<Vector2Int, Vector3Int> surface;
+	public IEnumerable<Vector3Int> Surface { get => surface.Values; }
 	
     protected override void Awake() {
 		base.Awake();
@@ -62,6 +64,12 @@ public class TacticsGrid : GameGrid
 			return new Vector3Int(v.x, v.y, 0);
 		}
 	}
+
+	public override Vector3 Grid2RealPos(Vector3Int tilePos) {
+		// var gridVer = GetComponent<Grid>().GetCellCenterWorld(tilePos);
+		var tmVer = baseTilemap.GetCellCenterWorld(tilePos);
+		return tmVer;
+	}
 	
 	public override Vector3Int Real2GridPos(Vector3 realPos) {
 		return GetComponent<Grid>().WorldToCell(realPos);
@@ -71,12 +79,22 @@ public class TacticsGrid : GameGrid
 	//
 
 	public Vector3Int? GetMouseToGridPos() {
-		Ray zRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-		return CustomRaycastZ(zRay);
+		Vector3 screenPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+		float maxZ = baseTilemap.cellBounds.max.z;
+		float zSize = GetComponent<Grid>().cellSize.z;
+
+        for (float _z = maxZ; _z >= 0f; _z -= zSize) {
+			var gridPos = Real2GridPos(new Vector3(screenPos.x, screenPos.y, _z));
+			if (IsInBounds(gridPos)) return gridPos;
+		}
+
+		return null;
 	}
 
 	// use this to cast from the camera to the Tilemap, and find the first tile that exists in our surface
-	private Vector3Int? CustomRaycastZ(Ray ray) {
+	// This only "kind of" works, and is therefore deprecanted
+	private Vector3Int? _Deprecated_CustomRaycastZ(Ray ray) {
 		
 		// we negate this step, because coming from the camera -> 0 it is looking for the wrong z value re: isometric tiles
 		Vector3 origin = ray.origin;
@@ -98,6 +116,16 @@ public class TacticsGrid : GameGrid
 			}
 		}
 		return null;
+	}
+
+	public bool DimmableAt(Vector3Int tilePos) {
+		TacticsTile tt = baseTilemap.GetTile(tilePos) as TacticsTile;
+		return tt.dimmable;
+	}
+
+	public float ZHeightAt(Vector3Int tilePos) {
+		TacticsTile tt = baseTilemap.GetTile(tilePos) as TacticsTile;
+		return tt.zHeight;
 	}
 
 	public void SelectAtAlternate(Vector3Int tilePos) {

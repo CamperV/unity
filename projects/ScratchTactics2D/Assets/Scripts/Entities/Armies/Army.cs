@@ -9,6 +9,7 @@ using Extensions;
 
 public abstract class Army : MovingGridObject
 {
+	public abstract string tag { get; }
 	protected Animator animator;
 
 	// army stats/state
@@ -83,18 +84,18 @@ public abstract class Army : MovingGridObject
 
 	//
 	//
-	public void EnlistUnit(UnitState unitStats) {
-		barracks[unitStats.ID] = unitStats;
+	public void EnlistUnit(UnitState unitState) {
+		barracks[unitState.ID] = unitState;
 	}
 	public void EnlistUnit(Unit unit) {
-		barracks[unit.unitStats.ID] = unit.unitStats;
+		barracks[unit.unitState.ID] = unit.unitState;
 	}
 
-	public void DischargeUnit(UnitState unitStats) {
-		barracks.Remove(unitStats.ID);
+	public void DischargeUnit(UnitState unitState) {
+		barracks.Remove(unitState.ID);
 	}
 	public void DischargeUnit(Unit unit) {
-		barracks.Remove(unit.unitStats.ID);
+		barracks.Remove(unit.unitState.ID);
 	}
 
 	public IEnumerable<UnitState> GetUnits() {

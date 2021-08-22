@@ -19,7 +19,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 1b7b80456b5ced643a5716a5f91e806d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -70,6 +70,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-4241415385497754134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8184496748483616858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c2ccc378f3c7ad4f94197ad2fba6b39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseOverEnabled: 0
 --- !u!114 &-3343200558715109065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,6 +100,18 @@ MonoBehaviour:
   unitUIPrefab: {fileID: 54845570200524099, guid: f9b5bd7a4113c2d429bce4b5e790e8ed, type: 3}
   unitUI: {fileID: 0}
   portrait: {fileID: 21300000, guid: 97285931dcd0b7b4ca8ca9b88a3d58aa, type: 3}
+--- !u!114 &6031738699872311549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8184496748483616858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95f8de341aa49b548984652742625b1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2087096283418340106
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -94,6 +119,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6442465786423130998, guid: 4b354f2245b826b42ba72b9f9daf1af4, type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6442465786423130998, guid: 4b354f2245b826b42ba72b9f9daf1af4, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 6442465786423130998, guid: 4b354f2245b826b42ba72b9f9daf1af4, type: 3}
       propertyPath: m_SpriteTilingProperty.pivot.x
       value: 0.5

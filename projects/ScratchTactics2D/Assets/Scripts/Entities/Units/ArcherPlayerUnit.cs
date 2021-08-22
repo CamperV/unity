@@ -24,9 +24,9 @@ public class ArcherPlayerUnit : PlayerUnit
         }
     }
 
-    private UnitState _unitStats;
-    public override UnitState unitStats {
-        get => _unitStats ?? ArcherPlayerUnit.defaultState;
-        set => _unitStats = value;
+    private UnitState _unitState;
+    public override UnitState unitState {
+        get => _unitState ?? ArcherPlayerUnit.defaultState;
+        set => _unitState = value;
     }
 }

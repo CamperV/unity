@@ -32,9 +32,6 @@ public class EnemyUnitController : UnitController
 		//
 		Unit unit = subject as Unit;
 		unit.parentController = this;
-
-		// init threat for other phases
-		unit.UpdateThreatRange();
 	}
 	
 	void Update() {
@@ -163,7 +160,7 @@ public class EnemyUnitController : UnitController
 
 		// max allowable attack positions (max range/reach)
 		// NOTE: need to Radiate again if the sequence is empty.
-		var targetable = targetPosition.GridRadiate(GameManager.inst.GetActiveGrid(), subject._RANGE).Where(it => SubjectCanStand(it));
+		var targetable = targetPosition.GridRadiate(GameManager.inst.tacticsManager.GetActiveGrid(), subject._RANGE).Where(it => SubjectCanStand(it));
 		float maxDistWithin = targetable.Max(it => DistToTarget(it));
 		var atMaxDist = targetable.Where(it => DistToTarget(it) == maxDistWithin);
 
@@ -174,7 +171,7 @@ public class EnemyUnitController : UnitController
 	}
 
 	public Vector3Int NextVacantPos(Unit subject, Vector3Int origPos) {
-		var grid = GameManager.inst.GetActiveGrid();
+		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 		foreach (var v in origPos.GridRadiate(grid, subject.MOVE)) {
 			if (subject.moveRange.field.ContainsKey(v) && grid.VacantAt(v)) {
 				return v;
@@ -185,6 +182,6 @@ public class EnemyUnitController : UnitController
 
 
 	public override HashSet<Vector3Int> GetObstacles() {		
-		return GameManager.inst.GetActiveGrid().CurrentOccupantPositionsExcepting<EnemyUnit>();
+		return GameManager.inst.tacticsManager.GetActiveGrid().CurrentOccupantPositionsExcepting<EnemyUnit>();
 	}
 }

@@ -105,11 +105,11 @@ public static class DominoBattle
 	// 	// the player will maintain a barracks of units
 	// 	// the player has reference to each prefab needed, so we instantiate a prefab here
 	// 	// then apply the actual relevant stats
-	// 	foreach (UnitState unitStats in player.GetUnits()) {
-	// 		var uPrefab = player.LoadUnitByTag("Units/" + unitStats.unitTag);
+	// 	foreach (UnitState unitState in player.GetUnits()) {
+	// 		var uPrefab = player.LoadUnitByTag("Units/" + unitState.unitTag);
 	// 		PlayerUnit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, playerSpawnPositions.PopAt(0), grid) as PlayerUnit;
 	// 		//
-	// 		unit.ApplyStats(unitStats);
+	// 		unit.ApplyState(unitState);
 	// 		GetController(player).Register(unit);
 	// 	}
 
@@ -117,11 +117,11 @@ public static class DominoBattle
 	// 	// if it has, it will instantiate it. If not, it will load first
 	// 	var otherSpawnPositions = spawnZones.second.GetPositions().RandomSelections<Vector3Int>(other.numUnits);
 
-	// 	foreach (UnitState unitStats in other.GetUnits()) {
-	// 		var uPrefab = other.LoadUnitByTag("Units/" + unitStats.unitTag);
+	// 	foreach (UnitState unitState in other.GetUnits()) {
+	// 		var uPrefab = other.LoadUnitByTag("Units/" + unitState.unitTag);
 	// 		EnemyUnit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, otherSpawnPositions.PopAt(0), grid) as EnemyUnit;
 	// 		//
-	// 		unit.ApplyStats(unitStats);
+	// 		unit.ApplyState(unitState);
 	// 		GetController(other).Register(unit);
 	// 	}
 	// }
@@ -272,11 +272,11 @@ public static class DominoBattle
 	// 	// register them 
 	// 	//
 	// 	var spawnPositions = spawnZone.GetPositions().RandomSelections<Vector3Int>(joiningEntity.numUnits);
-	// 	foreach (UnitState unitStats in joiningEntity.GetUnits()) {
-	// 		var uPrefab = joiningEntity.LoadUnitByTag("Units/" + unitStats.unitTag);
+	// 	foreach (UnitState unitState in joiningEntity.GetUnits()) {
+	// 		var uPrefab = joiningEntity.LoadUnitByTag("Units/" + unitState.unitTag);
 	// 		Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid);
 	// 		//
-	// 		unit.ApplyStats(unitStats);
+	// 		unit.ApplyState(unitState);
 	// 		existingEnemyArmyController.Register(unit);
 	// 	}	
 	// }

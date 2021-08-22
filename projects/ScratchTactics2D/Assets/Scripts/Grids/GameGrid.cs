@@ -41,12 +41,12 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 		return 1;
 	}
 	
-	// IMPORTANT: this is only used for converting locations to Unit/Entites positions
+	// IMPORTANT: this is only used for converting locations to Unit/Entities positions
 	// we need to account for the Z-shift here
 	// wherever something needs to sit on top of a tile, but be sorted with them (TacticsEntities),
 	// we need to add a small Z-offset
-	public Vector3 Grid2RealPos(Vector3Int tilePos, float zHeight = 0.0f) {
-		return baseTilemap.GetCellCenterWorld(tilePos) + new Vector3(0, 0, zHeight);
+	public virtual Vector3 Grid2RealPos(Vector3Int tilePos) {
+		return baseTilemap.GetCellCenterWorld(tilePos);
 	}
 	
 	public virtual Vector3Int Real2GridPos(Vector3 realPos) {
@@ -73,14 +73,6 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 	public bool UnderlayNull(Vector3Int tilePos) {
 		return underlayTilemap.GetTile(tilePos) == null;
 	}
-	
-	public virtual void SelectAt(Vector3Int tilePos, Color? color = null) {
-		TintTile(baseTilemap, tilePos, color ?? Constants.selectColorBlue);
-	}
-	
-	public virtual void ResetSelectionAt(Vector3Int tilePos, float fadeRate = 0.05f) {
-		ResetTintTile(baseTilemap, tilePos);
-	}
 
 	// These exist because I am too lazy to figure out a better solution
 	// many functions return a GameGrid, and this function should only be called on TacticsGrids
@@ -91,31 +83,32 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 	public virtual void ResetUnderlayAt(Vector3Int tilePos) { Debug.Assert(false); }
 	//
 
-	public IEnumerator FadeUp(Tilemap tilemap, Vector3Int tilePos) {
-		tilemap.SetTileFlags(tilePos, TileFlags.None);
-		float c = 0.0f;
-		while (c < 1.0f) {
-			tilemap.SetColor(tilePos, new Color(1, 1, 1, c));
-			c += 0.05f;
-			yield return null;
-		}
-	}
+	// public IEnumerator FadeUp(Tilemap tilemap, Vector3Int tilePos) {
+	// 	tilemap.SetTileFlags(tilePos, TileFlags.None);
+	// 	float c = 0.0f;
+	// 	while (c < 1.0f) {
+	// 		tilemap.SetColor(tilePos, new Color(1, 1, 1, c));
+	// 		c += 0.05f;
+	// 		yield return null;
+	// 	}
+	// }
 	
-	public IEnumerator FadeDownToNull(Tilemap tilemap, Vector3Int tilePos, float fadeRate) {
-		tilemap.SetTileFlags(tilePos, TileFlags.None);
-		float c = 1.0f;
-		while (c > 0.0f) {
-			tilemap.SetColor(tilePos, new Color(1, 1, 1, c));
-			c -= fadeRate;
-			yield return null;
-		}
-		tilemap.SetTile(tilePos, null);
-	}
+	// public IEnumerator FadeDownToNull(Tilemap tilemap, Vector3Int tilePos, float fadeRate) {
+	// 	tilemap.SetTileFlags(tilePos, TileFlags.None);
+	// 	float c = 1.0f;
+	// 	while (c > 0.0f) {
+	// 		tilemap.SetColor(tilePos, new Color(1, 1, 1, c));
+	// 		c -= fadeRate;
+	// 		yield return null;
+	// 	}
+	// 	tilemap.SetTile(tilePos, null);
+	// }
 	
 	public virtual void TintTile(Tilemap tilemap, Vector3Int tilePos, Color color) {
 		if (tilemap.GetTile(tilePos) != null) {
 			tilemap.SetTileFlags(tilePos, TileFlags.None);
 			tilemap.SetColor(tilePos, color);
+			// tilemap.SetTileFlags(tilePos, TileFlags.LockColor);
 			return;
 		} else {
 			Debug.Log("Not a valid Tint target");
@@ -126,6 +119,10 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 	public virtual void ResetTintTile(Tilemap tilemap, Vector3Int tilePos) {
 		tilemap.SetTileFlags(tilePos, TileFlags.None);
 		tilemap.SetColor(tilePos, Color.white);
+	}
+
+	public virtual Color GetTint(Tilemap tilemap, Vector3Int tilePos) {
+		return tilemap.GetColor(tilePos);
 	}
 	
 	public Component OccupantAt(Vector3Int tilePos) {

@@ -13,10 +13,7 @@ public class SpawnZone : GridAlignedZone
 
         // estimate the BL, and extrapolate the TR
         Vector3Int convertedPivot = grid.Real2GridPos(pivot - new Vector3(0, _grid.GetComponent<Grid>().cellSize.y/2.0f, 0));
-
-        //Vector3 second = grid.Grid2RealPos( convertedPivot );        
-        //Debug.DrawLine(pivot, second, Color.white, 1000f, false);
-        
+       
         min = convertedPivot - new Vector3Int((int)(_width/2.0f), (int)(_height/2.0f), (int)(_depth/2.0f));
         max = min + new Vector3Int(_width, _height, _depth);
 

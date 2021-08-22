@@ -54,6 +54,7 @@ public class PhaseManager : MonoBehaviour
 				var battle = GameManager.inst.tacticsManager.activeBattle;
 				if (battle?.isPaused ?? false) {						
 					battle.Resume();
+					GameManager.inst.gameState = Enum.GameState.battle;
 					
 					currentTurn++;
 					StartPhase(currentPhase.NextPhase());
@@ -82,16 +83,11 @@ public class PhaseManager : MonoBehaviour
 				if (CheckPause()) {
 					// every other Tactics-turn, we let the Overworld take a turn
 					// here is where we tick overworldTurns while in the tactics interface
-					Debug.Log($"Pausing and entering shadow overworld state");
 					GameManager.inst.tacticsManager.activeBattle.Pause();
-					
-					// delay until activeBattle.isPaused becomes true
-					StartCoroutine( Utils.DelayedFlag(!GameManager.inst.tacticsManager.activeBattle.isPaused, () => {
-						// have every two turns equal standardTickCost ticks
-						GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
-						StartPhase(Enum.Phase.enemy);
-						GameManager.inst.enemyController.TriggerPhase();
-					}));
+					GameManager.inst.gameState = Enum.GameState.overworld;
+					GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
+					StartPhase(Enum.Phase.enemy);
+					GameManager.inst.enemyController.TriggerPhase();
 				} else {
 					OnPhaseEnd(currentPhase);
 
@@ -108,6 +104,14 @@ public class PhaseManager : MonoBehaviour
 
 		UIManager.inst.SetPhaseText(phaseStringRepr[phase]);
 		UIManager.inst.SetTurnText(currentTurn.ToString());
+
+		// temporary until I refactor phasing
+		if (GameManager.inst.gameState == Enum.GameState.battle && GameManager.inst.tacticsManager.activeBattle) {
+			var battle = GameManager.inst.tacticsManager.activeBattle;
+			foreach (Unit u in battle.GetRegisteredInBattle()) {
+				u.UpdateThreatRange();
+			}
+		}
 	}
 	
 	public void OnPhaseEnd(Enum.Phase phase) {

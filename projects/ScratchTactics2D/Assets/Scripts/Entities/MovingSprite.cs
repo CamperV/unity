@@ -17,7 +17,6 @@ public class MovingSprite : MonoBehaviour
 		go.AddComponent<SpriteRenderer>();
 		go.AddComponent<SpriteAnimator>();
 		go.AddComponent<MovingSprite>();
-		//go.AddComponent<SpriteTrailBehavior>();
 		go.AddComponent<SpriteDirectionalBlurBehavior>();
 
 		go.GetComponent<SpriteRenderer>().sprite = sprite;
@@ -31,13 +30,7 @@ public class MovingSprite : MonoBehaviour
 
 		// With URP enabled, the default material is Sprite-Lit-Default
 		// since we have no illumination in this project, gotta find the old one...
-		spriteRenderer.material = new Material(Shader.Find("Sprites/Default"));
-	}
-
-	// this update loop should preseve all sprites real sorting order when animating
-	void Update() {
-		//spriteRenderer.sortingOrder = (int)(-100f * (transform.position.y-transform.position.z)); // This prioritizes height
-		spriteRenderer.sortingOrder = (int)(-100f * transform.position.y);	// This prioritizes obscurability, things like trees
+		//spriteRenderer.material = new Material(Shader.Find("Sprites/Default"));
 	}
 	
 	public void SendToAndDestroy(Vector3 toPosition, float fixedTime) {
@@ -55,6 +48,9 @@ public class MovingSprite : MonoBehaviour
 		// }) );
 
 		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => Destroy(gameObject)) );
+		// StartCoroutine( spriteAnimator.ExecuteAfterMoving( () => {
+		// 	StartCoroutine( spriteAnimator.FadeDownThenDestroy(0.50f) );
+		// }) );
 	}
 
 	public void SendToAndDestroyArc(Vector3 toPosition, Vector3 relativePivot, float fixedTime) {

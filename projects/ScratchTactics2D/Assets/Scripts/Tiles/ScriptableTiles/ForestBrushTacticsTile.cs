@@ -9,6 +9,7 @@ using UnityEditor;
 public class ForestBrushTacticsTile : TacticsTile
 {
 	public override int cost { get => 2; }
+	public override bool dimmable { get => true; }
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/ForestBrushTacticsTile", false, 1)]

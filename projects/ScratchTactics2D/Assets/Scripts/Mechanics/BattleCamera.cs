@@ -6,9 +6,11 @@ using System.Linq;
 
 public class BattleCamera : MonoBehaviour
 {
-    public Battle battle;
-    public Vector3 focalPoint;
-    public Vector3 focalPivot;
+    [SerializeField] public float rotationTime;
+
+    [HideInInspector] public Battle battle;
+    [HideInInspector] public Vector3 focalPoint;
+    [HideInInspector] public Vector3 focalPivot;
 
     private Vector3 dragOffset;
     private bool draggingView;
@@ -18,13 +20,13 @@ public class BattleCamera : MonoBehaviour
     private bool viewLock;
     private bool rotateLock;
 
-    public float currentZoomLevel { get => battle.transform.localScale.x; }
+    [HideInInspector] public float currentZoomLevel { get => battle.transform.localScale.x; }
 
 	private Dictionary<KeyCode, Action> getKeyActionBindings = new Dictionary<KeyCode, Action>();
     private Dictionary<KeyCode, Action> getKeyDownActionBindings = new Dictionary<KeyCode, Action>();
     private bool ScreenDrag { get => Input.GetMouseButton(1); }
-    private Func<Vector3Int, Vector3Int> RotateLeft  = v => new Vector3Int(v.y, -v.x, v.z);
-    private Func<Vector3Int, Vector3Int> RotateRight  = v => new Vector3Int(-v.y, v.x, v.z);
+    public static Func<Vector3Int, Vector3Int> RotateLeft  = v => new Vector3Int(v.y, -v.x, v.z);
+    public static Func<Vector3Int, Vector3Int> RotateRight  = v => new Vector3Int(-v.y, v.x, v.z);
 
     void Awake() {
         battle = GetComponent<Battle>();
@@ -191,36 +193,40 @@ public class BattleCamera : MonoBehaviour
 
     private IEnumerator AnimateRotation(Dictionary<Vector3Int, TacticsTile> prerotationTileDict, Vector3 offset, Func<Vector3Int, Vector3Int> Transformer) {
         rotateLock = true;
-
-        float traversalTime = 0.25f;
         float delayTime = 0.0f;
         
-        float totalTime = (delayTime * prerotationTileDict.Keys.Count) + traversalTime;
+        float totalTime = (delayTime * prerotationTileDict.Keys.Count) + rotationTime;
         battle.InvisibleFor(totalTime);
         StartCoroutine( Utils.DelayedExecute(totalTime+.05f, () => rotateLock = false) );
 
         // animate all the tiles first
     	foreach (Vector3Int _from in prerotationTileDict.Keys) {
+            TacticsTile tt = prerotationTileDict[_from];
+            Vector3 _sortingOffset =  new Vector3(0, 0, tt.zHeight);
+
             Vector3Int _to = Transformer(_from);
-			Vector3 from = battle.grid.baseTilemap.GetCellCenterWorld(_from) + offset;
-			Vector3 to = battle.grid.baseTilemap.GetCellCenterWorld(_to);
-			
-			MovingSprite anim = MovingSprite.ConstructWith(from, prerotationTileDict[_from].sprite, "Tactics Entities", battle.transform);
-            anim.SendToAndDestroy(to, traversalTime);
-            //anim.SendToAndDestroyArc(to, battle.grid.GetGridCenterReal(), traversalTime);
+			Vector3 from = battle.grid.baseTilemap.GetCellCenterWorld(_from) + offset + _sortingOffset;
+			Vector3 to = battle.grid.baseTilemap.GetCellCenterWorld(_to) + _sortingOffset;
+			 
+			MovingSprite anim = MovingSprite.ConstructWith(from, tt.sprite, "Tactics Entities", battle.transform);
+            anim.SendToAndDestroy(to, rotationTime);
+            // anim.SendToAndDestroyArc(to, battle.grid.GetGridCenterReal(), rotationTime);
 		}
 
         // now animate anything left that has a Sprite
     	TacticsEntityBase[] entities = GetComponentsInChildren<TacticsEntityBase>();
-        Vector3 sortingOffset =  new Vector3(0, -0.01f, 0); // for units and such, we need them to be on top of their own tile, but not obscuring others. we aren't using Z here
+
 		foreach (TacticsEntityBase e in entities) {
+            // for units and such, we need them to be on top of their own tile, but not obscuring others
+            Vector3 _sortingOffset =  new Vector3(0, 0, e.zHeight+1f);
+
 			Vector3Int _to = Transformer(e.gridPosition);
-			Vector3 from = battle.grid.baseTilemap.GetCellCenterWorld(e.gridPosition) + offset + sortingOffset;
-			Vector3 to = battle.grid.baseTilemap.GetCellCenterWorld(_to) + sortingOffset;
+			Vector3 from = battle.grid.baseTilemap.GetCellCenterWorld(e.gridPosition) + offset + _sortingOffset;
+			Vector3 to = battle.grid.baseTilemap.GetCellCenterWorld(_to) + _sortingOffset;
 
         	MovingSprite anim = MovingSprite.ConstructWith(from, e.GetComponent<SpriteRenderer>().sprite, "Tactics Entities", battle.transform);
             anim.transform.localScale = e.transform.localScale;
-            anim.SendToAndDestroy(to, traversalTime);
+            anim.SendToAndDestroy(to, rotationTime);
 		}
         yield return null;
     }

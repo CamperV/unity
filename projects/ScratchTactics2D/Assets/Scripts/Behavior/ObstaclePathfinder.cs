@@ -60,7 +60,14 @@ public abstract class ObstaclePathfinder : Pathfinder
 				}
 			}
 		}
-		if (unreachable) return null;
+		if (unreachable) {
+			Debug.Log($"Got UNREACHABLE. THIS SHOULDN'T HAPPEN!");
+			Debug.Assert(false);
+			// return this so that the game doesn't crash
+			T rp = new T();
+			rp.AddFirst(startPosition);
+			return rp;
+		}
 		// else:
 		
 		// if we found the target, recount the path to get there

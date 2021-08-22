@@ -288,11 +288,11 @@ public class PlayerUnitController : UnitController
 		// check bboxes to reset target
 		// and if it isn't there, get the gridpos
 		var activeBattle = GameManager.inst.tacticsManager.activeBattle;
-		var ascendingInBattle = activeBattle.GetRegisteredInBattle().OrderBy(it => it.transform.position.y);
+		var unitsInBattle = activeBattle.GetRegisteredInBattle().OrderBy(it => it.gridPosition.y);
 
-		foreach (TacticsEntityBase clickable in ascendingInBattle) {
-			if (!clickable.ghosted && clickable.ColliderContains(GameManager.inst.mouseManager.mouseWorldPos)) {
-				return clickable.gridPosition;
+		foreach (Unit u in unitsInBattle) {
+			if (u.clickable && u.mouseOver) {
+				return u.gridPosition;
 			}
 		};
 
@@ -300,6 +300,6 @@ public class PlayerUnitController : UnitController
 	}
 
 	public override HashSet<Vector3Int> GetObstacles() {		
-		return GameManager.inst.GetActiveGrid().CurrentOccupantPositionsExcepting<PlayerUnit>();
+		return GameManager.inst.tacticsManager.GetActiveGrid().CurrentOccupantPositionsExcepting<PlayerUnit>();
 	}
 }
