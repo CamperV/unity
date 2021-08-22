@@ -66,9 +66,12 @@ public class TacticsGrid : GameGrid
 	}
 
 	public override Vector3 Grid2RealPos(Vector3Int tilePos) {
-		// var gridVer = GetComponent<Grid>().GetCellCenterWorld(tilePos);
+		var gridVer = GetComponent<Grid>().GetCellCenterWorld(tilePos);
 		var tmVer = baseTilemap.GetCellCenterWorld(tilePos);
-		return tmVer;
+		// return gridVer + (baseTilemap.tileAnchor * GetComponent<Grid>().cellSize);
+		Vector3 gridCS = GetComponent<Grid>().cellSize;
+		Vector3 anchor = baseTilemap.tileAnchor;
+		return gridVer + new Vector3(gridCS.x*anchor.x, gridCS.y*anchor.y, gridCS.z*anchor.z);
 	}
 	
 	public override Vector3Int Real2GridPos(Vector3 realPos) {

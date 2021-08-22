@@ -233,6 +233,7 @@ public class Battle : MonoBehaviour
 		Vector3Int dockingOffset = bmDockingPoints[0] - drDockingPoints[0] + dockingAddlOffset;
 		Vector3Int dockingOffset2 = bmDockingPoints[1] - drDockingPoints[1] + dockingAddlOffset;
 		Debug.Assert(dockingOffset == dockingOffset2);
+		Debug.Log($"Added addlDocking {dockingAddlOffset}");
 
 		// determine the offset appropriate for these
 		// add it to the currently active battlemap
