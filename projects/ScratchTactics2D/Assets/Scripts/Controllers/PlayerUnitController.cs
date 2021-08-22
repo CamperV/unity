@@ -172,9 +172,12 @@ public class PlayerUnitController : UnitController
 							}
 							break;
 						case Enum.PlayerUnitState.attackSelection:
-							if (currentSelection.OptionActive("Move")) {
-								currentSelection.EnterMoveSelection();
-							}
+							ClearSelection();
+							// if (currentSelection.OptionActive("Move")) {
+							// 	currentSelection.EnterMoveSelection();
+							// } else {
+							// 	ClearSelection();
+							// }
 							break;
 					}
 					break;
