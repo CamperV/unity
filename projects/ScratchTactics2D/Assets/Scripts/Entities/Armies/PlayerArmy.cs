@@ -81,7 +81,7 @@ public class PlayerArmy : Army
 			Terrain enemyTerrain = GameManager.inst.overworld.TerrainAt(combatant.gridPosition);
 		
 			GameManager.inst.EnterBattleState();
-			GameManager.inst.tacticsManager.CreateActiveBattle(this, combatant, playerTerrain, enemyTerrain, Enum.Phase.player);
+			Battle.CreateActiveBattle(this, combatant, playerTerrain, enemyTerrain, Enum.Phase.player);
 		}));
 	}
 }

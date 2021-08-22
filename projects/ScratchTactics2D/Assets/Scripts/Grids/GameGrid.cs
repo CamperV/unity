@@ -190,4 +190,5 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 	
 	// abstract zone
 	public abstract bool IsInBounds(Vector3Int tilePos);
+	public abstract Vector3Int GetMouseToGridPos();
 }

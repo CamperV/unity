@@ -315,49 +315,6 @@ RectTransform:
   m_AnchoredPosition: {x: 10, y: -130}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0.5}
---- !u!1 &897840026
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 897840028}
-  - component: {fileID: 897840027}
-  m_Layer: 0
-  m_Name: GlobalPlayerState
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &897840027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 897840026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14bae7a9fb614c249924b124e6910f7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &897840028
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 897840026}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &916148473
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,6 +757,7 @@ MonoBehaviour:
   accelerator: 304
   movementAccel: 1
   phaseDelayTimeAccel: 0
+  mouseWorldPos: {x: 0, y: 0, z: 0}
 --- !u!4 &1480208796
 Transform:
   m_ObjectHideFlags: 0
@@ -1015,17 +973,14 @@ MonoBehaviour:
   overworldPrefab: {fileID: 6013225397290577684, guid: c2fba2bb65f13e342a7b876450899405, type: 3}
   playerPrefab: {fileID: 5140243916379933852, guid: e378b7eb70c68894abdf51437ee7749a, type: 3}
   phaseManagerPrefab: {fileID: 6692847297558468328, guid: af94431e23b50634bb543ba8bffeee85, type: 3}
-  mouseManagerPrefab: {fileID: 1876840539373920246, guid: 973af614b3f54a9438b6734064013085, type: 3}
-  tacticsManagerPrefab: {fileID: 4151950018943693497, guid: 695ce2155538ce14491f1d990bcafb60, type: 3}
-  playerControllerPrefab: {fileID: 2585787102688693564, guid: 14ad95fcae1a4d349be8d593356258cd, type: 3}
-  enemyControllerPrefab: {fileID: 4983432242793738251, guid: 8ea67fbe6c5b4a2469877b539315fe42, type: 3}
+  battlePrefab: {fileID: 3021327120891181652, guid: dde41af0fe9afad408ef31648ab82f80, type: 3}
+  playerArmyControllerPrefab: {fileID: 2585787102688693564, guid: 14ad95fcae1a4d349be8d593356258cd, type: 3}
+  enemyArmyControllerPrefab: {fileID: 4983432242793738251, guid: 8ea67fbe6c5b4a2469877b539315fe42, type: 3}
   overworld: {fileID: 0}
-  player: {fileID: 0}
+  playerArmy: {fileID: 0}
   phaseManager: {fileID: 0}
-  mouseManager: {fileID: 0}
-  playerController: {fileID: 0}
-  enemyController: {fileID: 0}
-  tacticsManager: {fileID: 0}
+  playerArmyController: {fileID: 0}
+  enemyArmyController: {fileID: 0}
 --- !u!1 &1959980562
 GameObject:
   m_ObjectHideFlags: 0

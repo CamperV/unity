@@ -14,7 +14,7 @@ public class Constants {
 	public static readonly Color zoneColorViolet   = new Color(0.75f, 0.30f, 0.75f, 0.75f);
 	public static readonly Color hideColorBlack    = new Color(0.15f, 0.15f, 0.15f, 1.00f);
 
-	public static readonly Vector3Int unselectableVector3Int = new Vector3Int(-1, -1, -1);
+	public static readonly Vector3Int unselectableVector3Int = int.MinValue * Vector3Int.one;
 
 	// relates to the y/z sorting priority, see Project Settings -> Custom Sort Axis
 	public static readonly int zSortingConstant = 2;

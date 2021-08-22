@@ -65,7 +65,7 @@ public abstract class EnemyArmy : Army, IVisible
 		protected set {
 			_gridPosition = value;
 
-			FieldOfView fov = GlobalPlayerState.inst.army.fov;
+			FieldOfView fov = GlobalPlayerState.army.fov;
 			if (fov.field.ContainsKey(_gridPosition)) {
 				visible = fov.field[_gridPosition];
 			} else {
@@ -90,7 +90,7 @@ public abstract class EnemyArmy : Army, IVisible
 	private int tickPool { get; set; }
 	
 	public Enum.EnemyArmyState state;
-	private EnemyArmyController parentController { get => GameManager.inst.enemyController; }
+	private EnemyArmyController parentController { get => GameManager.inst.enemyArmyController; }
 
 	public abstract void OnHit();
 	public abstract void OnAlert();
@@ -132,10 +132,10 @@ public abstract class EnemyArmy : Army, IVisible
 	// right now, the closest enemy acts first
 	// but in the future, maybe stamina effects will happen
 	public float CalculateInitiative() {
-		int md = gridPosition.ManhattanDistance(GameManager.inst.player.gridPosition);
+		int md = gridPosition.ManhattanDistance(GlobalPlayerState.army.gridPosition);
 
 		float directionScore = 0.0f;
-		switch (gridPosition - GameManager.inst.player.gridPosition) {
+		switch (gridPosition - GlobalPlayerState.army.gridPosition) {
 			case Vector3Int v when v.Equals(Vector3Int.up):
 				directionScore = 0.0f;
 				break;
@@ -213,21 +213,21 @@ public abstract class EnemyArmy : Army, IVisible
 	}
 
 	public virtual bool CanAttackPlayer() {
-		return tickPool > 0 && gridPosition.AdjacentTo(GameManager.inst.player.gridPosition);
+		return tickPool > 0 && gridPosition.AdjacentTo(GlobalPlayerState.army.gridPosition);
 	}
 
 	public void InitiateBattle() {
 		// entities can spend their entire remaining tickPool to attack a player
 		SpendTicks(tickPool);
-		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.overworld);
+		BumpTowards(GlobalPlayerState.army.gridPosition, GameManager.inst.overworld);
 
 		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => {
 			GameManager.inst.EnterBattleState();
 
 			// programmatically load in a TacticsGrid that matches what we need
 			Terrain thisTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
-			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(GameManager.inst.player.gridPosition);
-			GameManager.inst.tacticsManager.CreateActiveBattle(GameManager.inst.player, this, playerTerrain, thisTerrain, Enum.Phase.enemy);
+			Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(GlobalPlayerState.army.gridPosition);
+			Battle.CreateActiveBattle(GlobalPlayerState.army, this, playerTerrain, thisTerrain, Enum.Phase.enemy);
 		}));
 	}
 
@@ -235,12 +235,12 @@ public abstract class EnemyArmy : Army, IVisible
 		// we don't need this function to start the battle phase, let the EnemyArmyController release back and Resume the battle
 		// however, it will now resume with a new enemy joining
 		SpendTicks(tickPool);
-		BumpTowards(GameManager.inst.player.gridPosition, GameManager.inst.overworld);
+		BumpTowards(GlobalPlayerState.army.gridPosition, GameManager.inst.overworld);
 
 		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => {
 			// programmatically load in a TacticsGrid that matches what we need
-			Terrain thisTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);		
-			GameManager.inst.tacticsManager.AddToActiveBattle(this, thisTerrain);
+			Terrain thisTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
+			Battle.active.AddParticipant(this, thisTerrain);
 		}));
 	}
 }

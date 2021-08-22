@@ -108,11 +108,11 @@ public class BattleCamera : MonoBehaviour
             float scaleRatio = updatedScale.x / battle.transform.localScale.x;
 
             if (scaleRatio != 1.0f) {
-                Vector3 localToMouse = battle.transform.position - GameManager.inst.mouseManager.mouseWorldPos;
+                Vector3 localToMouse = battle.transform.position - FindObjectOfType<InputListener>().mouseWorldPos;
                 
                 //update the scale, and position based on the new scale
                 battle.transform.localScale = updatedScale;
-                battle.transform.position = GameManager.inst.mouseManager.mouseWorldPos + (localToMouse * scaleRatio);
+                battle.transform.position = FindObjectOfType<InputListener>().mouseWorldPos + (localToMouse * scaleRatio);
             }
         }
     }
@@ -173,7 +173,7 @@ public class BattleCamera : MonoBehaviour
 
         // update tacticsGrid surface
 		Dictionary<Vector2Int, Vector3Int> _surface = new Dictionary<Vector2Int, Vector3Int>();
-		foreach (Vector3Int tilePos in battle.grid.surface.Values) {
+		foreach (Vector3Int tilePos in battle.grid.Surface) {
             Vector3Int rotated = Transformer(tilePos);
 			_surface[new Vector2Int(rotated.x, rotated.y)] = rotated;
 		}
@@ -183,7 +183,7 @@ public class BattleCamera : MonoBehaviour
         // then occupancyGrid
         // then update real position
         Dictionary<Vector3Int, Component> _occupancyGrid = new Dictionary<Vector3Int, Component>();
-        foreach(MovingGridObject mo in battle.GetRegisteredInBattle()) {
+        foreach(MovingGridObject mo in battle.RegisteredUnits) {
             Vector3Int rotated = Transformer(mo.gridPosition);
             _occupancyGrid[rotated] = mo;
             mo.UpdateGridPosition(rotated, battle.grid);

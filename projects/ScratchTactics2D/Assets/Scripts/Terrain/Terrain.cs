@@ -20,7 +20,7 @@ public abstract class Terrain
 	public virtual int tickCost { get => Constants.standardTickCost; }
 
 	// IEnemyArmySpawner definitions
-	public Controller receivingController { get => GameManager.inst.enemyController; }
+	public Controller receivingController { get => GameManager.inst.enemyArmyController; }
 	public virtual Dictionary<float, string> spawnRates {
 		get => new Dictionary<float, string>{
 			[float.MinValue] = "n/a"

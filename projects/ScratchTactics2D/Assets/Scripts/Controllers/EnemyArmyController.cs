@@ -65,7 +65,7 @@ public class EnemyArmyController : Controller
 					
 					// update player position
 					playerPosLastTurn = lastKnownPlayerPos;
-					lastKnownPlayerPos = GlobalPlayerState.inst.currentGridPosition;
+					lastKnownPlayerPos = GlobalPlayerState.army.gridPosition;
 					
 					// update the field once for all
 					// and then, we'll update them again every time a subject moves
@@ -127,7 +127,7 @@ public class EnemyArmyController : Controller
 
 						// also tell the PlayerArmyController to clear its queue
 						// this gives the player a chance to jump out of a pre-determined path (mouse-move)
-						GameManager.inst.playerController.ClearActionQueue();
+						GlobalPlayerState.controller.ClearActionQueue();
 					} else {
 						subject.TakeIdleAction();
 					}
@@ -136,19 +136,15 @@ public class EnemyArmyController : Controller
 				// this state requires ticks to function
 				// tickpool is managed in the subject class, but we can tell it to keep moving here
 				case Enum.EnemyArmyState.followField:
-					Debug.Log($"processing enemy {subject} who can act");
 					// if we can attack, do that with a higher priority
 					if (subject.CanAttackPlayer()) {	// checks ticks
 						Debug.Log($"{subject} can attack player");
 
 						// ...and spends ticks
-						Debug.Log($"{subject} checks activeBattle is null: {GameManager.inst.tacticsManager.activeBattle == null}");
-						if (GameManager.inst.tacticsManager.activeBattle) {
-							Debug.Log($"Decided to join");
+						if (Battle.active) {
 							subject.OnAlert();
 							subject.JoinBattle();
 						} else {
-							Debug.Log($"Fine then, I'll do it myself");
 							subject.InitiateBattle();
 						}
 						subject.state = Enum.EnemyArmyState.inBattle;
@@ -161,8 +157,7 @@ public class EnemyArmyController : Controller
 					// checks and spends ticks
 					} else {
 						FlowField subjectField = IndividualFlowField(subject);
-						keepPhaseAlive |= subject.FollowField(subjectField, GameManager.inst.player);
-						Debug.Log($"Followed field, keepPhaseAlive: {keepPhaseAlive}");
+						keepPhaseAlive |= subject.FollowField(subjectField, GlobalPlayerState.army);
 					}
 					while (subject.spriteAnimator.isMoving) yield return null;
 					break;
@@ -180,7 +175,7 @@ public class EnemyArmyController : Controller
 	}
 		
 	public bool HasPlayerMoved() {
-		return playerPosLastTurn != GlobalPlayerState.inst.currentGridPosition;
+		return playerPosLastTurn != GlobalPlayerState.army.gridPosition;
 	}
 	
 	public void SetTraversableTiles() {

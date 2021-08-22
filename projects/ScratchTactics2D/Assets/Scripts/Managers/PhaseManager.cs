@@ -51,14 +51,13 @@ public class PhaseManager : MonoBehaviour
 				StartPhase(currentPhase.NextPhase());
 
 				// if there's already a battle in progress, rejoin it
-				var battle = GameManager.inst.tacticsManager.activeBattle;
-				if (battle?.isPaused ?? false) {						
-					battle.Resume();
+				if (Battle.active?.isPaused ?? false) {						
+					Battle.active.Resume();
 					GameManager.inst.gameState = Enum.GameState.battle;
 					
 					currentTurn++;
 					StartPhase(currentPhase.NextPhase());
-					battle.GetControllerFromPhase(currentPhase).TriggerPhase();
+					Battle.active.GetControllerFromPhase(currentPhase).TriggerPhase();
 
 				// otherwise, give control back to the player
 				} else {					
@@ -69,30 +68,29 @@ public class PhaseManager : MonoBehaviour
 
 		// TACTICS-LEVEL PHASING
 		} else if (GameManager.inst.gameState == Enum.GameState.battle) {
-			var battle = GameManager.inst.tacticsManager.activeBattle;
 
 			// before doing anything, check flags to see if the battle should be terminated
-			if (battle.CheckBattleEndState()) {
-				battle.Resolve(battle.GetDefeated());
+			if (Battle.active.CheckBattleEndState()) {
+				Battle.active.Resolve(Battle.active.GetDefeated());
 				return; // jump out of the update loop early
 			}
 
 			// if the currently active controller has finished its phase
-			var activeController = battle.GetControllerFromPhase(currentPhase);
+			var activeController = Battle.active.GetControllerFromPhase(currentPhase);
 			if (activeController.phaseActionState == Enum.PhaseActionState.postPhase) {
 				if (CheckPause()) {
 					// every other Tactics-turn, we let the Overworld take a turn
 					// here is where we tick overworldTurns while in the tactics interface
-					GameManager.inst.tacticsManager.activeBattle.Pause();
+					Battle.active.Pause();
 					GameManager.inst.gameState = Enum.GameState.overworld;
-					GameManager.inst.enemyController.AddTicksAll(Constants.standardTickCost);
+					GameManager.inst.enemyArmyController.AddTicksAll(Constants.standardTickCost);
 					StartPhase(Enum.Phase.enemy);
-					GameManager.inst.enemyController.TriggerPhase();
+					GameManager.inst.enemyArmyController.TriggerPhase();
 				} else {
 					OnPhaseEnd(currentPhase);
 
 					StartPhase(currentPhase.NextPhase());
-					battle.GetControllerFromPhase(currentPhase).TriggerPhase();
+					Battle.active.GetControllerFromPhase(currentPhase).TriggerPhase();
 				}
 			}
 		}
@@ -106,9 +104,8 @@ public class PhaseManager : MonoBehaviour
 		UIManager.inst.SetTurnText(currentTurn.ToString());
 
 		// temporary until I refactor phasing
-		if (GameManager.inst.gameState == Enum.GameState.battle && GameManager.inst.tacticsManager.activeBattle) {
-			var battle = GameManager.inst.tacticsManager.activeBattle;
-			foreach (Unit u in battle.GetRegisteredInBattle()) {
+		if (GameManager.inst.gameState == Enum.GameState.battle && Battle.active) {
+			foreach (Unit u in Battle.active.RegisteredUnits) {
 				u.UpdateThreatRange();
 			}
 		}
@@ -129,15 +126,15 @@ public class PhaseManager : MonoBehaviour
 		return GameManager.inst.gameState == Enum.GameState.battle &&
 			   currentPhase == Enum.Phase.enemy &&
 			   currentTurn % 2 == 0 &&
-			   GameManager.inst.enemyController.enemiesFollowing;
+			   GameManager.inst.enemyArmyController.enemiesFollowing;
 	}
 
 	private Controller GetControllerFromPhase(Enum.Phase phase) {
 		switch (phase) {
 			case Enum.Phase.player:
-				return GameManager.inst.playerController;
+				return GameManager.inst.playerArmyController;
 			case Enum.Phase.enemy:
-				return GameManager.inst.enemyController;
+				return GameManager.inst.enemyArmyController;
 		}
 		return null;
 	}

@@ -124,7 +124,6 @@ public class BattleMap : MonoBehaviour
 
 	// we make the specification here because your docking point depends on the original orientation of the Player:Enemy
 	public List<Vector3Int> GetDockingPointsFromJoiningOrientation(Vector3Int joiningOrientation) {
-		Debug.Log($"Got jOrientation {joiningOrientation}, og or {playerEnemyOrientation}");
 		List<Vector3Int> positions = new List<Vector3Int>();
 
 		// | P | E |

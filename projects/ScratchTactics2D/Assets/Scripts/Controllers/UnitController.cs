@@ -33,7 +33,7 @@ public class UnitController : Controller
 	
 	public List<MovingGridObject> GetOpposing() {
 		var advPhase = myPhase.NextPhase();
-		var advController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(advPhase);
+		var advController = Battle.active.GetControllerFromPhase(advPhase);
 		return advController.activeRegistry;
 	}
 

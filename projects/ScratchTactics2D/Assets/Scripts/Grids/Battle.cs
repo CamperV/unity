@@ -9,6 +9,9 @@ using Random = UnityEngine.Random;
 
 public class Battle : MonoBehaviour
 {
+	// singleton
+	public static Battle active = null; // enforces singleton behavior
+
 	private Dictionary<Army, Controller> activeControllers;
 	private Dictionary<Controller, Army> activeParticipants;
 	//
@@ -21,6 +24,10 @@ public class Battle : MonoBehaviour
 	[HideInInspector] public PlayerArmy player;
 	[HideInInspector] public EnemyArmy other;
 	[HideInInspector] public List<Army> allOther;
+
+	public IEnumerable<Unit> RegisteredUnits {
+		get => activeControllers.Values.SelectMany(con => con.activeRegistry).OfType<Unit>();
+	}
 	
 	// only one Unit can be in focus at any given time
 	[HideInInspector] public static Unit focusSingleton { get; private set; }
@@ -29,18 +36,44 @@ public class Battle : MonoBehaviour
 	[HideInInspector] public int savedTurn;
 	[HideInInspector] public bool isPaused = false;
 	[HideInInspector] public bool hidden = false; // this is for InvisibleFor overriding all other alpha writes
+
+	// handles construction of Battle and management of tacticsGrid
+	// NOTE: we can only ever start a battle with two participants
+	// because of the interleaving of Overworld turns and Tactics turns, even if there WOULD be more than one enemy active,
+	// it still won't be included in the battle until it can take its turn
+	public static void CreateActiveBattle(PlayerArmy player, EnemyArmy other, Terrain playerTerrain, Terrain otherTerrain, Enum.Phase initiatingPhase) {
+		var cameraPos = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);		
+		Battle.active = Instantiate(GameManager.inst.battlePrefab, cameraPos, Quaternion.identity);
+		Battle.active.Init(player, other);
+		Battle.active.LoadBattleMap(playerTerrain, otherTerrain);
+		Battle.active.SpawnAllUnits();
+		Battle.active.PostInit();
+		Battle.active.StartBattleOnPhase(initiatingPhase);
+	}
 	
 	void Awake() {
+		// only allow one Battle to exist at any time
+		if (active == null) {
+			active = this;
+		} else if (active != this) {
+			Destroy(gameObject);
+		}
+
 		grid = GetComponentsInChildren<TacticsGrid>()[0];
 		//
 		activeControllers = new Dictionary<Army, Controller>();
-		defaultController = Instantiate(defaultControllerPrefab);
-		defaultController.transform.SetParent(transform);
+		defaultController = Instantiate(defaultControllerPrefab, transform);
 
 		activeParticipants = new Dictionary<Controller, Army>();
 	}
 
 	void Update() {
+		// prematurely destroy battle
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			Debug.Log("Exiting Battle...");
+			this.Destroy();
+		}
+
 		// .hidden overrides any transparency modifications that might need to happen in this Update() loop
 		if (this.hidden) return;
 
@@ -60,7 +93,7 @@ public class Battle : MonoBehaviour
 		}
 
 		// Ghost Control - UNITS
-		var descendingInBattle = GetRegisteredInBattle().OrderByDescending(it => it.gridPosition.y);
+		var descendingInBattle = RegisteredUnits.OrderByDescending(it => it.gridPosition.y);
 
 		foreach (Unit u in descendingInBattle) {
 			bool ghosted = false;
@@ -168,7 +201,7 @@ public class Battle : MonoBehaviour
 		// our current method: random
 		// note that we need to Instantiate to get certain fields from the Components
 		// otherwise the GO is marked as inactive and we can't query it
-		battleMap = Instantiate( battleMaps.PopRandom<BattleMap>() );
+		battleMap = Instantiate(battleMaps.PopRandom<BattleMap>(), transform);
 
 		Vector3Int orientation = playerTerrain.position - otherTerrain.position;
 		battleMap.playerEnemyOrientation = orientation;
@@ -204,8 +237,6 @@ public class Battle : MonoBehaviour
 			//
 			unit.ApplyState(unitState);
 			GetControllerFromTag(army).Register(unit);
-
-			Debug.Log($"Spawned {unit} at {unit.gridPosition}, new position {unit.transform.position}");
 		}
 	}
 
@@ -216,7 +247,7 @@ public class Battle : MonoBehaviour
 		// load correct docker
 		string terrainDesignator = $"{playerTerrain.tag}:{joiningTerrain.tag}";
 		List<BattleMap> dockerMaps = BattleMapGenerator.GetDockersFromDesignator(terrainDesignator);
-		BattleMap docker = Instantiate( dockerMaps.PopRandom<BattleMap>() );
+		BattleMap docker = Instantiate(dockerMaps.PopRandom<BattleMap>(), transform);
 		
 		// determine orientation to player's terrain
 		Vector3Int jOrientation = playerTerrain.position - joiningTerrain.position;
@@ -233,7 +264,6 @@ public class Battle : MonoBehaviour
 		Vector3Int dockingOffset = bmDockingPoints[0] - drDockingPoints[0] + dockingAddlOffset;
 		Vector3Int dockingOffset2 = bmDockingPoints[1] - drDockingPoints[1] + dockingAddlOffset;
 		Debug.Assert(dockingOffset == dockingOffset2);
-		Debug.Log($"Added addlDocking {dockingAddlOffset}");
 
 		// determine the offset appropriate for these
 		// add it to the currently active battlemap
@@ -262,7 +292,7 @@ public class Battle : MonoBehaviour
 	
 	public void Destroy() {
 		Destroy(gameObject);
-		GameManager.inst.tacticsManager.activeBattle = null;
+		Battle.active = null;
 		//
 		MenuManager.inst.CleanUpBattleMenus();
 		//
@@ -272,7 +302,7 @@ public class Battle : MonoBehaviour
 
 	private Unit GetNewFocus() {
 		// Focus control: reset if applicable and highlight/focus
-		var unitsInBattle = GetRegisteredInBattle().OrderBy(it => it.gridPosition.y);
+		var unitsInBattle = RegisteredUnits.OrderBy(it => it.gridPosition.y);
 		foreach (Unit u in unitsInBattle) {
 			if (u.clickable && u.mouseOver) {
 				return u;
@@ -290,10 +320,8 @@ public class Battle : MonoBehaviour
 	}
 
 	private Unit _Deprecated_GetNewFocus() {
-		var mm = GameManager.inst.mouseManager;
-
 		// Focus control: reset if applicable and highlight/focus
-		var unitsInBattle = GetRegisteredInBattle().OrderBy(it => it.gridPosition.y);
+		var unitsInBattle = RegisteredUnits.OrderBy(it => it.gridPosition.y);
 		foreach (Unit u in unitsInBattle) {
 			if (!u.clickable /* && u.ColliderContains(mm.mouseWorldPos) */) {
 				return u;
@@ -341,10 +369,6 @@ public class Battle : MonoBehaviour
 
 	public List<Controller> GetActiveControllers() {
 		return activeControllers.Values.ToList();
-	}
-
-	public List<MovingGridObject> GetRegisteredInBattle() {
-		return activeControllers.Values.SelectMany(con => con.activeRegistry).ToList();
 	}
 
 	public Army GetArmyFromController(Controller con) {

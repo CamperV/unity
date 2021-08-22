@@ -49,7 +49,7 @@ public class PlayerArmyController : Controller
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 
 		// update your understanding of what you can and can't path through
-		_pathfinder = new ArmyPathfinder(GameManager.inst.enemyController.currentEnemyPositions, PlayerArmy.moveThreshold);
+		_pathfinder = new ArmyPathfinder(GameManager.inst.enemyArmyController.currentEnemyPositions, PlayerArmy.moveThreshold);
 	}
 	
 	private Vector3Int _prevMousePos;
@@ -67,15 +67,16 @@ public class PlayerArmyController : Controller
 				// this also allows for interupts (i.e. you've been spotted by an enemy, or are blocked)
 				if (actionQueueEmpty) {
 					// input mode is determined here
+					// "if you're holding the mouseMoveKey down"
 					if (Input.GetKey(mouseMoveKey)) {
-						Vector3Int mousePos = GameManager.inst.overworld.Real2GridPos(GameManager.inst.mouseManager.mouseWorldPos);
+						Vector3Int mousePos = GameManager.inst.overworld.GetMouseToGridPos();
 
 						if (_pathToQueue == null || mousePos != _pathToQueue.end) {
 							_pathToQueue?.UnShow();
 							_pathToQueue = _pathfinder.NullableBFS(registeredPlayer.gridPosition, mousePos);
 
 							if (_pathToQueue != null) {
-								_pathToQueue.interactFlag = Interactable(_pathToQueue.end);
+								_pathToQueue.interactFlag = IsInteractable(_pathToQueue.end);
 								_pathToQueue.Show();
 							} else {
 								_prevMousePos = mousePos;
@@ -153,7 +154,7 @@ public class PlayerArmyController : Controller
 	private void PlayerTakeAction(Func<Army, int> Action) {
 		// we've taken an action... but what did it cost
 		int ticksTaken = Action(registeredPlayer);
-		GameManager.inst.enemyController.AddTicksAll(ticksTaken);
+		GameManager.inst.enemyArmyController.AddTicksAll(ticksTaken);
 
 		// this delays key presses too much, maybe
 		StartCoroutine( registeredPlayer.spriteAnimator.ExecuteAfterMoving(() => {
@@ -186,9 +187,9 @@ public class PlayerArmyController : Controller
 		return Constants.standardTickCost;
 	}
 
-	private bool Interactable(Vector3Int v) {
+	private bool IsInteractable(Vector3Int v) {
 		HashSet<Vector3Int> canInteractWith = new HashSet<Vector3Int>();
-		canInteractWith.UnionWith(GameManager.inst.enemyController.currentEnemyPositions);
+		canInteractWith.UnionWith(GameManager.inst.enemyArmyController.currentEnemyPositions);
 		return canInteractWith.Contains(v);
 	}
 }

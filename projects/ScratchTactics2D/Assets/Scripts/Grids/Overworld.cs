@@ -42,6 +42,10 @@ public class Overworld : GameGrid, IPathable
 	public override bool IsInBounds(Vector3Int tilePos) {
 		return terrain.ContainsKey(tilePos);
 	}
+
+	public override Vector3Int GetMouseToGridPos() {
+		return Real2GridPos( FindObjectOfType<InputListener>().mouseWorldPos );
+	}
 	
 	public void EnableTint() {
 		tintCanvas.gameObject.SetActive(true);

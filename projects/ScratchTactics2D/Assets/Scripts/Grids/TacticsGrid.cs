@@ -66,22 +66,15 @@ public class TacticsGrid : GameGrid
 	}
 
 	public override Vector3 Grid2RealPos(Vector3Int tilePos) {
-		var gridVer = GetComponent<Grid>().GetCellCenterWorld(tilePos);
-		var tmVer = baseTilemap.GetCellCenterWorld(tilePos);
-		// return gridVer + (baseTilemap.tileAnchor * GetComponent<Grid>().cellSize);
-		Vector3 gridCS = GetComponent<Grid>().cellSize;
-		Vector3 anchor = baseTilemap.tileAnchor;
-		return gridVer + new Vector3(gridCS.x*anchor.x, gridCS.y*anchor.y, gridCS.z*anchor.z);
+		// offset because we need a unit to "sit on top of" a gridcell. This might be wrong, but we'll see?
+		return GetComponent<Grid>().CellToWorld(tilePos + new Vector3Int(0, 0, 1));
 	}
 	
 	public override Vector3Int Real2GridPos(Vector3 realPos) {
 		return GetComponent<Grid>().WorldToCell(realPos);
 	}
-	//
-	// END OVERRIDE ZONE
-	//
 
-	public Vector3Int? GetMouseToGridPos() {
+	public override Vector3Int GetMouseToGridPos() {
 		Vector3 screenPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
 		float maxZ = baseTilemap.cellBounds.max.z;
@@ -92,8 +85,11 @@ public class TacticsGrid : GameGrid
 			if (IsInBounds(gridPos)) return gridPos;
 		}
 
-		return null;
+		return Constants.unselectableVector3Int;
 	}
+	//
+	// END OVERRIDE ZONE
+	//
 
 	// use this to cast from the camera to the Tilemap, and find the first tile that exists in our surface
 	// This only "kind of" works, and is therefore deprecanted

@@ -28,7 +28,7 @@ public class FieldOfView
 		set {
 			_field = value;
 			foreach (Vector3Int pos in field.Keys) {
-				GlobalPlayerState.inst.previouslyRevealedOverworldPositions.Add(pos);
+				GlobalPlayerState.previouslyRevealedOverworldPositions.Add(pos);
 			}
 		}
 	}
@@ -216,7 +216,7 @@ public class FieldOfView
 				// interpolate the occlusion via maxVisibility and use the float for intensity
 				float i = Mathf.InverseLerp(0, maxVisibility, maxVisibility - occlusion);
 				HideAt(posFromTerrain, Mathf.Lerp(intensity, 1.0f, i));
-			} else if (GlobalPlayerState.inst.previouslyRevealedOverworldPositions.Contains(pos)) {
+			} else if (GlobalPlayerState.previouslyRevealedOverworldPositions.Contains(pos)) {
 				HideAt(posFromTerrain, intensity);
 			} else {
 				HideAt(posFromTerrain, 0f);

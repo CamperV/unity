@@ -8,7 +8,7 @@ public class PlayerUnitController : UnitController
 {
 	private PlayerUnit currentSelection;
 	private BattlePath currentSelectionFieldPath;
-	private TacticsGrid grid { get => GameManager.inst.tacticsManager.GetActiveGrid(); }
+	private TacticsGrid grid { get => Battle.active.grid; }
 
 	// possible actions for PlayerUnits and their bindings
 	private Dictionary<KeyCode, Action> actionBindings = new Dictionary<KeyCode, Action>();
@@ -96,11 +96,10 @@ public class PlayerUnitController : UnitController
 
 	private void DrawValidMoveForSelection(MoveRange mRange) {
 		currentSelectionFieldPath?.UnShow();
-		//
-		var gridPos = grid.GetMouseToGridPos() ?? mRange.origin;
+		Vector3Int gridPos = grid.GetMouseToGridPos();
 
 		// while the origin is a ValidMove, don't draw it
-		if (gridPos != mRange.origin && mRange.ValidMove(gridPos)) {
+		if (mRange.ValidMove(gridPos)) {
 			grid.SelectAtAlternate(gridPos);
 
 			// update this every time you move the mouse. Run time intensive? But shows path taken
@@ -160,11 +159,28 @@ public class PlayerUnitController : UnitController
 			case Enum.InteractState.unitSelected:
 				// if mouse is down on a current selection - bring up the menu and cancel move/attack selection
 				if (currentSelection.gridPosition == target) {
-					ClearSelection();
+					// ClearSelection();
+					
+					switch(((PlayerUnit)currentSelection).actionState) {
+						case Enum.PlayerUnitState.idle:
+							break;
+						case Enum.PlayerUnitState.menu:
+							break;
+						case Enum.PlayerUnitState.moveSelection:
+							if (currentSelection.OptionActive("Attack")) {
+								currentSelection.EnterAttackSelection();
+							}
+							break;
+						case Enum.PlayerUnitState.attackSelection:
+							if (currentSelection.OptionActive("Move")) {
+								currentSelection.EnterMoveSelection();
+							}
+							break;
+					}
 					break;
 				}
 
-				// OUR UNIT:
+				// else, the mouse is down on something that isn't the currently selected unit:
 				if (activeRegistry.Contains(currentSelection)) {
 					//
 					switch(((PlayerUnit)currentSelection).actionState) {
@@ -287,8 +303,7 @@ public class PlayerUnitController : UnitController
 	private Vector3Int GetMouseTarget() {
 		// check bboxes to reset target
 		// and if it isn't there, get the gridpos
-		var activeBattle = GameManager.inst.tacticsManager.activeBattle;
-		var unitsInBattle = activeBattle.GetRegisteredInBattle().OrderBy(it => it.gridPosition.y);
+		var unitsInBattle = Battle.active.RegisteredUnits.OrderBy(it => it.gridPosition.y);
 
 		foreach (Unit u in unitsInBattle) {
 			if (u.clickable && u.mouseOver) {
@@ -296,10 +311,11 @@ public class PlayerUnitController : UnitController
 			}
 		};
 
-		return grid.GetMouseToGridPos() ?? Constants.unselectableVector3Int;
+		// if you can't find a valid Unit, get the Grid location
+		return grid.GetMouseToGridPos();
 	}
 
 	public override HashSet<Vector3Int> GetObstacles() {		
-		return GameManager.inst.tacticsManager.GetActiveGrid().CurrentOccupantPositionsExcepting<PlayerUnit>();
+		return Battle.active.grid.CurrentOccupantPositionsExcepting<PlayerUnit>();
 	}
 }

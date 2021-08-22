@@ -7,11 +7,10 @@ public class GlobalPlayerState : MonoBehaviour
     // singleton
 	public static GlobalPlayerState inst = null; // enforces singleton behavior
 
-    public PlayerArmy army { get => GameManager.inst.player; }
-    public PlayerArmyController controller { get => GameManager.inst.playerController; }
-    public Vector3Int currentGridPosition { get => army.gridPosition; }
+    public static PlayerArmy army { get => GameManager.inst.playerArmy; }
+    public static PlayerArmyController controller { get => GameManager.inst.playerArmyController; }
 
-    public HashSet<Vector3Int> previouslyRevealedOverworldPositions;
+    public static HashSet<Vector3Int> previouslyRevealedOverworldPositions = new HashSet<Vector3Int>();
 
 	void Awake() {
 		// only allow one GlobalPlayerState to exist at any time

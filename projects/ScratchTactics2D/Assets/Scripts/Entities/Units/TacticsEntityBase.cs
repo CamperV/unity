@@ -21,9 +21,7 @@ public class TacticsEntityBase : MovingGridObject
 
 	public static T Spawn<T>(T prefab, Vector3Int tilePos, TacticsGrid grid) where T : TacticsEntityBase {
 		T entity = Instantiate(prefab, Vector3.zero, Quaternion.identity) as T;
-			
-		// entity.gridPosition = tilePos;
-		// entity.UpdateRealPosition(grid.Grid2RealPos(entity.gridPosition));
+		
 		entity.UpdateGridPosition(tilePos, grid);
 		grid.UpdateOccupantAt(entity.gridPosition, entity);
 		return entity;

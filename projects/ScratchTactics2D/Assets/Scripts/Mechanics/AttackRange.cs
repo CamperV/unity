@@ -23,7 +23,7 @@ public class AttackRange : FlowField
 				
 				// TODO: there are some inefficiences here, but do we really care?
 				// blossom out until we hit "range"
-				foreach (Vector3Int adjacent in currentPos.GridRadiate(GameManager.inst.tacticsManager.GetActiveGrid(), 1)) {	
+				foreach (Vector3Int adjacent in currentPos.GridRadiate(Battle.active.grid, 1)) {	
 					int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;
 					var updatedCost = distSoFar + 1;
 					if (updatedCost > range) continue;

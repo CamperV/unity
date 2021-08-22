@@ -68,10 +68,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 220231495522711647}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 782a38c8a7903844aa65221fbc1a16d9, type: 3}
+  m_Script: {fileID: 11500000, guid: 013d9d6dd71a1ee4f8b150e7d8ece2e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationTime: 0.3
+  rotationTime: 0.5
   battle: {fileID: 0}
   focalPoint: {x: 0, y: 0, z: 0}
   focalPivot: {x: 0, y: 0, z: 0}

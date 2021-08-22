@@ -132,12 +132,12 @@ public abstract class Unit : TacticsEntityBase
 			inMildFocus = true;	// prevents ghosting
 
 			// add the lil selection square
-			GameManager.inst.tacticsManager.GetActiveGrid().UnderlayAt(gridPosition, Constants.threatColorYellow);
+			Battle.active.grid.UnderlayAt(gridPosition, Constants.threatColorYellow);
 		} else {
 			inMildFocus = false;
 
 			// just in case
-			GameManager.inst.tacticsManager.GetActiveGrid().ResetUnderlayAt(gridPosition);
+			Battle.active.grid.ResetUnderlayAt(gridPosition);
 		}
 	}
 	
@@ -176,7 +176,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void UpdateThreatRange() {
-		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
+		var grid = Battle.active.grid;
 
 		var moveable = (OptionActive("Move")) ? MOVE : 0;
 		var attackable = (OptionActive("Attack")) ? _RANGE : 0;
@@ -186,7 +186,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void DisplayThreatRange() {
-		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
+		var grid = Battle.active.grid;
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
@@ -206,7 +206,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void DisplayStandingThreatRange() {
-		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
+		var grid = Battle.active.grid;
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
@@ -221,7 +221,7 @@ public abstract class Unit : TacticsEntityBase
 	public void ClearDisplayThreatRange() {
 		if (selectionLock) return;
 
-		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
+		var grid = Battle.active.grid;
 		//moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
 
@@ -254,7 +254,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public void TraverseTo(Vector3Int target, Path viaPath) {
-		TacticsGrid grid = GameManager.inst.tacticsManager.GetActiveGrid();
+		TacticsGrid grid = Battle.active.grid;
 
 		// movement animation
 		StartCoroutine( spriteAnimator.SmoothMovementPath(viaPath, grid) );
@@ -265,7 +265,7 @@ public abstract class Unit : TacticsEntityBase
 	}
 
 	public bool InStandingAttackRange(Vector3Int target) {
-		return gridPosition.GridRadiate(GameManager.inst.tacticsManager.GetActiveGrid(), _RANGE).ToList().Contains(target);
+		return gridPosition.GridRadiate(Battle.active.grid, _RANGE).ToList().Contains(target);
 	}
 
 	public Attack GenerateAttack(bool isAggressor = true) {
@@ -329,12 +329,11 @@ public abstract class Unit : TacticsEntityBase
 		// and therefore end the battle immediately, if last unit
 		gameObject.SetActive(false);
 
-		GameManager.inst.tacticsManager.GetActiveGrid().UpdateOccupantAt(gridPosition, null);
+		Battle.active.grid.UpdateOccupantAt(gridPosition, null);
 
 		// this unit will be automatically removed from the activeRegistry of the controller...
 		// but won't be removed from the actual Army unless we force it
-		var battle = GameManager.inst.tacticsManager.activeBattle;
-		Army oe = battle.GetArmyFromController(parentController);
+		Army oe = Battle.active.GetArmyFromController(parentController);
 		oe.DischargeUnit(this);
 	}
 }

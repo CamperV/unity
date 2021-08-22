@@ -8,12 +8,10 @@ using Extensions;
 public class EnemyUnitController : UnitController
 {
 	private bool subjectsActingTrigger;
-	private TacticsGrid grid;
 	
 	protected override void Awake() {
 		base.Awake();
 		myPhase = Enum.Phase.enemy;
-		grid = GameManager.inst.tacticsManager.GetActiveGrid();
 		subjectsActingTrigger = false;
 	}
 
@@ -67,13 +65,10 @@ public class EnemyUnitController : UnitController
 	}
 
 	public IEnumerator SubjectsTakeAction() {
-		// cache the playerController to pull from its registry
-		var playerController = GameManager.inst.tacticsManager.activeBattle.GetControllerFromPhase(Enum.Phase.player);
 		List<MovingGridObject> activeRegistryClone = new List<MovingGridObject>(activeRegistry);
 
 		for (int i = 0; i < activeRegistryClone.Count; i++) {
 			Unit subject = (Unit)activeRegistryClone[i];
-			var grid = GameManager.inst.tacticsManager.GetActiveGrid();
 			
 			// determine some order in which the enemies act
 			// target selection
@@ -81,9 +76,11 @@ public class EnemyUnitController : UnitController
 			// TODO: if multiple adversaries in range, pick the adversary to which you can do the most damage
 			subject.UpdateThreatRange();
 
-			var targetPosition = GetTargetInAttackRange(subject, playerController.activeRegistry);
-			if (targetPosition == -1*Vector3Int.one) {
-				targetPosition = GetClosestTarget(subject, playerController.activeRegistry);
+			List<PlayerUnit> targets = Battle.active.RegisteredUnits.OfType<PlayerUnit>().ToList();
+
+			Vector3Int targetPosition = GetTargetInAttackRange(subject, targets);
+			if (targetPosition == Constants.unselectableVector3Int) {
+				targetPosition = GetClosestTarget(subject, targets);
 			}
 
 			// now that we have the target location, find all the "attackable" squares surrounding it
@@ -100,13 +97,10 @@ public class EnemyUnitController : UnitController
 				// instead, we have to do the laborious thing, and REpath-find to the new clipped position
 				Debug.Log($"{subject}@{subject.gridPosition} found {optimalPosition} to attack {targetPosition}");
 				Path pathToTarget = new UnitPathfinder(subject.obstacles).BFS<Path>(subject.gridPosition, optimalPosition);
-				if (pathToTarget == null) {
-					Debug.Log($"A path does not exist :(");
-				}
 				pathToTarget.Clip(subject.moveRange);
 
 				// if the clipped path already has someone there... radiate again to find another place to stand nearby
-				if (!grid.VacantAt(pathToTarget.end)) {
+				if (!Battle.active.grid.VacantAt(pathToTarget.end)) {
 					Vector3Int finalPosition = NextVacantPos(subject, pathToTarget.end);
 					pathToTarget = new UnitPathfinder(subject.obstacles).BFS<Path>(subject.gridPosition, finalPosition);
 				}
@@ -120,7 +114,7 @@ public class EnemyUnitController : UnitController
 			if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, targetPosition)) {
 				subject.SetOption("Attack", false);
 
-				var unitAt = (Unit)grid.OccupantAt(targetPosition);
+				var unitAt = (Unit)Battle.active.grid.OccupantAt(targetPosition);
 				var engagement = new Engagement(subject, unitAt);
 
 				// wait until the engagement has ended
@@ -140,19 +134,19 @@ public class EnemyUnitController : UnitController
 		}
 	}
 
-	private Vector3Int GetTargetInAttackRange(Unit subject, List<MovingGridObject> targets) {
+	private Vector3Int GetTargetInAttackRange(Unit subject, List<PlayerUnit> targets) {
 		var attackTargets = targets.FindAll(it => subject.attackRange.field.ContainsKey(it.gridPosition));
-		return (attackTargets.Any()) ? GetClosestTarget(subject, attackTargets) : -1*Vector3Int.one;
+		return (attackTargets.Any()) ? GetClosestTarget(subject, attackTargets) : Constants.unselectableVector3Int;
 	}
 
-	private Vector3Int GetClosestTarget(Unit subject, List<MovingGridObject> targets) {
+	private Vector3Int GetClosestTarget(Unit subject, List<PlayerUnit> targets) {
 		var minDist = targets.Min(it => it.gridPosition.ManhattanDistance(subject.gridPosition));
 		return targets.First(it => it.gridPosition.ManhattanDistance(subject.gridPosition) == minDist).gridPosition;
 	}
 
 	private Vector3Int GetOptimalToAttack(Unit subject, Vector3Int targetPosition) {
 		bool SubjectCanStand(Vector3Int v) {
-			return grid.IsInBounds(v) && (grid.VacantAt(v) || v == subject.gridPosition);
+			return Battle.active.grid.IsInBounds(v) && (Battle.active.grid.VacantAt(v) || v == subject.gridPosition);
 		}
 		float DistToTarget(Vector3Int v) { return targetPosition.ManhattanDistance(v); }
 		float DistToSubject(Vector3Int v) { return subject.gridPosition.ManhattanDistance(v); }
@@ -160,7 +154,7 @@ public class EnemyUnitController : UnitController
 
 		// max allowable attack positions (max range/reach)
 		// NOTE: need to Radiate again if the sequence is empty.
-		var targetable = targetPosition.GridRadiate(GameManager.inst.tacticsManager.GetActiveGrid(), subject._RANGE).Where(it => SubjectCanStand(it));
+		var targetable = targetPosition.GridRadiate(Battle.active.grid, subject._RANGE).Where(it => SubjectCanStand(it));
 		float maxDistWithin = targetable.Max(it => DistToTarget(it));
 		var atMaxDist = targetable.Where(it => DistToTarget(it) == maxDistWithin);
 
@@ -171,9 +165,8 @@ public class EnemyUnitController : UnitController
 	}
 
 	public Vector3Int NextVacantPos(Unit subject, Vector3Int origPos) {
-		var grid = GameManager.inst.tacticsManager.GetActiveGrid();
-		foreach (var v in origPos.GridRadiate(grid, subject.MOVE)) {
-			if (subject.moveRange.field.ContainsKey(v) && grid.VacantAt(v)) {
+		foreach (var v in origPos.GridRadiate(Battle.active.grid, subject.MOVE)) {
+			if (subject.moveRange.field.ContainsKey(v) && Battle.active.grid.VacantAt(v)) {
 				return v;
 			}
 		}
@@ -182,6 +175,6 @@ public class EnemyUnitController : UnitController
 
 
 	public override HashSet<Vector3Int> GetObstacles() {		
-		return GameManager.inst.tacticsManager.GetActiveGrid().CurrentOccupantPositionsExcepting<EnemyUnit>();
+		return Battle.active.grid.CurrentOccupantPositionsExcepting<EnemyUnit>();
 	}
 }
