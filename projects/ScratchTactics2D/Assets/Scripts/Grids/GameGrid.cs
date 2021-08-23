@@ -170,7 +170,7 @@ public abstract class GameGrid : MonoBehaviour, IPathable
 		return allPositions;
 	}
 
-	public Dictionary<Vector3Int, T> GetTilemapDict<T>(Tilemap tilemap) where T : Tile {
+	public static Dictionary<Vector3Int, T> GetTilemapDict<T>(Tilemap tilemap) where T : Tile {
 		Dictionary<Vector3Int, T> retVal = new Dictionary<Vector3Int, T>();
 
 		foreach (var pos in tilemap.cellBounds.allPositionsWithin) {

@@ -185,7 +185,7 @@ public abstract class Unit : TacticsEntityBase
 		attackRange = new AttackRange(moveRange, attackable);
 	}
 
-	public void DisplayThreatRange() {
+	public virtual void DisplayThreatRange() {
 		var grid = Battle.active.grid;
 		moveRange?.ClearDisplay(grid);
 		attackRange?.ClearDisplay(grid);
@@ -194,28 +194,20 @@ public abstract class Unit : TacticsEntityBase
 		attackRange.Display(grid);
 		moveRange.Display(grid);
 
-		foreach (Vector3Int v in GetThreatenedTiles()) {
-			if (moveRange.field.ContainsKey(v)) {
-				grid.UnderlayAt(v, Constants.threatColorIndigo);
-				continue; // don't highlight the move and the attack
-			}
-		}
-
 		// add the lil selection square
 		grid.UnderlayAt(gridPosition, Constants.selectColorWhite);
 	}
 
-	public void DisplayStandingThreatRange() {
-		var grid = Battle.active.grid;
-		moveRange?.ClearDisplay(grid);
-		attackRange?.ClearDisplay(grid);
+	public virtual void DisplayStandingThreatRange() {
+		moveRange?.ClearDisplay(Battle.active.grid);
+		attackRange?.ClearDisplay(Battle.active.grid);
 
 		MoveRange standing = new MoveRange(gridPosition);
 		attackRange = new AttackRange(standing, _RANGE);
-		attackRange.Display(grid);
+		attackRange.Display(Battle.active.grid);
 
 		// add the lil selection square
-		grid.UnderlayAt(gridPosition, Constants.selectColorWhite);
+		Battle.active.grid.UnderlayAt(gridPosition, Constants.selectColorWhite);
 	}
 
 	public void ClearDisplayThreatRange() {

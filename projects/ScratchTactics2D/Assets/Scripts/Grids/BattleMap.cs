@@ -194,4 +194,48 @@ public class BattleMap : MonoBehaviour
 		GetPositionsOfType<SpawnMarkerTacticsTile_0>(overlayTilemap).ToList().ForEach(v => positions.Add(v + offset));
 		return new Zone(positions);
 	}
+
+    public static IEnumerator AnimateDocking(BattleMap docker, Vector3Int dockingOffset, List<Unit> spawnedUnits, Vector3Int orientation) {
+		float motionTime = 5.0f;
+        float delayTime = 0.0f;
+        
+		Dictionary<Vector3Int, TacticsTile> finalPositions = new Dictionary<Vector3Int, TacticsTile>();
+		var _finalPositions = GameGrid.GetTilemapDict<TacticsTile>(docker.baseTilemap);
+		foreach (Vector3Int _final in _finalPositions.Keys) {
+			finalPositions[_final + dockingOffset] = _finalPositions[_final];
+		}
+
+        float totalTime = (delayTime * finalPositions.Keys.Count) + motionTime;
+        
+		// for all the final positions, set their transparency in the true Battle.active
+		// for all the spawnedUnits, set transparency for totalTime
+		// create the MovingSprite facsimilies and send them on their way
+
+        // animate all the tiles first
+    	foreach (Vector3Int _to in finalPositions.Keys) {
+            TacticsTile tt = finalPositions[_to];
+
+            Vector3Int _from = _to + (-10 * new Vector3Int(_to.x*orientation.x, _to.y*orientation.y, _to.z*orientation.z));
+			Vector3 from = docker.baseTilemap.GetCellCenterWorld(_from);
+			Vector3 to = docker.baseTilemap.GetCellCenterWorld(_to);
+			 
+			MovingSprite anim = MovingSprite.ConstructWith(from, tt.sprite, "Tactics Entities", Battle.active.transform);
+            anim.SendToAndDestroy(to, motionTime);
+		}
+
+		foreach (Unit u in spawnedUnits) {
+            // for units and such, we need them to be on top of their own tile, but not obscuring others
+            // Vector3 _sortingOffset =  new Vector3(0, 0, e.zHeight+1f);
+
+			Vector3Int _to = u.gridPosition;
+			Vector3Int _from = _to + (-10 * new Vector3Int(_to.x*orientation.x, _to.y*orientation.y, _to.z*orientation.z));
+			Vector3 from = docker.baseTilemap.GetCellCenterWorld(_from);
+			Vector3 to = docker.baseTilemap.GetCellCenterWorld(_to);
+
+        	MovingSprite anim = MovingSprite.ConstructWith(from, u.GetComponent<SpriteRenderer>().sprite, "Tactics Entities", Battle.active.transform);
+            anim.transform.localScale = u.transform.localScale;
+            anim.SendToAndDestroy(to, motionTime);
+		}
+        yield return null;
+    }
 }

@@ -50,4 +50,10 @@ public class AttackRange : FlowField
 		bool withinRange = tilePos.ManhattanDistance(currentSelection.gridPosition) <= currentSelection._RANGE;
 		return field.ContainsKey(tilePos) && withinRange;
 	}
+
+	public override void Display(GameGrid grid) {
+		foreach (Vector3Int tilePos in field.Keys) {
+			grid.UnderlayAt(tilePos, Constants.threatColorRed);
+		}
+	}
 }

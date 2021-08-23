@@ -69,6 +69,25 @@ public abstract class PlayerUnit : Unit
 		//unitUI.healthBar.Hide();
 	}
 
+	public override void DisplayThreatRange() {
+		moveRange?.ClearDisplay(Battle.active.grid);
+		attackRange?.ClearDisplay(Battle.active.grid);
+
+		UpdateThreatRange();
+		attackRange.Display(Battle.active.grid);
+		moveRange.Display(Battle.active.grid);
+
+		foreach (Vector3Int v in GetThreatenedTiles()) {
+			if (moveRange.field.ContainsKey(v)) {
+				Battle.active.grid.UnderlayAt(v, Constants.threatColorIndigo);
+				continue; // don't highlight the move and the attack
+			}
+		}
+
+		// add the lil selection square
+		Battle.active.grid.UnderlayAt(gridPosition, Constants.selectColorWhite);
+	}
+
 	private void EnterState(Enum.PlayerUnitState state) {
 		Battle.active.GetComponent<BattleCamera>().ReleaseLock();
 		actionState = state;

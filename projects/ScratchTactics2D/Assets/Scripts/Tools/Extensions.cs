@@ -84,7 +84,9 @@ namespace Extensions
             while(queue.Count > 0) {
                 Vector2Int curr = queue.Dequeue();
                 if (toEnumerate.Contains(curr)) continue; 
-                if (curr != _v) toEnumerate.Add(curr);
+                if (curr != _v && grid.IsInBounds(grid.To3D(curr))) {
+                    toEnumerate.Add(curr);
+                }
 
                 if (curr.ManhattanDistance(_v) < range) {
                     queue.Enqueue(curr + Vector2Int.up);

@@ -27,4 +27,12 @@ public class MoveRange : FlowField
 			}
 		}
 	}
+
+	public void Display(GameGrid grid, Color colorOverride) {
+		foreach (Vector3Int tilePos in field.Keys) {
+			if (ValidMove(tilePos)) {
+				grid.UnderlayAt(tilePos, colorOverride);
+			}
+		}
+	}
 }

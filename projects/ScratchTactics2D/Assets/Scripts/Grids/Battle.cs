@@ -219,11 +219,13 @@ public class Battle : MonoBehaviour
 		Zone playerSpawnZone = battleMap.GetSpawnZoneFromOrientation(player.gridPosition - other.gridPosition);
 		Zone otherSpawnZone = battleMap.GetSpawnZoneFromOrientation(other.gridPosition - player.gridPosition);
 
-		SpawnUnits(player, playerSpawnZone);
-		SpawnUnits(other, otherSpawnZone);
+		var _spawnedPlayer = SpawnUnits(player, playerSpawnZone);
+		var _spawnedOther = SpawnUnits(other, otherSpawnZone);
 	}
 
-	private void SpawnUnits(Army army, Zone spawnZone) {		
+	private List<Unit> SpawnUnits(Army army, Zone spawnZone) {
+		List<Unit> retVal = new List<Unit>();
+
 		// do spawn-y things and add them to the activeUnit registry
 		// in the future, assign them to a Director (either player control or AI)
 		var spawnPositions = spawnZone.Positions.ToList().RandomSelections<Vector3Int>(army.numUnits);
@@ -237,11 +239,13 @@ public class Battle : MonoBehaviour
 			//
 			unit.ApplyState(unitState);
 			GetControllerFromTag(army).Register(unit);
+			retVal.Add(unit);
 		}
+		
+		return retVal;
 	}
 
 	public void AddParticipant(Army joiningEntity, Terrain joiningTerrain) {
-		Debug.Log($"Trying to add participant {joiningEntity}@{joiningTerrain} to {this}");
 		Terrain playerTerrain = GameManager.inst.overworld.TerrainAt(player.gridPosition);
 		
 		// load correct docker
@@ -277,7 +281,13 @@ public class Battle : MonoBehaviour
 		// spawn in the enemies
 		// add enemies to the EnemyUnitController which is active
 		Zone joiningSpawnZone = docker.GetDockerSpawnZone(dockingOffset);
-		SpawnUnits(joiningEntity, joiningSpawnZone);
+		List<Unit> spawnedUnits = SpawnUnits(joiningEntity, joiningSpawnZone);
+
+		// do all the application, but freeze the battle state, record the tiles and units,
+		// and animate them independently
+		// StartCoroutine(
+		// 	BattleMap.AnimateDocking(docker, dockingOffset, spawnedUnits, jOrientation)
+		// );
 
 		// finally:
 		docker.gameObject.SetActive(false);

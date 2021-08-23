@@ -159,7 +159,7 @@ public class BattleCamera : MonoBehaviour
         if (rotateLock) return;
 
         // record current tiles at current locations for anim part 1
-        var prerotationTileDict = battle.grid.GetTilemapDict<TacticsTile>(battle.grid.baseTilemap);
+        var prerotationTileDict = GameGrid.GetTilemapDict<TacticsTile>(battle.grid.baseTilemap);
         var prerotationPosition = battle.grid.GetGridCenterReal();
         BattleMap.RotateTilemap(battle.grid.baseTilemap, Transformer);
         
