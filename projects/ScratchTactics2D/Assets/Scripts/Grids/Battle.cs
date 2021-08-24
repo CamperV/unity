@@ -201,7 +201,7 @@ public class Battle : MonoBehaviour
 		// our current method: random
 		// note that we need to Instantiate to get certain fields from the Components
 		// otherwise the GO is marked as inactive and we can't query it
-		battleMap = Instantiate(battleMaps.PopRandom<BattleMap>(), transform);
+		battleMap = Instantiate(battleMaps.PopRandom<BattleMap>());
 
 		Vector3Int orientation = playerTerrain.position - otherTerrain.position;
 		battleMap.playerEnemyOrientation = orientation;
@@ -251,7 +251,7 @@ public class Battle : MonoBehaviour
 		// load correct docker
 		string terrainDesignator = $"{playerTerrain.tag}:{joiningTerrain.tag}";
 		List<BattleMap> dockerMaps = BattleMapGenerator.GetDockersFromDesignator(terrainDesignator);
-		BattleMap docker = Instantiate(dockerMaps.PopRandom<BattleMap>(), transform);
+		BattleMap docker = Instantiate(dockerMaps.PopRandom<BattleMap>());
 		
 		// determine orientation to player's terrain
 		Vector3Int jOrientation = playerTerrain.position - joiningTerrain.position;
