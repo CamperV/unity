@@ -25,7 +25,7 @@ public class PlayerUnitController : UnitController
 	}
 
 	public override bool MyPhaseActive() {
-		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle;
+		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle && Battle.active.interactable;
 	}
 
 	public override void Register(MovingGridObject subject) {
@@ -94,16 +94,22 @@ public class PlayerUnitController : UnitController
 		return KeyCode.None;
 	}
 
+	private Vector3Int moveSelectionGridPos;
 	private void DrawValidMoveForSelection(MoveRange mRange) {
 		currentSelectionFieldPath?.UnShow();
-		Vector3Int gridPos = grid.GetMouseToGridPos();
+
+		Vector3Int currentGridPos = grid.GetMouseToGridPos();
+
+		// uncomment this to always be able to move even when the mouse target is not on the grid
+		// moveSelectionGridPos = (mRange.ValidMove(currentGridPos)) ? currentGridPos : moveSelectionGridPos;
+		moveSelectionGridPos = currentGridPos;
 
 		// while the origin is a ValidMove, don't draw it
-		if (mRange.ValidMove(gridPos)) {
-			grid.SelectAtAlternate(gridPos);
+		if (mRange.ValidMove(moveSelectionGridPos)) {
+			grid.SelectAtAlternate(moveSelectionGridPos);
 
 			// update this every time you move the mouse. Run time intensive? But shows path taken
-			currentSelectionFieldPath = new FlowFieldPathfinder(mRange).BFS<BattlePath>(gridPos);
+			currentSelectionFieldPath = new FlowFieldPathfinder(mRange).BFS<BattlePath>(moveSelectionGridPos);
 			currentSelectionFieldPath.Show();
 		}
 	}
@@ -189,14 +195,14 @@ public class PlayerUnitController : UnitController
 					switch(((PlayerUnit)currentSelection).actionState) {
 						case Enum.PlayerUnitState.moveSelection:
 							// if the mouseDown is on a valid square, move to it
-							if (currentSelection.moveRange.ValidMove(target)) {
+							if (currentSelection.moveRange.ValidMove(moveSelectionGridPos)) {
 								currentSelection.SetOption("Move", false);
 
 								// unshow some ugly bits as we travel
 								currentSelection.UnlockSelection();
 								currentSelectionFieldPath?.UnShow();
 
-								currentSelection.TraverseTo(target, currentSelectionFieldPath);
+								currentSelection.TraverseTo(moveSelectionGridPos, currentSelectionFieldPath);
 
 								// on end
 								StartCoroutine( currentSelection.spriteAnimator.ExecuteAfterMoving(() => {

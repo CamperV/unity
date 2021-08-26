@@ -36,6 +36,7 @@ public class Battle : MonoBehaviour
 	[HideInInspector] public int savedTurn;
 	[HideInInspector] public bool isPaused = false;
 	[HideInInspector] public bool hidden = false; // this is for InvisibleFor overriding all other alpha writes
+	[HideInInspector] public bool interactable = true;
 
 	// handles construction of Battle and management of tacticsGrid
 	// NOTE: we can only ever start a battle with two participants
@@ -68,14 +69,14 @@ public class Battle : MonoBehaviour
 	}
 
 	void Update() {
+		// .hidden overrides any transparency modifications that might need to happen in this Update() loop
+		if (!this.interactable || this.hidden) return;
+
 		// prematurely destroy battle
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			Debug.Log("Exiting Battle...");
 			this.Destroy();
 		}
-
-		// .hidden overrides any transparency modifications that might need to happen in this Update() loop
-		if (this.hidden) return;
 
 		// focus control:
 		// move it all into once-per-frame centralized check, because we can't guarantee 
@@ -111,6 +112,17 @@ public class Battle : MonoBehaviour
 				var occupantAt = grid.OccupantAt(northPos);
 				if (occupantAt?.GetType().IsSubclassOf(typeof(Unit)) ?? false) {
 					if ((occupantAt as Unit).inFocus) {
+						ghosted = true;
+					}
+				}
+			}
+
+			// specific contextual check for move selections, when the move is behind the PlayerUnit
+			if (u.inFocus && u.GetType().IsSubclassOf(typeof(PlayerUnit))) {
+				if ((u as PlayerUnit).actionState == Enum.PlayerUnitState.moveSelection) {
+					// if there is any overlay that can be obscured (only above the Unit):
+					Vector3Int northPos = u.gridPosition.GridPosInDirection(grid, new Vector2Int(1, 1));
+					if (grid.GetOverlayAt(northPos)) {
 						ghosted = true;
 					}
 				}
@@ -264,7 +276,7 @@ public class Battle : MonoBehaviour
 		Debug.Assert(bmDockingPoints.Count == 2);
 		Debug.Assert(drDockingPoints.Count == 2);
 
-		Vector3Int dockingAddlOffset = new Vector3Int(-jOrientation.y, -jOrientation.x, jOrientation.z);
+		Vector3Int dockingAddlOffset = new Vector3Int(-jOrientation.y, jOrientation.x, jOrientation.z);
 		Vector3Int dockingOffset = bmDockingPoints[0] - drDockingPoints[0] + dockingAddlOffset;
 		Vector3Int dockingOffset2 = bmDockingPoints[1] - drDockingPoints[1] + dockingAddlOffset;
 		Debug.Assert(dockingOffset == dockingOffset2);
@@ -285,12 +297,13 @@ public class Battle : MonoBehaviour
 
 		// do all the application, but freeze the battle state, record the tiles and units,
 		// and animate them independently
-		// StartCoroutine(
-		// 	BattleMap.AnimateDocking(docker, dockingOffset, spawnedUnits, jOrientation)
-		// );
+		float animTime = docker.AnimateDocking(dockingOffset, spawnedUnits, jOrientation);
+		StartCoroutine( Utils.DelayedExecute(animTime, () => {
+			StartCoroutine( GetComponent<BattleCamera>().Shake(0.75f) );
+		 }) );
 
 		// finally:
-		docker.gameObject.SetActive(false);
+		//docker.gameObject.SetActive(false);
 	}
 
 	public void Resolve(List<Army> defeatedEntities) {
@@ -421,8 +434,9 @@ public class Battle : MonoBehaviour
 		StartCoroutine( _InvisibleFor(fixedTime) );
 	}
 
-	public IEnumerator _InvisibleFor(float fixedTime) {
+	private IEnumerator _InvisibleFor(float fixedTime) {
 		hidden = true;
+		interactable = false;
 		Color _invis = Color.white.WithAlpha(0f);
 
 		// hide them all, then wait, then un-hide
@@ -460,31 +474,9 @@ public class Battle : MonoBehaviour
 				grid.TintTile(tm, pos, tileColors[pos]);
 			}
 		}
-
+		
+		interactable = true;
 		hidden = false;
-	}
-
-	// DEPRECATED in favor of something a bit more procedural
-	public void _Deprecated_InvisibleFor(float fixedTime) {
-		hidden = true;
-		_Deprecated_ColorAll(Color.white.WithAlpha(0.0f));
-
-		StartCoroutine( Utils.DelayedExecute(fixedTime, () => {
-			_Deprecated_ColorAll(Color.white);
-			hidden = false;
-		}));
-	}
-	private void _Deprecated_ColorAll(Color color) {
-		SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
-		foreach (SpriteRenderer sr in renderers) {
-			sr.color = color;
-		}
-		Tilemap[] tilemaps = GetComponentsInChildren<Tilemap>();
-		foreach (Tilemap tm in tilemaps) {
-			foreach (Vector3Int pos in GameGrid.GetPositions(tm)) {
-				grid.TintTile(tm, pos, color);
-			}
-		}
 	}
 
 	// pause, hand control off to the GameManager.overworld state
@@ -492,14 +484,16 @@ public class Battle : MonoBehaviour
 		Debug.Log($"paused battle");
 		savedTurn = GameManager.inst.phaseManager.currentTurn;
 		isPaused = true;
-		gameObject.SetActive(false);
+		hidden = true;
+		interactable = false;
 		GameManager.inst.overworld.DisableTint();
 	}
 
 	public void Resume() {
 		Debug.Log($"resumed battle");
 		isPaused = false;
-		gameObject.SetActive(true);
+		hidden = false;
+		interactable = true;
 
 		// tint overworld to give focus to battle
 		GameManager.inst.overworld.EnableTint();

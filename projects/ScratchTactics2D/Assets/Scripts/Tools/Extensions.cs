@@ -75,30 +75,45 @@ namespace Extensions
         }
 
         // Vector3Int
+        // public static IEnumerable<Vector3Int> GridRadiate(this Vector3Int v, TacticsGrid grid, int range) {
+        //     List<Vector2Int> toEnumerate = new List<Vector2Int>();
+        //     Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        //     Vector2Int _v = new Vector2Int(v.x, v.y);
+        //     queue.Enqueue(_v);
+
+        //     while(queue.Count > 0) {
+        //         Vector2Int curr = queue.Dequeue();
+        //         if (toEnumerate.Contains(curr)) continue; 
+        //         if (curr != _v && grid.IsInBounds(grid.To3D(curr))) {
+        //             toEnumerate.Add(curr);
+        //         }
+
+        //         if (curr.ManhattanDistance(_v) < range) {
+        //             queue.Enqueue(curr + Vector2Int.up);
+        //             queue.Enqueue(curr + Vector2Int.right);
+        //             queue.Enqueue(curr + Vector2Int.down);
+        //             queue.Enqueue(curr + Vector2Int.left);
+        //         }
+        //     }
+
+        //     // now spill the beans
+        //     foreach (var e in toEnumerate) {
+        //         yield return grid.To3D(e);
+        //     }
+        // }
         public static IEnumerable<Vector3Int> GridRadiate(this Vector3Int v, TacticsGrid grid, int range) {
-            List<Vector2Int> toEnumerate = new List<Vector2Int>();
-            Queue<Vector2Int> queue = new Queue<Vector2Int>();
-            Vector2Int _v = new Vector2Int(v.x, v.y);
-            queue.Enqueue(_v);
+            // quick scalable approach: iterate through a virtual cube and simply check the bounds and yield if within
+            Vector3Int _lower = v - new Vector3Int(range, range, range);
+            Vector3Int _upper = v + new Vector3Int(range, range, range);
 
-            while(queue.Count > 0) {
-                Vector2Int curr = queue.Dequeue();
-                if (toEnumerate.Contains(curr)) continue; 
-                if (curr != _v && grid.IsInBounds(grid.To3D(curr))) {
-                    toEnumerate.Add(curr);
+            for (int x = _lower.x; x <= _upper.x; x++) {
+                for (int y = _lower.y; y <= _upper.y; y++) {
+                    for (int z = _lower.z; z <= _upper.z; z++) {
+                        Vector3Int _v = new Vector3Int(x, y, z);
+                        if (_v != v && grid.IsInBounds(_v) && v.ManhattanDistance(_v) <= range)
+                            yield return _v;
+                    }
                 }
-
-                if (curr.ManhattanDistance(_v) < range) {
-                    queue.Enqueue(curr + Vector2Int.up);
-                    queue.Enqueue(curr + Vector2Int.right);
-                    queue.Enqueue(curr + Vector2Int.down);
-                    queue.Enqueue(curr + Vector2Int.left);
-                }
-            }
-
-            // now spill the beans
-            foreach (var e in toEnumerate) {
-                yield return grid.To3D(e);
             }
         }
 

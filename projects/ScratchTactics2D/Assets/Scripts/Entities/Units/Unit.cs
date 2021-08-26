@@ -102,16 +102,21 @@ public abstract class Unit : TacticsEntityBase
 			["Move"]   = true,
 			["Attack"] = true
 		};
+
+		transform.localScale = new Vector3(spriteScaleFactor, spriteScaleFactor, 1.0f);
+		foreach (Transform childT in transform) {
+			childT.localScale = new Vector3(1.0f/spriteScaleFactor, 1.0f/spriteScaleFactor, 1.0f);
+		}
 	}
 
 	void Start() {
 		// scale down to avoid weird parent/child problems w/ UnitUI
 		// apply inverse scale to all children of our transform
 		// Unity Enumerable<Transform> is weird and I wish they'd just use a method for getting children
-        transform.localScale = new Vector3(spriteScaleFactor, spriteScaleFactor, 1.0f);
-		foreach (Transform childT in transform) {
-			childT.localScale = new Vector3(1.0f/spriteScaleFactor, 1.0f/spriteScaleFactor, 1.0f);
-		}
+        // transform.localScale = new Vector3(spriteScaleFactor, spriteScaleFactor, 1.0f);
+		// foreach (Transform childT in transform) {
+		// 	childT.localScale = new Vector3(1.0f/spriteScaleFactor, 1.0f/spriteScaleFactor, 1.0f);
+		// }
 	}
 
 	public void SetFocus(bool takeFocus) {

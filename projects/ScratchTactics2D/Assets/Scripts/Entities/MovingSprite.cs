@@ -24,6 +24,20 @@ public class MovingSprite : MonoBehaviour
 		return go.GetComponent<MovingSprite>();
 	}
 
+	public static MovingSprite ConstructWith(Vector3 pos, Sprite sprite, string layer) {
+		GameObject go = new GameObject($"MovingSprite_{sprite.name}");
+		go.transform.position = pos;
+		
+		go.AddComponent<SpriteRenderer>();
+		go.AddComponent<SpriteAnimator>();
+		go.AddComponent<MovingSprite>();
+		go.AddComponent<SpriteDirectionalBlurBehavior>();
+
+		go.GetComponent<SpriteRenderer>().sprite = sprite;
+		go.GetComponent<SpriteRenderer>().sortingLayerName = layer;
+		return go.GetComponent<MovingSprite>();
+	}
+
 	void Awake() {
 		spriteAnimator = GetComponent<SpriteAnimator>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -55,6 +69,12 @@ public class MovingSprite : MonoBehaviour
 
 	public void SendToAndDestroyArc(Vector3 toPosition, Vector3 relativePivot, float fixedTime) {
 		StartCoroutine( spriteAnimator.SmoothMovementArc(toPosition, relativePivot, fixedTime) );
+		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => Destroy(gameObject)) );
+	}
+
+	public void SendToAndDestroyFadeUp(Vector3 toPosition, float fixedTime) {
+		StartCoroutine( spriteAnimator.SmoothMovement(toPosition, fixedTime) );
+		StartCoroutine( spriteAnimator.FadeUp(fixedTime) );
 		StartCoroutine( spriteAnimator.ExecuteAfterMoving(() => Destroy(gameObject)) );
 	}
 }

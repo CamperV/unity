@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using System.Linq;
+using Random = UnityEngine.Random;
 
 public class BattleCamera : MonoBehaviour
 {
@@ -144,6 +145,20 @@ public class BattleCamera : MonoBehaviour
             viewLock = false;
         }
     }
+
+	// not relative to time: shake only 3 times, wait a static amt of time
+	public IEnumerator Shake(float radius) {
+        Vector3 ogPosition = focalPoint;
+
+		for (int i=0; i<5; i++) {
+			Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
+			focalPoint = ogPosition + offset;
+
+			radius /= 2f;
+			yield return new WaitForSeconds(0.05f);
+		}
+		focalPoint = ogPosition;
+	}
 
     // this is a flat speed, with no acceleration
     // all "acceleration" is from the battle -> focal Lerp

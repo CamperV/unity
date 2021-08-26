@@ -16,7 +16,7 @@ public class EnemyUnitController : UnitController
 	}
 
 	public override bool MyPhaseActive() {
-		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle;
+		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle && Battle.active.interactable;
 	}
 
 	public override void TriggerPhase() {

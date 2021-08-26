@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
+using Extensions;
 
 public class BattleMap : MonoBehaviour
 {
@@ -195,47 +196,84 @@ public class BattleMap : MonoBehaviour
 		return new Zone(positions);
 	}
 
-    public static IEnumerator AnimateDocking(BattleMap docker, Vector3Int dockingOffset, List<Unit> spawnedUnits, Vector3Int orientation) {
-		float motionTime = 5.0f;
+	// always animate this BEFORE setting the baseTilemap
+    public float AnimateDocking(Vector3Int dockingOffset, List<Unit> spawnedUnits, Vector3Int orientation) {
+		float motionTime = 0.35f;
         float delayTime = 0.0f;
         
 		Dictionary<Vector3Int, TacticsTile> finalPositions = new Dictionary<Vector3Int, TacticsTile>();
-		var _finalPositions = GameGrid.GetTilemapDict<TacticsTile>(docker.baseTilemap);
+		var _finalPositions = GameGrid.GetTilemapDict<TacticsTile>(baseTilemap);
 		foreach (Vector3Int _final in _finalPositions.Keys) {
 			finalPositions[_final + dockingOffset] = _finalPositions[_final];
 		}
 
-        float totalTime = (delayTime * finalPositions.Keys.Count) + motionTime;
-        
+		// I hate that this code found its way all the way down here, but:
+		//  set the transparency for a set time for all affected tiles and units
 		// for all the final positions, set their transparency in the true Battle.active
 		// for all the spawnedUnits, set transparency for totalTime
+        float totalTime = (delayTime * finalPositions.Keys.Count) + motionTime;
+		StartCoroutine( _InvisibleFor(totalTime, finalPositions, spawnedUnits) );
+        
 		// create the MovingSprite facsimilies and send them on their way
-
         // animate all the tiles first
+		int initialDistance = 5;
+
     	foreach (Vector3Int _to in finalPositions.Keys) {
             TacticsTile tt = finalPositions[_to];
+            //Vector3 _sortingOffset =  new Vector3(0, 0, tt.zHeight);
+			Vector3 _sortingOffset =  new Vector3(0, 0, 0);
 
-            Vector3Int _from = _to + (-10 * new Vector3Int(_to.x*orientation.x, _to.y*orientation.y, _to.z*orientation.z));
-			Vector3 from = docker.baseTilemap.GetCellCenterWorld(_from);
-			Vector3 to = docker.baseTilemap.GetCellCenterWorld(_to);
+			Vector3Int _from = _to + new Vector3Int(-initialDistance*orientation.y, initialDistance*orientation.x, 0);
+			Vector3 from = Battle.active.grid.Grid2RealPos(_from) + _sortingOffset;
+			Vector3 to = Battle.active.grid.Grid2RealPos(_to) + _sortingOffset;
 			 
-			MovingSprite anim = MovingSprite.ConstructWith(from, tt.sprite, "Tactics Entities", Battle.active.transform);
-            anim.SendToAndDestroy(to, motionTime);
+			MovingSprite anim = MovingSprite.ConstructWith(from, tt.sprite, "Tactics Entities");
+            anim.SendToAndDestroyFadeUp(to, motionTime);
 		}
 
+        // for units and such, we need them to be on top of their own tile, but not obscuring others
 		foreach (Unit u in spawnedUnits) {
-            // for units and such, we need them to be on top of their own tile, but not obscuring others
-            // Vector3 _sortingOffset =  new Vector3(0, 0, e.zHeight+1f);
+			Vector3 _sortingOffset =  new Vector3(0, 0, u.zHeight+1f);
 
 			Vector3Int _to = u.gridPosition;
-			Vector3Int _from = _to + (-10 * new Vector3Int(_to.x*orientation.x, _to.y*orientation.y, _to.z*orientation.z));
-			Vector3 from = docker.baseTilemap.GetCellCenterWorld(_from);
-			Vector3 to = docker.baseTilemap.GetCellCenterWorld(_to);
+			Vector3Int _from = _to + new Vector3Int(-initialDistance*orientation.y, -initialDistance*orientation.x, 0);
+			Vector3 from = Battle.active.grid.Grid2RealPos(_from) + _sortingOffset;
+			Vector3 to = Battle.active.grid.Grid2RealPos(_to) + _sortingOffset;
 
-        	MovingSprite anim = MovingSprite.ConstructWith(from, u.GetComponent<SpriteRenderer>().sprite, "Tactics Entities", Battle.active.transform);
-            anim.transform.localScale = u.transform.localScale;
-            anim.SendToAndDestroy(to, motionTime);
+        	MovingSprite anim = MovingSprite.ConstructWith(from, u.GetComponent<SpriteRenderer>().sprite, "Tactics Entities");
+			anim.transform.localScale = u.transform.localScale;
+            anim.SendToAndDestroyFadeUp(to, motionTime);
 		}
-        yield return null;
+
+		return totalTime;
     }
+
+	// this is hardcoded to the active Battle
+	private static IEnumerator _InvisibleFor(float fixedTime, Dictionary<Vector3Int, TacticsTile> tiles, List<Unit> units) {
+		Color _invis = Color.white.WithAlpha(0f);
+
+		// this is for re-coloring the tileMaps
+		Dictionary<Vector3Int, Color> tileColors = new Dictionary<Vector3Int, Color>();
+		foreach (Vector3Int v in tiles.Keys) {
+			tileColors[v] = Battle.active.grid.GetTint(Battle.active.grid.baseTilemap, v);
+			Battle.active.grid.TintTile(Battle.active.grid.baseTilemap, v, _invis);
+		}
+
+		Dictionary<Unit, Color> uColors = new Dictionary<Unit, Color>();
+		foreach (Unit u in units) {
+			uColors[u] = u.GetComponent<SpriteRenderer>().color;
+			u.SetTransparency(0f);
+		}
+
+		// wait quite procedurally
+		yield return new WaitForSeconds(fixedTime);
+
+		// now re-color with saved colors
+		foreach (Unit u in uColors.Keys) {
+			u.SetTransparency(uColors[u].a);
+		}
+		foreach (Vector3Int v in tileColors.Keys) {
+			Battle.active.grid.TintTile(Battle.active.grid.baseTilemap, v, tileColors[v]);
+		}
+	}
 }
