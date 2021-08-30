@@ -198,7 +198,7 @@ public class BattleMap : MonoBehaviour
 
 	// always animate this BEFORE setting the baseTilemap
     public float AnimateDocking(Vector3Int dockingOffset, List<Unit> spawnedUnits, Vector3Int orientation) {
-		float motionTime = 0.35f;
+		float motionTime = 0.25f;
         float delayTime = 0.0f;
         
 		Dictionary<Vector3Int, TacticsTile> finalPositions = new Dictionary<Vector3Int, TacticsTile>();

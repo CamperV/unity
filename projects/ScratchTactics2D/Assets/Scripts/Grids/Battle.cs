@@ -202,7 +202,8 @@ public class Battle : MonoBehaviour
 		
 		UIManager.inst.EnableBattlePhaseDisplay(true);
 		GameManager.inst.phaseManager.currentTurn = 1;
-		GetControllerFromPhase(startingPhase).TriggerPhase();
+		// GetControllerFromPhase(startingPhase).TriggerPhase();
+		// GetComponent<TurnManager>().Enable();
 	}
 
 	public void LoadBattleMap(Terrain playerTerrain, Terrain otherTerrain) {
@@ -299,7 +300,7 @@ public class Battle : MonoBehaviour
 		// and animate them independently
 		float animTime = docker.AnimateDocking(dockingOffset, spawnedUnits, jOrientation);
 		StartCoroutine( Utils.DelayedExecute(animTime, () => {
-			StartCoroutine( GetComponent<BattleCamera>().Shake(0.75f) );
+			StartCoroutine( GetComponent<BattleCamera>().Shake(0.75f, dockingAddlOffset) );
 		 }) );
 
 		// finally:

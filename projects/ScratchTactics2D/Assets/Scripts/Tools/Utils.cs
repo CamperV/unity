@@ -28,4 +28,9 @@ public static class Utils
 		}
 		VoidAction();
 	}
+
+	public static IEnumerator LateFrame(Action VoidAction) {
+		yield return new WaitForEndOfFrame();
+		VoidAction();
+	}
 }

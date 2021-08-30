@@ -18,6 +18,7 @@ public class PlayerArmyController : Controller
 	private bool actionQueueEmpty { get => actionQueue.Count == 0; }
 	
 	protected override void Awake() {
+		Debug.Log($"PlayerArmyCon is awake");
 		base.Awake();
 		myPhase = Enum.Phase.player;
 		actionQueue = new Queue<Func<Army, int>>();
@@ -41,11 +42,18 @@ public class PlayerArmyController : Controller
 		directionMapping[Vector3Int.down]  = MoveDown;
 	}
 
+	void Start() {
+		GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase.StartEvent += TriggerPhase;
+		GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase.EndEvent   += EndPhase;
+		Debug.Log($"Registered {this} to {GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase}");
+	}
+
 	public override bool MyPhaseActive() {
 		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.overworld;
 	}
 
 	public override void TriggerPhase() {
+		Debug.Log($"Player army triggerPhase");
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 
 		// update your understanding of what you can and can't path through
@@ -128,6 +136,7 @@ public class PlayerArmyController : Controller
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
 				EndPhase();
+				GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase.TriggerEnd();
 				break;
 			
 			// delay for phaseDelayTime, until you go into postPhase

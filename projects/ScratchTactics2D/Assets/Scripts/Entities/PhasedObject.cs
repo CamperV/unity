@@ -33,7 +33,5 @@ public abstract class PhasedObject : MonoBehaviour, IPhasedObject
 	}
 	
 	// only for overworld objects, right now
-	public virtual bool MyPhaseActive() {
-		return GameManager.inst.phaseManager.currentPhase == myPhase;
-	}
+	public virtual bool MyPhaseActive() { return false; }
 }

@@ -24,6 +24,12 @@ public class PlayerUnitController : UnitController
 		actionBindings[KeyCode.K]	   = SkipPhase;
 	}
 
+	void Start() {
+		// nu-Phase
+		Battle.active.GetComponent<TurnManager>().playerPhase.StartEvent += TriggerPhase;
+		Battle.active.GetComponent<TurnManager>().playerPhase.EndEvent   += EndPhase;
+	}
+
 	public override bool MyPhaseActive() {
 		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle && Battle.active.interactable;
 	}
@@ -77,6 +83,7 @@ public class PlayerUnitController : UnitController
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
 				EndPhase();
+				Battle.active.GetComponent<TurnManager>().playerPhase.TriggerEnd();
 				break;
 			
 			// delay for phaseDelayTime, until you go into postPhase

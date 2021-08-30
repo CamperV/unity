@@ -116,11 +116,6 @@ public class PhaseManager : MonoBehaviour
 		if (phase.NextPhase() == Enum.Phase.player)
 			currentTurn++;
 	}
-	
-	public void DisablePhase() {
-		// don't set the UI text to display anything else
-		currentPhase = Enum.Phase.none;
-	}
 
 	public bool CheckPause() {
 		return GameManager.inst.gameState == Enum.GameState.battle &&

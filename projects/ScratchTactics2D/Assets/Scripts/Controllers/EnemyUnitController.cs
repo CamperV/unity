@@ -15,6 +15,12 @@ public class EnemyUnitController : UnitController
 		subjectsActingTrigger = false;
 	}
 
+	void Start() {
+		// nu-Phase
+		Battle.active.GetComponent<TurnManager>().enemyPhase.StartEvent += TriggerPhase;
+		Battle.active.GetComponent<TurnManager>().enemyPhase.EndEvent   += EndPhase;
+	}
+
 	public override bool MyPhaseActive() {
 		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle && Battle.active.interactable;
 	}
@@ -55,6 +61,7 @@ public class EnemyUnitController : UnitController
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
 				EndPhase();
+				Battle.active.GetComponent<TurnManager>().enemyPhase.TriggerEnd();
 				break;
 				
 			// delay for phaseDelayTime, until you go into postPhase

@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
 		
 		gameState = Enum.GameState.overworld;
 		phaseManager.StartPhase(Enum.Phase.player);
-		playerArmyController.TriggerPhase();
+		// playerArmyController.TriggerPhase();
 	}
 	
 	public void EnterBattleState() {

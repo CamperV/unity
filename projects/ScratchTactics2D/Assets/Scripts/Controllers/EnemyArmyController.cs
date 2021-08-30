@@ -42,6 +42,13 @@ public class EnemyArmyController : Controller
 		flowFieldToPlayer = new FlowField();
     }
 
+	void Start() {
+		// nu-Phase
+		GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase.StartEvent += TriggerPhase;
+		GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase.EndEvent   += EndPhase;
+		Debug.Log($"Registered {this} to {GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase}");
+	}
+
 	public override bool MyPhaseActive() {
 		return GameManager.inst.phaseManager.currentPhase == myPhase &&
 			   GameManager.inst.gameState == Enum.GameState.overworld;
@@ -93,6 +100,7 @@ public class EnemyArmyController : Controller
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
 				EndPhase();
+				GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase.TriggerEnd();
 				break;
 				
 			// delay for phaseDelayTime, until you go into postPhase
@@ -104,6 +112,7 @@ public class EnemyArmyController : Controller
 	
 	// overrides base
 	public override void TriggerPhase() {
+		Debug.Log($"Enemy army triggerPhase");
 		base.TriggerPhase();
 		subjectsActingTrigger = true;
 	}

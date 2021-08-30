@@ -147,12 +147,13 @@ public class BattleCamera : MonoBehaviour
     }
 
 	// not relative to time: shake only 3 times, wait a static amt of time
-	public IEnumerator Shake(float radius) {
+	public IEnumerator Shake(float radius, Vector3Int init) {
         Vector3 ogPosition = focalPoint;
+        Vector3 initPosition = focalPoint + new Vector3(init.x*radius, init.y*radius, init.z*radius);
 
 		for (int i=0; i<5; i++) {
 			Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
-			focalPoint = ogPosition + offset;
+			focalPoint = initPosition + offset;
 
 			radius /= 2f;
 			yield return new WaitForSeconds(0.05f);

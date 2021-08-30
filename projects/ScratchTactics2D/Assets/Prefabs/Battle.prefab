@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4020751215874785105}
   - component: {fileID: 3021327120891181652}
   - component: {fileID: 4834987923432450543}
+  - component: {fileID: 7322593515327503664}
   m_Layer: 8
   m_Name: Battle
   m_TagString: Untagged
@@ -59,6 +60,7 @@ MonoBehaviour:
   savedTurn: 0
   isPaused: 0
   hidden: 0
+  interactable: 1
 --- !u!114 &4834987923432450543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,6 +77,20 @@ MonoBehaviour:
   battle: {fileID: 0}
   focalPoint: {x: 0, y: 0, z: 0}
   focalPivot: {x: 0, y: 0, z: 0}
+--- !u!114 &7322593515327503664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220231495522711647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4d02b22af3a6624b919a78182b89f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turnCount: 0
+  enable: 1
 --- !u!1 &831110151278361556
 GameObject:
   m_ObjectHideFlags: 0
