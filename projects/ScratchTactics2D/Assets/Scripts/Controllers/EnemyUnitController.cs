@@ -39,9 +39,12 @@ public class EnemyUnitController : UnitController
 	}
 	
 	void Update() {
-		if (!MyPhaseActive()) return;
+		// if (!MyPhaseActive()) return;
+		if (phaseActionState == Enum.PhaseActionState.inactive) return;
 		
 		switch(phaseActionState) {
+			case Enum.PhaseActionState.inactive:
+				break;
 			case Enum.PhaseActionState.waitingForInput:
 				// start action coroutine if not currently running
 				// reset trigger immediately

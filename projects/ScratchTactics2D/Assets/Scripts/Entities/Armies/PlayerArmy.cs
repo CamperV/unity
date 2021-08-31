@@ -6,7 +6,7 @@ using Extensions;
 
 public class PlayerArmy : Army
 {
-	public override string tag { get => "PlayerArmy"; }
+	public override string armyTag { get => "PlayerArmy"; }
 
 	// this cost is insurmountable to the PlayerArmy
 	public static int moveThreshold { get => Constants.standardTickCost*3; }
@@ -81,6 +81,7 @@ public class PlayerArmy : Army
 			Terrain enemyTerrain = GameManager.inst.overworld.TerrainAt(combatant.gridPosition);
 		
 			GameManager.inst.EnterBattleState();
+			GameManager.inst.overworld.GetComponent<TurnManager>().Suspend();
 			Battle.CreateActiveBattle(this, combatant, playerTerrain, enemyTerrain, Enum.Phase.player);
 		}));
 	}

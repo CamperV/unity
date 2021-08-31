@@ -9,7 +9,7 @@ using Extensions;
 
 public abstract class Army : MovingGridObject
 {
-	public abstract string tag { get; }
+	public abstract string armyTag { get; }
 	protected Animator animator;
 
 	// army stats/state

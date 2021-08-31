@@ -60,9 +60,12 @@ public class EnemyArmyController : Controller
 	}
 
     void Update() {
-        if (!MyPhaseActive()) return;
+        // if (!MyPhaseActive()) return;
+		if (phaseActionState == Enum.PhaseActionState.inactive) return;
 		//
 		switch(phaseActionState) {
+			case Enum.PhaseActionState.inactive:
+				break;
 			case Enum.PhaseActionState.waitingForInput:
 				// start action coroutine if not currently running
 				// reset trigger immediately
@@ -99,13 +102,14 @@ public class EnemyArmyController : Controller
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				EndPhase();
+				// EndPhase();
 				GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase.TriggerEnd();
 				break;
 				
 			// delay for phaseDelayTime, until you go into postPhase
 			case Enum.PhaseActionState.postPhaseDelay:
 			case Enum.PhaseActionState.postPhase:
+				phaseActionState = Enum.PhaseActionState.inactive;
 				break;
 		}
     }

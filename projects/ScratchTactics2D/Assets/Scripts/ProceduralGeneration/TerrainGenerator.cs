@@ -136,11 +136,9 @@ public abstract class TerrainGenerator : MonoBehaviour
 			case WorldTileEnum.mountain:
 			case WorldTileEnum.mountain2x2:
 				return WorldTileEnum.mountainNoTile;
-				break;
 			case WorldTileEnum.peak:
 			case WorldTileEnum.peak2x2:
 				return WorldTileEnum.peakNoTile;
-				break;
 			default:
 				return WorldTileEnum.x;
 		}

@@ -45,13 +45,16 @@ public class PlayerUnitController : UnitController
 	}
 	
 	void Update() {
-		if (!MyPhaseActive()) return;
+		// if (!MyPhaseActive()) return;
+		if (phaseActionState == Enum.PhaseActionState.inactive) return;
 		var kc = CheckInput();
 
 		// if the unit's turn was ended some other way, other than through attacking
 		if (currentSelection?.turnActive == false) ClearSelection();
 		
 		switch(phaseActionState) {
+			case Enum.PhaseActionState.inactive:
+				break;
 			// always read input in these states
 			case Enum.PhaseActionState.waitingForInput:
 				if (actionBindings.ContainsKey(kc)) actionBindings[kc]();

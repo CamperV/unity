@@ -68,6 +68,12 @@ public class Battle : MonoBehaviour
 		activeParticipants = new Dictionary<Controller, Army>();
 	}
 
+	void Start() {
+		UIManager.inst.EnableBattlePhaseDisplay(true);
+		GetComponent<TurnManager>().playerPhase.StartEvent += RefreshRegisteredUnits;
+		GetComponent<TurnManager>().enemyPhase.StartEvent  += RefreshRegisteredUnits;
+	}
+
 	void Update() {
 		// .hidden overrides any transparency modifications that might need to happen in this Update() loop
 		if (!this.interactable || this.hidden) return;
@@ -76,6 +82,12 @@ public class Battle : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			Debug.Log("Exiting Battle...");
 			this.Destroy();
+		}
+
+		// before doing anything, check flags to see if the battle should be terminated
+		if (CheckBattleEndState()) {
+			Resolve( GetDefeated() );
+			return; // jump out of the update loop early
 		}
 
 		// focus control:
@@ -188,6 +200,12 @@ public class Battle : MonoBehaviour
 		battleMap.gameObject.SetActive(false);
 	}
 
+	public void RefreshRegisteredUnits() {
+		foreach (Unit u in RegisteredUnits) {
+			u.UpdateThreatRange();
+		}
+	}
+
 	public void RecenterGrid() {
 		// determine correct centering factor
 		// move to center after the tilemap has been filled
@@ -198,10 +216,10 @@ public class Battle : MonoBehaviour
 	}
 
 	public void StartBattleOnPhase(Enum.Phase startingPhase) {
-		GameManager.inst.phaseManager.StartPhase(startingPhase);
+		// GameManager.inst.phaseManager.StartPhase(startingPhase);
 		
-		UIManager.inst.EnableBattlePhaseDisplay(true);
-		GameManager.inst.phaseManager.currentTurn = 1;
+		// UIManager.inst.EnableBattlePhaseDisplay(true);
+		// GameManager.inst.phaseManager.currentTurn = 1;
 		// GetControllerFromPhase(startingPhase).TriggerPhase();
 		// GetComponent<TurnManager>().Enable();
 	}
@@ -321,6 +339,7 @@ public class Battle : MonoBehaviour
 		MenuManager.inst.CleanUpBattleMenus();
 		//
 		UIManager.inst.EnableBattlePhaseDisplay(false);
+		GameManager.inst.overworld.GetComponent<TurnManager>().Resume();
 		GameManager.inst.EnterOverworldState();
 	}
 
@@ -381,7 +400,7 @@ public class Battle : MonoBehaviour
 	}
 
 	public Controller GetControllerFromTag(Army oe) {
-		switch (oe.tag) {
+		switch (oe.armyTag) {
 			case "PlayerArmy":
 				return GetController(player);
 			case "EnemyArmy":

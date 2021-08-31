@@ -53,8 +53,8 @@ public class PlayerArmyController : Controller
 	}
 
 	public override void TriggerPhase() {
-		Debug.Log($"Player army triggerPhase");
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
+		Debug.Log($"Player army triggerPhase, {phaseActionState}");
 
 		// update your understanding of what you can and can't path through
 		_pathfinder = new ArmyPathfinder(GameManager.inst.enemyArmyController.currentEnemyPositions, PlayerArmy.moveThreshold);
@@ -62,13 +62,17 @@ public class PlayerArmyController : Controller
 	
 	private Vector3Int _prevMousePos;
 	void Update() {
-		if (!MyPhaseActive()) return;
+		// if (!MyPhaseActive()) return;
+		if (phaseActionState == Enum.PhaseActionState.inactive) return;
+
 		KeyCode kc = CheckInput();
 		
 		// previous cleanup
 		if (_prevMousePos != null) GameManager.inst.overworld.ResetOverlayAt(_prevMousePos);
 		
 		switch(phaseActionState) {
+			case Enum.PhaseActionState.inactive:
+				break;
 			case Enum.PhaseActionState.waitingForInput:
 
 				// if you already have actions queued, don't allow for any more queueings
@@ -135,13 +139,14 @@ public class PlayerArmyController : Controller
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				EndPhase();
+				// EndPhase();
 				GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase.TriggerEnd();
 				break;
 			
 			// delay for phaseDelayTime, until you go into postPhase
 			case Enum.PhaseActionState.postPhaseDelay:	
 			case Enum.PhaseActionState.postPhase:
+				phaseActionState = Enum.PhaseActionState.inactive;
 				break;
 		}
     }

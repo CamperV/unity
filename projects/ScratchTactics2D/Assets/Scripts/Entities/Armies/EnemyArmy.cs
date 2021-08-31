@@ -9,7 +9,7 @@ using TMPro;
 
 public abstract class EnemyArmy : Army, IVisible
 {
-	public override string tag { get => "EnemyArmy"; }
+	public override string armyTag { get => "EnemyArmy"; }
 
 	public static int globalMoveThreshold { get => Constants.standardTickCost*3; }
 

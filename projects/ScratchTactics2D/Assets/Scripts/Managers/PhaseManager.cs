@@ -47,8 +47,8 @@ public class PhaseManager : MonoBehaviour
 			// wait for phase objects to signal, and change phase for them
 			Controller activeController = GetControllerFromPhase(currentPhase);
 			if (activeController.phaseActionState == Enum.PhaseActionState.postPhase) {
-				OnPhaseEnd(currentPhase);
-				StartPhase(currentPhase.NextPhase());
+				// OnPhaseEnd(currentPhase);
+				// StartPhase(currentPhase.NextPhase());
 
 				// if there's already a battle in progress, rejoin it
 				if (Battle.active?.isPaused ?? false) {						
@@ -61,7 +61,7 @@ public class PhaseManager : MonoBehaviour
 
 				// otherwise, give control back to the player
 				} else {					
-					GetControllerFromPhase(currentPhase).TriggerPhase();
+					// GetControllerFromPhase(currentPhase).TriggerPhase();
 				}
 			}
 
@@ -87,10 +87,10 @@ public class PhaseManager : MonoBehaviour
 					StartPhase(Enum.Phase.enemy);
 					GameManager.inst.enemyArmyController.TriggerPhase();
 				} else {
-					OnPhaseEnd(currentPhase);
+					// OnPhaseEnd(currentPhase);
 
-					StartPhase(currentPhase.NextPhase());
-					Battle.active.GetControllerFromPhase(currentPhase).TriggerPhase();
+					// StartPhase(currentPhase.NextPhase());
+					// Battle.active.GetControllerFromPhase(currentPhase).TriggerPhase();
 				}
 			}
 		}

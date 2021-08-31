@@ -11,7 +11,7 @@ public class TurnManager : MonoBehaviour
 
     [HideInInspector] public int turnCount = 0;
     [HideInInspector] public bool enable = true;
-    private Coroutine loop;
+    [HideInInspector] public bool suspend = false;
 
     void Awake() {
         playerPhase = new Phase("Player");
@@ -28,23 +28,49 @@ public class TurnManager : MonoBehaviour
     public void Enable() {
         Debug.Log($"Starting turn manager {this}, {transform.parent}");
         enable = true;
-        StartCoroutine( _Loop() );
+        StartCoroutine( Loop() );
     }
 
-    // by only touching the enable member, _Loop will terminate itself after the current Turn is over
+    // by only touching the enable member, Loop will terminate itself after the current Turn is over
     public void Disable() {
         Debug.Log($"Disabling turn manager {this}, {transform.parent}");
         enable = false;
     }
 
-    public IEnumerator _Loop() {
+    public void Suspend() {
+        Debug.Log($"Suspending turn manager {this}, {transform.parent}");
+        suspend = true;
+    }
+
+    public void Resume() {
+        Debug.Log($"Resuming turn manager {this}, {transform.parent}");
+        suspend = false;
+    }
+
+    private IEnumerator Loop() {
         while (enable) {
             turnCount++;
+		    UIManager.inst.SetTurnText(turnCount.ToString());
             Debug.Log($"beginning {transform.parent} Turn {turnCount}");
+            yield return ExecutePhases(playerPhase, enemyPhase);
+        }
+    }
 
-            // create a new Turn, and wait until it has executed all of its phases
-            Turn turn = new Turn(new List<Phase>{playerPhase, enemyPhase});
-            yield return turn.ExecutePhases();
+    // start each phase in order, and wait until finished before starting the next
+    private IEnumerator ExecutePhases(params Phase[] phases) {
+        foreach (Phase phase in phases) {
+            // first, check the suspension signal
+            // this is different than disabling, which lets all phases play out
+            // this will suspend and allow resumption
+            if (suspend) {
+                yield return new WaitUntil(() => suspend == false);
+            }
+
+            Debug.Log($"Triggering phase {phase.name}");
+		    UIManager.inst.SetPhaseText(phase.name);
+            
+            phase.TriggerStart();
+            yield return new WaitUntil(() => phase.state == Phase.PhaseState.complete);
         }
     }
 }

@@ -6,7 +6,7 @@ using Extensions;
 
 public class Phase
 {
-    public enum PhaseState {waitingForInput, complete};
+    public enum PhaseState {inactive, active, complete};
 
     public delegate void Start();
     public delegate void End();
@@ -18,11 +18,11 @@ public class Phase
 
     public Phase(string _name) {
         name = _name;
-        state = PhaseState.waitingForInput;
+        state = PhaseState.inactive;
     }
 
     public void TriggerStart() {
-        state = PhaseState.waitingForInput;
+        state = PhaseState.active;
         StartEvent.Invoke();
     }
 

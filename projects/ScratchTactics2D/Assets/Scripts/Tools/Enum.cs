@@ -9,7 +9,7 @@ namespace Enum {
 	
 	// Phase management
 	public enum Phase {none, player, enemy};
-	public enum PhaseActionState {waitingForInput, acting, complete, postPhaseDelay, postPhase};
+	public enum PhaseActionState {inactive, waitingForInput, acting, complete, postPhaseDelay, postPhase};
 	//
 	public enum EnemyArmyState {idle, followField, inBattle};
 	
