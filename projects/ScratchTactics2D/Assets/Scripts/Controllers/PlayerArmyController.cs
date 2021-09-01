@@ -45,18 +45,27 @@ public class PlayerArmyController : Controller, IPhaseable
 	}
 
 	void Start() {
-		RegisterTo(GameManager.inst.overworld.GetComponent<TurnManager>());
+		RegisterTo(GameManager.inst.overworld.turnManager);
 	}
 
 	// IPhaseable definitions
 	public void RegisterTo(TurnManager manager) {
 		manager.playerPhase.StartEvent += TriggerPhase;
 		manager.playerPhase.EndEvent   += EndPhase;
-		Debug.Log($"Registered {this} to {GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase}");
+		Debug.Log($"Registered {this} to {GameManager.inst.overworld.turnManager.playerPhase}");
 	}
 
 	// IPhaseable
 	public void TriggerPhase() {
+
+		// if there's already an active Battle, the only way we got here was by you being a part of it
+		// so skip any turn you would have had
+		if (Battle.active) {
+			Debug.Log($"Player is already in a Battle, don't let them move");
+			GameManager.inst.overworld.turnManager.playerPhase.TriggerEnd();
+			return;
+		} // else:
+
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 		Debug.Log($"Player army triggerPhase, {phaseActionState}");
 
@@ -152,7 +161,7 @@ public class PlayerArmyController : Controller, IPhaseable
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase.TriggerEnd();
+				GameManager.inst.overworld.turnManager.playerPhase.TriggerEnd();
 				break;
 			
 			// delay for phaseDelayTime, until you go into postPhase

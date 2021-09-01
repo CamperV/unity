@@ -16,6 +16,8 @@ public class Overworld : GameGrid, IPathable
 	public IEnumerable<Terrain> Terrain { get => terrain.Values; }
 	public IEnumerable<Vector3Int> Positions { get => terrain.Keys; }
 
+	[HideInInspector] public TurnManager turnManager;
+
 	private OverlayTile selectTile;
 	private Canvas tintCanvas;
 	
@@ -32,6 +34,8 @@ public class Overworld : GameGrid, IPathable
 		tintCanvas.worldCamera = Camera.main;
 		tintCanvas.sortingLayerName = "Overworld Entities";
 		tintCanvas.sortingOrder = 1;
+
+		turnManager = GetComponent<TurnManager>();
 	}
 
     // IPathable definitions

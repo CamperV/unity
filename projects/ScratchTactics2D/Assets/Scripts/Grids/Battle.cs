@@ -20,6 +20,8 @@ public class Battle : MonoBehaviour
 	//
 	[HideInInspector] public TacticsGrid grid;
 	private BattleMap battleMap;
+	//
+	[HideInInspector] public TurnManager turnManager;
 	
 	[HideInInspector] public PlayerArmy player;
 	[HideInInspector] public EnemyArmy other;
@@ -64,12 +66,20 @@ public class Battle : MonoBehaviour
 		defaultController = Instantiate(defaultControllerPrefab, transform);
 
 		activeParticipants = new Dictionary<Controller, Army>();
+
+		turnManager = GetComponent<TurnManager>();
 	}
 
 	void Start() {
 		UIManager.inst.EnableBattlePhaseDisplay(true);
-		GetComponent<TurnManager>().playerPhase.StartEvent += RefreshRegisteredUnits;
-		GetComponent<TurnManager>().enemyPhase.StartEvent  += RefreshRegisteredUnits;
+
+		// register methods to the TurnManager's phases
+		turnManager.playerPhase.StartEvent += RefreshRegisteredUnits;
+		turnManager.enemyPhase.StartEvent  += RefreshRegisteredUnits;
+
+		// watches for when to pause and resume, unifying overworld/tacticsworld
+		turnManager.enemyPhase.EndEvent += CheckPauseCondition;
+		GameManager.inst.overworld.turnManager.enemyPhase.EndEvent += CheckResumeCondition;
 	}
 
 	void Update() {
@@ -204,6 +214,32 @@ public class Battle : MonoBehaviour
 		}
 	}
 
+	// every other Tactics-turn, we let the Overworld take a turn
+	// if we're at the end of an even turn, and the overworld has active enemies:
+	public void CheckPauseCondition() {
+		if (turnManager.turnCount % 2 == 0 && GameManager.inst.enemyArmyController.enemiesFollowing) {
+			Pause();
+			GameManager.inst.gameState = Enum.GameState.overworld;
+			GameManager.inst.enemyArmyController.AddTicksAll(Constants.standardTickCost);
+
+			// this will have been suspended due to the Battle starting
+			// there's a good chance you'll be put back into the player's phase
+			// if there exists a Battle.active != null, skip it
+			turnManager.Suspend();
+			GameManager.inst.overworld.turnManager.Resume();
+		}
+	}
+
+	// this will only run if the Battle.active exists anyway
+	// so we don't need to check for it
+	public void CheckResumeCondition() {
+		Resume();
+		GameManager.inst.gameState = Enum.GameState.battle;
+					
+		GameManager.inst.overworld.turnManager.Suspend();
+		turnManager.Resume();
+	}
+
 	public void RecenterGrid() {
 		// determine correct centering factor
 		// move to center after the tilemap has been filled
@@ -328,7 +364,7 @@ public class Battle : MonoBehaviour
 		MenuManager.inst.CleanUpBattleMenus();
 		//
 		UIManager.inst.EnableBattlePhaseDisplay(false);
-		GameManager.inst.overworld.GetComponent<TurnManager>().Resume();
+		GameManager.inst.overworld.turnManager.Resume();
 		GameManager.inst.EnterOverworldState();
 	}
 
@@ -500,7 +536,7 @@ public class Battle : MonoBehaviour
 	}
 
 	// pause, hand control off to the GameManager.overworld state
-	public void Pause() {
+	private void Pause() {
 		Debug.Log($"paused battle");
 		isPaused = true;
 		hidden = true;
@@ -508,7 +544,7 @@ public class Battle : MonoBehaviour
 		GameManager.inst.overworld.DisableTint();
 	}
 
-	public void Resume() {
+	private void Resume() {
 		Debug.Log($"resumed battle");
 		isPaused = false;
 		hidden = false;

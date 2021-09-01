@@ -16,8 +16,6 @@ public class TurnManager : MonoBehaviour
     void Awake() {
         playerPhase = new Phase("Player");
         enemyPhase = new Phase("Enemy");
-
-        Debug.Log($"TurnManager, {this.transform.parent} is awake");
     }
 
     // this will execute Enable() at the end of the Start frame
@@ -26,24 +24,24 @@ public class TurnManager : MonoBehaviour
     }
 
     public void Enable() {
-        Debug.Log($"Starting turn manager {this}, {transform.parent}");
+        Debug.Log($"Starting turn manager {gameObject.name}");
         enable = true;
         StartCoroutine( Loop() );
     }
 
     // by only touching the enable member, Loop will terminate itself after the current Turn is over
     public void Disable() {
-        Debug.Log($"Disabling turn manager {this}, {transform.parent}");
+        Debug.Log($"Disabling turn manager {gameObject.name}");
         enable = false;
     }
 
     public void Suspend() {
-        Debug.Log($"Suspending turn manager {this}, {transform.parent}");
+        Debug.Log($"Suspending turn manager {gameObject.name}");
         suspend = true;
     }
 
     public void Resume() {
-        Debug.Log($"Resuming turn manager {this}, {transform.parent}");
+        Debug.Log($"Resuming turn manager {gameObject.name}");
         suspend = false;
     }
 
@@ -51,7 +49,7 @@ public class TurnManager : MonoBehaviour
         while (enable) {
             turnCount++;
 		    UIManager.inst.SetTurnText(turnCount.ToString());
-            Debug.Log($"beginning {transform.parent} Turn {turnCount}");
+            Debug.Log($"beginning {gameObject.name} Turn {turnCount}");
             yield return ExecutePhases(playerPhase, enemyPhase);
         }
     }

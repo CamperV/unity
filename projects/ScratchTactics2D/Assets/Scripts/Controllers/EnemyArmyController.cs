@@ -46,14 +46,14 @@ public class EnemyArmyController : Controller, IPhaseable
     }
 
 	void Start() {
-		RegisterTo(GameManager.inst.overworld.GetComponent<TurnManager>());
+		RegisterTo(GameManager.inst.overworld.turnManager);
 	}
 
 	// IPhaseable definitions
 	public void RegisterTo(TurnManager manager) {
 		manager.enemyPhase.StartEvent += TriggerPhase;
 		manager.enemyPhase.EndEvent   += EndPhase;
-		Debug.Log($"Registered {this} to {GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase}");
+		Debug.Log($"Registered {this} to {GameManager.inst.overworld.turnManager.enemyPhase}");
 	}
 	
 	// IPhaseable definitions
@@ -120,7 +120,7 @@ public class EnemyArmyController : Controller, IPhaseable
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
 				// EndPhase();
-				GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase.TriggerEnd();
+				GameManager.inst.overworld.turnManager.enemyPhase.TriggerEnd();
 				break;
 				
 			// delay for phaseDelayTime, until you go into postPhase

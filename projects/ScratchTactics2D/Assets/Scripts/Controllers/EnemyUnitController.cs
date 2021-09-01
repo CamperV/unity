@@ -19,7 +19,7 @@ public class EnemyUnitController : UnitController, IPhaseable
 	}
 
 	void Start() {
-		RegisterTo(Battle.active.GetComponent<TurnManager>());
+		RegisterTo(Battle.active.turnManager);
 	}
 
 	// IPhaseable definitions
@@ -84,7 +84,7 @@ public class EnemyUnitController : UnitController, IPhaseable
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
 				EndPhase();
-				Battle.active.GetComponent<TurnManager>().enemyPhase.TriggerEnd();
+				Battle.active.turnManager.enemyPhase.TriggerEnd();
 				break;
 				
 			// delay for phaseDelayTime, until you go into postPhase
