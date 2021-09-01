@@ -234,7 +234,7 @@ public class BattleCamera : MonoBehaviour
 
 		foreach (TacticsEntityBase e in entities) {
             // for units and such, we need them to be on top of their own tile, but not obscuring others
-            Vector3 _sortingOffset =  new Vector3(0, 0, e.zHeight+1f);
+            Vector3 _sortingOffset =  new Vector3(0, 0, 2f);
 
 			Vector3Int _to = Transformer(e.gridPosition);
 			Vector3 from = battle.grid.baseTilemap.GetCellCenterWorld(e.gridPosition) + offset + _sortingOffset;

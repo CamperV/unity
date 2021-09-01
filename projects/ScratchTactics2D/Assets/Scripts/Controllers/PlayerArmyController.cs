@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class PlayerArmyController : Controller
-{
+public class PlayerArmyController : Controller, IPhaseable
+{	
+	// IPhaseable
+	[HideInInspector] public float phaseDelayTime { get => 0f; } // in units of WaitForSeconds();
+	[HideInInspector] public Enum.PhaseActionState phaseActionState { get; set; }
+
 	public KeyCode mouseMoveKey;
 
 	// possible actions for Player and their bindings
@@ -17,10 +21,8 @@ public class PlayerArmyController : Controller
 	private OverworldPath _pathToQueue;
 	private bool actionQueueEmpty { get => actionQueue.Count == 0; }
 	
-	protected override void Awake() {
-		Debug.Log($"PlayerArmyCon is awake");
+	protected void Awake() {
 		base.Awake();
-		myPhase = Enum.Phase.player;
 		actionQueue = new Queue<Func<Army, int>>();
 		
 		// this needs to be done at run-time
@@ -43,22 +45,33 @@ public class PlayerArmyController : Controller
 	}
 
 	void Start() {
-		GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase.StartEvent += TriggerPhase;
-		GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase.EndEvent   += EndPhase;
+		RegisterTo(GameManager.inst.overworld.GetComponent<TurnManager>());
+	}
+
+	// IPhaseable definitions
+	public void RegisterTo(TurnManager manager) {
+		manager.playerPhase.StartEvent += TriggerPhase;
+		manager.playerPhase.EndEvent   += EndPhase;
 		Debug.Log($"Registered {this} to {GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase}");
 	}
 
-	public override bool MyPhaseActive() {
-		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.overworld;
-	}
-
-	public override void TriggerPhase() {
+	// IPhaseable
+	public void TriggerPhase() {
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 		Debug.Log($"Player army triggerPhase, {phaseActionState}");
 
 		// update your understanding of what you can and can't path through
 		_pathfinder = new ArmyPathfinder(GameManager.inst.enemyArmyController.currentEnemyPositions, PlayerArmy.moveThreshold);
 	}
+
+	// IPhaseable
+	public void EndPhase() {
+		// then reset your phase, and mark as complete
+		StartCoroutine(Utils.DelayedExecute(phaseDelayTime, () => {
+			phaseActionState = Enum.PhaseActionState.postPhase;
+		})); 
+	}
+	// IPhaseable definitions
 	
 	private Vector3Int _prevMousePos;
 	void Update() {
@@ -139,7 +152,6 @@ public class PlayerArmyController : Controller
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				// EndPhase();
 				GameManager.inst.overworld.GetComponent<TurnManager>().playerPhase.TriggerEnd();
 				break;
 			

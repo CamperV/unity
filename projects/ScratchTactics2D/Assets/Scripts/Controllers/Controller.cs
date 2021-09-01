@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Extensions;
 
-public class Controller : PhasedObject
+public class Controller : MonoBehaviour
 {
 	public List<MovingGridObject> registry;
 	public List<MovingGridObject> activeRegistry {
@@ -13,7 +13,7 @@ public class Controller : PhasedObject
 		}
 	}
 
-	protected virtual void Awake() {		
+	protected void Awake() {		
 		registry = new List<MovingGridObject>();
     }
 	

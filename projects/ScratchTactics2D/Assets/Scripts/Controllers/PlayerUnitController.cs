@@ -4,8 +4,12 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class PlayerUnitController : UnitController
-{
+public class PlayerUnitController : UnitController, IPhaseable
+{	
+	// IPhaseable
+	[HideInInspector] public float phaseDelayTime { get => 0f; } // in units of WaitForSeconds();
+	[HideInInspector] public Enum.PhaseActionState phaseActionState { get; set; }
+
 	private PlayerUnit currentSelection;
 	private BattlePath currentSelectionFieldPath;
 	private TacticsGrid grid { get => Battle.active.grid; }
@@ -14,10 +18,9 @@ public class PlayerUnitController : UnitController
 	private Dictionary<KeyCode, Action> actionBindings = new Dictionary<KeyCode, Action>();
 	private Enum.InteractState interactState;
 	
-	protected override void Awake() {
+	protected void Awake() {
 		base.Awake();
-		myPhase = Enum.Phase.player;
-
+		
 		// this needs to be done at run-time
 		actionBindings[KeyCode.Mouse0] = Interact;
 		actionBindings[KeyCode.Mouse1] = ClearSelection;
@@ -25,14 +28,28 @@ public class PlayerUnitController : UnitController
 	}
 
 	void Start() {
-		// nu-Phase
-		Battle.active.GetComponent<TurnManager>().playerPhase.StartEvent += TriggerPhase;
-		Battle.active.GetComponent<TurnManager>().playerPhase.EndEvent   += EndPhase;
+		RegisterTo(Battle.active.GetComponent<TurnManager>());
 	}
 
-	public override bool MyPhaseActive() {
-		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle && Battle.active.interactable;
+	// IPhaseable definitions
+	public void RegisterTo(TurnManager manager) {
+		manager.playerPhase.StartEvent += TriggerPhase;
+		manager.playerPhase.EndEvent   += EndPhase;
 	}
+	
+	public void TriggerPhase() {
+		phaseActionState = Enum.PhaseActionState.waitingForInput;
+		activeRegistry.ForEach(u => ((Unit)u).OnStartTurn());
+	}
+
+	public void EndPhase() {
+		// then reset your phase, and mark as complete
+		StartCoroutine(Utils.DelayedExecute(postPhaseDelayTime, () => {
+			phaseActionState = Enum.PhaseActionState.postPhase;
+		}));
+		activeRegistry.ForEach(u => (u as Unit).RefreshColor());
+	}
+	// IPhaseable definitions
 
 	public override void Register(MovingGridObject subject) {
 		base.Register(subject);
@@ -42,6 +59,14 @@ public class PlayerUnitController : UnitController
 		
 		// init threat for other phases
 		unit.UpdateThreatRange();
+	}
+
+	public override List<MovingGridObject> GetOpposing() {
+		return Battle.active.GetControllerFromTag("EnemyArmy").activeRegistry;
+	}
+
+	public override HashSet<Vector3Int> GetObstacles() {		
+		return Battle.active.grid.CurrentOccupantPositionsExcepting<PlayerUnit>();
 	}
 	
 	void Update() {
@@ -332,9 +357,5 @@ public class PlayerUnitController : UnitController
 
 		// if you can't find a valid Unit, get the Grid location
 		return grid.GetMouseToGridPos();
-	}
-
-	public override HashSet<Vector3Int> GetObstacles() {		
-		return Battle.active.grid.CurrentOccupantPositionsExcepting<PlayerUnit>();
 	}
 }

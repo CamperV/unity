@@ -5,37 +5,57 @@ using System.Linq;
 using UnityEngine;
 using Extensions;
 
-public class EnemyUnitController : UnitController
+public class EnemyUnitController : UnitController, IPhaseable
 {
+	// IPhaseable
+	[HideInInspector] public float phaseDelayTime { get => 0f; } // in units of WaitForSeconds();
+	[HideInInspector] public Enum.PhaseActionState phaseActionState { get; set; }
+
 	private bool subjectsActingTrigger;
 	
-	protected override void Awake() {
+	protected void Awake() {
 		base.Awake();
-		myPhase = Enum.Phase.enemy;
 		subjectsActingTrigger = false;
 	}
 
 	void Start() {
-		// nu-Phase
-		Battle.active.GetComponent<TurnManager>().enemyPhase.StartEvent += TriggerPhase;
-		Battle.active.GetComponent<TurnManager>().enemyPhase.EndEvent   += EndPhase;
+		RegisterTo(Battle.active.GetComponent<TurnManager>());
 	}
 
-	public override bool MyPhaseActive() {
-		return GameManager.inst.phaseManager.currentPhase == myPhase && GameManager.inst.gameState == Enum.GameState.battle && Battle.active.interactable;
+	// IPhaseable definitions
+	public void RegisterTo(TurnManager manager) {
+		manager.enemyPhase.StartEvent += TriggerPhase;
+		manager.enemyPhase.EndEvent   += EndPhase;
 	}
-
-	public override void TriggerPhase() {
+	
+	public void TriggerPhase() {
 		phaseActionState = Enum.PhaseActionState.waitingForInput;
 		activeRegistry.ForEach(u => ((Unit)u).OnStartTurn());
 		subjectsActingTrigger = true;
 	}
+
+	public void EndPhase() {
+		// then reset your phase, and mark as complete
+		StartCoroutine(Utils.DelayedExecute(postPhaseDelayTime, () => {
+			phaseActionState = Enum.PhaseActionState.postPhase;
+		}));
+		activeRegistry.ForEach(u => (u as Unit).RefreshColor());
+	}
+	// IPhaseable definitions
 
 	public override void Register(MovingGridObject subject) {
 		base.Register(subject);
 		//
 		Unit unit = subject as Unit;
 		unit.parentController = this;
+	}
+
+	public override List<MovingGridObject> GetOpposing() {
+		return Battle.active.GetControllerFromTag("EnemyArmy").activeRegistry;
+	}
+
+	public override HashSet<Vector3Int> GetObstacles() {		
+		return Battle.active.grid.CurrentOccupantPositionsExcepting<EnemyUnit>();
 	}
 	
 	void Update() {
@@ -181,10 +201,5 @@ public class EnemyUnitController : UnitController
 			}
 		}
 		return origPos;
-	}
-
-
-	public override HashSet<Vector3Int> GetObstacles() {		
-		return Battle.active.grid.CurrentOccupantPositionsExcepting<EnemyUnit>();
 	}
 }

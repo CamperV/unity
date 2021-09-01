@@ -17,7 +17,6 @@ public class TacticsEntityBase : MovingGridObject
 	public bool clickable { get; set; }
 
 	public float spriteHeight { get => spriteRenderer.bounds.size.y; }
-	public virtual float zHeight { get => 1; }
 
 	public static T Spawn<T>(T prefab, Vector3Int tilePos, TacticsGrid grid) where T : TacticsEntityBase {
 		T entity = Instantiate(prefab, Vector3.zero, Quaternion.identity) as T;
@@ -48,7 +47,8 @@ public class TacticsEntityBase : MovingGridObject
 	}
 
 	public override void UpdateRealPosition(Vector3 pos) {
-		transform.position = pos + new Vector3(0, 0, zHeight);
+		// transform.position = pos + new Vector3(0, 0, 1f);
+		transform.position = pos;
 	}
 
 	public void RefreshColor() {

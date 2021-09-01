@@ -4,8 +4,12 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class EnemyArmyController : Controller
+public class EnemyArmyController : Controller, IPhaseable
 {
+	// IPhaseable
+	[HideInInspector] public float phaseDelayTime { get => 0f; } // in units of WaitForSeconds();
+	[HideInInspector] public Enum.PhaseActionState phaseActionState { get; set; }
+
 	// flags 
 	private bool subjectsActingTrigger;
 	private bool keepPhaseAlive;
@@ -32,10 +36,9 @@ public class EnemyArmyController : Controller
 		get => activeRegistry.Where(it => (it as EnemyArmy).state == Enum.EnemyArmyState.followField).Any();
 	}
 
-	protected override void Awake() {
+	protected void Awake() {
 		base.Awake();
 		//
-		myPhase = Enum.Phase.enemy;
 		subjectsActingTrigger = false;
 		keepPhaseAlive = false;
 		crtActing = false;
@@ -43,16 +46,30 @@ public class EnemyArmyController : Controller
     }
 
 	void Start() {
-		// nu-Phase
-		GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase.StartEvent += TriggerPhase;
-		GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase.EndEvent   += EndPhase;
-		Debug.Log($"Registered {this} to {GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase}");
+		RegisterTo(GameManager.inst.overworld.GetComponent<TurnManager>());
 	}
 
-	public override bool MyPhaseActive() {
-		return GameManager.inst.phaseManager.currentPhase == myPhase &&
-			   GameManager.inst.gameState == Enum.GameState.overworld;
+	// IPhaseable definitions
+	public void RegisterTo(TurnManager manager) {
+		manager.enemyPhase.StartEvent += TriggerPhase;
+		manager.enemyPhase.EndEvent   += EndPhase;
+		Debug.Log($"Registered {this} to {GameManager.inst.overworld.GetComponent<TurnManager>().enemyPhase}");
 	}
+	
+	// IPhaseable definitions
+	public void TriggerPhase() {
+		Debug.Log($"Enemy army triggerPhase");
+		phaseActionState = Enum.PhaseActionState.waitingForInput;
+		subjectsActingTrigger = true;
+	}
+
+	public void EndPhase() {
+		// then reset your phase, and mark as complete
+		StartCoroutine(Utils.DelayedExecute(phaseDelayTime, () => {
+			phaseActionState = Enum.PhaseActionState.postPhase;
+		})); 
+	}
+	// IPhaseable definitions
 
 	public override void Register(MovingGridObject subject) {
 		base.Register(subject);
@@ -113,13 +130,6 @@ public class EnemyArmyController : Controller
 				break;
 		}
     }
-	
-	// overrides base
-	public override void TriggerPhase() {
-		Debug.Log($"Enemy army triggerPhase");
-		base.TriggerPhase();
-		subjectsActingTrigger = true;
-	}
 	
 	public IEnumerator SubjectsTakeAction() {
 		// use this bool to determine whether or not to start the phase over again

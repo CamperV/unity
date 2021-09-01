@@ -33,7 +33,6 @@ public class Battle : MonoBehaviour
 	[HideInInspector] public static Unit focusSingleton { get; private set; }
 
 	// used for pausing the battle
-	[HideInInspector] public int savedTurn;
 	[HideInInspector] public bool isPaused = false;
 	[HideInInspector] public bool hidden = false; // this is for InvisibleFor overriding all other alpha writes
 	[HideInInspector] public bool interactable = true;
@@ -49,7 +48,6 @@ public class Battle : MonoBehaviour
 		Battle.active.LoadBattleMap(playerTerrain, otherTerrain);
 		Battle.active.SpawnAllUnits();
 		Battle.active.PostInit();
-		Battle.active.StartBattleOnPhase(initiatingPhase);
 	}
 	
 	void Awake() {
@@ -213,15 +211,6 @@ public class Battle : MonoBehaviour
 		Vector3 offsetPos = transform.position - (gridCenter - transform.position);
 		
 		grid.transform.position = offsetPos;
-	}
-
-	public void StartBattleOnPhase(Enum.Phase startingPhase) {
-		// GameManager.inst.phaseManager.StartPhase(startingPhase);
-		
-		// UIManager.inst.EnableBattlePhaseDisplay(true);
-		// GameManager.inst.phaseManager.currentTurn = 1;
-		// GetControllerFromPhase(startingPhase).TriggerPhase();
-		// GetComponent<TurnManager>().Enable();
 	}
 
 	public void LoadBattleMap(Terrain playerTerrain, Terrain otherTerrain) {
@@ -410,6 +399,17 @@ public class Battle : MonoBehaviour
 		}
 	}
 
+	public Controller GetControllerFromTag(string armyTag) {
+		switch (armyTag) {
+			case "PlayerArmy":
+				return GetController(player);
+			case "EnemyArmy":
+				return GetController(other);
+			default:
+				return defaultController;
+		}
+	}
+
 	public List<Controller> GetActiveControllers() {
 		return activeControllers.Values.ToList();
 	}
@@ -502,7 +502,6 @@ public class Battle : MonoBehaviour
 	// pause, hand control off to the GameManager.overworld state
 	public void Pause() {
 		Debug.Log($"paused battle");
-		savedTurn = GameManager.inst.phaseManager.currentTurn;
 		isPaused = true;
 		hidden = true;
 		interactable = false;

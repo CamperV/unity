@@ -53,7 +53,7 @@ public class EngagementResults
 
         // why do we do separate checks here?
         // because, if we do defender.DeathCleanUp() before the aggressorSurvived check, 
-        // Battle/PhaseManager will end the activeBattle before the aggressor actually dies
+        // Battle will end the activeBattle before the aggressor actually dies
         // also, we want these to serially animate, so the user knows what exactly happened
         // this state, in which they simulatneously die, can happen due to something akin to spikes, poison, etc
         resolved = true;

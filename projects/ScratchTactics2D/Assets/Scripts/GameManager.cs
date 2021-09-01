@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
 	// prefabs to be instantiated
 	public Overworld overworldPrefab;
 	public PlayerArmy playerPrefab;
-	public PhaseManager phaseManagerPrefab;
 	public Battle battlePrefab;
 	//
 	public PlayerArmyController playerArmyControllerPrefab;
@@ -26,7 +25,6 @@ public class GameManager : MonoBehaviour
 	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public Overworld overworld;
 	[HideInInspector] public PlayerArmy playerArmy;
-	[HideInInspector] public PhaseManager phaseManager;
 	//
 	[HideInInspector] public PlayerArmyController playerArmyController;
 	[HideInInspector] public EnemyArmyController enemyArmyController;
@@ -54,7 +52,6 @@ public class GameManager : MonoBehaviour
 		if (seed != -1) Random.InitState(seed);
 		
 		overworld    = Instantiate(overworldPrefab, Vector3.zero, Quaternion.identity);
-		phaseManager = Instantiate(phaseManagerPrefab);
 		//
 		// these will have to "register" their subjects
 		playerArmyController = Instantiate(playerArmyControllerPrefab, overworld.transform);
@@ -83,8 +80,6 @@ public class GameManager : MonoBehaviour
 		overworld.DisableTint();
 		
 		gameState = Enum.GameState.overworld;
-		phaseManager.StartPhase(Enum.Phase.player);
-		// playerArmyController.TriggerPhase();
 	}
 	
 	public void EnterBattleState() {
@@ -97,6 +92,5 @@ public class GameManager : MonoBehaviour
 		
 		// give all control to TacticsManager
 		gameState = Enum.GameState.battle;
-		phaseManager.StartPhase(Enum.Phase.none);
 	}
 }

@@ -220,12 +220,10 @@ public class BattleMap : MonoBehaviour
 
     	foreach (Vector3Int _to in finalPositions.Keys) {
             TacticsTile tt = finalPositions[_to];
-            //Vector3 _sortingOffset =  new Vector3(0, 0, tt.zHeight);
-			Vector3 _sortingOffset =  new Vector3(0, 0, 0);
 
 			Vector3Int _from = _to + new Vector3Int(-initialDistance*orientation.y, initialDistance*orientation.x, 0);
-			Vector3 from = Battle.active.grid.Grid2RealPos(_from) + _sortingOffset;
-			Vector3 to = Battle.active.grid.Grid2RealPos(_to) + _sortingOffset;
+			Vector3 from = Battle.active.grid.Grid2RealPos(_from);
+			Vector3 to = Battle.active.grid.Grid2RealPos(_to);
 			 
 			MovingSprite anim = MovingSprite.ConstructWith(from, tt.sprite, "Tactics Entities");
             anim.SendToAndDestroyFadeUp(to, motionTime);
@@ -233,7 +231,7 @@ public class BattleMap : MonoBehaviour
 
         // for units and such, we need them to be on top of their own tile, but not obscuring others
 		foreach (Unit u in spawnedUnits) {
-			Vector3 _sortingOffset =  new Vector3(0, 0, u.zHeight+1f);
+			Vector3 _sortingOffset =  new Vector3(0, 0, 2f);
 
 			Vector3Int _to = u.gridPosition;
 			Vector3Int _from = _to + new Vector3Int(-initialDistance*orientation.y, -initialDistance*orientation.x, 0);

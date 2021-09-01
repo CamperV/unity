@@ -13,7 +13,7 @@ public class InputListener : MonoBehaviour
 	private float _phaseDelayTime = 0.00f;
 
 	void Start() {
-		PhasedObject.phaseDelayTime = _phaseDelayTime;
+		// PhasedObject.phaseDelayTime = _phaseDelayTime;
 	}
 
 	void Update() {
@@ -23,11 +23,11 @@ public class InputListener : MonoBehaviour
 
 		if (Input.GetKeyDown(accelerator)) {
 			SpriteAnimator.speedMultiplier *= movementAccel;
-			PhasedObject.phaseDelayTime = phaseDelayTimeAccel;
+			// PhasedObject.phaseDelayTime = phaseDelayTimeAccel;
 		}
         if (Input.GetKeyUp(accelerator)) {
 			SpriteAnimator.speedMultiplier /= movementAccel;
-			PhasedObject.phaseDelayTime = _phaseDelayTime;
+			// PhasedObject.phaseDelayTime = _phaseDelayTime;
 		}
     }
 }

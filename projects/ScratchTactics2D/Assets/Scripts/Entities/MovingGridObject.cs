@@ -53,8 +53,8 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 		if (grid.IsInBounds(endPos) && addlConditions) {
 			var occupant = grid.OccupantAt(endPos);
 
+			// ie, SUCCESS!
 			if (occupant == null) {
-				// SUCCESS!
 				MoveDirection(xdir, ydir, grid);
 						
 				if (spriteAnimator.isMoving) StopCoroutine(crtMovement);
