@@ -8,6 +8,7 @@ public class TurnManager : MonoBehaviour
 {
     public Phase playerPhase;
     public Phase enemyPhase;
+    public Phase currentPhase;
 
     [HideInInspector] public int turnCount = 0;
     [HideInInspector] public bool enable = true;
@@ -48,7 +49,6 @@ public class TurnManager : MonoBehaviour
     private IEnumerator Loop() {
         while (enable) {
             turnCount++;
-		    UIManager.inst.SetTurnText(turnCount.ToString());
             Debug.Log($"beginning {gameObject.name} Turn {turnCount}");
             yield return ExecutePhases(playerPhase, enemyPhase);
         }
@@ -65,8 +65,7 @@ public class TurnManager : MonoBehaviour
             }
 
             Debug.Log($"Triggering phase {phase.name}");
-		    UIManager.inst.SetPhaseText(phase.name);
-            
+            currentPhase = phase;
             phase.TriggerStart();
             yield return new WaitUntil(() => phase.state == Phase.PhaseState.complete);
         }

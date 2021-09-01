@@ -80,6 +80,10 @@ public class Battle : MonoBehaviour
 		// watches for when to pause and resume, unifying overworld/tacticsworld
 		turnManager.enemyPhase.EndEvent += CheckPauseCondition;
 		GameManager.inst.overworld.turnManager.enemyPhase.EndEvent += CheckResumeCondition;
+
+		// UI updaters
+		turnManager.playerPhase.StartEvent += UIManager.inst.UpdateBattleDisplay;
+		turnManager.enemyPhase.StartEvent += UIManager.inst.UpdateBattleDisplay;
 	}
 
 	void Update() {

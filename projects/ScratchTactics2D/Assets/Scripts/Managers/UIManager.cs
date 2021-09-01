@@ -36,19 +36,26 @@ public class UIManager : MonoBehaviour
 		EnableBattlePhaseDisplay(false);
     }
 
-    public void SetPhaseText(string text) {
-		if (GameManager.inst.gameState == Enum.GameState.overworld)
-			currentOverworldPhaseText.text = $"Current Overworld Phase: {text}";  
-		else if (GameManager.inst.gameState == Enum.GameState.battle)
-			currentBattlePhaseText.text = $"Current Battle Phase: {text}";
-    }
-	
-    public void SetTurnText(string text) {
-		if (GameManager.inst.gameState == Enum.GameState.overworld)
-			currentOverworldTurnText.text = $"Turn {text}";  
-		else if (GameManager.inst.gameState == Enum.GameState.battle)
-			currentBattleTurnText.text = $"Turn {text}";  
-    }
+	void Start() {
+		GameManager.inst.overworld.turnManager.playerPhase.StartEvent += UpdateOverworldDisplay;
+		GameManager.inst.overworld.turnManager.enemyPhase.StartEvent += UpdateOverworldDisplay;
+
+		// below is moved to Battle.Start(), because otherwise it is null
+		// Battle.active.turnManager.playerPhase.StartEvent += UpdateBattleDisplay;
+		// Battle.active.turnManager.enemyPhase.StartEvent += UpdateBattleDisplay;
+	}
+
+	public void UpdateOverworldDisplay() {
+		TurnManager tm = GameManager.inst.overworld.turnManager;
+		currentOverworldPhaseText.text = $"Current Overworld Phase: {tm.currentPhase.ToString()}"; 
+		currentOverworldTurnText.text = $"Turn {tm.turnCount}";
+	}
+
+	public void UpdateBattleDisplay() {
+		TurnManager tm = Battle.active.turnManager;
+		currentBattlePhaseText.text = $"Current Battle Phase: {tm.currentPhase.ToString()}"; 
+		currentBattleTurnText.text = $"Turn {tm.turnCount}";
+	}
 
 	public void EnableBattlePhaseDisplay(bool enable) {
 		battlePhaseDisplay.SetActive(enable);
