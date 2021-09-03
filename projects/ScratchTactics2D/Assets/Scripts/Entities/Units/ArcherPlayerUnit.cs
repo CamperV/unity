@@ -12,8 +12,8 @@ public class ArcherPlayerUnit : PlayerUnit
                 unitTag = "ArcherPlayerUnit",
 
                 VITALITY  = 10,
-                STRENGTH  = 3,
-                DEXTERITY = 3,
+                STRENGTH  = 30,
+                DEXTERITY = 30,
                 REFLEX    = 1,
                 MOVE      = 4,
 

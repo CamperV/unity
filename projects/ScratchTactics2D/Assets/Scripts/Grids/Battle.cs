@@ -368,6 +368,9 @@ public class Battle : MonoBehaviour
 		MenuManager.inst.CleanUpBattleMenus();
 		//
 		UIManager.inst.EnableBattlePhaseDisplay(false);
+
+		// because we're null now, remove this Action from the foreign TurnManager
+		GameManager.inst.overworld.turnManager.enemyPhase.EndEvent -= CheckResumeCondition;
 		GameManager.inst.overworld.turnManager.Resume();
 		GameManager.inst.EnterOverworldState();
 	}

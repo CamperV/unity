@@ -12,8 +12,8 @@ public class KnightPlayerUnit : PlayerUnit
                 unitTag = "KnightPlayerUnit",
 
                 VITALITY  = 18,
-                STRENGTH  = 3,
-                DEXTERITY = 3,
+                STRENGTH  = 30,
+                DEXTERITY = 30,
                 REFLEX    = 5,
                 MOVE      = 7,
 

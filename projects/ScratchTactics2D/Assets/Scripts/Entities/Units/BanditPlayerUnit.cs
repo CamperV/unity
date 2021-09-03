@@ -12,8 +12,8 @@ public class BanditPlayerUnit : PlayerUnit
                 unitTag = "BanditPlayerUnit",
 
                 VITALITY  = 20,
-                STRENGTH  = 1,
-                DEXTERITY = 1,
+                STRENGTH  = 10,
+                DEXTERITY = 10,
                 REFLEX    = 3,
                 MOVE      = 5,
 

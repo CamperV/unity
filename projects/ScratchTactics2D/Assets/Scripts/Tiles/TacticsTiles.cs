@@ -16,6 +16,6 @@ public abstract class TacticsTile : Tile
 	public virtual bool dimmable { get => false; }
 
 	// in the same vein: how many tiles does it obscure?
-	public virtual float zHeight { get => 1; }
+	public virtual float zHeight { get => 0; }
 }
 //-------------------------------------------------------------------//
