@@ -20,11 +20,6 @@ public abstract class Unit : TacticsEntityBase
 
 	// NOTE this is set by a Controller during registration
 	public UnitController parentController;
-	public bool isPlayerControlled {
-		get {
-			return parentController.GetType() == typeof(PlayerUnitController);
-		}
-	}
 
 	public UnitUI unitUIPrefab;
 	[HideInInspector] public UnitUI unitUI;
@@ -39,7 +34,8 @@ public abstract class Unit : TacticsEntityBase
 	// Attribute Area
 	// defaultState is static, and will be defined by the final class
 	public Sprite portrait;	// via Inspector
-	public abstract UnitState unitState { get; set; }
+	public UnitState unitState { get; protected set; }
+	public abstract void ApplyState(UnitState us);
 	public Guid ID { get => unitState.ID; }
 
 	public int VITALITY {
@@ -109,16 +105,6 @@ public abstract class Unit : TacticsEntityBase
 		}
 	}
 
-	void Start() {
-		// scale down to avoid weird parent/child problems w/ UnitUI
-		// apply inverse scale to all children of our transform
-		// Unity Enumerable<Transform> is weird and I wish they'd just use a method for getting children
-        // transform.localScale = new Vector3(spriteScaleFactor, spriteScaleFactor, 1.0f);
-		// foreach (Transform childT in transform) {
-		// 	childT.localScale = new Vector3(1.0f/spriteScaleFactor, 1.0f/spriteScaleFactor, 1.0f);
-		// }
-	}
-
 	public void SetFocus(bool takeFocus) {
 		// only one unit can hold focus
 		// force others to drop focus if their Y value is larger (unit is behind)
@@ -156,14 +142,6 @@ public abstract class Unit : TacticsEntityBase
 
 	public void SetOption(string option, bool setting) {
 		optionAvailability[option] = setting;
-	}
-
-	public void ApplyState(UnitState state) {
-		unitState = state;
-
-		unitUI.UpdateWeaponEmblem(equippedWeapon);
-		unitUI.UpdateHealthBar(_HP);
-		unitUI.SetTransparency(0.0f);
 	}
 
 	// Action zone

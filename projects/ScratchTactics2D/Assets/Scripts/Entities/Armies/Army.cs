@@ -20,7 +20,6 @@ public abstract class Army : MovingGridObject
 	
 	public UnitController unitControllerPrefab;
 	public Dictionary<string, Unit> unitPrefabs = new Dictionary<string, Unit>();
-	public virtual List<string> defaultUnitTags { get; }
 
 	// this is where the "real" units are stored
 	private Dictionary<Guid, UnitState> barracks = new Dictionary<Guid, UnitState>();
@@ -28,13 +27,6 @@ public abstract class Army : MovingGridObject
 	
 	// child classes must specify which grid to travel on
 	public abstract bool GridMove(int xdir, int ydir);
-
-	protected virtual void Awake() {
-		animator = GetComponent<Animator>();
-		
-		// generate your units here (name, tags, etc)
-		PopulateBarracksFromTags(defaultUnitTags);
-	}
 
 	public static T Spawn<T>(T prefab, Vector3Int pos) where T : Army {
 		T army = Instantiate(prefab, Vector3.zero, Quaternion.identity) as T;
@@ -68,19 +60,19 @@ public abstract class Army : MovingGridObject
 	public List<Unit> LoadUnitsByTag(List<string> unitTags) {
 		return unitTags.Select(it => LoadUnitByTag(it)).ToList();
 	}
+	public abstract void PopulateBarracksFromTags(List<string> unitTags);
+	// public void PopulateBarracksFromTags(List<string> unitTags) {
+	// 	foreach (string tag in unitTags) {
+	// 		PropertyInfo defaultProp = Type.GetType(tag).GetProperty("defaultState");
+	// 		UnitState defaultState = (UnitState)defaultProp.GetValue(null, null);
+	// 		//
+	// 		defaultState.ID = Guid.NewGuid();
+	// 		defaultState.unitName = $"{tag} Jeremy {Random.Range(0, 101)}";
 
-	public void PopulateBarracksFromTags(List<string> unitTags) {
-		foreach (string tag in unitTags) {
-			PropertyInfo defaultProp = Type.GetType(tag).GetProperty("defaultState");
-			UnitState defaultState = (UnitState)defaultProp.GetValue(null, null);
-			//
-			defaultState.ID = Guid.NewGuid();
-			defaultState.unitName = $"{tag} Jeremy {Random.Range(0, 101)}";
-
-			// now save the unit in our barracks
-			EnlistUnit(defaultState);
-		}
-	}
+	// 		// now save the unit in our barracks
+	// 		EnlistUnit(defaultState);
+	// 	}
+	// }
 
 	//
 	//
@@ -98,7 +90,7 @@ public abstract class Army : MovingGridObject
 		barracks.Remove(unit.unitState.ID);
 	}
 
-	public IEnumerable<UnitState> GetUnits() {
+	public IEnumerable<UnitState> GetUnitStates() {
 		foreach (var us in barracks.Values) {
 			yield return us;
 		}

@@ -6,11 +6,13 @@ using Random = UnityEngine.Random;
 using UnityEngine;
 using Extensions;
 
-public abstract class PlayerUnit : Unit
+public class PlayerUnit : Unit
 {
+	public UnitClass unitClass;
+	public UnitClass unitSubclass;
+
 	// NOTE this is set by a Controller during registration
 	//public override PlayerUnitController parentController;
-	//public override bool isPlayerControlled { get => true; }
 
 	//
 	public Enum.PlayerUnitState actionState;
@@ -26,6 +28,23 @@ public abstract class PlayerUnit : Unit
 			["CancelButton"] = () => { EnterIdleOrClearSelection(); }
 		};
 		actionState = Enum.PlayerUnitState.idle;
+	}
+
+	public override void ApplyState(UnitState state) {
+		unitState = state;
+
+		// use the state to add certain Components as well
+		unitClass = gameObject.AddComponent(Type.GetType(unitState.unitClass)) as UnitClass;
+
+		GetComponent<Animator>().runtimeAnimatorController = unitClass.playerUnitAnimator;
+
+		if (unitState.unitSubclass != null) {
+			unitSubclass = gameObject.AddComponent(Type.GetType(unitState.unitSubclass)) as UnitClass;
+		}
+
+		unitUI.UpdateWeaponEmblem(equippedWeapon);
+		unitUI.UpdateHealthBar(_HP);
+		unitUI.SetTransparency(0.0f);
 	}
 
 	// Action zone

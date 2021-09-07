@@ -37,48 +37,29 @@ public class EngagementPreview : MonoBehaviour
         ep.engagementResults = engagementResults;
 
         // set potraits based on units that are in the combat preview
-        if (ep.aggressor.isPlayerControlled) {
-            ep.playerPortrait.sprite = ep.aggressor.portrait;
-            ep.enemyPortrait.sprite = ep.defender.portrait;
+        ep.playerPortrait.sprite = ep.aggressor.portrait;
+        ep.enemyPortrait.sprite = ep.defender.portrait;
 
-            ep.playerEmblem.sprite = Emblem.FromWeapon(ep.aggressor.equippedWeapon);
-            ep.enemyEmblem.sprite = Emblem.FromWeapon(ep.defender.equippedWeapon);
+        ep.playerEmblem.sprite = Emblem.FromWeapon(ep.aggressor.equippedWeapon);
+        ep.enemyEmblem.sprite = Emblem.FromWeapon(ep.defender.equippedWeapon);
 
-            // there must always be a firstAttack
-            ep.pDamage.text   = ep.firstAttack.damage.ToString();
-            ep.pHitRate.text  = ep.firstAttack.hitRate.ToString();
-            ep.pCritRate.text = ep.firstAttack.critRate.ToString();
+        // there must always be a firstAttack
+        ep.pDamage.text   = ep.firstAttack.damage.ToString();
+        ep.pHitRate.text  = ep.firstAttack.hitRate.ToString();
+        ep.pCritRate.text = ep.firstAttack.critRate.ToString();
 
-            ep.eDamage.text   = (ep.secondAttack?.damage.ToString() ?? "-");
-            ep.eHitRate.text  = (ep.secondAttack?.hitRate.ToString() ?? "-");
-            ep.eCritRate.text = (ep.secondAttack?.critRate.ToString() ?? "-");
+        ep.eDamage.text   = (ep.secondAttack?.damage.ToString() ?? "-");
+        ep.eHitRate.text  = (ep.secondAttack?.hitRate.ToString() ?? "-");
+        ep.eCritRate.text = (ep.secondAttack?.critRate.ToString() ?? "-");
 
-            ep.playerHealthValue.text = $"{ep.aggressor._HP}";
-            ep.enemyHealthValue.text = $"{ep.defender._HP}";
+        ep.playerHealthValue.text = $"{ep.aggressor._HP}";
+        ep.enemyHealthValue.text = $"{ep.defender._HP}";
 
-            ep.playerHealthBar.Init(ep.aggressor.VITALITY, ep.aggressor._HP);
-            ep.enemyHealthBar.Init(ep.defender.VITALITY, ep.defender._HP);
+        ep.playerHealthBar.Init(ep.aggressor.VITALITY, ep.aggressor._HP);
+        ep.enemyHealthBar.Init(ep.defender.VITALITY, ep.defender._HP);
 
-            ep.playerHealthBar.FlashPotentialDamage(ep.secondAttack?.damage ?? 0);
-            ep.enemyHealthBar.FlashPotentialDamage(ep.firstAttack.damage);
-        }
-        
-        /* This doesn't really exist yet. Some enemies will ALWAYS attack first, THEN implement this later
-        else {
-            ep.playerPortrait.sprite = ep.defender.GetSprite();
-            ep.enemyPortrait.sprite = ep.aggressor.GetSprite();
-
-            // there must always be a firstAttack
-            ep.eDamage.text   = ep.firstAttack.damage.ToString() + " DMG";
-            ep.eHitRate.text  = ep.firstAttack.hitRate.ToString() + "% HIT";
-            ep.eCritRate.text = ep.firstAttack.critRate.ToString() + "% CRIT";
-
-            ep.pDamage.text   = ep.secondAttack.damage.ToString() + " DMG";
-            ep.pHitRate.text  = ep.secondAttack.hitRate.ToString() + "% HIT";
-            ep.pCritRate.text = ep.secondAttack.critRate.ToString() + "% CRIT";
-        }
-        */
-
+        ep.playerHealthBar.FlashPotentialDamage(ep.secondAttack?.damage ?? 0);
+        ep.enemyHealthBar.FlashPotentialDamage(ep.firstAttack.damage);
         return ep;
     }
 

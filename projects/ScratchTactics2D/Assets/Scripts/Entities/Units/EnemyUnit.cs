@@ -6,8 +6,23 @@ using Random = UnityEngine.Random;
 using UnityEngine;
 using Extensions;
 
-public abstract class EnemyUnit : Unit
+public class EnemyUnit : Unit
 {
+	public UnitClass unitClass;
+
+	public override void ApplyState(UnitState state) {
+		unitState = state;
+
+		// use the state to add certain Components as well
+		UnitClass unitClass = gameObject.AddComponent(Type.GetType(unitState.unitClass)) as UnitClass;
+
+		GetComponent<Animator>().runtimeAnimatorController = unitClass.enemyUnitAnimator;
+
+		unitUI.UpdateWeaponEmblem(equippedWeapon);
+		unitUI.UpdateHealthBar(_HP);
+		unitUI.SetTransparency(0.0f);
+	}
+
 	public override void DisplayThreatRange() {
 		moveRange?.ClearDisplay(Battle.active.grid);
 		attackRange?.ClearDisplay(Battle.active.grid);

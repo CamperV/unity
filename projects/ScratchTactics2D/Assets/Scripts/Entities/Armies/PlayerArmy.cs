@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using Extensions;
+using Random = UnityEngine.Random;
 
 public class PlayerArmy : Army
 {
@@ -34,18 +36,6 @@ public class PlayerArmy : Army
 			fov = new FieldOfView(_gridPosition, visionRange);
 		}
 	}
-
-	// abstract implementations
-	public override List<string> defaultUnitTags {
-		get {
-			return new List<string>() {
-				"KnightPlayerUnit",
-				"ArcherPlayerUnit",
-				"BanditPlayerUnit",
-				"SpearmanPlayerUnit",
-			};
-		}
-	}
 	
 	public static PlayerArmy Spawn(PlayerArmy prefab) {
 		PlayerArmy player = Instantiate(prefab);
@@ -55,6 +45,15 @@ public class PlayerArmy : Army
 		GameManager.inst.overworld.UpdateOccupantAt(player.gridPosition, player);
 		
 		return player;
+	}
+
+	void Awake() {
+		List<string> startingUnitClasses = new List<string>{
+			"ArcherClass", "ArcherClass"
+		};
+
+		// generate your units here (name, tags, etc)
+		PopulateBarracksFromTags(startingUnitClasses);
 	}
 	
 	// action zone - these are called by a controller
@@ -84,5 +83,20 @@ public class PlayerArmy : Army
 			GameManager.inst.overworld.turnManager.Suspend();
 			Battle.CreateActiveBattle(this, combatant, playerTerrain, enemyTerrain, Enum.Phase.player);
 		}));
+	}
+
+	// Unit things:
+	public override void PopulateBarracksFromTags(List<string> pod) {
+		foreach (string unitClassTag in pod) {
+			Guid _ID = Guid.NewGuid();
+			string _unitName = $"{unitClassTag} Player!Jeremy {Random.Range(0, 101)}";
+
+			Type ClassType = Type.GetType(unitClassTag);
+			MethodInfo Generator = ClassType.GetMethod("GenerateDefaultState");
+			UnitState defaultState = (UnitState)Generator.Invoke(null, new object[]{ _ID, _unitName, unitClassTag});
+
+			// now save the unit in our barracks
+			EnlistUnit(defaultState);
+		}
 	}
 }

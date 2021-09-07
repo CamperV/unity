@@ -293,14 +293,24 @@ public class Battle : MonoBehaviour
 		// the army will maintain a barracks of units
 		// the army has reference to each prefab needed, so we instantiate a prefab here
 		// then apply the actual relevant stats
-		foreach (UnitState unitState in army.GetUnits()) {
-			var uPrefab = army.LoadUnitByTag("Units/" + unitState.unitTag);
+		string unitTag = (army.armyTag == "PlayerArmy") ? "PlayerUnit" : "EnemyUnit";
+
+		foreach (UnitState unitState in army.GetUnitStates()) {
+			var uPrefab = army.LoadUnitByTag("Units/" + unitTag);
 			Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid) as Unit;
 			//
 			unit.ApplyState(unitState);
 			GetControllerFromTag(army).Register(unit);
 			retVal.Add(unit);
 		}
+		// foreach (UnitState unitState in army.GetUnitStates()) {
+		// 	var uPrefab = army.LoadUnitByTag("Units/" + unitState.unitTag);
+		// 	Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid) as Unit;
+		// 	//
+		// 	unit.ApplyState(unitState);
+		// 	GetControllerFromTag(army).Register(unit);
+		// 	retVal.Add(unit);
+		// }
 		
 		return retVal;
 	}

@@ -7,17 +7,21 @@ using Random = UnityEngine.Random;
 public class BanditArmy : EnemyArmy
 {	
 	public override int detectionRange { get { return 3; } }
-	
-	// abstract implementations
-	public override List<string> defaultUnitTags {
-		get {
-			return new List<string>() {
-				"BanditEnemyUnit",
-				"BanditEnemyUnit",
-				"ArcherEnemyUnit",
-				"ArcherEnemyUnit",
-			};
-		}
+
+	public override List<List<string>> spawnablePods {
+		get => new List<List<string>>{
+			new List<string>{
+				"BanditClass", "BanditClass",
+				"ArcherClass"
+			},
+			new List<string>{
+				"KnightClass",
+				"ArcherClass", "ArcherClass"
+			},
+			new List<string>{
+				"BanditClass", "BanditClass", "BanditClass"
+			}
+		};
 	}
 
 	public override void OnHit() {

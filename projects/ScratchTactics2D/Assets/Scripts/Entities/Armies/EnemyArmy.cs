@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Extensions;
@@ -9,6 +10,7 @@ using TMPro;
 
 public abstract class EnemyArmy : Army, IVisible
 {
+	public abstract List<List<string>> spawnablePods { get; }
 	public override string armyTag { get => "EnemyArmy"; }
 
 	public static int globalMoveThreshold { get => Constants.standardTickCost*3; }
@@ -95,8 +97,8 @@ public abstract class EnemyArmy : Army, IVisible
 	public abstract void OnHit();
 	public abstract void OnAlert();
 	
-    protected override void Awake() {
-		base.Awake();
+    void Awake() {
+		animator = GetComponent<Animator>();
 		//
 		tickPool = 0;
 
@@ -106,6 +108,10 @@ public abstract class EnemyArmy : Army, IVisible
 
 		defaultAnimator = animator.runtimeAnimatorController;
 		hiddenAnimator = Resources.Load<RuntimeAnimatorController>("Icons/UnknownArmy");
+
+        int podIndex = Random.Range(0, spawnablePods.Count);
+		List<string> pod = spawnablePods[podIndex];
+		PopulateBarracksFromTags(pod);
     }
 	
     protected void Start() {
@@ -242,5 +248,20 @@ public abstract class EnemyArmy : Army, IVisible
 			Terrain thisTerrain = GameManager.inst.overworld.TerrainAt(gridPosition);
 			Battle.active.AddParticipant(this, thisTerrain);
 		}));
+	}
+
+	// Unit things:
+	public override void PopulateBarracksFromTags(List<string> pod) {
+		foreach (string unitClassTag in pod) {
+			Guid _ID = Guid.NewGuid();
+			string _unitName = $"{unitClassTag} Enemy!Jeremy {Random.Range(0, 101)}";
+
+			Type ClassType = Type.GetType(unitClassTag);
+			MethodInfo Generator = ClassType.GetMethod("GenerateDefaultState");
+			UnitState defaultState = (UnitState)Generator.Invoke(null, new object[]{ _ID, _unitName, unitClassTag});
+
+			// now save the unit in our barracks
+			EnlistUnit(defaultState);
+		}
 	}
 }
