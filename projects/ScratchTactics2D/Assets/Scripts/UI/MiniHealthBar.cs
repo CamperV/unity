@@ -13,7 +13,7 @@ public class MiniHealthBar : UnitUIElement
             _currVal = Mathf.Max(value, 0);
         }
     }
-    [HideInInspector] public int maxPips = 1;
+    [HideInInspector] public int maxPips;
     [HideInInspector] public float healthRatio;
     [HideInInspector] public Transform barLevel;
 

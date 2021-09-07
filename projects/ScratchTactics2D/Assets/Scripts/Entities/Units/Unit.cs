@@ -89,7 +89,7 @@ public abstract class Unit : TacticsEntityBase
 		base.Awake();
 
 		unitUI = Instantiate(unitUIPrefab, transform);
-		unitUI.healthBar.InitHealthBar(VITALITY);
+		unitUI.healthBar.InitHealthBar(1);
 		unitUI.SetTransparency(0.0f);
 		unitUI.BindUnit(this);
 
@@ -103,6 +103,9 @@ public abstract class Unit : TacticsEntityBase
 		foreach (Transform childT in transform) {
 			childT.localScale = new Vector3(1.0f/spriteScaleFactor, 1.0f/spriteScaleFactor, 1.0f);
 		}
+	}
+	void Start() {
+		unitUI.healthBar.InitHealthBar(VITALITY);
 	}
 
 	public void SetFocus(bool takeFocus) {

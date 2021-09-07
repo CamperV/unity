@@ -255,10 +255,7 @@ public abstract class EnemyArmy : Army, IVisible
 		foreach (string unitClassTag in pod) {
 			Guid _ID = Guid.NewGuid();
 			string _unitName = $"{unitClassTag} Enemy!Jeremy {Random.Range(0, 101)}";
-
-			Type ClassType = Type.GetType(unitClassTag);
-			MethodInfo Generator = ClassType.GetMethod("GenerateDefaultState");
-			UnitState defaultState = (UnitState)Generator.Invoke(null, new object[]{ _ID, _unitName, unitClassTag});
+			UnitState defaultState = UnitClass.GenerateDefaultState(_ID, _unitName, unitClassTag);
 
 			// now save the unit in our barracks
 			EnlistUnit(defaultState);

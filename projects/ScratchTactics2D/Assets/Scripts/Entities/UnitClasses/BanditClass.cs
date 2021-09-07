@@ -5,13 +5,15 @@ using UnityEngine;
 
 public class BanditClass : UnitClass
 {
-    public static Dictionary<string, int> baseStats = new Dictionary<string, int>{
-        ["VITALITY"]  = 10,
-        ["STRENGTH"]  = 10,
-        ["DEXTERITY"] = 10,
-        ["REFLEX"]    = 10,
-        ["MOVE"]      = 6
-    };
+    public static Dictionary<string, int> baseStats {
+        get => new Dictionary<string, int>{
+            ["VITALITY"]  = 10,
+            ["STRENGTH"]  = 10,
+            ["DEXTERITY"] = 10,
+            ["REFLEX"]    = 10,
+            ["MOVE"]      = 6
+        };
+    }
 
     public override RuntimeAnimatorController playerUnitAnimator { get; set; }
     public override RuntimeAnimatorController enemyUnitAnimator { get; set; }

@@ -28,9 +28,9 @@ public abstract class UnitClass : MonoBehaviour
         UnitState unitState = new UnitState(){ ID = ID, unitName = name };
         unitState.unitClass = callingClass;
 
-        Type Cls = Type.GetType(callingClass);
-        PropertyInfo baseStatsProp = Cls.GetProperty("baseStats");
-        var baseStats = (Dictionary<string, int>)baseStatsProp.GetValue(null, null);
+
+        PropertyInfo baseStatsProp = Type.GetType(callingClass).GetProperty("baseStats");
+        Dictionary<string, int> baseStats = (Dictionary<string, int>)baseStatsProp.GetValue(null, null);
         unitState.VITALITY  = baseStats["VITALITY"];
         unitState.STRENGTH  = baseStats["STRENGTH"];
         unitState.DEXTERITY = baseStats["DEXTERITY"];
@@ -41,7 +41,7 @@ public abstract class UnitClass : MonoBehaviour
         unitState._HP = unitState.VITALITY;
         unitState._CAPACITY = unitState.STRENGTH;
 
-        MethodInfo Getter = Cls.GetMethod("GetStartingEquipment");
+        MethodInfo Getter = Type.GetType(callingClass).GetMethod("GetStartingEquipment");
 		List<Equipment> startingEquipment = (List<Equipment>)Getter.Invoke(null, null);
         unitState.inventory = new Inventory(startingEquipment);
 
