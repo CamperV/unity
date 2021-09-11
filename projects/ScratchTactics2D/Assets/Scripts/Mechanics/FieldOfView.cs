@@ -21,17 +21,7 @@ public class FieldOfView
 	// this differs from a FlowField because it relies on line-of-site
 	// as such, instead of pathfinding, we'll calculate the LoS for every involved tile
 	public Vector3Int origin;
-
-	private Dictionary<Vector3Int, Enum.VisibleState> _field;
-	public Dictionary<Vector3Int, Enum.VisibleState> field {
-		get => _field;
-		set {
-			_field = value;
-			foreach (Vector3Int pos in field.Keys) {
-				GlobalPlayerState.previouslyRevealedOverworldPositions.Add(pos);
-			}
-		}
-	}
+	public Dictionary<Vector3Int, Enum.VisibleState> field;
 
 	public FieldOfView(Vector3Int _origin, int range) {
 		origin = _origin;

@@ -61,21 +61,7 @@ public abstract class Army : MovingGridObject
 		return unitTags.Select(it => LoadUnitByTag(it)).ToList();
 	}
 	public abstract void PopulateBarracksFromTags(List<string> unitTags);
-	// public void PopulateBarracksFromTags(List<string> unitTags) {
-	// 	foreach (string tag in unitTags) {
-	// 		PropertyInfo defaultProp = Type.GetType(tag).GetProperty("defaultState");
-	// 		UnitState defaultState = (UnitState)defaultProp.GetValue(null, null);
-	// 		//
-	// 		defaultState.ID = Guid.NewGuid();
-	// 		defaultState.unitName = $"{tag} Jeremy {Random.Range(0, 101)}";
 
-	// 		// now save the unit in our barracks
-	// 		EnlistUnit(defaultState);
-	// 	}
-	// }
-
-	//
-	//
 	public void EnlistUnit(UnitState unitState) {
 		barracks[unitState.ID] = unitState;
 	}

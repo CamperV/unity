@@ -46,21 +46,26 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 	}
 			
 	// move only if you can, return non-null if you can't move and there is a Component blocking you
-	public Component AttemptGridMove(int xdir, int ydir, GameGrid grid, bool addlConditions = true) {
+	public bool AttemptGridMove(int xdir, int ydir, GameGrid grid, out Component occupant, bool addlConditions = true) {
 		Vector3Int endPos = gridPosition.GridPosInDirection(grid, new Vector2Int(xdir, ydir));
 		Vector3 endpoint = grid.Grid2RealPos(endPos);
 
+		occupant = null;
 		if (grid.IsInBounds(endPos) && addlConditions) {
-			var occupant = grid.OccupantAt(endPos);
+			var _occupant = grid.OccupantAt(endPos);
 
 			// ie, SUCCESS!
-			if (occupant == null) {
+			if (_occupant == null) {
 				MoveDirection(xdir, ydir, grid);
 						
 				if (spriteAnimator.isMoving) StopCoroutine(crtMovement);
 				crtMovement = StartCoroutine( spriteAnimator.SmoothMovement(endpoint) );
+				return true;	// movement success
+			
+			// else, someone else occupies this space
+			} else {
+				occupant = _occupant;
 			}
-			return occupant;
 
 		// No success, you're out of bounds
 		} else {
@@ -68,7 +73,7 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 			crtMovement = StartCoroutine( spriteAnimator.SmoothBump(endpoint, 5.0f) );
 		}
 
-		return null;
+		return false;	// movement failure
 	}
 	
 	private void MoveDirection(int xdir, int ydir, GameGrid grid) {

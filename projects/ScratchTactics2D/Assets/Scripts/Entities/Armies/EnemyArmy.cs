@@ -11,7 +11,7 @@ using TMPro;
 public abstract class EnemyArmy : Army, IVisible
 {
 	public abstract List<List<string>> spawnablePods { get; }
-	public override string armyTag { get => "EnemyArmy"; }
+	public sealed override string armyTag { get => "EnemyArmy"; }
 
 	public static int globalMoveThreshold { get => Constants.standardTickCost*3; }
 
@@ -68,7 +68,7 @@ public abstract class EnemyArmy : Army, IVisible
 			_gridPosition = value;
 
 			FieldOfView fov = GlobalPlayerState.army.fov;
-			if (fov.field.ContainsKey(_gridPosition)) {
+			if (fov?.field.ContainsKey(_gridPosition) ?? false) {
 				visible = fov.field[_gridPosition];
 			} else {
 				visible = Enum.VisibleState.hidden;
@@ -210,12 +210,14 @@ public abstract class EnemyArmy : Army, IVisible
 
 	public override bool GridMove(int xdir, int ydir) {
 		var overworld = GameManager.inst.overworld;
-		Component occupant = AttemptGridMove(xdir, ydir, overworld);
+
+		Component occupant;
+		bool success = AttemptGridMove(xdir, ydir, overworld, out occupant);
 
 		if (occupant?.MatchesType(typeof(PlayerArmy)) ?? false) {
 			InitiateBattle();
 		}
-		return occupant == null;
+		return occupant == null && success;
 	}
 
 	public virtual bool CanAttackPlayer() {

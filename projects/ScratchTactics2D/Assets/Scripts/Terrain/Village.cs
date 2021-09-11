@@ -13,4 +13,10 @@ public class Village : Terrain
 	public Village(Vector3Int pos) {
 		position = pos;
 	}
+
+	public override void ApplyTerrainEffect(Army enteringArmy) {
+		if (enteringArmy.armyTag == "PlayerArmy") {
+			GlobalPlayerState.UpdateFood(+50);
+		}
+	}
 }

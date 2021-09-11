@@ -16,8 +16,8 @@ public abstract class Terrain
 	public virtual Vector3Int tileRefPosition { get => position; }
 	public virtual int occlusion { get => 0; }
 	public virtual int altitude { get => 0; }
-	public virtual Vector2Int battleGridSize { get => new Vector2Int(8, 8); }
 	public virtual int tickCost { get => Constants.standardTickCost; }
+	public virtual int foodCost { get => 1; }	// relevant to PlayerArmy only
 
 	// IEnemyArmySpawner definitions
 	public Controller receivingController { get => GameManager.inst.enemyArmyController; }
@@ -46,5 +46,9 @@ public abstract class Terrain
 		// this will update the ID value
 		receivingController.Register(army);
 		return true;
+	}
+
+	public virtual void ApplyTerrainEffect(Army enteringArmy) {
+		// pass
 	}
 }

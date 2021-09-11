@@ -2,26 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GlobalPlayerState : MonoBehaviour
+public class GlobalPlayerState
 {
-    // singleton
-	public static GlobalPlayerState inst = null; // enforces singleton behavior
+	// gettables
+	public static PlayerArmy army { get => GameManager.inst.playerArmy; }
+	public static PlayerArmyController controller { get => GameManager.inst.playerArmyController; }
 
-    public static PlayerArmy army { get => GameManager.inst.playerArmy; }
-    public static PlayerArmyController controller { get => GameManager.inst.playerArmyController; }
+	private static int _currentFoodStore = int.MinValue;
+	public static int currentFoodStore { get => _currentFoodStore; }
 
-    public static HashSet<Vector3Int> previouslyRevealedOverworldPositions = new HashSet<Vector3Int>();
+	private static HashSet<Vector3Int> _previouslyRevealedOverworldPositions = new HashSet<Vector3Int>();
+	public static HashSet<Vector3Int> previouslyRevealedOverworldPositions { get => _previouslyRevealedOverworldPositions; }
 
-	void Awake() {
-		// only allow one GlobalPlayerState to exist at any time
-		// & don't kill when reloading a Scene
- 		if (inst == null) {
-			inst = this;
-		} else if (inst != this) {
-			Destroy(gameObject);
-		}
-		DontDestroyOnLoad(gameObject);
+	public static void SetFood(int amount) {
+		_currentFoodStore = amount;
+		UIManager.inst?.UpdateFoodStoreDisplay();
+	}
 
-        previouslyRevealedOverworldPositions = new HashSet<Vector3Int>();
+	public static void UpdateFood(int amount) {
+		_currentFoodStore += amount;
+		UIManager.inst?.UpdateFoodStoreDisplay();
+	}
+
+	public static void UpdateRevealedPositions(Vector3Int toAdd) {
+		_previouslyRevealedOverworldPositions.Add(toAdd);
 	}
 }

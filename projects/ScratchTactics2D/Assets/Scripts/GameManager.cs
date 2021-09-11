@@ -25,6 +25,13 @@ public class GameManager : MonoBehaviour
 	// these are public so the EnemyManager can access Player locations
 	[HideInInspector] public Overworld overworld;
 	[HideInInspector] public PlayerArmy playerArmy;
+	[HideInInspector] public IEnumerable enemyArmies {
+		get {
+			foreach (EnemyArmy ea in enemyArmyController.activeRegistry) {
+				yield return ea;
+			}
+		}
+	}
 	//
 	[HideInInspector] public PlayerArmyController playerArmyController;
 	[HideInInspector] public EnemyArmyController enemyArmyController;
@@ -42,16 +49,11 @@ public class GameManager : MonoBehaviour
 		//
 		Init();
 	}
-	
-	void Start() {
-		// now, "enable"
-		EnterOverworldState();
-	}
-	
+		
 	void Init() {
 		if (seed != -1) Random.InitState(seed);
 		
-		overworld    = Instantiate(overworldPrefab, Vector3.zero, Quaternion.identity);
+		overworld = Instantiate(overworldPrefab, Vector3.zero, Quaternion.identity);
 		//
 		// these will have to "register" their subjects
 		playerArmyController = Instantiate(playerArmyControllerPrefab, overworld.transform);
@@ -70,6 +72,19 @@ public class GameManager : MonoBehaviour
 		
 		enemyArmyController.SetTraversableTiles();
 		enemyArmyController.InitFlowField(playerArmy.gridPosition);
+	}
+
+	void Start() {
+		StartCoroutine( Utils.LateFrame(StartGame) );
+	}
+
+	public void StartGame() {
+		foreach (var starter in FindObjectsOfType<MonoBehaviour>().OfType<IFirstFrame>()) {
+			starter.OnFirstFrame();
+		}
+		
+		// now, "enable"
+		EnterOverworldState();
 	}
 	
 	public void EnterOverworldState() {
