@@ -17,7 +17,8 @@ public class BanditCamp : Terrain, IEnemyArmySpawner
 	// IEnemyArmySpawner definitions
 	public override Dictionary<float, string> spawnRates {
 		get => new Dictionary<float, string>{
-        	[100.00f] = "BanditArmy"
+			[80.00f] = "BanditArmy",
+        	[20.00f] = "BerserkerArmy"
     	};
 	}
 }

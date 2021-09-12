@@ -8,8 +8,6 @@ using UnityEditor;
 
 public class SpawnMarkerTacticsTile_1 : TacticsTile
 {
-	//public override string spriteName { get => "spawn_marker_iso_1"; }
-
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/SpawnMarkerTacticsTile_1", false, 1)]
 	private static void Create(){

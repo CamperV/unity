@@ -14,7 +14,7 @@ public class Emblem : UnitUIElement
                 return ResourceLoader.GetSprite("slash_emblem");
             case "PierceWeapon":
                 return ResourceLoader.GetSprite("pierce_emblem");
-            case "BluntWeapon":
+            case "StrikeWeapon":
                 return ResourceLoader.GetSprite("strike_emblem");
             case "MissileWeapon":
                 return ResourceLoader.GetSprite("blank_portrait");

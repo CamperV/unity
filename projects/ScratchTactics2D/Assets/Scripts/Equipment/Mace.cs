@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mace : BluntWeapon
+public class Mace : StrikeWeapon
 {
     public sealed override int MIGHT    { get => 5; }
     public sealed override int ACCURACY { get => 50; }

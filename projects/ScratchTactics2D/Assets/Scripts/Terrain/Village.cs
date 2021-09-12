@@ -15,8 +15,12 @@ public class Village : Terrain
 	}
 
 	public override void ApplyTerrainEffect(Army enteringArmy) {
-		if (enteringArmy.armyTag == "PlayerArmy") {
-			GlobalPlayerState.UpdateFood(+50);
+		if (!appliedFlag) {
+			if (enteringArmy.armyTag == "PlayerArmy") {
+				GlobalPlayerState.UpdateFood(+50);
+			}
+			
+			appliedFlag = true;
 		}
 	}
 }

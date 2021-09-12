@@ -77,7 +77,7 @@ public abstract class EnemyArmy : Army, IVisible
 	}
 
 	// OVERRIDABLES
-	public virtual int detectionRange { get { return 1; } }
+	public virtual int detectionRange { get => 1; }
 
 	public override String ToString() {
 		return base.ToString() + $" [{ID}]";

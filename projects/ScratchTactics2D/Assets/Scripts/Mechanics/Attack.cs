@@ -24,8 +24,8 @@ public class Attack
     }
 
     private Dictionary<string, string> advantages = new Dictionary<string, string>{
-        ["SlashWeapon"]   = "BluntWeapon",
-        ["BluntWeapon"]   = "PierceWeapon",
+        ["SlashWeapon"]   = "StrikeWeapon",
+        ["StrikeWeapon"]   = "PierceWeapon",
         ["PierceWeapon"]  = "SlashWeapon",
         //
         ["MissileWeapon"] = "n/a"

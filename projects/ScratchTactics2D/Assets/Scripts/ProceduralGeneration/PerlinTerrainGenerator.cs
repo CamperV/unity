@@ -133,6 +133,22 @@ public class PerlinTerrainGenerator : ElevationTerrainGenerator
             map[pos.x, pos.y] = WorldTileEnum.banditCamp;
         }
 
+        // Boss!
+        // convert the northern-most Village into a BossBanditCamp
+        int maxBanditY = banditCampPositions.Max(v => v.y);
+		Vector2Int bossBanditCampLocation = banditCampPositions.First(v => v.y == maxBanditY);
+        map[bossBanditCampLocation.x, bossBanditCampLocation.y] = WorldTileEnum.bossBanditCamp;
+        
+        // link the boss location to the main road
+        int maxVillageY = villagePositions.Max(v => v.y);
+		Vector2Int closestVillageLocation = villagePositions.First(v => v.y == maxVillageY);
+		ClearPathBetweenWaypoints(new List<Vector3Int>{
+            new Vector3Int(closestVillageLocation.x, closestVillageLocation.y, 0),
+            new Vector3Int(bossBanditCampLocation.x, bossBanditCampLocation.y, 0)
+        });
+        PatternReplaceSingle(TerrainPatternShape.CenterPlus, WorldTileEnum.forest, WorldTileEnum.deepForest,
+                             WorldTileEnum.forest, WorldTileEnum.mountain, WorldTileEnum.mountain2x2, WorldTileEnum.peak, WorldTileEnum.peak2x2); 
+
         // Finally,
         // replace 2x2 mountains with large mountain tiles
 		// create bottom-left 2x2 pattern for each mountain

@@ -92,6 +92,36 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
         }
     }
 
+    // A: the usage of "elevation" as the pathfinding mechanism
+    protected void ClearPathBetweenWaypoints(List<Vector3Int> waypoints) {	
+        // This needs post-processing to set the appropriate tile afterwards
+        Vector3Int prevPos = Vector3Int.zero;
+        int i = 0;
+
+        // create the roads in between the waypoints here
+        foreach (Vector2Int _pos in waypoints.OrderBy(it => it.y)) {
+            Vector3Int pos = new Vector3Int(_pos.x, _pos.y, 0);
+
+            if (i > 0) {
+                Path path = new ElevationPathfinder(elevation).BFS<Path>(prevPos, pos);
+                
+                // while we're here, update the grid for the first pass
+                foreach (Vector3Int p in path.Unwind()) {
+                    switch (map[p.x, p.y]) {
+                        case WorldTileEnum.mountain:
+                        case WorldTileEnum.peak:
+                            map[p.x, p.y] = WorldTileEnum.forest;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            prevPos = pos;
+            i++;
+        }
+    }
+
     protected WorldTileEnum ElevationToTile(float elevation) {
         foreach (KeyValuePair<float, WorldTileEnum> elPair in tileElevation.OrderBy(p => p.Key)) {
             if (elevation <= elPair.Key)

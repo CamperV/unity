@@ -102,6 +102,19 @@ public class BanditCampWorldTile : WorldTile
 	}
 }
 
+// POI
+public class BossBanditCampWorldTile : WorldTile
+{
+	public override int probability { get { return 1; } }
+
+	public void OnEnable() {
+		sprites = new List<Sprite>() {
+			ResourceLoader.GetSprite("Parchment/parchment_boss_bandit_camp")
+		};
+		sprite = sprites[0];
+	}
+}
+
 public class ForestWorldTile : WorldTile
 {
 	public override int probability { get { return 8; } }

@@ -8,27 +8,19 @@ using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 using Extensions;
 
-public class Camp : Terrain, IEnemyArmySpawner
+public class BossBanditCamp : Terrain
 {
-	public Camp(Vector3Int pos) {
+	public BossBanditCamp(Vector3Int pos) {
 		position = pos;
 	}
 
 	public override void ApplyTerrainEffect(Army enteringArmy) {
 		if (!appliedFlag) {
 			if (enteringArmy.armyTag == "PlayerArmy") {
-				GlobalPlayerState.UpdateFood(+15);
+				Debug.Log($"Let's initiate that BossBattle!");
 			}
 			
 			appliedFlag = true;
 		}
-	}
-
-	// IEnemyArmySpawner definitions
-	public override Dictionary<float, string> spawnRates {
-		get => new Dictionary<float, string>{
-			[2.50f] = "BanditArmy",
-        	[2.50f] = "BerserkerArmy"			
-    	};
 	}
 }

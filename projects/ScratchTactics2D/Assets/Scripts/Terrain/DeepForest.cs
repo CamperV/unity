@@ -22,7 +22,8 @@ public class DeepForest : Forest, IEnemyArmySpawner
 	// IEnemyArmySpawner definitions
 	public override Dictionary<float, string> spawnRates {
 		get => new Dictionary<float, string>{
-        	[5.00f] = "BanditArmy"
+        	[4.00f] = "BanditArmy",
+			[1.00f] = "BerserkerArmy"
     	};
 	}
 }

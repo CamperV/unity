@@ -29,6 +29,9 @@ public abstract class TerrainGenerator : MonoBehaviour
 		fortress,
 		camp,
 		banditCamp,
+		//
+		bossBanditCamp,
+
 		// NoTile section
 		mountainNoTile, peakNoTile,
 
@@ -80,8 +83,11 @@ public abstract class TerrainGenerator : MonoBehaviour
 			(ScriptableObject.CreateInstance<FortressWorldTile>() as FortressWorldTile),
 			(ScriptableObject.CreateInstance<CampWorldTile>() as CampWorldTile),
 			(ScriptableObject.CreateInstance<BanditCampWorldTile>() as BanditCampWorldTile),
+
+			// Special tiles
+			(ScriptableObject.CreateInstance<BossBanditCampWorldTile>() as BossBanditCampWorldTile),
 			
-			// NoTile
+			// NoTile - mountainNoTile, peakNoTile (replaced when 2x2)
 			null,
 			null
 		};
@@ -108,7 +114,7 @@ public abstract class TerrainGenerator : MonoBehaviour
             foreach (Vector3Int neighbor in map.GetNeighbors(roadPos)) {
                 if (map[neighbor.x, neighbor.y] == WorldTileEnum.road 			||
 					map[neighbor.x, neighbor.y] == WorldTileEnum.waterRoad 		||
-					map[neighbor.x, neighbor.y] == WorldTileEnum.forestRoad 		||
+					map[neighbor.x, neighbor.y] == WorldTileEnum.forestRoad 	||
 					map[neighbor.x, neighbor.y] == WorldTileEnum.mountainRoad 	||
 					map[neighbor.x, neighbor.y] == WorldTileEnum.villageRoad) {
                     roadPattern.Add( neighbor - roadPos );	
@@ -206,6 +212,9 @@ public abstract class TerrainGenerator : MonoBehaviour
 						break;
 					case WorldTileEnum.banditCamp:
 						terrain = new BanditCamp(pos);
+						break;
+					case WorldTileEnum.bossBanditCamp:
+						terrain = new BossBanditCamp(pos);
 						break;
 					// fall-through here
 					// don't include villageRoad

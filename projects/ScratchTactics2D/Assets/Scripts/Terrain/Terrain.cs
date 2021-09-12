@@ -18,6 +18,7 @@ public abstract class Terrain
 	public virtual int altitude { get => 0; }
 	public virtual int tickCost { get => Constants.standardTickCost; }
 	public virtual int foodCost { get => 1; }	// relevant to PlayerArmy only
+	protected bool appliedFlag = false;
 
 	// IEnemyArmySpawner definitions
 	public Controller receivingController { get => GameManager.inst.enemyArmyController; }
@@ -28,12 +29,17 @@ public abstract class Terrain
 	}
 
 	public bool AttemptToSpawnArmy() {
-		// Unity's float!float is inclusive for both sides
-		float rng = Random.Range(float.Epsilon, 100f);
+		//			0 - 199
+		float rng = Random.Range(0, 200) / 2f;
+		float cumValue = 0f;
 
 		string armyTagToSpawn = null;
 	    foreach (KeyValuePair<float, string> spawnPair in spawnRates.OrderBy(p => p.Key)) {
-            if (rng <= spawnPair.Key) armyTagToSpawn = spawnPair.Value;
+            if (rng <= spawnPair.Key) {
+				armyTagToSpawn = spawnPair.Value;
+				break;
+			}
+			cumValue += spawnPair.Key;
         }
 
 		// unsuccessful, did not spawn an army
@@ -49,6 +55,6 @@ public abstract class Terrain
 	}
 
 	public virtual void ApplyTerrainEffect(Army enteringArmy) {
-		// pass
+		if (!appliedFlag) appliedFlag = true;
 	}
 }

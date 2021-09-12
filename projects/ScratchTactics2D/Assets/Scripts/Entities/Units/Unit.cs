@@ -251,7 +251,7 @@ public abstract class Unit : TacticsEntityBase
 		// calc hit rate
 		// calc is crit?
 		// calc damage
-		// package it up w/ weapon/attack type (Slash/Pierce/Blunt)
+		// package it up w/ weapon/attack type (Slash/Pierce/Strike)
 		float strScalingDamage = (STRENGTH * equippedWeapon.strScalingBonus);
 		int baseDamage = (int)(equippedWeapon.MIGHT + strScalingDamage);
 
