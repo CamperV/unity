@@ -21,8 +21,7 @@ public class PlayerArmyController : Controller, IPhaseable
 	private OverworldPath _pathToQueue;
 	private bool actionQueueEmpty { get => actionQueue.Count == 0; }
 	
-	protected void Awake() {
-		base.Awake();
+	void Awake() {
 		actionQueue = new Queue<Func<Army, int>>();
 		
 		// this needs to be done at run-time

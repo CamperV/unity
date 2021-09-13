@@ -36,9 +36,7 @@ public class EnemyArmyController : Controller, IPhaseable
 		get => activeRegistry.Where(it => (it as EnemyArmy).state == Enum.EnemyArmyState.followField).Any();
 	}
 
-	protected void Awake() {
-		base.Awake();
-		//
+	void Awake() {
 		subjectsActingTrigger = false;
 		keepPhaseAlive = false;
 		crtActing = false;

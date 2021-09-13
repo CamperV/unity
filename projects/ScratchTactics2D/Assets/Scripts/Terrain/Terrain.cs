@@ -31,15 +31,16 @@ public abstract class Terrain
 	public bool AttemptToSpawnArmy() {
 		//			0 - 199
 		float rng = Random.Range(0, 200) / 2f;
-		float cumValue = 0f;
+		float cumValue = 0f;	// lmao
 
 		string armyTagToSpawn = null;
 	    foreach (KeyValuePair<float, string> spawnPair in spawnRates.OrderBy(p => p.Key)) {
-            if (rng <= spawnPair.Key) {
+			cumValue += spawnPair.Key;
+
+            if (cumValue >= rng) {
 				armyTagToSpawn = spawnPair.Value;
 				break;
 			}
-			cumValue += spawnPair.Key;
         }
 
 		// unsuccessful, did not spawn an army

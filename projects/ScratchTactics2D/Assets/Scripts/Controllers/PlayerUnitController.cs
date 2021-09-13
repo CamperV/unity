@@ -18,9 +18,7 @@ public class PlayerUnitController : UnitController, IPhaseable
 	private Dictionary<KeyCode, Action> actionBindings = new Dictionary<KeyCode, Action>();
 	private Enum.InteractState interactState;
 	
-	protected void Awake() {
-		base.Awake();
-		
+	void Awake() {		
 		// this needs to be done at run-time
 		actionBindings[KeyCode.Mouse0] = Interact;
 		actionBindings[KeyCode.Mouse1] = ClearSelection;

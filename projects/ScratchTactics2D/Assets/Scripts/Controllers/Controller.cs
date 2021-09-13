@@ -6,16 +6,12 @@ using Extensions;
 
 public class Controller : MonoBehaviour
 {
-	public List<MovingGridObject> registry;
+	public List<MovingGridObject> registry = new List<MovingGridObject>();
 	public List<MovingGridObject> activeRegistry {
 		get {
 			return registry.Where(it => it.IsActive()).ToList();
 		}
 	}
-
-	protected void Awake() {		
-		registry = new List<MovingGridObject>();
-    }
 	
 	public virtual void Register(MovingGridObject subject) {
 		registry.Add(subject);

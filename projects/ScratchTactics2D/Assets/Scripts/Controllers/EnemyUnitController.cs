@@ -13,8 +13,7 @@ public class EnemyUnitController : UnitController, IPhaseable
 
 	private bool subjectsActingTrigger;
 	
-	protected void Awake() {
-		base.Awake();
+	void Awake() {
 		subjectsActingTrigger = false;
 	}
 
