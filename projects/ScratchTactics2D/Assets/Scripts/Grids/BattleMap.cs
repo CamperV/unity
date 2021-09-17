@@ -123,6 +123,20 @@ public class BattleMap : MonoBehaviour
 		return new Zone(positions);
 	}
 
+	public Zone GetSpawnZone(int label) {
+		List<Vector3Int> positions = new List<Vector3Int>();
+
+		switch (label) {
+			case 0:
+				positions = GetPositionsOfType<SpawnMarkerTacticsTile_0>(overlayTilemap).ToList();
+				break;
+			case 1:
+				positions = GetPositionsOfType<SpawnMarkerTacticsTile_1>(overlayTilemap).ToList();
+				break;
+		}
+		return new Zone(positions);
+	}
+
 	// we make the specification here because your docking point depends on the original orientation of the Player:Enemy
 	public List<Vector3Int> GetDockingPointsFromJoiningOrientation(Vector3Int joiningOrientation) {
 		List<Vector3Int> positions = new List<Vector3Int>();

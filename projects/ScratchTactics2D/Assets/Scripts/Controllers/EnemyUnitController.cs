@@ -58,7 +58,6 @@ public class EnemyUnitController : UnitController, IPhaseable
 	}
 	
 	void Update() {
-		// if (!MyPhaseActive()) return;
 		if (phaseActionState == Enum.PhaseActionState.inactive) return;
 		
 		switch(phaseActionState) {
@@ -82,7 +81,6 @@ public class EnemyUnitController : UnitController, IPhaseable
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				EndPhase();
 				Battle.active.turnManager.enemyPhase.TriggerEnd();
 				break;
 				

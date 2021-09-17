@@ -61,7 +61,10 @@ public static class BattleMapGenerator
 		["Plain:Forest"]  = new List<string>{"PlainForest_0"},
 		["Forest:Plain"]  = new List<string>{"PlainForest_0"},
 
-		["Forest:Forest"] = new List<string>{"ForestForest_0"}
+		["Forest:Forest"] = new List<string>{"ForestForest_0"},
+
+		// SPECIAL MAPS
+		["BossBanditCamp"] = new List<string>{"BossBanditCamp_0"}
 	};
 
 	private static Dictionary<string, List<string>> dockerDesignators = new Dictionary<string, List<string>>{

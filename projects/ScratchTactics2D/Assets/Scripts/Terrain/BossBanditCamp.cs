@@ -18,6 +18,7 @@ public class BossBanditCamp : Terrain
 		if (!appliedFlag) {
 			if (enteringArmy.armyTag == "PlayerArmy") {
 				Debug.Log($"Let's initiate that BossBattle!");
+				Battle.CreateSpecialBattle((enteringArmy as PlayerArmy), this, Enum.Phase.player);
 			}
 			
 			appliedFlag = true;

@@ -214,7 +214,7 @@ public class Overworld : GameGrid, IPathable
 
 	// for pseudo-deprecated RandomTerrainGenerator
 	public List<Vector3Int> LocationsOf<T>() where T : Terrain {
-		return terrain.Keys.ToList().Where( it => terrain[it].GetType() == typeof(T)).ToList();
+		return Positions.ToList().Where( it => terrain[it].GetType() == typeof(T)).ToList();
 	}
 
 	public Type TypeAt(Vector3Int v) {

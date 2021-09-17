@@ -42,19 +42,17 @@ public class UIManager : MonoBehaviour
     }
 
 	void Start() {
-		Debug.Log($"UI start");
 		GameManager.inst.overworld.turnManager.playerPhase.StartEvent += UpdateOverworldDisplay;
-		GameManager.inst.overworld.turnManager.playerPhase.StartEvent += UpdateFoodStoreDisplay;
 		GameManager.inst.overworld.turnManager.enemyPhase.StartEvent += UpdateOverworldDisplay;
-		GameManager.inst.overworld.turnManager.enemyPhase.StartEvent += UpdateFoodStoreDisplay;
-		
+
+		GlobalPlayerState.FoodChangeEvent += UpdateFoodStoreDisplay;
 
 		// below is moved to Battle.Start(), because otherwise it is null
 		// Battle.active.turnManager.playerPhase.StartEvent += UpdateBattleDisplay;
 		// Battle.active.turnManager.enemyPhase.StartEvent += UpdateBattleDisplay;
 	}
 
-	public void UpdateOverworldDisplay() {
+	private void UpdateOverworldDisplay() {
 		TurnManager tm = GameManager.inst.overworld.turnManager;
 		currentOverworldPhaseText.text = $"Current Overworld Phase: {tm.currentPhase.name}"; 
 		currentOverworldTurnText.text = $"Turn {tm.turnCount}";
@@ -64,6 +62,10 @@ public class UIManager : MonoBehaviour
 		TurnManager tm = Battle.active.turnManager;
 		currentBattlePhaseText.text = $"Current Battle Phase: {tm.currentPhase.name}"; 
 		currentBattleTurnText.text = $"Turn {tm.turnCount}";
+	}
+
+	private void UpdateFoodStoreDisplay() {
+		currentFoodStoreText.text = $"Food Store: {GlobalPlayerState.currentFoodStore}"; 
 	}
 
 	public void EnableBattlePhaseDisplay(bool enable) {
@@ -76,9 +78,5 @@ public class UIManager : MonoBehaviour
 			overworldPhaseDisplay.transform.localScale = Vector3.one;
 			battlePhaseDisplay.transform.localScale = 0.85f * Vector3.one;
 		}
-	}
-
-	public void UpdateFoodStoreDisplay() {
-		currentFoodStoreText.text = $"Food Store: {GlobalPlayerState.currentFoodStore}"; 
 	}
 }

@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
 		
 		// right now, only Overworld terrain can spawn enemies
 		foreach (var spawner in overworld.Terrain.OfType<IEnemyArmySpawner>()) {
-			bool _success = spawner.AttemptToSpawnArmy();
+			bool _success = spawner.AttemptToSpawnArmy(enemyArmyController);
 		}
 		Debug.Log($"Spawned {enemyArmyController.registry.Count} enemy armies");
 		

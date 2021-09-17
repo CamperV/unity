@@ -8,8 +8,8 @@ public class ArcherClass : UnitClass
     public static Dictionary<string, int> baseStats {
         get => new Dictionary<string, int>{
             ["VITALITY"]  = 10,
-            ["STRENGTH"]  = 10,
-            ["DEXTERITY"] = 10,
+            ["STRENGTH"]  = 20,
+            ["DEXTERITY"] = 20,
             ["REFLEX"]    = 10,
             ["MOVE"]      = 6
         };

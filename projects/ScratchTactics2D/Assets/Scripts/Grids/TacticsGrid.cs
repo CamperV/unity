@@ -27,13 +27,6 @@ public class TacticsGrid : GameGrid
 		selectionOverlayTile = (ScriptableObject.CreateInstance<SelectOverlayIsoTile>() as SelectOverlayIsoTile);
 	}
 
-	// for debug
-	void Update() {
-		if (Input.GetMouseButtonDown(0)) {
-			GetMouseToGridPos();
-		}
-	}
-
 	// IPathable definitions
 	public override IEnumerable<Vector3Int> GetNeighbors(Vector3Int tilePos) {
 		List<Vector2Int> cardinal = new List<Vector2Int> {

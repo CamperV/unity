@@ -21,14 +21,13 @@ public abstract class Terrain
 	protected bool appliedFlag = false;
 
 	// IEnemyArmySpawner definitions
-	public Controller receivingController { get => GameManager.inst.enemyArmyController; }
 	public virtual Dictionary<float, string> spawnRates {
 		get => new Dictionary<float, string>{
 			[float.MinValue] = "n/a"
 		};
 	}
 
-	public bool AttemptToSpawnArmy() {
+	public bool AttemptToSpawnArmy(Controller receivingController) {
 		//			0 - 199
 		float rng = Random.Range(0, 200) / 2f;
 		float cumValue = 0f;	// lmao

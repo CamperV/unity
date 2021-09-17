@@ -81,9 +81,9 @@ public class PlayerArmyController : Controller, IPhaseable
 	}
 	// IPhaseable definitions
 	
+	// this controller uses Update() because it waits on Player input
 	private Vector3Int _prevMousePos;
 	void Update() {
-		// if (!MyPhaseActive()) return;
 		if (phaseActionState == Enum.PhaseActionState.inactive) return;
 
 		KeyCode kc = CheckInput();

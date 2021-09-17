@@ -51,6 +51,23 @@ public class Battle : MonoBehaviour
 		Battle.active.SpawnAllUnits();
 		Battle.active.PostInit();
 	}
+
+	public static void CreateSpecialBattle(PlayerArmy player, Terrain specialTerrain, Enum.Phase initiatingPhase) {
+		var cameraPos = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);		
+		Battle.active = Instantiate(GameManager.inst.battlePrefab, cameraPos, Quaternion.identity);
+
+		// load up a new BossArmy programatically
+		// don't register this army anywhere other than Battle, to be destroyed
+		EnemyArmy specialPrefab = EnemyArmySpawner.LoadArmyByTag($"Armies/{specialTerrain.tag}Army");
+		EnemyArmy special = Instantiate(specialPrefab, -1*Vector3.one, Quaternion.identity);	// spawn off-screen
+		special.transform.SetParent(Battle.active.transform);
+
+
+		Battle.active.Init(player, special);
+		Battle.active.LoadSpecialBattleMap(specialTerrain);
+		Battle.active.SpawnAllUnitsSpecial();
+		Battle.active.PostInit();
+	}
 	
 	void Awake() {
 		// only allow one Battle to exist at any time
@@ -275,15 +292,43 @@ public class Battle : MonoBehaviour
 		RecenterGrid();
 	}
 
+	public void LoadSpecialBattleMap(Terrain specialTerrain) {
+		Debug.Log($"Looking up desig {specialTerrain.tag}");
+		List<BattleMap> battleMaps = BattleMapGenerator.GetMapsFromDesignator(specialTerrain.tag);
+
+		// our current method: random
+		// note that we need to Instantiate to get certain fields from the Components
+		// otherwise the GO is marked as inactive and we can't query it
+		battleMap = Instantiate(battleMaps.PopRandom<BattleMap>());
+		battleMap.playerEnemyOrientation = Vector3Int.zero;
+		//
+		BattleMapGenerator.ApplyMap(battleMap, grid.SetAppropriateTile);
+		
+		// clean up
+		grid.baseTilemap.CompressBounds();
+		grid.baseTilemap.RefreshAllTiles();
+		RecenterGrid();
+	}
+
 	public void SpawnAllUnits() {
 		Zone playerSpawnZone = battleMap.GetSpawnZoneFromOrientation(player.gridPosition - other.gridPosition);
 		Zone otherSpawnZone = battleMap.GetSpawnZoneFromOrientation(other.gridPosition - player.gridPosition);
 
-		var _spawnedPlayer = SpawnUnits(player, playerSpawnZone);
-		var _spawnedOther = SpawnUnits(other, otherSpawnZone);
+		var _spawnedPlayer = SpawnUnitsRandomly(player, playerSpawnZone);
+		var _spawnedOther = SpawnUnitsRandomly(other, otherSpawnZone);
 	}
 
-	private List<Unit> SpawnUnits(Army army, Zone spawnZone) {
+	// players always spawn @ 0
+	// enemies always spawn @ 1
+	public void SpawnAllUnitsSpecial() {
+		Zone playerSpawnZone = battleMap.GetSpawnZone(0);
+		var _spawnedPlayer = SpawnUnitsRandomly(player, playerSpawnZone);
+
+		Zone otherSpawnZone = battleMap.GetSpawnZone(1);
+		var _spawnedOther = SpawnUnitsRandomly(other, otherSpawnZone);
+	}
+
+	private List<Unit> SpawnUnitsRandomly(Army army, Zone spawnZone) {
 		List<Unit> retVal = new List<Unit>();
 
 		// do spawn-y things and add them to the activeUnit registry
@@ -303,15 +348,6 @@ public class Battle : MonoBehaviour
 			GetControllerFromTag(army).Register(unit);
 			retVal.Add(unit);
 		}
-		// foreach (UnitState unitState in army.GetUnitStates()) {
-		// 	var uPrefab = army.LoadUnitByTag("Units/" + unitState.unitTag);
-		// 	Unit unit = TacticsEntityBase.Spawn<Unit>(uPrefab, spawnPositions.PopAt(0), grid) as Unit;
-		// 	//
-		// 	unit.ApplyState(unitState);
-		// 	GetControllerFromTag(army).Register(unit);
-		// 	retVal.Add(unit);
-		// }
-		
 		return retVal;
 	}
 
@@ -351,7 +387,7 @@ public class Battle : MonoBehaviour
 		// spawn in the enemies
 		// add enemies to the EnemyUnitController which is active
 		Zone joiningSpawnZone = docker.GetDockerSpawnZone(dockingOffset);
-		List<Unit> spawnedUnits = SpawnUnits(joiningEntity, joiningSpawnZone);
+		List<Unit> spawnedUnits = SpawnUnitsRandomly(joiningEntity, joiningSpawnZone);
 
 		// do all the application, but freeze the battle state, record the tiles and units,
 		// and animate them independently
@@ -372,6 +408,7 @@ public class Battle : MonoBehaviour
 	}
 	
 	public void Destroy() {
+		Destroy(battleMap.gameObject);
 		Destroy(gameObject);
 		Battle.active = null;
 		//

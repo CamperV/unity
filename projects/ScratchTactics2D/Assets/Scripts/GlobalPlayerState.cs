@@ -14,14 +14,18 @@ public class GlobalPlayerState
 	private static HashSet<Vector3Int> _previouslyRevealedOverworldPositions = new HashSet<Vector3Int>();
 	public static HashSet<Vector3Int> previouslyRevealedOverworldPositions { get => _previouslyRevealedOverworldPositions; }
 
+	// accessible delegates
+	public delegate void FoodChange();
+    public static event FoodChange FoodChangeEvent;
+
 	public static void SetFood(int amount) {
 		_currentFoodStore = amount;
-		UIManager.inst?.UpdateFoodStoreDisplay();
+		FoodChangeEvent.Invoke();
 	}
 
 	public static void UpdateFood(int amount) {
 		_currentFoodStore += amount;
-		UIManager.inst?.UpdateFoodStoreDisplay();
+		FoodChangeEvent.Invoke();
 	}
 
 	public static void UpdateRevealedPositions(Vector3Int toAdd) {

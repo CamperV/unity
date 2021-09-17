@@ -14,6 +14,7 @@ public abstract class ElevationTerrainGenerator : TerrainGenerator
 {
     public ElevationMap elevation;
     
+    // DEBUGING
     void Update() {
         if (Input.GetKeyDown(KeyCode.R)) {
             GenerateMap();

@@ -117,7 +117,6 @@ public class EnemyArmyController : Controller, IPhaseable
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				// EndPhase();
 				GameManager.inst.overworld.turnManager.enemyPhase.TriggerEnd();
 				break;
 				

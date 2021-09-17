@@ -67,8 +67,8 @@ public class PlayerUnitController : UnitController, IPhaseable
 		return Battle.active.grid.CurrentOccupantPositionsExcepting<PlayerUnit>();
 	}
 	
+	// this controller uses Update() because it waits on Player input
 	void Update() {
-		// if (!MyPhaseActive()) return;
 		if (phaseActionState == Enum.PhaseActionState.inactive) return;
 		var kc = CheckInput();
 
@@ -108,7 +108,6 @@ public class PlayerUnitController : UnitController, IPhaseable
 				
 			case Enum.PhaseActionState.complete:
 				phaseActionState = Enum.PhaseActionState.postPhaseDelay;
-				EndPhase();
 				Battle.active.turnManager.playerPhase.TriggerEnd();
 				break;
 			
