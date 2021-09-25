@@ -11,7 +11,7 @@ public class UnitState
     public string unitTag;  // used to look up the appropriate prefab
     public string unitName;
     public string unitClass;
-    public string unitSubclass = "n/a";
+    public string unitSubclass = null;  // remains null for now
 
     // Attributes!  
     public int VITALITY;    // starting value and upper bound of _HP

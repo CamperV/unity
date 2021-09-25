@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+	public static bool skipMovement = false;
+
 	public float snappiness;
 	public KeyCode debugKey;
 
@@ -54,7 +56,13 @@ public class CameraManager : MonoBehaviour
 			assignedCamera.orthographicSize = trackingSize;
 		}
 
+		// if we've toggled a certain mode, disable animation/smooth movement
+		if (skipMovement) {
+			transform.position = trackingPosition;
+			return;
+		}
 
+		// else, normal operation:
 		// update tracking
 		if (Vector3.Distance(transform.position, trackingPosition) > snapFactor) {
 			transform.position = Vector3.Lerp(transform.position, trackingPosition, snapSpeed);

@@ -14,6 +14,8 @@ public class SpriteAnimator : MonoBehaviour
 	public static float speedMultiplier = 1f;
 	public static float fixedTimePerTile { get => 0.10f / speedMultiplier; }
 
+	public static bool skipMovement = false;
+
 	public Action<Vector3> PositionUpdater;
 	private SpriteRenderer spriteRenderer;
 
@@ -206,6 +208,10 @@ public class SpriteAnimator : MonoBehaviour
 	}
 	
 	public IEnumerator SmoothMovement(Vector3 endpoint, float _fixedTime = -1f) {
+		if (skipMovement) {
+			PositionUpdater(endpoint);
+			yield break;
+		}
 		movementStack++;
         //
 
@@ -226,6 +232,10 @@ public class SpriteAnimator : MonoBehaviour
 	
 	// this coroutine performs a little 'bump' when you can't move
 	public IEnumerator SmoothBump(Vector3 endpoint, float distanceScale) {
+		if (skipMovement) {
+			PositionUpdater(transform.position);
+			yield break;
+		}
 		movementStack++;
 
 		Vector3 startPos = transform.position;
@@ -252,6 +262,11 @@ public class SpriteAnimator : MonoBehaviour
 	}
 
 	public IEnumerator SmoothMovementPath(Path path, GameGrid grid) {
+		if (skipMovement) {
+			PositionUpdater(path.end);
+			Debug.Log($"path end is {path.end}, beg {path.start}");
+			yield break;
+		}
 		movementStack++;
         //
 

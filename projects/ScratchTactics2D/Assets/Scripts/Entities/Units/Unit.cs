@@ -92,7 +92,6 @@ public abstract class Unit : TacticsEntityBase
 		unitUI.healthBar.InitHealthBar(1);
 		unitUI.SetTransparency(0.0f);
 		unitUI.BindUnit(this);
-		unitUI.gameObject.SetActive(false);
 
 		// init keys
 		optionAvailability = new Dictionary<string, bool>() {
