@@ -21,11 +21,9 @@ public class PlayerArmy : Army, ITerrainAffectable, IFirstFrame
 	public static PlayerArmy Spawn(PlayerArmy prefab) {
 		PlayerArmy player = Instantiate(prefab);
 		
-		// HashSet<Type> canSpawnInto = new HashSet<Type>(){ typeof(Village) };
-		// player.ResetPosition( GameManager.inst.overworld.RandomTileWithinType(canSpawnInto) );
 		List<Vector3Int> villagePos = GameManager.inst.overworld.LocationsOf<Village>();
 		int maxVillageY = villagePos.Max(t => t.y);
-		player.ResetPosition( villagePos.First(v => v.y == maxVillageY) );
+		player.UpdateGridPosition( villagePos.First(v => v.y == maxVillageY) , GameManager.inst.overworld);
 		GameManager.inst.overworld.UpdateOccupantAt(player.gridPosition, player);
 
 		return player;

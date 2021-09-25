@@ -11,10 +11,10 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 	protected SpriteRenderer spriteRenderer { get => GetComponent<SpriteRenderer>(); }
 	public SpriteAnimator spriteAnimator { get => GetComponent<SpriteAnimator>(); }
 
-	protected Vector3Int _gridPosition;
-	[HideInInspector] public virtual Vector3Int gridPosition {
+	private Vector3Int _gridPosition;
+	[HideInInspector] public Vector3Int gridPosition {
 		get => _gridPosition;
-		protected set {
+		private set {
 			_gridPosition = value;			
 		}
 	}
@@ -26,7 +26,7 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 		transform.position = pos;
 	}
 	
-	public void UpdateGridPosition(Vector3Int pos, GameGrid grid) {
+	public virtual void UpdateGridPosition(Vector3Int pos, GameGrid grid) {
 		gridPosition = pos;
         UpdateRealPosition(grid.Grid2RealPos(gridPosition));
 	}
@@ -83,6 +83,6 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 		// also, remove the ref to yourself and set occupancy to null. No two things can ever coexist, so this should be fine
 		grid.UpdateOccupantAt(gridPosition, null);
 		grid.UpdateOccupantAt(endPos, this);
-		gridPosition = endPos;
+		UpdateGridPosition(endPos, grid);
 	}
 }

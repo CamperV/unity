@@ -60,29 +60,25 @@ public abstract class EnemyArmy : Army, IVisible
 	// we update the visibility twice:
 	// 1) when the player changes its FOV, update all
 	// 2) when an IVisible moves
-	[HideInInspector] public override Vector3Int gridPosition {
-		get => _gridPosition;
+	public override void UpdateGridPosition(Vector3Int pos, GameGrid grid) {
+		// gridPosition = pos;
+        // UpdateRealPosition(grid.Grid2RealPos(gridPosition));
+		base.UpdateGridPosition(pos, grid);
 
-		// make sure you also update FOV when moving
-		protected set {
-			_gridPosition = value;
-
-			FieldOfView fov = GlobalPlayerState.army.fov;
-			if (fov?.field.ContainsKey(_gridPosition) ?? false) {
-				visible = fov.field[_gridPosition];
-			} else {
-				visible = Enum.VisibleState.hidden;
-			}
+		// update your visibility when moving
+		FieldOfView fov = GlobalPlayerState.army.fov;
+		if (fov?.field.ContainsKey(pos) ?? false) {
+			visible = fov.field[pos];
+		} else {
+			visible = Enum.VisibleState.hidden;
 		}
 	}
 
-	// OVERRIDABLES
 	public virtual int detectionRange { get => 1; }
 
 	public override String ToString() {
 		return base.ToString() + $" [{ID}]";
 	}
-	// OVERRIDABLES
 
 	// OverworldEneies have a special property: tickPool
 	// when the PlayerArmy moves, they add ticks to all active entities controlled by EnemyArmyController

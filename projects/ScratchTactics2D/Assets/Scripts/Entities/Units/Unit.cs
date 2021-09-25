@@ -239,7 +239,7 @@ public abstract class Unit : TacticsEntityBase
 
 		grid.UpdateOccupantAt(gridPosition, null);
 		grid.UpdateOccupantAt(target, this);
-		gridPosition = target;
+		UpdateGridPosition(target, grid);
 	}
 
 	public bool InStandingAttackRange(Vector3Int target) {

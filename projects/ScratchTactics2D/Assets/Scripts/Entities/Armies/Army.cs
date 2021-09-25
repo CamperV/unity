@@ -31,19 +31,13 @@ public abstract class Army : MovingGridObject
 	public static T Spawn<T>(T prefab, Vector3Int pos) where T : Army {
 		T army = Instantiate(prefab, Vector3.zero, Quaternion.identity) as T;
 		
-		army.gridPosition = pos;
-		army.UpdateRealPosition(GameManager.inst.overworld.Grid2RealPos(pos));
 		GameManager.inst.overworld.UpdateOccupantAt(pos, army);
+		army.UpdateGridPosition(pos, GameManager.inst.overworld);
 		return army;
 	}
 
 	public override void UpdateRealPosition(Vector3 pos) {
 		transform.position = new Vector3(pos.x, pos.y, Constants.zSortingConstant);
-	}
-
-	public void ResetPosition(Vector3Int v) {
-		gridPosition = v;
-		UpdateRealPosition(GameManager.inst.overworld.Grid2RealPos(gridPosition));
 	}
 
 	public Unit LoadUnitByTag(string tag) {
