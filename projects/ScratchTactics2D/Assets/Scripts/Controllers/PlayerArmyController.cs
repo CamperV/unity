@@ -101,7 +101,7 @@ public class PlayerArmyController : Controller, IPhaseable
 				if (actionQueueEmpty) {
 					// input mode is determined here
 					// "if you're holding the mouseMoveKey down"
-					if (Input.GetKey(mouseMoveKey)) {
+					if (Input.GetKey(mouseMoveKey) || Input.GetMouseButtonDown(0)) {
 						Vector3Int mousePos = GameManager.inst.overworld.GetMouseToGridPos();
 
 						if (_pathToQueue == null || mousePos != _pathToQueue.end) {

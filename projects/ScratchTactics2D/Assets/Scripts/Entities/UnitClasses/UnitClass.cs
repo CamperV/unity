@@ -5,11 +5,11 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+[RequireComponent(typeof(Unit))]
 public abstract class UnitClass : MonoBehaviour
 {
     // assign in the inspector, and attach this to the affected Unit's Animator
-    public abstract RuntimeAnimatorController playerUnitAnimator { get; set; }
-    public abstract RuntimeAnimatorController enemyUnitAnimator { get; set; }
+    public RuntimeAnimatorController unitAnimator { get; set; }
 
     // what are the default stats of a new unit of type "UnitClass"
     // Dictionary must contain:
@@ -26,9 +26,11 @@ public abstract class UnitClass : MonoBehaviour
 
     public static UnitState GenerateDefaultState(Guid ID, string name, string callingClass) {
         UnitState unitState = new UnitState(){ ID = ID, unitName = name };
+
+        // assign a class to be AddComponent'd upon ApplyState
         unitState.unitClass = callingClass;
 
-
+        // populate base stats
         PropertyInfo baseStatsProp = Type.GetType(callingClass).GetProperty("baseStats");
         Dictionary<string, int> baseStats = (Dictionary<string, int>)baseStatsProp.GetValue(null, null);
         unitState.VITALITY  = baseStats["VITALITY"];
@@ -41,6 +43,7 @@ public abstract class UnitClass : MonoBehaviour
         unitState._HP = unitState.VITALITY;
         unitState._CAPACITY = unitState.STRENGTH;
 
+        // generate inventory
         MethodInfo Getter = Type.GetType(callingClass).GetMethod("GetStartingEquipment");
 		List<Equipment> startingEquipment = (List<Equipment>)Getter.Invoke(null, null);
         unitState.inventory = new Inventory(startingEquipment);

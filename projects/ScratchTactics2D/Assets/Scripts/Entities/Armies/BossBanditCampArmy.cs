@@ -10,8 +10,8 @@ public class BossBanditCampArmy : EnemyArmy
 		get => new List<List<string>>{
 			new List<string>{
 				"BerserkerClass", "BerserkerClass", "BerserkerClass", "BerserkerClass",
-				// "ArcherClass", "ArcherClass", "ArcherClass", "ArcherClass", "ArcherClass",
-				// "BanditClass", "BanditClass", "BanditClass", "BanditClass", "BanditClass", "BanditClass"
+				"ArcherClass", "ArcherClass", "ArcherClass", "ArcherClass",
+				"BanditClass", "BanditClass", "BanditClass", "BanditClass"
 			}
 		};
 	}

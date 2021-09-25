@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BanditClass : UnitClass
+public class BanditClass : UnitClass, IEnemyUnitClass
 {
     public static Dictionary<string, int> baseStats {
         get => new Dictionary<string, int>{
@@ -15,23 +15,22 @@ public class BanditClass : UnitClass
         };
     }
 
-    public override RuntimeAnimatorController playerUnitAnimator { get; set; }
-    public override RuntimeAnimatorController enemyUnitAnimator { get; set; }
-    
+    // IEnemyUnitClass
+    public string assignedBrain { get => "GenericBrain"; }
+
     public override List<string> weaponProfiencies {
         get => new List<string>{
-            "PierceWeapon"
+            "pierce", "slash"
         };
     }
 
     void Awake() {
-        playerUnitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/AlliedBandit");
-        enemyUnitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/EnemyBandit");
+        unitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/Bandit");
     }
 
     public static List<Equipment> GetStartingEquipment() {
         return new List<Equipment>{
-            new ThrowingDagger()
+            new Dagger()
         };
     }
 }

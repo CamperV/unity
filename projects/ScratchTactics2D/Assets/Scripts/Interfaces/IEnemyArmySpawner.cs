@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-interface IEnemyArmySpawner
+public interface IEnemyArmySpawner
 {
 	// 0 - 99, determines how likely an enemy is to spawn at the start
 	// each float maps to a EnemyArmy tag, which is dynamically loaded

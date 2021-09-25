@@ -28,8 +28,8 @@ public class Engagement
         // such as weapon triangle, etc
         Debug.Log($"{aggressor} makes first attack:");
         Attack firstAttack = aggressor.GenerateAttack(isAggressor: true);
-        firstAttack.Modify(aggressor, defender);
-        defenderSurvived = defender.ReceiveAttack(firstAttack);
+        Attack modifiedAttack = Attack.Modify(firstAttack, aggressor, defender);
+        defenderSurvived = defender.ReceiveAttack(modifiedAttack);
 
         // animate, then create a little pause before counterattacking
         aggressor.BumpTowards(defender.gridPosition, Battle.active.grid, distanceScale: 7.0f);
@@ -39,8 +39,8 @@ public class Engagement
         if (defenderSurvived && defender.InStandingAttackRange(aggressor.gridPosition)) {
             Debug.Log($"{defender} counterattacks:");
             Attack counterAttack = defender.GenerateAttack(isAggressor: false);
-            counterAttack.Modify(defender, aggressor);
-            aggressorSurvived = aggressor.ReceiveAttack(counterAttack);
+            Attack modifiedCounterAttack = Attack.Modify(counterAttack, defender, aggressor);
+            aggressorSurvived = aggressor.ReceiveAttack(modifiedCounterAttack);
 
             // pause again to let the animation finish
             defender.BumpTowards(aggressor.gridPosition, Battle.active.grid);
@@ -52,18 +52,17 @@ public class Engagement
     }
 
     // this previews what will happen, to display, and not resolve
-    public EngagementResults PreviewResults() {
+    public EngagementResults SimulateResults() {
         Attack firstAttack = aggressor.GenerateAttack(isAggressor: true);
-        firstAttack.Modify(aggressor, defender);
+        Attack modifiedAttack = Attack.Modify(firstAttack, aggressor, defender);
 
         // if we can counterattack:
-        Attack counterAttack = null;
+        Attack modifiedCounterAttack = null;
         if (defender.InStandingAttackRange(aggressor.gridPosition)) {
-            counterAttack = defender.GenerateAttack(isAggressor: false);
-            counterAttack.Modify(defender, aggressor);
+            modifiedCounterAttack = Attack.Modify(defender.GenerateAttack(isAggressor: false), defender, aggressor);
         }
 
-        return new EngagementResults(aggressor, defender, firstAttack, counterAttack ?? null);
+        return new EngagementResults(aggressor, defender, modifiedAttack, modifiedCounterAttack ?? null);
     }
     
 	public IEnumerator ExecuteAfterResolving(Action VoidAction) {

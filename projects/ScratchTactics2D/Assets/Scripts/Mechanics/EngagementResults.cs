@@ -26,7 +26,7 @@ public class EngagementResults
         defenderSurvived = dS;
     }
 
-    // this inst is created for EngagementPreviews
+    // this inst is created for EngagementPreviews + simulations
     public EngagementResults(Unit a, Unit b, Attack attack, Attack counterAttack) {
         resolved = false;
         

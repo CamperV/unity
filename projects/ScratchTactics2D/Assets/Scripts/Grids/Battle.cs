@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 using Extensions;
 using Random = UnityEngine.Random;
 
-public class Battle : MonoBehaviour
+public sealed class Battle : MonoBehaviour
 {
 	// singleton
 	public static Battle active = null; // enforces singleton behavior

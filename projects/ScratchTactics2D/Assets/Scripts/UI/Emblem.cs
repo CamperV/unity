@@ -9,20 +9,21 @@ public class Emblem : UnitUIElement
 	private float spriteHeight { get => spriteRenderer.bounds.size.y; }
 
     public static Sprite FromWeapon(Weapon weapon) {
-        switch (weapon.tag) {
-            case "SlashWeapon":
-                return ResourceLoader.GetSprite("slash_emblem");
-            case "PierceWeapon":
-                return ResourceLoader.GetSprite("pierce_emblem");
-            case "StrikeWeapon":
-                return ResourceLoader.GetSprite("strike_emblem");
-            case "MissileWeapon":
-                return ResourceLoader.GetSprite("blank_portrait");
-            default:
-                Debug.Log($"No valid weapon tag named {weapon.tag}");
-                Debug.Assert(false);
-                return ResourceLoader.GetSprite("blank_portrait");
+        foreach (string tag in weapon.tags) {
+            switch (tag) {
+                case "slash":
+                    return ResourceLoader.GetSprite("slash_emblem");
+                case "pierce":
+                    return ResourceLoader.GetSprite("pierce_emblem");
+                case "strike":
+                    return ResourceLoader.GetSprite("strike_emblem");
+                case "missile":
+                    return ResourceLoader.GetSprite("blank_portrait");
+            }
         }
+
+        // if none found that fits:
+        return ResourceLoader.GetSprite("blank_portrait");
     }
 
 	void Awake() {

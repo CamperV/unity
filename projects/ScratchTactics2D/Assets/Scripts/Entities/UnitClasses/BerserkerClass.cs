@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BerserkerClass : UnitClass
+public class BerserkerClass : UnitClass, IEnemyUnitClass
 {
     public static Dictionary<string, int> baseStats {
         get => new Dictionary<string, int>{
@@ -15,17 +15,17 @@ public class BerserkerClass : UnitClass
         };
     }
 
-    public override RuntimeAnimatorController playerUnitAnimator { get; set; }
-    public override RuntimeAnimatorController enemyUnitAnimator { get; set; }
-    
+    // IEnemyUnitClass
+    public string assignedBrain { get => "GenericBrain"; }
+
     public override List<string> weaponProfiencies {
         get => new List<string>{
-            "StrikeWeapon"
+            "strike"
         };
     }
 
     void Awake() {
-        enemyUnitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/EnemyBerserker");
+        unitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/Berserker");
     }
 
     public static List<Equipment> GetStartingEquipment() {

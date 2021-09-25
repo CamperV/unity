@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuManager : MonoBehaviour
+public sealed class MenuManager : MonoBehaviour
 {
 	// singleton
 	public static MenuManager inst = null; // enforces singleton behavior

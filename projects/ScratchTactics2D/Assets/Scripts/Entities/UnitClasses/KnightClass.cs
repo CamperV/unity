@@ -14,19 +14,15 @@ public class KnightClass : UnitClass
             ["MOVE"]      = 6
         };
     }
-
-    public override RuntimeAnimatorController playerUnitAnimator { get; set; }
-    public override RuntimeAnimatorController enemyUnitAnimator { get; set; }
     
     public override List<string> weaponProfiencies {
         get => new List<string>{
-            "SlashWeapon"
+            "slash"
         };
     }
 
     void Awake() {
-        playerUnitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/AlliedKnight");
-        enemyUnitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/EnemyKnight");
+        unitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/Knight");
     }
 
     public static List<Equipment> GetStartingEquipment() {

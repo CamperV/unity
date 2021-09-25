@@ -23,12 +23,12 @@ public class Attack
         set { _critRate = (value < 0) ? 0 : value; }
     }
 
-    private Dictionary<string, string> advantages = new Dictionary<string, string>{
-        ["SlashWeapon"]   = "StrikeWeapon",
-        ["StrikeWeapon"]   = "PierceWeapon",
-        ["PierceWeapon"]  = "SlashWeapon",
+    private static Dictionary<string, string> advantages = new Dictionary<string, string>{
+        ["slash"]   = "strike",
+        ["strike"]  = "pierce",
+        ["pierce"]  = "slash",
         //
-        ["MissileWeapon"] = "n/a"
+        ["missile"] = "n/a"
     };
 
     public Attack(int dmg, int hit, int crit) {
@@ -38,27 +38,42 @@ public class Attack
 
         Debug.Log($"Attack - DMG {damage}, HIT {hitRate}%, CRIT {critRate}%");
     }
+    public Attack(Attack toClone) {
+        damage = toClone.damage;
+        hitRate = toClone.hitRate;
+        critRate = toClone.critRate;
+    }
 
     public override string ToString() { return $"Attack(dmg {damage}, hit {hitRate}%, crit {critRate}%)"; }
 
-    public void Modify(Unit aggressor, Unit defender) {
-        Debug.Assert(advantages.ContainsKey(aggressor.equippedWeapon.tag) && advantages.ContainsKey(defender.equippedWeapon.tag));
+    public static Attack Modify(Attack attack, Unit aggressor, Unit defender) {
+        Attack retVal = new Attack(attack);
 
         // "Weapon Triangle" modifications
-        if (defender.equippedWeapon.tag == advantages[aggressor.equippedWeapon.tag]) {
-            damage   += 1;
-            hitRate  += 15;
-            critRate += 5;
-        } else if (aggressor.equippedWeapon.tag == advantages[defender.equippedWeapon.tag]) {
-            damage   -= 1;
-            hitRate  -= 15;
-            critRate -= 5;
+        if (HasAdvantage(aggressor.equippedWeapon, defender.equippedWeapon)) {
+            retVal.damage   += 1;
+            retVal.hitRate  += 15;
+            retVal.critRate += 5;
+        } else if (HasAdvantage(defender.equippedWeapon, aggressor.equippedWeapon)) {
+            retVal.damage   -= 1;
+            retVal.hitRate  -= 15;
+            retVal.critRate -= 5;
         }
 
         // stat modifications
-        hitRate  -= defender.REFLEX*2;
-		critRate -= defender.REFLEX;
+        retVal.hitRate  -= defender.REFLEX*2;
+		retVal.critRate -= defender.REFLEX;
 
-        Debug.Log($"Attack modified to {this}");
+        return retVal;
+    }
+
+    private static bool HasAdvantage(Weapon A, Weapon B) {
+        foreach (string tag in A.tags) {
+            if (advantages.ContainsKey(tag)) {
+                if (B.tags.Contains(advantages[tag]))
+                    return true;
+            }
+        }
+        return false;
     }
 }

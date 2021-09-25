@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public sealed class UIManager : MonoBehaviour
 {
 	// singleton
 	public static UIManager inst = null; // enforces singleton behavior
@@ -46,10 +46,6 @@ public class UIManager : MonoBehaviour
 		GameManager.inst.overworld.turnManager.enemyPhase.StartEvent += UpdateOverworldDisplay;
 
 		GlobalPlayerState.FoodChangeEvent += UpdateFoodStoreDisplay;
-
-		// below is moved to Battle.Start(), because otherwise it is null
-		// Battle.active.turnManager.playerPhase.StartEvent += UpdateBattleDisplay;
-		// Battle.active.turnManager.enemyPhase.StartEvent += UpdateBattleDisplay;
 	}
 
 	private void UpdateOverworldDisplay() {

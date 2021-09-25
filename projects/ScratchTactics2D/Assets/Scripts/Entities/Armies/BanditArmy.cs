@@ -15,7 +15,7 @@ public class BanditArmy : EnemyArmy
 				"ArcherClass"
 			},
 			new List<string>{
-				"KnightClass",
+				"BanditClass",
 				"ArcherClass", "ArcherClass"
 			},
 			new List<string>{

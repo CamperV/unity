@@ -8,15 +8,29 @@ using Extensions;
 
 public class EnemyUnit : Unit
 {
-	public UnitClass unitClass;
+	private static Dictionary<string, Color> enemyUnitDefaultPalette = new Dictionary<string, Color>{
+		// ["_BrightColor"] = Color.magenta,
+		// ["_MediumColor"] = Color.Lerp(Color.magenta, Color.red, 0.5f),
+		// ["_DarkColor"]   = Color.red,
+		// ["_ShadowColor"] = Color.black,
+		["_BrightColor"] = new Color(0.97f, 0.55f, 0.55f),
+		["_MediumColor"] = new Color(0.87f, 0.41f, 0.41f),
+		["_DarkColor"]   = new Color(0.32f, 0.17f, 0.17f),
+		["_ShadowColor"] = Color.black,
+	};
+
+	public IEnemyUnitClass unitClass;
+	public EnemyBrain brain;	// assigned in ApplyState() only
 
 	public override void ApplyState(UnitState state) {
 		unitState = state;
 
 		// use the state to add certain Components as well
-		UnitClass unitClass = gameObject.AddComponent(Type.GetType(unitState.unitClass)) as UnitClass;
+		unitClass = (gameObject.AddComponent(Type.GetType(unitState.unitClass)) as IEnemyUnitClass);
+		brain     = (gameObject.AddComponent(Type.GetType(unitClass.assignedBrain)) as EnemyBrain);
 
-		GetComponent<Animator>().runtimeAnimatorController = unitClass.enemyUnitAnimator;
+		GetComponent<Animator>().runtimeAnimatorController = (unitClass as UnitClass).unitAnimator;
+		GetComponent<PaletteSwapAndOutlineBehavior>().SetPalette(enemyUnitDefaultPalette);
 
 		unitUI.UpdateWeaponEmblem(equippedWeapon);
 		unitUI.UpdateHealthBar(_HP);

@@ -14,19 +14,15 @@ public class SoldierClass : UnitClass
             ["MOVE"]      = 6
         };
     }
-
-    public override RuntimeAnimatorController playerUnitAnimator { get; set; }
-    public override RuntimeAnimatorController enemyUnitAnimator { get; set; }
     
     public override List<string> weaponProfiencies {
         get => new List<string>{
-            "PierceWeapon"
+            "pierce"
         };
     }
 
     void Awake() {
-        playerUnitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/AlliedSpearman");
-        enemyUnitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/EnemySpearman");
+        unitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/Soldier");
     }
 
     public static List<Equipment> GetStartingEquipment() {

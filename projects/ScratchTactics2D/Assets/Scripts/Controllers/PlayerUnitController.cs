@@ -164,7 +164,7 @@ public class PlayerUnitController : UnitController, IPhaseable
 
 				if (MenuManager.inst.engagementPreview == null || MenuManager.inst.engagementPreview.defender != unitAt) {	
 					var previewEngagement = new Engagement(currentSelection, unitAt);
-					EngagementResults er = previewEngagement.PreviewResults();
+					EngagementResults er = previewEngagement.SimulateResults();
 					MenuManager.inst.CreateEngagementPreview(er);
 				}
 				return;

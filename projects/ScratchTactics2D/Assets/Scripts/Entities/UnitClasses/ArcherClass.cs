@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ArcherClass : UnitClass
+public class ArcherClass : UnitClass, IEnemyUnitClass
 {
     public static Dictionary<string, int> baseStats {
         get => new Dictionary<string, int>{
@@ -15,18 +15,17 @@ public class ArcherClass : UnitClass
         };
     }
 
-    public override RuntimeAnimatorController playerUnitAnimator { get; set; }
-    public override RuntimeAnimatorController enemyUnitAnimator { get; set; }
+    // IEnemyUnitClass
+    public string assignedBrain { get => "GenericBrain"; }
     
     public override List<string> weaponProfiencies {
         get => new List<string>{
-            "MissileWeapon"
+            "missile"
         };
     }
 
     void Awake() {
-        playerUnitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/AlliedArcher");
-        enemyUnitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/EnemyArcher");
+        unitAnimator = Resources.Load<RuntimeAnimatorController>("Characters/Archer");
     }
 
     public static List<Equipment> GetStartingEquipment() {

@@ -32,14 +32,4 @@ public class UnitState
     public override string ToString() {
         return $"UnitState=>{unitName}/{unitTag}/S{STRENGTH}.D{DEXTERITY}.H{_HP}/{VITALITY}.M{MOVE}";
     }
-
-    public UnitState DeriveRemaining() {
-        // after construction, assign the remaining stats
-        _HP = VITALITY;
-        _CAPACITY = STRENGTH;
-
-        // this will later be limited by strength
-        inventory = new Inventory(inventoryPool.RandomSelections<Equipment>(1));
-        return this;
-    }
 }

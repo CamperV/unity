@@ -95,7 +95,7 @@ public class EnemyUnitController : UnitController, IPhaseable
 		List<MovingGridObject> activeRegistryClone = new List<MovingGridObject>(activeRegistry);
 
 		for (int i = 0; i < activeRegistryClone.Count; i++) {
-			Unit subject = (Unit)activeRegistryClone[i];
+			EnemyUnit subject = (EnemyUnit)activeRegistryClone[i];
 			
 			// determine some order in which the enemies act
 			// target selection
@@ -104,15 +104,11 @@ public class EnemyUnitController : UnitController, IPhaseable
 			subject.UpdateThreatRange();
 
 			List<PlayerUnit> targets = Battle.active.RegisteredUnits.OfType<PlayerUnit>().ToList();
-
-			Vector3Int targetPosition = GetTargetInAttackRange(subject, targets);
-			if (targetPosition == Constants.unselectableVector3Int) {
-				targetPosition = GetClosestTarget(subject, targets);
-			}
+			PlayerUnit target = subject.brain.GetOptimalTarget(targets);
 
 			// now that we have the target location, find all the "attackable" squares surrounding it
 			// then, select the optimal square to move into to perform your attack
-			var optimalPosition = GetOptimalToAttack(subject, targetPosition);
+			Vector3Int optimalPosition = subject.brain.GetOptimalPositionToAttackTarget(target.gridPosition);
 
 			if (subject.OptionActive("Move") && optimalPosition != subject.gridPosition) {
 				subject.SetOption("Move", false);
@@ -122,7 +118,7 @@ public class EnemyUnitController : UnitController, IPhaseable
 				// CAVEAT: we can't just clip it
 				// if we do, we can have enemies standing in the same place.
 				// instead, we have to do the laborious thing, and REpath-find to the new clipped position
-				Debug.Log($"{subject}@{subject.gridPosition} found {optimalPosition} to attack {targetPosition}");
+				Debug.Log($"{subject}@{subject.gridPosition} found {optimalPosition} to attack {target}@{target.gridPosition}");
 				Path pathToTarget = new UnitPathfinder(subject.obstacles).BFS<Path>(subject.gridPosition, optimalPosition);
 				pathToTarget.Clip(subject.moveRange);
 
@@ -138,11 +134,9 @@ public class EnemyUnitController : UnitController, IPhaseable
 				while (subject.spriteAnimator.isMoving) { yield return null; }
 			}
 
-			if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, targetPosition)) {
+			if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, target.gridPosition)) {
 				subject.SetOption("Attack", false);
-
-				var unitAt = (Unit)Battle.active.grid.OccupantAt(targetPosition);
-				var engagement = new Engagement(subject, unitAt);
+				Engagement engagement = new Engagement(subject, target);
 
 				// wait until the engagement has ended
 				StartCoroutine(engagement.ResolveResults());
@@ -159,36 +153,6 @@ public class EnemyUnitController : UnitController, IPhaseable
 			subject.OnEndTurn();
 			yield return new WaitForSeconds(0.5f);
 		}
-	}
-
-	private Vector3Int GetTargetInAttackRange(Unit subject, List<PlayerUnit> targets) {
-		var attackTargets = targets.FindAll(it => subject.attackRange.field.ContainsKey(it.gridPosition));
-		return (attackTargets.Any()) ? GetClosestTarget(subject, attackTargets) : Constants.unselectableVector3Int;
-	}
-
-	private Vector3Int GetClosestTarget(Unit subject, List<PlayerUnit> targets) {
-		var minDist = targets.Min(it => it.gridPosition.ManhattanDistance(subject.gridPosition));
-		return targets.First(it => it.gridPosition.ManhattanDistance(subject.gridPosition) == minDist).gridPosition;
-	}
-
-	private Vector3Int GetOptimalToAttack(Unit subject, Vector3Int targetPosition) {
-		bool SubjectCanStand(Vector3Int v) {
-			return Battle.active.grid.IsInBounds(v) && (Battle.active.grid.VacantAt(v) || v == subject.gridPosition);
-		}
-		float DistToTarget(Vector3Int v) { return targetPosition.ManhattanDistance(v); }
-		float DistToSubject(Vector3Int v) { return subject.gridPosition.ManhattanDistance(v); }
-		// util
-
-		// max allowable attack positions (max range/reach)
-		// NOTE: need to Radiate again if the sequence is empty.
-		var targetable = targetPosition.GridRadiate(Battle.active.grid, subject._RANGE).Where(it => SubjectCanStand(it));
-		float maxDistWithin = targetable.Max(it => DistToTarget(it));
-		var atMaxDist = targetable.Where(it => DistToTarget(it) == maxDistWithin);
-
-		// the closest of those to the acting subject
-		float minDistSubject = atMaxDist.Min(it => DistToSubject(it));
-		var optimalPosition = atMaxDist.First(it => DistToSubject(it) == minDistSubject);
-		return optimalPosition;
 	}
 
 	public Vector3Int NextVacantPos(Unit subject, Vector3Int origPos) {

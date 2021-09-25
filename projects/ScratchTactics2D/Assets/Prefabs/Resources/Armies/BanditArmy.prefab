@@ -19,7 +19,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 4249979bbf4d63c4dba52b719cb128f4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -65,6 +65,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitControllerPrefab: {fileID: 5118058475980065873, guid: b3487c465fa1ac24ab899d04f4d62cb9, type: 3}
   state: 0
+--- !u!61 &3295040816111190478
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030106808076709487}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.0001, y: 0.0001}
+  m_EdgeRadius: 0
+--- !u!114 &-6486757646523955459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030106808076709487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59ed12412260b0744ad77993ea87ad70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseOverEnabled: 0
 --- !u!1001 &233882380493305716
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -139,7 +178,7 @@ PrefabInstance:
     - target: {fileID: 3996583895950419961, guid: a43cfd85df7d62f419123b637cdcfa13, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 22100000, guid: c2365ffa7cc47e749bd58d89a8ee5866, type: 2}
+      objectReference: {fileID: 22100000, guid: 6503eb34133c7434ea38bd95fe4995d3, type: 2}
     - target: {fileID: 4261332921861523792, guid: a43cfd85df7d62f419123b637cdcfa13, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.1

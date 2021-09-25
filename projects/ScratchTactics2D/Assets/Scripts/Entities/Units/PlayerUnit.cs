@@ -8,6 +8,17 @@ using Extensions;
 
 public class PlayerUnit : Unit
 {
+	private static Dictionary<string, Color> playerUnitDefaultPalette = new Dictionary<string, Color>{
+		// ["_BrightColor"] = Color.cyan,
+		// ["_MediumColor"] = Color.Lerp(Color.cyan, Color.blue, 0.5f),
+		// ["_DarkColor"]   = Color.blue,
+		// ["_ShadowColor"] = Color.black,
+		["_BrightColor"] = new Color(0.85f, 0.79f, 1.00f),
+		["_MediumColor"] = new Color(0.44f, 0.40f, 0.53f),
+		["_DarkColor"]   = new Color(0.26f, 0.24f, 0.32f),
+		["_ShadowColor"] = Color.black,
+	};
+
 	public UnitClass unitClass;
 	public UnitClass unitSubclass;
 
@@ -34,9 +45,11 @@ public class PlayerUnit : Unit
 		unitState = state;
 
 		// use the state to add certain Components as well
-		unitClass = gameObject.AddComponent(Type.GetType(unitState.unitClass)) as UnitClass;
+		unitClass = (gameObject.AddComponent(Type.GetType(unitState.unitClass)) as UnitClass);
+		
+		GetComponent<Animator>().runtimeAnimatorController = unitClass.unitAnimator;
+		GetComponent<PaletteSwapAndOutlineBehavior>().SetPalette(playerUnitDefaultPalette);
 
-		GetComponent<Animator>().runtimeAnimatorController = unitClass.playerUnitAnimator;
 
 		if (unitState.unitSubclass != null) {
 			unitSubclass = gameObject.AddComponent(Type.GetType(unitState.unitSubclass)) as UnitClass;
