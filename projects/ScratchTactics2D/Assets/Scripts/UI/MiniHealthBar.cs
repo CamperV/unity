@@ -18,21 +18,18 @@ public class MiniHealthBar : UnitUIElement
     [HideInInspector] public float healthRatio;
     [HideInInspector] public Transform barLevel;
 
-    [HideInInspector] public Image[] images;
-    [HideInInspector] public RectTransform[] rects;
-	public float spriteWidth { get => rects[0].rect.width; }
-	public float spriteHeight { get => rects[0].rect.height; }
+    [HideInInspector] public SpriteRenderer[] renderers;
+	public float spriteWidth { get => renderers[0].size.x; }
+	public float spriteHeight { get => renderers[0].size.y; }
 
 	void Awake() {
         // I don't like how these are implemented, but c'est la Unity
         // this vvv is the first CHILD Transform, b/c GetComp... gets the parent too
-        Transform background = GetComponentsInChildren<Transform>()[1];
-        background.position += new Vector3(0, 0, -1.0f);
-
+        // Transform background = GetComponentsInChildren<Transform>()[1];
+        // background.position += new Vector3(0, 0, -1.0f);
 
         barLevel = GetComponentsInChildren<Transform>()[2];
-        images = GetComponentsInChildren<Image>();
-        rects = GetComponentsInChildren<RectTransform>();
+        renderers = GetComponentsInChildren<SpriteRenderer>();
 
         //
         transform.localScale = new Vector3(0.45f, 0.45f, 1.0f);
@@ -40,7 +37,7 @@ public class MiniHealthBar : UnitUIElement
     }
 
     void Start() {
-        transform.position -= new Vector3(spriteWidth * -0.05f, spriteHeight * 1.75f, 0);
+        // transform.position -= new Vector3(spriteWidth * -0.05f, spriteHeight * 1.75f, 0);
         transparencyLock = true;
     }
 
@@ -57,8 +54,8 @@ public class MiniHealthBar : UnitUIElement
     public override void UpdateTransparency(float alpha) {
         if (transparencyLock) return;
 
-        foreach (Image im in images) {
-            im.color = im.color.WithAlpha(alpha);
+        foreach (SpriteRenderer rend in renderers) {
+            rend.color = rend.color.WithAlpha(alpha);
         }
     }
 

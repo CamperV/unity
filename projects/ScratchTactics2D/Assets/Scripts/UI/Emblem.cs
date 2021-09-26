@@ -12,11 +12,11 @@ public class Emblem : UnitUIElement
         foreach (string tag in weapon.tags) {
             switch (tag) {
                 case "slash":
-                    return ResourceLoader.GetSprite("slash_emblem");
+                    return ResourceLoader.GetSprite("Icons/slash_emblem");
                 case "pierce":
-                    return ResourceLoader.GetSprite("pierce_emblem");
+                    return ResourceLoader.GetSprite("Icons/pierce_emblem");
                 case "strike":
-                    return ResourceLoader.GetSprite("strike_emblem");
+                    return ResourceLoader.GetSprite("Icons/strike_emblem");
                 case "missile":
                     return ResourceLoader.GetSprite("blank_portrait");
             }
@@ -32,14 +32,6 @@ public class Emblem : UnitUIElement
         // set renderer properties
 		spriteRenderer.sortingLayerName = "Tactics UI";
 		spriteRenderer.sortingOrder = 0;
-
-        //
-        transform.localScale = 0.15f * Vector3.one;
-    }
-
-    void Start() {
-        // scale based on healthBar
-        transform.position -= new Vector3(parentUI.healthBar.spriteWidth * 0.5f * 1.05f, parentUI.healthBar.spriteHeight * 1.75f, 0);
     }
 
     public override void UpdateTransparency(float alpha) {

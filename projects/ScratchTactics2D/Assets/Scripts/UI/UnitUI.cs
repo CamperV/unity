@@ -9,11 +9,10 @@ public class UnitUI : MonoBehaviour
     [HideInInspector] public Unit boundUnit;
     [HideInInspector] public List<UnitUIElement> boundElements;
 
-    [HideInInspector] public float persistentAlpha = 0.0f;
+    public float persistentAlpha = 0f;
 
     // UI Elements to collect, scale, etc
     public TextUI textUIPrefab;
-    public Emblem weaponTypeEmblemPrefab;
     
     [HideInInspector] public MiniHealthBar healthBar;
     [HideInInspector] public Emblem weaponTypeEmblem;
@@ -25,13 +24,18 @@ public class UnitUI : MonoBehaviour
         healthBar = GetComponentsInChildren<MiniHealthBar>()[0];
         healthBar.BindUI(this);
 
-        weaponTypeEmblem = Instantiate(weaponTypeEmblemPrefab, transform);
+        weaponTypeEmblem = GetComponentsInChildren<Emblem>()[0];
         weaponTypeEmblem.BindUI(this);
+    }
+
+    void LateUpdate() {
+        transform.position = boundUnit?.transform.position ?? transform.position;
     }
 
     public void BindUnit(Unit unit) {
         Debug.Assert(boundUnit == null);
         boundUnit = unit;
+        SetTransparency(1f);
     }
 
     public void UpdateHealthBar() {

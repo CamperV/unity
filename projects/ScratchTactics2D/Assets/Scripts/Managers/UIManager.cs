@@ -95,7 +95,7 @@ public sealed class UIManager : MonoBehaviour
 	}
 
 	public void CreateAndBindUnitUI(Unit boundUnit) {
-		UnitUI unitUI = Instantiate(unitUIPrefab, transform);
+		UnitUI unitUI = Instantiate(unitUIPrefab, boundUnit.transform);
 		unitUI.BindUnit(boundUnit);
 
 		// events
