@@ -9,10 +9,6 @@ using Extensions;
 public class PlayerUnit : Unit
 {
 	private static Dictionary<string, Color> playerUnitDefaultPalette = new Dictionary<string, Color>{
-		// ["_BrightColor"] = Color.cyan,
-		// ["_MediumColor"] = Color.Lerp(Color.cyan, Color.blue, 0.5f),
-		// ["_DarkColor"]   = Color.blue,
-		// ["_ShadowColor"] = Color.black,
 		["_BrightColor"] = new Color(0.85f, 0.79f, 1.00f),
 		["_MediumColor"] = new Color(0.44f, 0.40f, 0.53f),
 		["_DarkColor"]   = new Color(0.26f, 0.24f, 0.32f),
@@ -50,14 +46,12 @@ public class PlayerUnit : Unit
 		GetComponent<Animator>().runtimeAnimatorController = unitClass.unitAnimator;
 		GetComponent<PaletteSwapAndOutlineBehavior>().SetPalette(playerUnitDefaultPalette);
 
-
 		if (unitState.unitSubclass != null) {
-			unitSubclass = gameObject.AddComponent(Type.GetType(unitState.unitSubclass)) as UnitClass;
+			unitSubclass = (gameObject.AddComponent(Type.GetType(unitState.unitSubclass)) as UnitClass);
 		}
 
-		unitUI.UpdateWeaponEmblem(equippedWeapon);
-		unitUI.UpdateHealthBar(_HP);
-		unitUI.SetTransparency(0.0f);
+		// event triggers
+		TriggerUpdateEvents();
 	}
 
 	// Action zone
@@ -92,13 +86,11 @@ public class PlayerUnit : Unit
 		// enter into "running" or "ready" animation loop
 		SetFocus(true);
 		selectionLock = true;
-		//unitUI.healthBar.Show(true);
 	}
 	
 	public void UnlockSelection() {
 		SetFocus(false);
 		selectionLock = false;
-		//unitUI.healthBar.Hide();
 	}
 
 	public override void DisplayThreatRange() {

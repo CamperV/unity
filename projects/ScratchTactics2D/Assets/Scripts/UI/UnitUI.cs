@@ -12,11 +12,9 @@ public class UnitUI : MonoBehaviour
     [HideInInspector] public float persistentAlpha = 0.0f;
 
     // UI Elements to collect, scale, etc
-    public HealthBar healthBarPrefab;
     public TextUI textUIPrefab;
     public Emblem weaponTypeEmblemPrefab;
     
-    //[HideInInspector] public HealthBar healthBar;
     [HideInInspector] public MiniHealthBar healthBar;
     [HideInInspector] public Emblem weaponTypeEmblem;
 
@@ -33,16 +31,15 @@ public class UnitUI : MonoBehaviour
 
     public void BindUnit(Unit unit) {
         Debug.Assert(boundUnit == null);
-		transform.SetParent(unit.transform);
         boundUnit = unit;
     }
 
-    public void UpdateHealthBar(int val) {
-        healthBar.UpdateBar(val, persistentAlpha);
+    public void UpdateHealthBar() {
+        healthBar.UpdateBar(boundUnit._HP, boundUnit.VITALITY, persistentAlpha);
     }
 
-    public void UpdateHealthBarThenFade(int val) {
-        healthBar.UpdateBar(val, 1.0f);
+    public void UpdateHealthBarThenFade() {
+        healthBar.UpdateBar(boundUnit._HP, boundUnit.VITALITY, 1.0f);
 
         // set the transparency for a while, then fade down
         StartCoroutine(Utils.DelayedExecute(3.0f, () => {
@@ -50,8 +47,8 @@ public class UnitUI : MonoBehaviour
 		}));
     }
 
-    public void UpdateWeaponEmblem(Weapon weapon) {
-        weaponTypeEmblem.SetSprite( Emblem.FromWeapon(weapon) );
+    public void UpdateWeaponEmblem() {
+        weaponTypeEmblem.SetSprite( Emblem.FromWeapon(boundUnit.equippedWeapon) );
     }
 
     public void SetTransparency(float alpha) {
@@ -71,7 +68,7 @@ public class UnitUI : MonoBehaviour
         if (emphasize) {
             textUI.Bold();
             textUI.SetColor(Constants.threatColorRed);
-            message = message.ToString() + "!";
+            message = $"!!! {message} !!!";
             textUI.SetScale(1.5f);
         }
         textUI.SetText(message);

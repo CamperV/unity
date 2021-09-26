@@ -151,7 +151,7 @@ public class EnemyUnitController : UnitController, IPhaseable
 			// this will discolor the unit and set its options to false, after movement is complete
 			// BUT, don't let the other units move until this subject has finished
 			subject.OnEndTurn();
-			yield return new WaitForSeconds(0.5f);
+			yield return null;
 		}
 	}
 

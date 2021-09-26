@@ -32,9 +32,8 @@ public class EnemyUnit : Unit
 		GetComponent<Animator>().runtimeAnimatorController = (unitClass as UnitClass).unitAnimator;
 		GetComponent<PaletteSwapAndOutlineBehavior>().SetPalette(enemyUnitDefaultPalette);
 
-		unitUI.UpdateWeaponEmblem(equippedWeapon);
-		unitUI.UpdateHealthBar(_HP);
-		unitUI.SetTransparency(0.0f);
+		// event triggers
+		TriggerUpdateEvents();
 	}
 
 	public override void DisplayThreatRange() {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Extensions;
 
 public class MiniHealthBar : UnitUIElement
@@ -13,13 +14,14 @@ public class MiniHealthBar : UnitUIElement
             _currVal = Mathf.Max(value, 0);
         }
     }
-    [HideInInspector] public int maxPips;
+    [HideInInspector] public int maxVal;
     [HideInInspector] public float healthRatio;
     [HideInInspector] public Transform barLevel;
 
-    [HideInInspector] public SpriteRenderer[] renderers;
-	public float spriteWidth { get => renderers[1].bounds.size.x; }
-	public float spriteHeight { get => renderers[1].bounds.size.y; }
+    [HideInInspector] public Image[] images;
+    [HideInInspector] public RectTransform[] rects;
+	public float spriteWidth { get => rects[0].rect.width; }
+	public float spriteHeight { get => rects[0].rect.height; }
 
 	void Awake() {
         // I don't like how these are implemented, but c'est la Unity
@@ -29,7 +31,8 @@ public class MiniHealthBar : UnitUIElement
 
 
         barLevel = GetComponentsInChildren<Transform>()[2];
-        renderers = GetComponentsInChildren<SpriteRenderer>();
+        images = GetComponentsInChildren<Image>();
+        rects = GetComponentsInChildren<RectTransform>();
 
         //
         transform.localScale = new Vector3(0.45f, 0.45f, 1.0f);
@@ -38,18 +41,12 @@ public class MiniHealthBar : UnitUIElement
 
     void Start() {
         transform.position -= new Vector3(spriteWidth * -0.05f, spriteHeight * 1.75f, 0);
-    }
-
-    public void InitHealthBar(int m) {
-        maxPips = m;
-        UpdateBar(maxPips, 1.0f);
-        
         transparencyLock = true;
     }
 
-    public void UpdateBar(int val, float alpha) {
+    public void UpdateBar(int val, int maxVal, float alpha) {
         currVal = val;
-        healthRatio = (float)currVal/(float)maxPips;
+        healthRatio = (float)currVal/(float)maxVal;
 
         barLevel.transform.position -= new Vector3( (spriteWidth * (1.0f - healthRatio)) / 2.0f, 0, 0);
         barLevel.transform.localScale = new Vector3(0.01f + healthRatio, 1.0f, 1.0f);
@@ -60,8 +57,8 @@ public class MiniHealthBar : UnitUIElement
     public override void UpdateTransparency(float alpha) {
         if (transparencyLock) return;
 
-        foreach (SpriteRenderer sr in renderers) {
-            sr.color = sr.color.WithAlpha(alpha);
+        foreach (Image im in images) {
+            im.color = im.color.WithAlpha(alpha);
         }
     }
 

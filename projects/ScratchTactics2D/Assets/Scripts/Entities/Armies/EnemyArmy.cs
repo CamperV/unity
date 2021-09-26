@@ -61,8 +61,6 @@ public abstract class EnemyArmy : Army, IVisible
 	// 1) when the player changes its FOV, update all
 	// 2) when an IVisible moves
 	public override void UpdateGridPosition(Vector3Int pos, GameGrid grid) {
-		// gridPosition = pos;
-        // UpdateRealPosition(grid.Grid2RealPos(gridPosition));
 		base.UpdateGridPosition(pos, grid);
 
 		// update your visibility when moving

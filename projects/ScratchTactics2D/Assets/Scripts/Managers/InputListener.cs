@@ -11,7 +11,7 @@ public class InputListener : MonoBehaviour
 	[HideInInspector] public Vector3 mouseWorldPos;
 
 	public bool toggleMode = true;
-	private bool toggle = false;
+	[HideInInspector] public bool toggle = false;
 
 	void Update() {
 		// get the collision point of the ray with the z = 0 plane
@@ -25,17 +25,22 @@ public class InputListener : MonoBehaviour
 
 				SpriteAnimator.skipMovement = toggle;
 				CameraManager.skipMovement = toggle;
+
+				UIManager.inst.UpdateAccelerationToggleDisplay();
 			}
 
 		//else, hold-down-to-accelerate mode
 		} else {
+			if (Input.GetKeyDown(accelerator)) {
+				SpriteAnimator.speedMultiplier *= movementAccel;
 
-		}
-		if (Input.GetKeyDown(accelerator)) {
-			SpriteAnimator.speedMultiplier *= movementAccel;
-		}
-        if (Input.GetKeyUp(accelerator)) {
-			SpriteAnimator.speedMultiplier /= movementAccel;
+				UIManager.inst.UpdateAccelerationToggleDisplay(overrideBool: true);
+			}
+			if (Input.GetKeyUp(accelerator)) {
+				SpriteAnimator.speedMultiplier /= movementAccel;
+
+				UIManager.inst.UpdateAccelerationToggleDisplay(overrideBool: false);
+			}
 		}
     }
 }

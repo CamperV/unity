@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public sealed class UIManager : MonoBehaviour
 {
+	// prefabs
+	public UnitUI unitUIPrefab;
+
 	// singleton
 	public static UIManager inst = null; // enforces singleton behavior
 
@@ -13,10 +16,12 @@ public sealed class UIManager : MonoBehaviour
 	private Text currentBattlePhaseText;
 	private Text currentBattleTurnText;
 	private Text currentFoodStoreText;
+	private Text currentAccelerationToggleText;
 
 	private GameObject overworldPhaseDisplay;
 	private GameObject battlePhaseDisplay;
 	private GameObject foodStoreDisplay;
+	private GameObject accelerationToggleDisplay;
 	
     void Awake() {
 		Debug.Log($"UI awake");
@@ -29,15 +34,17 @@ public sealed class UIManager : MonoBehaviour
 		}
 		DontDestroyOnLoad(gameObject);
 
-        currentOverworldPhaseText = GameObject.Find("CurrentOverworldPhaseText").GetComponent<Text>();
-		currentOverworldTurnText  = GameObject.Find("CurrentOverworldTurnText").GetComponent<Text>();
-	    currentBattlePhaseText 	  = GameObject.Find("CurrentBattlePhaseText").GetComponent<Text>();
-		currentBattleTurnText 	  = GameObject.Find("CurrentBattleTurnText").GetComponent<Text>();
-		currentFoodStoreText      = GameObject.Find("CurrentFoodStoreText").GetComponent<Text>();
+        currentOverworldPhaseText     = GameObject.Find("CurrentOverworldPhaseText").GetComponent<Text>();
+		currentOverworldTurnText      = GameObject.Find("CurrentOverworldTurnText").GetComponent<Text>();
+	    currentBattlePhaseText 	      = GameObject.Find("CurrentBattlePhaseText").GetComponent<Text>();
+		currentBattleTurnText 	      = GameObject.Find("CurrentBattleTurnText").GetComponent<Text>();
+		currentFoodStoreText          = GameObject.Find("CurrentFoodStoreText").GetComponent<Text>();
+		currentAccelerationToggleText = GameObject.Find("AccelerationToggleText").GetComponent<Text>();
 
 		overworldPhaseDisplay = GameObject.Find("OverworldPhaseDisplay");
 		battlePhaseDisplay = GameObject.Find("BattlePhaseDisplay");
 		foodStoreDisplay = GameObject.Find("FoodStoreDisplay");
+		accelerationToggleDisplay = GameObject.Find("AccelerationToggleDisplay");
 		EnableBattlePhaseDisplay(false);
     }
 
@@ -74,5 +81,33 @@ public sealed class UIManager : MonoBehaviour
 			overworldPhaseDisplay.transform.localScale = Vector3.one;
 			battlePhaseDisplay.transform.localScale = 0.85f * Vector3.one;
 		}
+	}
+
+	public void UpdateAccelerationToggleDisplay(bool? overrideBool = null) {
+		bool currentToggle;
+		if (overrideBool == null) {
+			currentToggle = GameObject.Find("InputListener").GetComponent<InputListener>().toggle;
+		} else {
+			currentToggle = (bool)overrideBool;
+		}
+		string toggleChar = (currentToggle) ? "X" : "  ";
+		currentAccelerationToggleText.text = $"Acceleration:  [{toggleChar}]"; 
+	}
+
+	public void CreateAndBindUnitUI(Unit boundUnit) {
+		UnitUI unitUI = Instantiate(unitUIPrefab, transform);
+		unitUI.BindUnit(boundUnit);
+
+		// events
+		boundUnit.UpdateHPEvent += unitUI.UpdateHealthBar;
+		boundUnit.UpdateEquippedWeaponEvent += unitUI.UpdateWeaponEmblem;
+
+		// unitUI.UpdateHealthBarThenFade(unitState._HP);
+
+		// // suffering damage, or not
+		// unitUI.DisplayDamageMessage(incomingDamage.ToString(), emphasize: isCritical);
+		// unitUI.DisplayDamageMessage("MISS");
+
+		// unitUI.SetTransparency(0.0f);
 	}
 }

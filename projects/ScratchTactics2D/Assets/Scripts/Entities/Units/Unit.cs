@@ -8,6 +8,13 @@ using Extensions;
 
 public abstract class Unit : TacticsEntityBase
 {
+	// publicly visible events for UIs etc to key off of
+	public delegate void UpdateHP();
+	public delegate void UpdateEquippedWeapon();
+    public event UpdateHP UpdateHPEvent;
+	public event UpdateHP UpdateEquippedWeaponEvent;
+
+
 	// flags, constants, etc
 	private readonly float spriteScaleFactor = 0.65f;
 	public bool selectionLock { get; protected set; }
@@ -15,14 +22,10 @@ public abstract class Unit : TacticsEntityBase
 	[HideInInspector] public bool inFocus {
 		get => Battle.focusSingleton == this;
 	}
-
 	public bool inMildFocus = false;
 
 	// NOTE this is set by a Controller during registration
 	public UnitController parentController;
-
-	public UnitUI unitUIPrefab;
-	[HideInInspector] public UnitUI unitUI;
 
 	//
 	// what can't I run through?
@@ -40,10 +43,7 @@ public abstract class Unit : TacticsEntityBase
 
 	public int VITALITY {
 		get => unitState.VITALITY;
-		set {
-			unitState.VITALITY = value;
-			unitUI.healthBar.maxPips = value;
-		}
+		set => unitState.VITALITY = value;
 	}
     public int STRENGTH {
 		get => unitState.STRENGTH;
@@ -65,10 +65,7 @@ public abstract class Unit : TacticsEntityBase
 	// derived stat: calculate from equipped weapon + modifiers
 	public int _HP {
 		get => unitState._HP;
-		set {
-			unitState._HP = value;
-			unitUI.UpdateHealthBarThenFade(unitState._HP);
-		}
+		set => unitState._HP = value;
 	}
     public int _CAPACITY {
 		get => unitState._CAPACITY;
@@ -87,11 +84,7 @@ public abstract class Unit : TacticsEntityBase
 
 	protected override void Awake() {
 		base.Awake();
-
-		unitUI = Instantiate(unitUIPrefab, transform);
-		unitUI.healthBar.InitHealthBar(1);
-		unitUI.SetTransparency(0.0f);
-		unitUI.BindUnit(this);
+		UIManager.inst.CreateAndBindUnitUI(this);
 
 		// init keys
 		optionAvailability = new Dictionary<string, bool>() {
@@ -100,12 +93,14 @@ public abstract class Unit : TacticsEntityBase
 		};
 
 		transform.localScale = new Vector3(spriteScaleFactor, spriteScaleFactor, 1.0f);
-		foreach (Transform childT in transform) {
-			childT.localScale = new Vector3(1.0f/spriteScaleFactor, 1.0f/spriteScaleFactor, 1.0f);
-		}
+		// foreach (Transform childT in transform) {
+		// 	childT.localScale = new Vector3(1.0f/spriteScaleFactor, 1.0f/spriteScaleFactor, 1.0f);
+		// }
 	}
-	void Start() {
-		unitUI.healthBar.InitHealthBar(VITALITY);
+
+	public void TriggerUpdateEvents() {
+		UpdateHPEvent.Invoke();
+		UpdateEquippedWeaponEvent.Invoke();
 	}
 
 	public void SetFocus(bool takeFocus) {
@@ -221,14 +216,12 @@ public abstract class Unit : TacticsEntityBase
 		// 
 		SetFocus(true);
 		selectionLock = true;
-		//unitUI.healthBar.Show(true);
 	}
 
 	public virtual void OnDeselect() {
 		//
 		SetFocus(false);
 		selectionLock = false;
-		//unitUI.healthBar.Hide();
 	}
 
 	public void TraverseTo(Vector3Int target, Path viaPath) {
@@ -280,7 +273,6 @@ public abstract class Unit : TacticsEntityBase
 			survived = SufferDamage((int)finalDamage, isCritical: isCrit);
 		} else {
 			Debug.Log($"{this} dodged the attack! ({incomingAttack.hitRate}% to hit)");
-			unitUI.DisplayDamageMessage("MISS");
 		}
 
 		return survived;
@@ -291,8 +283,6 @@ public abstract class Unit : TacticsEntityBase
 
 		StartCoroutine( spriteAnimator.FlashColor(Constants.threatColorRed) );
 		StartCoroutine( spriteAnimator.Shake((isCritical) ? 0.15f : 0.075f) );
-
-		unitUI.DisplayDamageMessage(incomingDamage.ToString(), emphasize: isCritical);
 		return _HP > 0;
 	}
 	
