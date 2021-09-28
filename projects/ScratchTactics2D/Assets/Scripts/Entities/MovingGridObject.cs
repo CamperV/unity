@@ -83,6 +83,6 @@ public abstract class MovingGridObject : MonoBehaviour, IMovable
 		// also, remove the ref to yourself and set occupancy to null. No two things can ever coexist, so this should be fine
 		grid.UpdateOccupantAt(gridPosition, null);
 		grid.UpdateOccupantAt(endPos, this);
-		UpdateGridPosition(endPos, grid);
+		gridPosition = endPos;
 	}
 }

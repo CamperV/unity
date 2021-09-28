@@ -3,52 +3,78 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
+using System.Linq;
 using Extensions;
 
 public class MiniHealthBar : UnitUIElement
 {	
-    private int _currVal;
-    [HideInInspector] public int currVal {
-        get => _currVal;
-        set {
-            _currVal = Mathf.Max(value, 0);
-        }
-    }
-    [HideInInspector] public int maxVal;
-    [HideInInspector] public float healthRatio;
+    // this dict contains a float non-linear step to Lerp between for health::color relationships
+    // ie, less than 5 is red, more than 15 is blue-green, etc
+    // this is NOT a 0 - 100% scale, so that any full-health bar is the same color (even if one has 1 HP and one has 100 HP)
+    // this would remain red even if at full-health, if around the threshold
+    public Color color_0;
+    public Color color_1;
+    // public Color color_2;
+    // public Color color_3;
+    // public Color color_4;
+    // public Color color_5;
+    public Dictionary<int, Color> colorLevels;
+
+    public int currVal;
+    public int maxVal;
+    public float healthRatio;
+
     [HideInInspector] public Transform barLevel;
+    public Color barColor;
 
     [HideInInspector] public SpriteRenderer[] renderers;
-	public float spriteWidth { get => renderers[0].size.x; }
-	public float spriteHeight { get => renderers[0].size.y; }
+    SpriteRenderer backgroundRenderer;
+    SpriteRenderer barRenderer;
+    SpriteRenderer borderRenderer;
+	public float spriteWidth { get => backgroundRenderer.size.x; }
+	public float spriteHeight { get => backgroundRenderer.size.y; }
 
 	void Awake() {
-        // I don't like how these are implemented, but c'est la Unity
-        // this vvv is the first CHILD Transform, b/c GetComp... gets the parent too
-        // Transform background = GetComponentsInChildren<Transform>()[1];
-        // background.position += new Vector3(0, 0, -1.0f);
-
         barLevel = GetComponentsInChildren<Transform>()[2];
         renderers = GetComponentsInChildren<SpriteRenderer>();
 
-        //
-        transform.localScale = new Vector3(0.45f, 0.45f, 1.0f);
-        transform.position += new Vector3(0, 0, 1.0f);
+        backgroundRenderer = renderers[0];
+        barRenderer        = renderers[1];
+        borderRenderer     = renderers[2];
+
+        colorLevels = new Dictionary<int, Color>{
+            [ 0] = color_0,
+            [ 5] = color_1,
+            // [10] = color_2,
+            // [15] = color_3,
+            // [25] = color_4,
+            // [40] = color_5
+        };
     }
 
     void Start() {
-        // transform.position -= new Vector3(spriteWidth * -0.05f, spriteHeight * 1.75f, 0);
         transparencyLock = true;
     }
 
-    public void UpdateBar(int val, int maxVal, float alpha) {
+    public void UpdateBar(int val, int max, float alpha) {
         currVal = val;
+        maxVal = max;
         healthRatio = (float)currVal/(float)maxVal;
+        barLevel.transform.localScale = new Vector3(healthRatio, 1.0f, 1.0f);
 
-        barLevel.transform.position -= new Vector3( (spriteWidth * (1.0f - healthRatio)) / 2.0f, 0, 0);
-        barLevel.transform.localScale = new Vector3(0.01f + healthRatio, 1.0f, 1.0f);
-
+        barColor = HueSatLerp(color_0, color_1, healthRatio*healthRatio);
+        barRenderer.color = barColor;
         UpdateTransparency(alpha);
+    }
+
+    public static Color HueSatLerp(Color A, Color B, float ratio) {
+        float AH, AS, AV, BH, BS, BV;
+        Color.RGBToHSV(A, out AH, out AS, out AV);
+        Color.RGBToHSV(B, out BH, out BS, out BV);
+
+        float _H = Mathf.Lerp(AH, BH, ratio);
+        float _S = Mathf.Lerp(AS, BS, ratio);
+        return Color.HSVToRGB(_H, _S, 1f);
     }
 
     public override void UpdateTransparency(float alpha) {

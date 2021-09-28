@@ -7,8 +7,8 @@ public class BanditClass : UnitClass, IEnemyUnitClass
 {
     public static Dictionary<string, int> baseStats {
         get => new Dictionary<string, int>{
-            ["VITALITY"]  = 10,
-            ["STRENGTH"]  = 10,
+            ["VITALITY"]  = 5,
+            ["STRENGTH"]  = 1,
             ["DEXTERITY"] = 10,
             ["REFLEX"]    = 10,
             ["MOVE"]      = 6

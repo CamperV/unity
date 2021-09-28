@@ -28,10 +28,6 @@ public class TacticsEntityBase : MovingGridObject
 	
 	protected virtual void Awake() {
 		animator = GetComponent<Animator>();
-		
-		// set sprite properties
-		spriteRenderer.sortingLayerName = "Tactics";
-		spriteRenderer.sortingOrder = 0;
 
 		// modify bounding box to match sprite (DEPRECATED, THIS IS DONE VIA PREFAB FLOW NOW)
 		boxCollider2D = GetComponent<BoxCollider2D>();

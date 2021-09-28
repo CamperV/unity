@@ -8,7 +8,7 @@ public class BerserkerClass : UnitClass, IEnemyUnitClass
     public static Dictionary<string, int> baseStats {
         get => new Dictionary<string, int>{
             ["VITALITY"]  = 25,
-            ["STRENGTH"]  = 15,
+            ["STRENGTH"]  = 5,
             ["DEXTERITY"] = 5,
             ["REFLEX"]    = 8,
             ["MOVE"]      = 7

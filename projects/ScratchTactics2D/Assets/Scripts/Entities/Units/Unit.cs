@@ -65,7 +65,10 @@ public abstract class Unit : TacticsEntityBase
 	// derived stat: calculate from equipped weapon + modifiers
 	public int _HP {
 		get => unitState._HP;
-		set => unitState._HP = value;
+		set {
+			unitState._HP = Mathf.Clamp(value, 0, VITALITY);
+			UpdateHPEvent.Invoke();
+		}
 	}
     public int _CAPACITY {
 		get => unitState._CAPACITY;
@@ -74,6 +77,16 @@ public abstract class Unit : TacticsEntityBase
     public int _RANGE {
 		get => equippedWeapon?.REACH ?? 1;
 	}
+
+	// Serialized for debug views:
+	public int VIT;
+	public int STR;
+	public int DEX;
+	public int REF;
+	public int MOV;
+	public int HP;
+	public int CP;
+	public int RN;
 
 	// cache the movement range for easier lookup later
 	public MoveRange moveRange;
@@ -96,6 +109,16 @@ public abstract class Unit : TacticsEntityBase
 		// foreach (Transform childT in transform) {
 		// 	childT.localScale = new Vector3(1.0f/spriteScaleFactor, 1.0f/spriteScaleFactor, 1.0f);
 		// }
+	}
+	void Update() {
+		VIT = VITALITY;
+		STR = STRENGTH;
+		DEX = DEXTERITY;
+		REF = REFLEX;
+		MOV = MOVE;
+		HP = _HP;
+		CP = _CAPACITY;
+		RN = _RANGE;
 	}
 
 	public void TriggerUpdateEvents() {

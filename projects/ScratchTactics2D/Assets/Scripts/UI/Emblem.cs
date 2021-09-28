@@ -26,12 +26,26 @@ public class Emblem : UnitUIElement
         return ResourceLoader.GetSprite("blank_portrait");
     }
 
+    public static Color ColorFromWeapon(Weapon weapon) {
+        foreach (string tag in weapon.tags) {
+            switch (tag) {
+                case "slash":
+                    return Color.red;
+                case "pierce":
+                    return Color.blue;
+                case "strike":
+                    return Color.green;
+                case "missile":
+                    return Color.grey;
+            }
+        }
+
+        // if none found that fits:
+        return Color.magenta;
+    }
+
 	void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // set renderer properties
-		spriteRenderer.sortingLayerName = "Tactics UI";
-		spriteRenderer.sortingOrder = 0;
     }
 
     public override void UpdateTransparency(float alpha) {

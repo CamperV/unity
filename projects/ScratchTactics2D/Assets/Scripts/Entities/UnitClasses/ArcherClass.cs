@@ -7,8 +7,8 @@ public class ArcherClass : UnitClass, IEnemyUnitClass
 {
     public static Dictionary<string, int> baseStats {
         get => new Dictionary<string, int>{
-            ["VITALITY"]  = 10,
-            ["STRENGTH"]  = 20,
+            ["VITALITY"]  = 40,
+            ["STRENGTH"]  = 1,
             ["DEXTERITY"] = 20,
             ["REFLEX"]    = 10,
             ["MOVE"]      = 6

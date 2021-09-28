@@ -211,11 +211,6 @@ public class PlayerUnitController : UnitController, IPhaseable
 							break;
 						case Enum.PlayerUnitState.attackSelection:
 							ClearSelection();
-							// if (currentSelection.OptionActive("Move")) {
-							// 	currentSelection.EnterMoveSelection();
-							// } else {
-							// 	ClearSelection();
-							// }
 							break;
 					}
 					break;

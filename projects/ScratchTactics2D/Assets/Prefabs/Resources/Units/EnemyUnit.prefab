@@ -37,8 +37,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -882315141
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -77,10 +77,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inMildFocus: 0
   parentController: {fileID: 5118058475980065873, guid: b3487c465fa1ac24ab899d04f4d62cb9, type: 3}
-  unitUIPrefab: {fileID: 54845570200524099, guid: f9b5bd7a4113c2d429bce4b5e790e8ed, type: 3}
-  unitUI: {fileID: 0}
   portrait: {fileID: 21300000, guid: 97285931dcd0b7b4ca8ca9b88a3d58aa, type: 3}
-  unitClass: {fileID: 0}
+  brain: {fileID: 0}
 --- !u!114 &8337801085026446511
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -110,10 +110,10 @@ public class PlayerArmyController : Controller, IPhaseable
 
 							if (_pathToQueue != null) {
 								_pathToQueue.interactFlag = IsInteractable(_pathToQueue.end);
-								_pathToQueue.Show();
+								if (Input.GetKey(mouseMoveKey)) _pathToQueue.Show();
 							} else {
 								_prevMousePos = mousePos;
-								GameManager.inst.overworld.OverlayAt(mousePos, ScriptableObject.CreateInstance<XOverlayTile>() );
+								if (Input.GetKey(mouseMoveKey)) GameManager.inst.overworld.OverlayAt(mousePos, ScriptableObject.CreateInstance<XOverlayTile>() );
 							}
 						}
 					

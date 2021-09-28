@@ -24,12 +24,14 @@ public class UnitUI : MonoBehaviour
         healthBar = GetComponentsInChildren<MiniHealthBar>()[0];
         healthBar.BindUI(this);
 
-        weaponTypeEmblem = GetComponentsInChildren<Emblem>()[0];
-        weaponTypeEmblem.BindUI(this);
+        // weaponTypeEmblem = GetComponentsInChildren<Emblem>()[0];
+        // weaponTypeEmblem.BindUI(this);
     }
 
     void LateUpdate() {
-        transform.position = boundUnit?.transform.position ?? transform.position;
+        if (boundUnit) {
+            transform.position = boundUnit.transform.position;
+        }
     }
 
     public void BindUnit(Unit unit) {
@@ -39,6 +41,7 @@ public class UnitUI : MonoBehaviour
     }
 
     public void UpdateHealthBar() {
+        Debug.Log($"Updating health bar of {boundUnit}'s");
         healthBar.UpdateBar(boundUnit._HP, boundUnit.VITALITY, persistentAlpha);
     }
 
@@ -52,7 +55,10 @@ public class UnitUI : MonoBehaviour
     }
 
     public void UpdateWeaponEmblem() {
-        weaponTypeEmblem.SetSprite( Emblem.FromWeapon(boundUnit.equippedWeapon) );
+        // weaponTypeEmblem.SetSprite( Emblem.FromWeapon(boundUnit.equippedWeapon) );
+        Color weaponColor = Emblem.ColorFromWeapon(boundUnit.equippedWeapon);
+        SpriteRenderer background = GetComponentsInChildren<SpriteRenderer>()[0]; // background
+        background.color = weaponColor;
     }
 
     public void SetTransparency(float alpha) {

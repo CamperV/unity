@@ -37,8 +37,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -882315141
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -51,18 +51,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5682105353699049572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6581970126809299856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95f8de341aa49b548984652742625b1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7207171117955615764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,13 +65,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inMildFocus: 0
   parentController: {fileID: 6070387731492201818, guid: 9834c21cc39052d428e08bc9cfc711bb, type: 3}
-  unitUIPrefab: {fileID: 54845570200524099, guid: f9b5bd7a4113c2d429bce4b5e790e8ed, type: 3}
-  unitUI: {fileID: 0}
   portrait: {fileID: 21300000, guid: 97285931dcd0b7b4ca8ca9b88a3d58aa, type: 3}
   unitClass: {fileID: 0}
   unitSubclass: {fileID: 0}
   actionState: 0
---- !u!114 &5200312845391844355
+--- !u!114 &8808547158524304195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6581970126809299856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95f8de341aa49b548984652742625b1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5207840114345323378
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
