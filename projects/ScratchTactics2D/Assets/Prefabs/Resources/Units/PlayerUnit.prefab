@@ -51,6 +51,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5207840114345323378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6581970126809299856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59ed12412260b0744ad77993ea87ad70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseOverEnabled: 0
 --- !u!114 &7207171117955615764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,6 +79,18 @@ MonoBehaviour:
   inMildFocus: 0
   parentController: {fileID: 6070387731492201818, guid: 9834c21cc39052d428e08bc9cfc711bb, type: 3}
   portrait: {fileID: 21300000, guid: 97285931dcd0b7b4ca8ca9b88a3d58aa, type: 3}
+  VIT: 0
+  STR: 0
+  DEX: 0
+  REF: 0
+  MOV: 0
+  HP: 0
+  CP: 0
+  RN: 0
+  color_0: {r: 1, g: 1, b: 1, a: 1}
+  color_1: {r: 1, g: 0.8920879, b: 0.33490568, a: 1}
+  color_2: {r: 1, g: 0.6845405, b: 0, a: 0}
+  color_3: {r: 0, g: 0, b: 0, a: 0}
   unitClass: {fileID: 0}
   unitSubclass: {fileID: 0}
   actionState: 0
@@ -81,19 +106,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95f8de341aa49b548984652742625b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5207840114345323378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6581970126809299856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59ed12412260b0744ad77993ea87ad70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mouseOverEnabled: 0
 --- !u!1001 &3905796923889021120
 PrefabInstance:
   m_ObjectHideFlags: 0

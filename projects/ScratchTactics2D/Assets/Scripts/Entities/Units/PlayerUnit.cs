@@ -8,12 +8,11 @@ using Extensions;
 
 public class PlayerUnit : Unit
 {
-	private static Dictionary<string, Color> playerUnitDefaultPalette = new Dictionary<string, Color>{
-		["_BrightColor"] = new Color(0.85f, 0.79f, 1.00f),
-		["_MediumColor"] = new Color(0.44f, 0.40f, 0.53f),
-		["_DarkColor"]   = new Color(0.26f, 0.24f, 0.32f),
-		["_ShadowColor"] = Color.black,
-	};
+	public Color color_0 = new Color(0.85f, 0.79f, 1.00f);
+	public Color color_1 = new Color(0.44f, 0.40f, 0.53f);
+	public Color color_2 = new Color(0.26f, 0.24f, 0.32f);
+	public Color color_3 = Color.black;
+	private static Dictionary<string, Color> playerUnitDefaultPalette;
 
 	public UnitClass unitClass;
 	public UnitClass unitSubclass;
@@ -35,6 +34,13 @@ public class PlayerUnit : Unit
 			["CancelButton"] = () => { EnterIdleOrClearSelection(); }
 		};
 		actionState = Enum.PlayerUnitState.idle;
+
+		playerUnitDefaultPalette = new Dictionary<string, Color>{
+			["_BrightColor"] = color_0,
+			["_MediumColor"] = color_1,
+			["_DarkColor"]   = color_2,
+			["_ShadowColor"] = color_3
+		};
 	}
 
 	public override void ApplyState(UnitState state) {

@@ -8,19 +8,25 @@ using Extensions;
 
 public class EnemyUnit : Unit
 {
-	private static Dictionary<string, Color> enemyUnitDefaultPalette = new Dictionary<string, Color>{
-		// ["_BrightColor"] = Color.magenta,
-		// ["_MediumColor"] = Color.Lerp(Color.magenta, Color.red, 0.5f),
-		// ["_DarkColor"]   = Color.red,
-		// ["_ShadowColor"] = Color.black,
-		["_BrightColor"] = new Color(0.97f, 0.55f, 0.55f),
-		["_MediumColor"] = new Color(0.87f, 0.41f, 0.41f),
-		["_DarkColor"]   = new Color(0.32f, 0.17f, 0.17f),
-		["_ShadowColor"] = Color.black,
-	};
+	public Color color_0 = new Color(0.97f, 0.55f, 0.55f);
+	public Color color_1 = new Color(0.87f, 0.41f, 0.41f);
+	public Color color_2 = new Color(0.32f, 0.17f, 0.17f);
+	public Color color_3 = Color.black;
+	private static Dictionary<string, Color> enemyUnitDefaultPalette;
 
 	public IEnemyUnitClass unitClass;
 	public EnemyBrain brain;	// assigned in ApplyState() only
+
+	protected override void Awake() {
+		base.Awake();
+
+		enemyUnitDefaultPalette = new Dictionary<string, Color>{
+			["_BrightColor"] = color_0,
+			["_MediumColor"] = color_1,
+			["_DarkColor"]   = color_2,
+			["_ShadowColor"] = color_3
+		};
+	}
 
 	public override void ApplyState(UnitState state) {
 		unitState = state;
