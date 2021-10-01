@@ -13,6 +13,12 @@ public abstract class EnemyArmy : Army, IVisible
 	public abstract List<List<string>> spawnablePods { get; }
 	public sealed override string armyTag { get => "EnemyArmy"; }
 
+	public Color color_0 = new Color(0.97f, 0.55f, 0.55f);
+	public Color color_1 = new Color(0.87f, 0.41f, 0.41f);
+	public Color color_2 = new Color(0.32f, 0.17f, 0.17f);
+	public Color color_3 = Color.black;
+	private static Dictionary<string, Color> enemyArmyDefaultPalette;
+
 	public static int globalMoveThreshold { get => Constants.standardTickCost*3; }
 
 	// for visualization debug
@@ -92,6 +98,14 @@ public abstract class EnemyArmy : Army, IVisible
 	public abstract void OnAlert();
 	
     void Awake() {
+		enemyArmyDefaultPalette = new Dictionary<string, Color>{
+			["_BrightColor"] = color_0,
+			["_MediumColor"] = color_1,
+			["_DarkColor"]   = color_2,
+			["_ShadowColor"] = color_3
+		};
+		GetComponent<PaletteSwapAndOutlineBehavior>().SetPalette(enemyArmyDefaultPalette);
+
 		animator = GetComponent<Animator>();
 		//
 		tickPool = 0;

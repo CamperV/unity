@@ -33,7 +33,7 @@ public class BattleCamera : MonoBehaviour
         battle = GetComponent<Battle>();
         focalPoint = battle.transform.position; // the battle will be constantly moved to align with this focal point
         focalPivot = battle.transform.position; // this will be init'd to the center of the screen (and never touched again)
-        Zoom(1.75f); // default zoom level
+        Zoom(1.0f); // default zoom level
 
         dragOffset = Vector3.zero;
         draggingView = false;

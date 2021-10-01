@@ -14,11 +14,6 @@ public class MiniHealthBar : UnitUIElement
     // this would remain red even if at full-health, if around the threshold
     public Color color_0;
     public Color color_1;
-    // public Color color_2;
-    // public Color color_3;
-    // public Color color_4;
-    // public Color color_5;
-    public Dictionary<int, Color> colorLevels;
 
     public int currVal;
     public int maxVal;
@@ -41,15 +36,6 @@ public class MiniHealthBar : UnitUIElement
         backgroundRenderer = renderers[0];
         barRenderer        = renderers[1];
         borderRenderer     = renderers[2];
-
-        colorLevels = new Dictionary<int, Color>{
-            [ 0] = color_0,
-            [ 5] = color_1,
-            // [10] = color_2,
-            // [15] = color_3,
-            // [25] = color_4,
-            // [40] = color_5
-        };
     }
 
     void Start() {
@@ -60,10 +46,15 @@ public class MiniHealthBar : UnitUIElement
         currVal = val;
         maxVal = max;
         healthRatio = (float)currVal/(float)maxVal;
-        barLevel.transform.localScale = new Vector3(healthRatio, 1.0f, 1.0f);
+        Vector3 toScale = new Vector3(healthRatio, 1.0f, 1.0f);
+        StartCoroutine(
+            AnimateBar(barLevel.transform.localScale, toScale, Color.red, 1.0f, 1.0f)
+        );
 
+        barLevel.transform.localScale = toScale;
         barColor = HueSatLerp(color_0, color_1, healthRatio*healthRatio);
         barRenderer.color = barColor;
+
         UpdateTransparency(alpha);
     }
 
@@ -75,6 +66,31 @@ public class MiniHealthBar : UnitUIElement
         float _H = Mathf.Lerp(AH, BH, ratio);
         float _S = Mathf.Lerp(AS, BS, ratio);
         return Color.HSVToRGB(_H, _S, 1f);
+    }
+
+    public IEnumerator AnimateBar(Vector3 fromScale, Vector3 toScale, Color color, float delayTime, float fixedTime) {
+		GameObject go = new GameObject($"AnimBar", typeof(SpriteRenderer));
+
+        go.GetComponent<SpriteRenderer>().sprite = barRenderer.sprite;
+        go.GetComponent<SpriteRenderer>().color = color;
+
+        go.transform.SetParent(barLevel.parent);
+        go.transform.localPosition = barLevel.localPosition;
+        go.transform.localScale = fromScale;
+
+        // wait procedurally
+        yield return new WaitForSeconds(delayTime);
+
+        // ...then animate
+		float timeRatio = 0.0f;
+		
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+            go.transform.localScale = Vector3.Lerp(fromScale, toScale, timeRatio);
+			yield return null;
+		}
+
+        Destroy(go);
     }
 
     public override void UpdateTransparency(float alpha) {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Extensions;
 
-[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Collider2D))]
 public class SpriteOutlineBehavior : MonoBehaviour
 {
     public static float standardThickness = 0.015f;

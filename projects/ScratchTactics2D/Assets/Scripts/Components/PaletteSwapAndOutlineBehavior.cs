@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Extensions;
 
-[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Renderer))]
 public class PaletteSwapAndOutlineBehavior : MonoBehaviour
 {
-    public static float standardThickness = 0.015f;
+    public static float standardThickness = 0.01f;
     public bool mouseOverEnabled = false;
 
     public Material material {
@@ -14,16 +14,7 @@ public class PaletteSwapAndOutlineBehavior : MonoBehaviour
         set => GetComponent<Renderer>().material = value;
     }
 
-    void Awake() {
-        // default palette
-        material.SetColor("_BrightColor", Color.cyan);
-        material.SetColor("_MediumColor", Color.magenta);
-        material.SetColor("_DarkColor", Color.blue);
-        material.SetColor("_ShadowColor", Color.black);
-
-        material.SetFloat("_OutlineThickness", 0f);
-    }
-
+    // BoxCollider not REQUIRED, but if it exists:
     void OnMouseEnter() {
         if (mouseOverEnabled) material.SetFloat("_OutlineThickness", standardThickness);
     }

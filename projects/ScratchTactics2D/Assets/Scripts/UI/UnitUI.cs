@@ -23,9 +23,6 @@ public class UnitUI : MonoBehaviour
         // spawn UnitUIElements
         healthBar = GetComponentsInChildren<MiniHealthBar>()[0];
         healthBar.BindUI(this);
-
-        // weaponTypeEmblem = GetComponentsInChildren<Emblem>()[0];
-        // weaponTypeEmblem.BindUI(this);
     }
 
     void LateUpdate() {

@@ -49,7 +49,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _OutlineThickness: 0.01
+    - _OutlineThickness: 0
     m_Colors:
     - _BrightColor: {r: 1.952941, g: 2, b: 1.105882, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}

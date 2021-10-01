@@ -11,6 +11,12 @@ public class PlayerArmy : Army, ITerrainAffectable, IFirstFrame
 {
 	public sealed override string armyTag { get => "PlayerArmy"; }
 
+	public Color color_0 = new Color(0.85f, 0.79f, 1.00f);
+	public Color color_1 = new Color(0.44f, 0.40f, 0.53f);
+	public Color color_2 = new Color(0.26f, 0.24f, 0.32f);
+	public Color color_3 = Color.black;
+	private static Dictionary<string, Color> playerArmyDefaultPalette;
+
 	// this cost is insurmountable to the PlayerArmy
 	public static int moveThreshold { get => Constants.standardTickCost*3; }
 	public static int visionRange = 6;	// in tiles, includes the origin in radius
@@ -30,6 +36,14 @@ public class PlayerArmy : Army, ITerrainAffectable, IFirstFrame
 	}
 
 	void Awake() {
+		playerArmyDefaultPalette = new Dictionary<string, Color>{
+			["_BrightColor"] = color_0,
+			["_MediumColor"] = color_1,
+			["_DarkColor"]   = color_2,
+			["_ShadowColor"] = color_3
+		};
+		GetComponent<PaletteSwapAndOutlineBehavior>().SetPalette(playerArmyDefaultPalette);
+
 		List<string> startingUnitClasses = new List<string>{
 			"KnightClass",
 			"SoldierClass",

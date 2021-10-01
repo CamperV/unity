@@ -5,13 +5,12 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Extensions;
 
+[RequireComponent(typeof(Collider2D))]
 public class TacticsEntityBase : MovingGridObject
 {
 	// constants for fade time, etc
 	protected readonly float timeToDie = 1.0f;
 	protected Animator animator;
-
-	protected BoxCollider2D boxCollider2D;
 
 	public bool mouseOver { get; private set; }
 	public bool clickable { get; set; }
@@ -29,8 +28,6 @@ public class TacticsEntityBase : MovingGridObject
 	protected virtual void Awake() {
 		animator = GetComponent<Animator>();
 
-		// modify bounding box to match sprite (DEPRECATED, THIS IS DONE VIA PREFAB FLOW NOW)
-		boxCollider2D = GetComponent<BoxCollider2D>();
 		mouseOver = false;
 		clickable = true;
 	}
