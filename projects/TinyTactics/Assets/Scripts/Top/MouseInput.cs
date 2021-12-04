@@ -19,9 +19,17 @@ public class @MouseInput : IInputActionCollection, IDisposable
             ""id"": ""1e3f6243-0680-46ed-aa48-35b02156681f"",
             ""actions"": [
                 {
-                    ""name"": ""MouseClick"",
+                    ""name"": ""LeftMouseClick"",
                     ""type"": ""Button"",
                     ""id"": ""204ca8c3-b8bb-4d1f-900a-64224bcdfaac"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""RightMouseClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""c26e8f8a-8c62-4918-8d81-e7349aea1f3c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -43,7 +51,7 @@ public class @MouseInput : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""MouseClick"",
+                    ""action"": ""LeftMouseClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -57,6 +65,17 @@ public class @MouseInput : IInputActionCollection, IDisposable
                     ""action"": ""MousePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c084fc85-aa3a-47c0-87d6-7efb00db2a06"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightMouseClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -65,7 +84,8 @@ public class @MouseInput : IInputActionCollection, IDisposable
 }");
         // MouseActionMap
         m_MouseActionMap = asset.FindActionMap("MouseActionMap", throwIfNotFound: true);
-        m_MouseActionMap_MouseClick = m_MouseActionMap.FindAction("MouseClick", throwIfNotFound: true);
+        m_MouseActionMap_LeftMouseClick = m_MouseActionMap.FindAction("LeftMouseClick", throwIfNotFound: true);
+        m_MouseActionMap_RightMouseClick = m_MouseActionMap.FindAction("RightMouseClick", throwIfNotFound: true);
         m_MouseActionMap_MousePosition = m_MouseActionMap.FindAction("MousePosition", throwIfNotFound: true);
     }
 
@@ -116,13 +136,15 @@ public class @MouseInput : IInputActionCollection, IDisposable
     // MouseActionMap
     private readonly InputActionMap m_MouseActionMap;
     private IMouseActionMapActions m_MouseActionMapActionsCallbackInterface;
-    private readonly InputAction m_MouseActionMap_MouseClick;
+    private readonly InputAction m_MouseActionMap_LeftMouseClick;
+    private readonly InputAction m_MouseActionMap_RightMouseClick;
     private readonly InputAction m_MouseActionMap_MousePosition;
     public struct MouseActionMapActions
     {
         private @MouseInput m_Wrapper;
         public MouseActionMapActions(@MouseInput wrapper) { m_Wrapper = wrapper; }
-        public InputAction @MouseClick => m_Wrapper.m_MouseActionMap_MouseClick;
+        public InputAction @LeftMouseClick => m_Wrapper.m_MouseActionMap_LeftMouseClick;
+        public InputAction @RightMouseClick => m_Wrapper.m_MouseActionMap_RightMouseClick;
         public InputAction @MousePosition => m_Wrapper.m_MouseActionMap_MousePosition;
         public InputActionMap Get() { return m_Wrapper.m_MouseActionMap; }
         public void Enable() { Get().Enable(); }
@@ -133,9 +155,12 @@ public class @MouseInput : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_MouseActionMapActionsCallbackInterface != null)
             {
-                @MouseClick.started -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMouseClick;
-                @MouseClick.performed -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMouseClick;
-                @MouseClick.canceled -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMouseClick;
+                @LeftMouseClick.started -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnLeftMouseClick;
+                @LeftMouseClick.performed -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnLeftMouseClick;
+                @LeftMouseClick.canceled -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnLeftMouseClick;
+                @RightMouseClick.started -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnRightMouseClick;
+                @RightMouseClick.performed -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnRightMouseClick;
+                @RightMouseClick.canceled -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnRightMouseClick;
                 @MousePosition.started -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMousePosition;
                 @MousePosition.performed -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMousePosition;
                 @MousePosition.canceled -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMousePosition;
@@ -143,9 +168,12 @@ public class @MouseInput : IInputActionCollection, IDisposable
             m_Wrapper.m_MouseActionMapActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @MouseClick.started += instance.OnMouseClick;
-                @MouseClick.performed += instance.OnMouseClick;
-                @MouseClick.canceled += instance.OnMouseClick;
+                @LeftMouseClick.started += instance.OnLeftMouseClick;
+                @LeftMouseClick.performed += instance.OnLeftMouseClick;
+                @LeftMouseClick.canceled += instance.OnLeftMouseClick;
+                @RightMouseClick.started += instance.OnRightMouseClick;
+                @RightMouseClick.performed += instance.OnRightMouseClick;
+                @RightMouseClick.canceled += instance.OnRightMouseClick;
                 @MousePosition.started += instance.OnMousePosition;
                 @MousePosition.performed += instance.OnMousePosition;
                 @MousePosition.canceled += instance.OnMousePosition;
@@ -155,7 +183,8 @@ public class @MouseInput : IInputActionCollection, IDisposable
     public MouseActionMapActions @MouseActionMap => new MouseActionMapActions(this);
     public interface IMouseActionMapActions
     {
-        void OnMouseClick(InputAction.CallbackContext context);
+        void OnLeftMouseClick(InputAction.CallbackContext context);
+        void OnRightMouseClick(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
     }
 }

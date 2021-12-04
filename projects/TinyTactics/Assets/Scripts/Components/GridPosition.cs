@@ -19,6 +19,10 @@ public struct GridPosition : IEquatable<GridPosition>
     public GridPosition(Vector3Int v) { x = v.x; y = v.y; }
     public GridPosition(Vector2Int v) { x = v.x; y = v.y; }
 
+    public int ManhattanDistance(GridPosition o) {
+        return Mathf.Abs(x-o.x) + Mathf.Abs(y-o.y);
+    }
+
     public bool Equals(GridPosition other) {
         return x == other.x && y == other.y;
     }

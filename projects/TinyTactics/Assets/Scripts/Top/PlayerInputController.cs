@@ -7,11 +7,12 @@ using UnityEngine;
 public class PlayerInputController : MonoBehaviour
 {	
 	// accessible delegates
-	public delegate void ClickEvent(Vector3 screenPosition);
-    public event ClickEvent MouseClickEvent;
+	public delegate void MouseClick(Vector3 screenPosition);
+    public event MouseClick LeftMouseClickEvent;
+	public event MouseClick RightMouseClickEvent;
 
-	public delegate void PositionEvent(Vector3 screenPosition);
-	public event PositionEvent MousePositionEvent;
+	public delegate void MousePosition(Vector3 screenPosition);
+	public event MousePosition MousePositionEvent;
 	//
 
 	private MouseInput mouseInput;
@@ -25,7 +26,8 @@ public class PlayerInputController : MonoBehaviour
 
 	void Start() {
 		// register to InputActions
-		mouseInput.MouseActionMap.MouseClick.performed += ctx => OnMouseClick();
+		mouseInput.MouseActionMap.LeftMouseClick.performed += ctx => OnLeftMouseClick();
+		mouseInput.MouseActionMap.RightMouseClick.performed += ctx => OnRightMouseClick();
 	}
 
 	// always update the position event for listeners
@@ -34,8 +36,13 @@ public class PlayerInputController : MonoBehaviour
 		MousePositionEvent(mousePosition);
 	}
 
-	public void OnMouseClick() {
+	public void OnLeftMouseClick() {
 		Vector2 mousePosition = mouseInput.MouseActionMap.MousePosition.ReadValue<Vector2>();
-		MouseClickEvent(mousePosition);
+		LeftMouseClickEvent(mousePosition);
+	}
+
+	public void OnRightMouseClick() {
+		Vector2 mousePosition = mouseInput.MouseActionMap.MousePosition.ReadValue<Vector2>();
+		RightMouseClickEvent(mousePosition);
 	}
 }

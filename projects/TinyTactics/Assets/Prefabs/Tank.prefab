@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3149946969117448130}
   - component: {fileID: 9111099472962461371}
   m_Layer: 0
-  m_Name: TankUnit
+  m_Name: Tank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 4421956463220676157}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -73,8 +73,8 @@ SpriteRenderer:
   m_SortingLayerID: 1844331727
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 73ee07e7324336840884d5f2b37dc38b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 1815ea71c4e799e45b0db8899c240c4a, type: 3}
+  m_Color: {r: 0.9637939, g: 1, b: 0.7122642, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -105,6 +105,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4421956463220676157}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 517f7dec4353f1c42a22796049587fc1, type: 3}
+  m_Script: {fileID: 11500000, guid: d5d6244084fd13c449381f5445fa0948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <gridPosition>k__BackingField:
+    x: 0
+    y: 0
+  state: 0
