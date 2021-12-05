@@ -7,14 +7,14 @@ using Extensions;
 public class AttackRange : FlowField<GridPosition>
 {	
 	public AttackRange(){}
-	public AttackRange(MoveRange moveRange, int range) {
+	public AttackRange(MoveRange moveRange, int minRange, int maxRange) {
 		origin = moveRange.origin;
 		field = new Dictionary<GridPosition, int>(moveRange.field);
 
     	foreach (GridPosition standingPos in moveRange.field.Keys) {				
             // TODO: there are some inefficiences here, but do we really care?
             // blossom out until we hit "range"
-            foreach (GridPosition withinRange in standingPos.Radiate(range)) {	
+            foreach (GridPosition withinRange in standingPos.Radiate(maxRange, min: minRange)) {	
                 if (moveRange.field.ContainsKey(withinRange)) continue;
 
                 // if you're outside of the moveable range, add your cost via Manhattan Dist to the
@@ -22,12 +22,13 @@ public class AttackRange : FlowField<GridPosition>
                 field[withinRange] = moveRange.field[standingPos] + standingPos.ManhattanDistance(withinRange);
             }
 		}
+
+		field.Remove(origin);
 	}
 
-	// public bool ValidAttack(Unit currentSelection, Vector3Int tilePos) {
-	// 	bool withinRange = tilePos.ManhattanDistance(currentSelection.gridPosition) <= currentSelection._RANGE;
-	// 	return field.ContainsKey(tilePos) && withinRange;
-	// }
+	public bool ValidAttack(GridPosition tilePos) {
+		return field.ContainsKey(tilePos);
+	}
 
 	public void Display(IGrid<GridPosition> target) {
 		foreach (GridPosition tilePos in field.Keys) {

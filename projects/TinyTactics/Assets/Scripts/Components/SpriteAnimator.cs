@@ -219,6 +219,10 @@ public class SpriteAnimator : MonoBehaviour
 		PositionUpdater(endpoint);
 		movementStack--;
 	}
+
+	public IEnumerator BumpTowards<T>(T target, IGrid<T> surface, float distanceScale = 5.0f) where T : struct {
+		yield return SmoothBump(surface.GridToWorld(target), distanceScale);
+	}
 	
 	// this coroutine performs a little 'bump' when you can't move
 	public IEnumerator SmoothBump(Vector3 endpoint, float distanceScale) {

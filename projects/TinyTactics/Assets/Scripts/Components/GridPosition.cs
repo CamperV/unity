@@ -40,15 +40,16 @@ public struct GridPosition : IEquatable<GridPosition>
 
 
     // quick scalable approach: iterate through a virtual cube and simply check the bounds and yield if within
-    // includes self
-    public IEnumerable<GridPosition> Radiate(int range) {
+    // includes self, and if fully inclusive of min/range
+    public IEnumerable<GridPosition> Radiate(int range, int min = 0) {
         GridPosition lower = this - new GridPosition(range, range);
         GridPosition upper = this + new GridPosition(range, range);
 
         for (int x = lower.x; x <= upper.x; x++) {
             for (int y = lower.y; y <= upper.y; y++) {
                 GridPosition gp = new GridPosition(x, y);
-                if (ManhattanDistance(gp) <= range) yield return gp;
+                int mDist = ManhattanDistance(gp);
+                if (mDist <= range && mDist >= min) yield return gp;
             }
         }
     }

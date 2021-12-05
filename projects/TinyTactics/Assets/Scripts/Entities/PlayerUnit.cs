@@ -9,7 +9,8 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
         Idle,
         MoveSelection,
         Moving,
-        AttackSelection
+        AttackSelection,
+        Attacking
     }
     [SerializeField] private PlayerUnitFSM state = PlayerUnitFSM.Idle;
     
@@ -34,8 +35,13 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
     void Start() {
         mapPathfinder = new Pathfinder<GridPosition>(battleMap);
         moveRange = new MoveRange(gridPosition);    // empty
+        attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
         EnterState(PlayerUnitFSM.Idle);
+    }
+
+    void Update() {
+        ContextualNoInteract();
     }
 
     public void ChangeState(PlayerUnitFSM newState) {
@@ -48,12 +54,22 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
 
         switch (exitingState) {
             case PlayerUnitFSM.Idle:
+                break;
+
             case PlayerUnitFSM.MoveSelection:
                 moveRange?.ClearDisplay(battleMap);
+                attackRange?.ClearDisplay(battleMap);
                 break;
 
             case PlayerUnitFSM.Moving:
+                gridEntityMap.MoveEntity(this, gridPosition);
+                break;
+
             case PlayerUnitFSM.AttackSelection:
+                attackRange?.ClearDisplay(battleMap);   
+                break;
+
+            case PlayerUnitFSM.Attacking:
                 break;
         }
         state = PlayerUnitFSM.Idle;
@@ -70,7 +86,7 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
             // re-calc move range, and display it
             case PlayerUnitFSM.MoveSelection:
                 moveRange = RegenerateMoveRange(gridPosition, unitStats.MOVE);
-                attackRange = RegenerateAttackRange(unitStats.RANGE);
+                attackRange = RegenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
                 // always display AttackRange first, because it is partially overwritten by MoveRange by definition
                 attackRange.Display(battleMap);
@@ -82,9 +98,12 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
 
             case PlayerUnitFSM.AttackSelection:
                 moveRange = RegenerateMoveRange(gridPosition, 0);
-                attackRange = RegenerateAttackRange(unitStats.RANGE);
+                attackRange = RegenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
                 attackRange.Display(battleMap);
+                break;
+
+            case PlayerUnitFSM.Attacking:
                 break;
         }
     }
@@ -104,7 +123,7 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
             ////////////////////////////////////////////////////////////////////////
             case PlayerUnitFSM.MoveSelection:
                 if (gp == gridPosition) {
-                    ChangeState(PlayerUnitFSM.Idle);
+                    ChangeState(PlayerUnitFSM.AttackSelection);
 
                 // else if it's a valid movement to be had:
                 } else {
@@ -113,14 +132,9 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
                     // if a path exists to the destination, smoothly move along the path
                     // after reaching your destination, officially move via GridEntityMap
                     if (pathTo != null) {
-                        Debug.Log($"Found a path from {gridPosition} to {gp}");
                         StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
+                        gridPosition = gp;  // save for ContextualNoInteract to move via gridEntityMap
                         ChangeState(PlayerUnitFSM.Moving);
-
-                        StartCoroutine( spriteAnimator.ExecuteAfterMoving( () => {
-                            gridEntityMap.MoveEntity(this, gp);
-                            ChangeState(PlayerUnitFSM.AttackSelection);   
-                        }));
                     } else {
                         Debug.Log($"Found no path from {gridPosition} to {gp}");
                         ChangeState(PlayerUnitFSM.Idle);
@@ -137,32 +151,63 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
             case PlayerUnitFSM.AttackSelection:
                 if (gp == gridPosition) {
                     ChangeState(PlayerUnitFSM.Idle);
+
                 } else {
-                    Debug.Log($"{this} would like to try to attack {gp}");
+                    if (attackRange.ValidAttack(gp)) {
+                        StartCoroutine( spriteAnimator.BumpTowards<GridPosition>(gp, battleMap) );
+
+                        ChangeState(PlayerUnitFSM.Attacking);
+                    } else {
+                        Debug.Log($"No valid attack exists from {gridPosition} to {gp}");
+                        ChangeState(PlayerUnitFSM.Idle);
+                    }
+                }
+                break;
+
+            case PlayerUnitFSM.Attacking:
+                break;
+        }
+    }
+
+    public void ContextualNoInteract() {
+        switch (state) {
+            case PlayerUnitFSM.Idle:
+                break;
+
+            case PlayerUnitFSM.MoveSelection:
+                break;
+
+            ///////////////////////////////////////////////////////////
+            // Every frame that we are moving (after MoveSelection), //
+            // check the spriteAnimator. As soon as we stop moving,  //
+            // update our position via gridEntityMap and ChangeState //
+            ///////////////////////////////////////////////////////////
+            case PlayerUnitFSM.Moving:
+                if (spriteAnimator.isMoving) {    
+                    // just spin
+                } else {
+                    ChangeState(PlayerUnitFSM.AttackSelection);
+                }
+                break;
+
+            case PlayerUnitFSM.AttackSelection:
+                break;
+
+            case PlayerUnitFSM.Attacking:
+                if (spriteAnimator.isMoving || spriteAnimator.isAnimating) {    
+                    // just spin
+                } else {
                     ChangeState(PlayerUnitFSM.Idle);
                 }
                 break;
         }
     }
 
-	// public virtual void DisplayThreatRange() {
-	// 	var grid = Battle.active.grid;
-	// 	moveRange?.ClearDisplay(grid);
-	// 	attackRange?.ClearDisplay(grid);
-
-	// 	UpdateThreatRange();
-	// 	attackRange.Display(grid);
-	// 	moveRange.Display(grid);
-
-	// 	// add the lil selection square
-	// 	grid.UnderlayAt(gridPosition, Constants.selectColorWhite);
-	// }
-
     private MoveRange RegenerateMoveRange(GridPosition gp, int range) {
         return mapPathfinder.GenerateFlowField<MoveRange>(gp, range: range);
     }
 
-    private AttackRange RegenerateAttackRange(int range) {
-        return new AttackRange(moveRange, range);
+    private AttackRange RegenerateAttackRange(int minRange, int maxRange) {
+        return new AttackRange(moveRange, minRange, maxRange);
     }
 }

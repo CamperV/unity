@@ -12,5 +12,6 @@ public struct UnitStats
     // public int DEXTERITY;
     // public int REFLEX;
     public int MOVE;
-    public int RANGE;
+    public int MIN_RANGE;
+    public int MAX_RANGE;
 }
