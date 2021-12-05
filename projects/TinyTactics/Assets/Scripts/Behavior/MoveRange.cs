@@ -45,9 +45,6 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 	}
 
 	public void ClearDisplay(IGrid<GridPosition> target) {
-		// foreach (GridPosition tilePos in field.Keys) {
-		// 	target.ResetHighlight(tilePos);
-		// }
 		target.ResetHighlight();
 	}
 }

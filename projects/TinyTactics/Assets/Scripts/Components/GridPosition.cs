@@ -19,10 +19,6 @@ public struct GridPosition : IEquatable<GridPosition>
     public GridPosition(Vector3Int v) { x = v.x; y = v.y; }
     public GridPosition(Vector2Int v) { x = v.x; y = v.y; }
 
-    public int ManhattanDistance(GridPosition o) {
-        return Mathf.Abs(x-o.x) + Mathf.Abs(y-o.y);
-    }
-
     public bool Equals(GridPosition other) {
         return x == other.x && y == other.y;
     }
@@ -33,6 +29,28 @@ public struct GridPosition : IEquatable<GridPosition>
 
     public override string ToString() {
         return $"[{x}, {y}]";
+    }
+
+    /////////////////////////////////
+    // accessible useful functions //
+    /////////////////////////////////
+    public int ManhattanDistance(GridPosition o) {
+        return Mathf.Abs(x-o.x) + Mathf.Abs(y-o.y);
+    }
+
+
+    // quick scalable approach: iterate through a virtual cube and simply check the bounds and yield if within
+    // includes self
+    public IEnumerable<GridPosition> Radiate(int range) {
+        GridPosition lower = this - new GridPosition(range, range);
+        GridPosition upper = this + new GridPosition(range, range);
+
+        for (int x = lower.x; x <= upper.x; x++) {
+            for (int y = lower.y; y <= upper.y; y++) {
+                GridPosition gp = new GridPosition(x, y);
+                if (ManhattanDistance(gp) <= range) yield return gp;
+            }
+        }
     }
 
     ///////////////

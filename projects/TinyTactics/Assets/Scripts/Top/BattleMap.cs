@@ -82,6 +82,8 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
         Debug.Log($"BattleMap has seen that you clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
+            Debug.Log($"Got terrain cost {EdgeCost(new GridPosition(0, 0), gridPosition)} at {gridPosition}");
+
             InteractEvent(gridPosition);
         }
     }
@@ -123,7 +125,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
 
 	public int EdgeCost(GridPosition src, GridPosition dest) {
-		return src.ManhattanDistance(dest);
+        return (baseTilemap.GetTile(dest) as TerrainTile).cost;
 	}
 
 	public void Highlight(GridPosition gp, Color color) {

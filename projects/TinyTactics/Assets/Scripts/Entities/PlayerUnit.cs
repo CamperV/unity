@@ -22,7 +22,7 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
     private Pathfinder<GridPosition> mapPathfinder;
 
     private MoveRange moveRange;
-    // private AttackRange<GridPosition> attackRange;
+    private AttackRange attackRange;
 
 
     void Awake() {
@@ -70,6 +70,10 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
             // re-calc move range, and display it
             case PlayerUnitFSM.MoveSelection:
                 moveRange = RegenerateMoveRange(gridPosition, unitStats.MOVE);
+                attackRange = RegenerateAttackRange(unitStats.RANGE);
+
+                // always display AttackRange first, because it is partially overwritten by MoveRange by definition
+                attackRange.Display(battleMap);
                 moveRange.Display(battleMap);
                 break;
 
@@ -77,7 +81,10 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
                 break;
 
             case PlayerUnitFSM.AttackSelection:
-                // attackRange = new AttackRange(moveRange, attackable);
+                moveRange = RegenerateMoveRange(gridPosition, 0);
+                attackRange = RegenerateAttackRange(unitStats.RANGE);
+
+                attackRange.Display(battleMap);
                 break;
         }
     }
@@ -153,5 +160,9 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
 
     private MoveRange RegenerateMoveRange(GridPosition gp, int range) {
         return mapPathfinder.GenerateFlowField<MoveRange>(gp, range: range);
+    }
+
+    private AttackRange RegenerateAttackRange(int range) {
+        return new AttackRange(moveRange, range);
     }
 }

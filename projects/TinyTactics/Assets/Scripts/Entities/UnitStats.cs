@@ -7,9 +7,10 @@ using UnityEngine.Serialization;
 [Serializable]
 public struct UnitStats
 {
-    public int VITALITY;
-    public int STRENGTH;
-    public int DEXTERITY;
-    public int REFLEX;
+    // public int VITALITY;
+    // public int STRENGTH;
+    // public int DEXTERITY;
+    // public int REFLEX;
     public int MOVE;
+    public int RANGE;
 }

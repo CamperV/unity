@@ -112,9 +112,6 @@ MonoBehaviour:
     x: 0
     y: 0
   unitStats:
-    VITALITY: 10
-    STRENGTH: 1
-    DEXTERITY: 2
-    REFLEX: 2
-    MOVE: 4
+    MOVE: 3
+    RANGE: 2
   state: 0
