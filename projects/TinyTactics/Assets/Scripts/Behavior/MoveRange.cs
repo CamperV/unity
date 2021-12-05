@@ -39,14 +39,15 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 	public void Display(IGrid<GridPosition> target) {
 		foreach (GridPosition tilePos in field.Keys) {
 			if (ValidMove(tilePos)) {
-				target.TintTile(tilePos, Constants.selectColorBlue);
+				target.Highlight(tilePos, Constants.selectColorBlue);
 			}
 		}
 	}
 
 	public void ClearDisplay(IGrid<GridPosition> target) {
-		foreach (GridPosition tilePos in field.Keys) {
-			target.ResetTintTile(tilePos);
-		}
+		// foreach (GridPosition tilePos in field.Keys) {
+		// 	target.ResetHighlight(tilePos);
+		// }
+		target.ResetHighlight();
 	}
 }

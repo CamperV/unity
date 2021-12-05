@@ -8,6 +8,7 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
     public enum PlayerUnitFSM {
         Idle,
         MoveSelection,
+        Moving,
         AttackSelection
     }
     [SerializeField] private PlayerUnitFSM state = PlayerUnitFSM.Idle;
@@ -18,7 +19,7 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
 
     // other
     private SpriteAnimator spriteAnimator;
-    private Pathfinder<GridPosition> pathfinder;
+    private Pathfinder<GridPosition> mapPathfinder;
 
     private MoveRange moveRange;
     // private AttackRange<GridPosition> attackRange;
@@ -31,7 +32,8 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
     }
 
     void Start() {
-        pathfinder = new Pathfinder<GridPosition>(battleMap);
+        mapPathfinder = new Pathfinder<GridPosition>(battleMap);
+        moveRange = new MoveRange(gridPosition);    // empty
 
         EnterState(PlayerUnitFSM.Idle);
     }
@@ -49,6 +51,8 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
             case PlayerUnitFSM.MoveSelection:
                 moveRange?.ClearDisplay(battleMap);
                 break;
+
+            case PlayerUnitFSM.Moving:
             case PlayerUnitFSM.AttackSelection:
                 break;
         }
@@ -61,11 +65,15 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
 
         switch (state) {
             case PlayerUnitFSM.Idle:
+                break;
 
-            // re-calc move range
+            // re-calc move range, and display it
             case PlayerUnitFSM.MoveSelection:
-                moveRange = pathfinder.GenerateFlowField<MoveRange>(gridPosition, range: unitStats.MOVE);
+                moveRange = RegenerateMoveRange(gridPosition, unitStats.MOVE);
                 moveRange.Display(battleMap);
+                break;
+
+            case PlayerUnitFSM.Moving:
                 break;
 
             case PlayerUnitFSM.AttackSelection:
@@ -93,12 +101,15 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
 
                 // else if it's a valid movement to be had:
                 } else {
-                    Path<GridPosition>? pathTo = pathfinder.BFS(gridPosition, gp);
+                    Path<GridPosition>? pathTo = new MoveRangePathfinder(moveRange).BFS(gridPosition, gp);
 
                     // if a path exists to the destination, smoothly move along the path
                     // after reaching your destination, officially move via GridEntityMap
                     if (pathTo != null) {
+                        Debug.Log($"Found a path from {gridPosition} to {gp}");
                         StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
+                        ChangeState(PlayerUnitFSM.Moving);
+
                         StartCoroutine( spriteAnimator.ExecuteAfterMoving( () => {
                             gridEntityMap.MoveEntity(this, gp);
                             ChangeState(PlayerUnitFSM.AttackSelection);   
@@ -108,6 +119,9 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
                         ChangeState(PlayerUnitFSM.Idle);
                     }
                 }
+                break;
+
+            case PlayerUnitFSM.Moving:
                 break;
 
             ///////////////////////////////////////////////////////////////////////
@@ -136,4 +150,8 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
 	// 	// add the lil selection square
 	// 	grid.UnderlayAt(gridPosition, Constants.selectColorWhite);
 	// }
+
+    private MoveRange RegenerateMoveRange(GridPosition gp, int range) {
+        return mapPathfinder.GenerateFlowField<MoveRange>(gp, range: range);
+    }
 }

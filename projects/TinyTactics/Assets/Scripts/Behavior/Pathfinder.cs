@@ -8,6 +8,7 @@ public class Pathfinder<T> where T : struct
 {
 	public IPathable<T> pathableSurface;
 
+	public Pathfinder(){}
 	public Pathfinder(IPathable<T> _pathableSurface) {
 		pathableSurface = _pathableSurface;
 	}

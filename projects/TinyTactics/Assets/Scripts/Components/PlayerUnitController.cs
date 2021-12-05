@@ -36,8 +36,13 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
         switch (exitingState) {
             case ControllerFSM.Inactive:
+                break;
+
             case ControllerFSM.NoSelection:
+                break;
+
             case ControllerFSM.Selection:
+                currentSelection = null;
                 break;
         }
         state = ControllerFSM.Inactive;
@@ -86,7 +91,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
                 PlayerUnit? en = MatchingUnitAt(gp);
 
                 // if you click on another Entity while in Selection of another, switch
-                if (en != null) {
+                if (en != null && en != currentSelection) {
                     currentSelection?.ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
                     currentSelection = en;
                 }

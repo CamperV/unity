@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Extensions;
 
 public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosition>
 {
@@ -16,6 +17,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     private GridPosition recentMouseOver;
 
     private Tilemap overlayTilemap;
+    private Tilemap highlightTilemap;
     private Tilemap baseTilemap;
     private Tilemap backgroundTilemap;
     
@@ -34,13 +36,21 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
         overlayTilemap.CompressBounds();
 		overlayTilemap.RefreshAllTiles();
 
-        baseTilemap = tilemaps[1];
+        highlightTilemap = tilemaps[1];
+        highlightTilemap.CompressBounds();
+		highlightTilemap.RefreshAllTiles();
+
+        baseTilemap = tilemaps[2];
         baseTilemap.CompressBounds();
 		baseTilemap.RefreshAllTiles();
 
-        backgroundTilemap = tilemaps[2];
+        backgroundTilemap = tilemaps[3];
         backgroundTilemap.CompressBounds();
 		backgroundTilemap.RefreshAllTiles();
+    }
+
+    void Start() {
+        ResetHighlight();
     }
 
     public bool IsInBounds(GridPosition gp) {
@@ -116,17 +126,22 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
 		return src.ManhattanDistance(dest);
 	}
 
-	public void TintTile(GridPosition gp, Color color) {
-		if (IsInBounds(gp)) {
-			baseTilemap.SetTileFlags(gp, TileFlags.None);
-			baseTilemap.SetColor(gp, color);
-            baseTilemap.SetTileFlags(gp, TileFlags.LockColor);
+	public void Highlight(GridPosition gp, Color color) {
+		if (highlightTilemap.HasTile((Vector3Int)gp)) {
+			highlightTilemap.SetTileFlags(gp, TileFlags.None);
+			highlightTilemap.SetColor(gp, color);
 		}
 	}
 	
-	public void ResetTintTile(GridPosition gp) {
-		baseTilemap.SetTileFlags(gp, TileFlags.None);
-		baseTilemap.SetColor(gp, Color.white);
-        baseTilemap.SetTileFlags(gp, TileFlags.LockColor);
+    public void ResetHighlight() {
+        highlightTilemap.color = Color.white;
+
+        foreach (var pos in highlightTilemap.cellBounds.allPositionsWithin) {
+            Vector3Int v = new Vector3Int(pos.x, pos.y, pos.z);
+            if (highlightTilemap.HasTile(v)) {
+                highlightTilemap.SetTileFlags(v, TileFlags.None);
+                highlightTilemap.SetColor(v, Color.white.WithAlpha(0f));
+            }
+        }
 	}
 }
