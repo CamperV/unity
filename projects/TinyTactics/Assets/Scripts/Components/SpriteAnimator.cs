@@ -251,17 +251,17 @@ public class SpriteAnimator : MonoBehaviour
 		movementStack--;
 	}
 
-	public IEnumerator SmoothMovementPath(Path<GridPosition> path, Grid grid) {
+	public IEnumerator SmoothMovementPath<T>(Path<T> path, IGrid<T> surface) where T : struct {
 		if (skipMovement) {
-			PositionUpdater(grid.CellToWorld(path.end));
+			PositionUpdater(surface.GridToWorld(path.end));
 			yield break;
 		}
 		movementStack++;
         //
 
 		Vector3 realNextPos = transform.position;
-		foreach (var nextPos in path.Unwind()) {
-			realNextPos = grid.CellToWorld(nextPos);
+		foreach (T nextPos in path.Unwind()) {
+			realNextPos = surface.GridToWorld(nextPos);
 
 			float timeStep = 0.0f;
 			Vector3 startPos = transform.position;

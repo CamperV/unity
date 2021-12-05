@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitController.ControllerFSM>
 {
-    [SerializeField] public List<GridEntity> entities;
+    [SerializeField] public List<PlayerUnit> entities;
 
     public enum ControllerFSM {
         Inactive,
@@ -14,12 +14,12 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         Selection
     }
     [SerializeField] private ControllerFSM state = ControllerFSM.Inactive;
-    [SerializeField] private GridEntity currentSelection;
+    [SerializeField] private PlayerUnit currentSelection;
 
 
     void Start() {
         // this accounts for all in-scene Entities, not instatiated prefabs
-        foreach (GridEntity en in GetComponentsInChildren<GridEntity>()) {
+        foreach (PlayerUnit en in GetComponentsInChildren<PlayerUnit>()) {
             entities.Add(en);
         }
 
@@ -69,7 +69,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             // we attempt to make a selection.                                             //
             /////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.NoSelection:
-                currentSelection = MatchingEntityAt(gp);
+                currentSelection = MatchingUnitAt(gp);
 
                 if (currentSelection != null) {
                     currentSelection.ContextualInteractAt(gp);
@@ -77,12 +77,17 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
                 }
                 break;
 
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // There are two things that can happen here:                                                             //
+            //      1) If you click on a different unit, de-select current and select the new                         //
+            //      2) If you don't, currentSelection will polymorphically decide what it wants to do (via its state) //
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.Selection:
-                GridEntity? en = MatchingEntityAt(gp);
+                PlayerUnit? en = MatchingUnitAt(gp);
 
                 // if you click on another Entity while in Selection of another, switch
                 if (en != null) {
-                    currentSelection?.ChangeState(GridEntity.GridEntityFSM.Idle);
+                    currentSelection?.ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
                     currentSelection = en;
                 }
 
@@ -93,12 +98,12 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
 
     public void ClearInteraction() {
-        currentSelection?.ChangeState(GridEntity.GridEntityFSM.Idle);
+        currentSelection?.ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
         ChangeState(ControllerFSM.NoSelection);
     }
 
-    public GridEntity? MatchingEntityAt(GridPosition gp) {
-        foreach (GridEntity en in entities) {
+    public PlayerUnit? MatchingUnitAt(GridPosition gp) {
+        foreach (PlayerUnit en in entities) {
             if (en.gridPosition == gp) return en;
         }
         return null;

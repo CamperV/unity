@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class BattleMap : MonoBehaviour
+public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosition>
 {
     //publicly available events
     public delegate void GridInteraction(GridPosition gridPosition);
@@ -47,9 +47,9 @@ public class BattleMap : MonoBehaviour
         return Positions.Contains(gp);
     }
 
+    // IGrid definitions
     public GridPosition WorldToGrid(Vector3 worldPosition) {
-        Vector3Int gridVector = GetComponent<Grid>().WorldToCell(worldPosition);
-        return new GridPosition(gridVector);
+        return GetComponent<Grid>().WorldToCell(worldPosition);
     }
 
     // we use Tilemap here because otherwise, Grid aligns to vertices
@@ -98,5 +98,35 @@ public class BattleMap : MonoBehaviour
 			Vector3Int v = new Vector3Int(pos.x, pos.y, pos.z);
 			if (tilemap.HasTile(v)) yield return new GridPosition(v);
 		}
+	}
+
+    // IPathable definitions
+    public IEnumerable<GridPosition> GetNeighbors(GridPosition origin) {
+        GridPosition up    = origin + (GridPosition)Vector2Int.up;
+        GridPosition right = origin + (GridPosition)Vector2Int.right;
+        GridPosition down  = origin + (GridPosition)Vector2Int.down;
+        GridPosition left  = origin + (GridPosition)Vector2Int.left;
+        if (IsInBounds(up))    yield return up;
+        if (IsInBounds(right)) yield return right;
+        if (IsInBounds(down))  yield return down;
+        if (IsInBounds(left))  yield return left;
+    }
+
+	public int EdgeCost(GridPosition src, GridPosition dest) {
+		return src.ManhattanDistance(dest);
+	}
+
+	public void TintTile(GridPosition gp, Color color) {
+		if (IsInBounds(gp)) {
+			baseTilemap.SetTileFlags(gp, TileFlags.None);
+			baseTilemap.SetColor(gp, color);
+            baseTilemap.SetTileFlags(gp, TileFlags.LockColor);
+		}
+	}
+	
+	public void ResetTintTile(GridPosition gp) {
+		baseTilemap.SetTileFlags(gp, TileFlags.None);
+		baseTilemap.SetColor(gp, Color.white);
+        baseTilemap.SetTileFlags(gp, TileFlags.LockColor);
 	}
 }

@@ -84,4 +84,12 @@ public struct GridPosition : IEquatable<GridPosition>
     public static implicit operator GridPosition(Vector3Int v) {
         return new GridPosition(v.x, v.y);
     }
+
+    public static implicit operator Vector2Int(GridPosition gp) {
+        return new Vector2Int(gp.x, gp.y);
+    }
+
+    public static implicit operator GridPosition(Vector2Int v) {
+        return new GridPosition(v.x, v.y);
+    }
 }

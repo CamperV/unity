@@ -12,6 +12,7 @@ public class GridEntityMap : MonoBehaviour
 
     [SerializeField] public List<GridEntity> entities;
 
+
     void Awake() {
         entityMap = new Dictionary<GridPosition, GridEntity>();
         battleMap = GetComponentInChildren<BattleMap>();
@@ -37,14 +38,9 @@ public class GridEntityMap : MonoBehaviour
     private void AlignEntity(GridEntity en, GridPosition gp) {
         en.gridPosition = gp;
         en.transform.position = battleMap.GridToWorld(gp);
-
-        Debug.Log($"Snapped {en} to {gp}");
     }
 
-    public GridEntity? EntityAt(GridPosition gp) {
-        return (entityMap.ContainsKey(gp)) ? entityMap[gp] : null;
-    }
-
+    // accessible area
     public void MoveEntity(GridEntity en, GridPosition gp) {
         if (entityMap[gp] == null) {
             GridPosition prevGridPosition = en.gridPosition;
@@ -55,5 +51,9 @@ public class GridEntityMap : MonoBehaviour
         } else {
             Debug.Log($"Failed to move {en} into occupied GP {gp}");
         }
+    }
+
+    public GridEntity? EntityAt(GridPosition gp) {
+        return (entityMap.ContainsKey(gp)) ? entityMap[gp] : null;
     }
 }
