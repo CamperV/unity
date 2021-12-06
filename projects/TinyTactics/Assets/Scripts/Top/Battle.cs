@@ -10,18 +10,19 @@ public class Battle : MonoBehaviour
 {
     [SerializeField] private PlayerInputController inputController;
 
-    private GridEntityMap gridEntityMap;
-    private BattleMap battleMap;
-    private PlayerUnitController playerUnitController;
+    [SerializeField] private GridEntityMap gridEntityMap;
+    [SerializeField] private BattleMap battleMap;
+    [SerializeField] private PlayerUnitController playerUnitController;
+    [SerializeField] private EnemyUnitController enemyUnitController;
 
     void Awake() {
+        gridEntityMap = GetComponent<GridEntityMap>();
         battleMap = GetComponentInChildren<BattleMap>();
         playerUnitController = GetComponentInChildren<PlayerUnitController>();
-        gridEntityMap = GetComponent<GridEntityMap>();
+        enemyUnitController = GetComponentInChildren<EnemyUnitController>();
     }
 
     void Start() {
-        // register all events
         inputController.MousePositionEvent += battleMap.CheckMouseOver;
 
         inputController.LeftMouseClickEvent += battleMap.CheckLeftMouseClick;
@@ -30,5 +31,6 @@ public class Battle : MonoBehaviour
         inputController.RightMouseClickEvent += _ => playerUnitController.ClearInteraction();
 
         battleMap.InteractEvent += playerUnitController.ContextualInteractAt;
+        battleMap.InteractEvent += enemyUnitController.ContextualInteractAt;
     }
 }
