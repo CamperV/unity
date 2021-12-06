@@ -12,7 +12,6 @@ public class GridEntityMap : MonoBehaviour
 
     [SerializeField] public List<GridEntity> entities;
 
-
     void Awake() {
         entityMap = new Dictionary<GridPosition, GridEntity>();
         battleMap = GetComponentInChildren<BattleMap>();

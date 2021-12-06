@@ -32,8 +32,8 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
         if (field.ContainsKey(left))  yield return left;
     }
 
-	public int EdgeCost(GridPosition src, GridPosition dest) {
-		return field[dest];
+	public int BaseCost(GridPosition gp) {
+		return field[gp];
 	}
 
 	public void Display(IGrid<GridPosition> target) {
@@ -46,5 +46,51 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 
 	public void ClearDisplay(IGrid<GridPosition> target) {
 		target.ResetHighlight();
+	}
+
+    public Path<GridPosition>? BFS(GridPosition startPosition, GridPosition targetPosition) {
+        // we can short-circuit easily - if the MoveRange doesn't have the key, don't even try
+        if (!ValidMove(targetPosition)) {
+            return null;
+        }
+
+		// this BFS moves backwards, from a targetPosition into a FlowField's origin
+		// init position
+		GridPosition currentPos = targetPosition;
+
+		// this will be built while we traverse
+		Path<GridPosition> newPath = new Path<GridPosition>();
+		newPath.AddFirst(currentPos);
+		
+		PriorityQueue<GridPosition> pathQueue = new PriorityQueue<GridPosition>();
+		pathQueue.Enqueue(0, currentPos);
+		
+		// BFS search here
+		while (pathQueue.Count != 0) {
+			currentPos = pathQueue.Dequeue();
+			
+			// found the target, now recount the path
+			if (currentPos == origin) break;
+
+			GridPosition bestMove = currentPos;
+			int bestMoveCost = field[currentPos];
+			
+			foreach (GridPosition adjacent in GetNeighbors(currentPos)) {		
+				int cost = BaseCost(adjacent);
+
+				if (cost < bestMoveCost) {
+					bestMoveCost = cost;
+					bestMove = adjacent;
+				}
+			}
+
+			// keep prepending the path to build it backwards
+			if (bestMove != currentPos) {
+				pathQueue.Enqueue(bestMoveCost, bestMove);
+				newPath.AddFirst(bestMove);
+			}
+		}
+
+		return newPath;
 	}
 }

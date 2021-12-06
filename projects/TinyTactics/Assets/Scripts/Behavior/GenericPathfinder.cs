@@ -4,12 +4,11 @@ using System;
 using UnityEngine;
 
 
-public class Pathfinder<T> where T : struct
+public class GenericPathfinder<T> where T : struct
 {
-	public IPathable<T> pathableSurface;
+	private IPathable<T> pathableSurface;
 
-	public Pathfinder(){}
-	public Pathfinder(IPathable<T> _pathableSurface) {
+	public GenericPathfinder(IPathable<T> _pathableSurface) {
 		pathableSurface = _pathableSurface;
 	}
 
@@ -41,7 +40,7 @@ public class Pathfinder<T> where T : struct
 			// available positions are: your neighbors that are "moveable",
 			// minus any endpoints other pathers have scoped out
 			foreach (T adjacent in pathableSurface.GetNeighbors(currentPos)) {
-				int costAt = pathableSurface.EdgeCost(currentPos, adjacent);
+				int costAt = pathableSurface.BaseCost(adjacent);
 				if (costAt == -1) continue;	// -1 indicates this area is impassable
 
 				// units can move through units of similar types, but not enemy types
@@ -95,7 +94,7 @@ public class Pathfinder<T> where T : struct
 			foreach (T adjacent in pathableSurface.GetNeighbors(currentPos)) {
 				if (distance.Count > numElements) continue;
 
-				int costAt = pathableSurface.EdgeCost(currentPos, adjacent);
+				int costAt = pathableSurface.BaseCost(adjacent);
 				if (costAt == -1) continue;	// -1 indicates this area is impassable
 				
 				int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;

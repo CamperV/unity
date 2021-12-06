@@ -4,8 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-[Serializable]
-public struct UnitStats
+public class UnitStats : MonoBehaviour
 {
     // public int VITALITY;
     // public int STRENGTH;

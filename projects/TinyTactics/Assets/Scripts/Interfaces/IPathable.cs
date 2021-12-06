@@ -5,6 +5,6 @@ using UnityEngine;
 
 public interface IPathable<T> where T : struct
 {
-	IEnumerable<T> GetNeighbors(T v);
-	int EdgeCost(T src, T dest);
+	IEnumerable<T> GetNeighbors(T t);
+	int BaseCost(T t);
 }

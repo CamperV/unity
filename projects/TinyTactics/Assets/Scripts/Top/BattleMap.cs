@@ -82,8 +82,6 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
         Debug.Log($"BattleMap has seen that you clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
-            Debug.Log($"Got terrain cost {EdgeCost(new GridPosition(0, 0), gridPosition)} at {gridPosition}");
-
             InteractEvent(gridPosition);
         }
     }
@@ -124,9 +122,21 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
         if (IsInBounds(left))  yield return left;
     }
 
-	public int EdgeCost(GridPosition src, GridPosition dest) {
-        return (baseTilemap.GetTile(dest) as TerrainTile).cost;
+	public int BaseCost(GridPosition gp) {
+        return (baseTilemap.GetTile(gp) as TerrainTile).cost;
 	}
+
+    public int OverrideCost(GridPosition gp, TerrainCostOverride tco) {
+        TerrainTile tt = baseTilemap.GetTile(gp) as TerrainTile;
+
+        // if the terrain is now marked as impassable
+        if (tco.overrides.ContainsKey(tt)) {
+            return tco.overrides[tt];
+        }
+
+        // default, return just the base cost
+        return tt.cost;
+    }
 
 	public void Highlight(GridPosition gp, Color color) {
 		if (highlightTilemap.HasTile((Vector3Int)gp)) {

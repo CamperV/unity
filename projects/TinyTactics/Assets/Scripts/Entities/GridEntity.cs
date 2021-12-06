@@ -6,7 +6,4 @@ using UnityEngine;
 public abstract class GridEntity : MonoBehaviour, IGridPosition
 {
     [field: SerializeField] public GridPosition gridPosition { get; set; }
-    
-    // assigned in inspector
-    [field: SerializeField] public UnitStats unitStats;
 }

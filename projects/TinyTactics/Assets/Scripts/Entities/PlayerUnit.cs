@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer), typeof(SpriteAnimator))]
+[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(SpriteAnimator))]
+[RequireComponent(typeof(EntityPathfinder))]
+[RequireComponent(typeof(UnitStats))]
 public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUnitFSM>
 {
     public enum PlayerUnitFSM {
@@ -17,23 +20,25 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
     // necessary references
     private GridEntityMap gridEntityMap;
     private BattleMap battleMap;
+    private SpriteAnimator spriteAnimator;
+    private EntityPathfinder mapPathfinder;
+    private UnitStats unitStats;
 
     // other
-    private SpriteAnimator spriteAnimator;
-    private Pathfinder<GridPosition> mapPathfinder;
-
     private MoveRange moveRange;
     private AttackRange attackRange;
 
-
     void Awake() {
-        gridEntityMap = GetComponentInParent<GridEntityMap>();
-        battleMap = gridEntityMap.GetComponentInChildren<BattleMap>();
         spriteAnimator = GetComponent<SpriteAnimator>();
+        mapPathfinder = GetComponent<EntityPathfinder>();
+        unitStats = GetComponent<UnitStats>();
+
+        Battle _topBattleRef = GetComponentInParent<Battle>();
+        gridEntityMap        = _topBattleRef.GetComponent<GridEntityMap>();
+        battleMap            = _topBattleRef.GetComponentInChildren<BattleMap>();
     }
 
     void Start() {
-        mapPathfinder = new Pathfinder<GridPosition>(battleMap);
         moveRange = new MoveRange(gridPosition);    // empty
         attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
@@ -127,7 +132,7 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
 
                 // else if it's a valid movement to be had:
                 } else {
-                    Path<GridPosition>? pathTo = new MoveRangePathfinder(moveRange).BFS(gridPosition, gp);
+                    Path<GridPosition>? pathTo = moveRange.BFS(gridPosition, gp);
 
                     // if a path exists to the destination, smoothly move along the path
                     // after reaching your destination, officially move via GridEntityMap
