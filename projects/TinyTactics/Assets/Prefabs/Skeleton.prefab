@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4926348194948610839
+--- !u!114 &3143497574582211844
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -21,12 +21,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 6467957086888709650}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fb770a1ba7dfb348a13537312c00ff2, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c62302067838cb4c8709ef13e235a2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <gridPosition>k__BackingField:
     x: 0
     y: 0
+  state: 0
+--- !u!114 &3623654816500224848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6467957086888709650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2de54ba498d272848aa4102bd1ebee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MOVE: 3
+  MIN_RANGE: 1
+  MAX_RANGE: 1
+--- !u!114 &4070303141671970314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6467957086888709650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1738846bd4eafe742b77a48660f5cae8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrainTiles: []
+  _terrainCostOverrides: 
 --- !u!1001 &963213351486374029
 PrefabInstance:
   m_ObjectHideFlags: 0

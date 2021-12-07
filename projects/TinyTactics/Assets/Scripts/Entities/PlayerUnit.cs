@@ -2,12 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
-[RequireComponent(typeof(SpriteAnimator))]
-[RequireComponent(typeof(EntityPathfinder))]
-[RequireComponent(typeof(UnitStats))]
-public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUnitFSM>
+public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 {
+    // additional Component references
+    private PlayerUnitController _parentController;
+    public PlayerUnitController ParentController { 
+        get {
+            if (_parentController == null) {
+                _parentController = GetComponentInParent<PlayerUnitController>();
+            }
+            return _parentController;
+        }
+    }
+
     public enum PlayerUnitFSM {
         Idle,
         MoveSelection,
@@ -16,27 +23,6 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
         Attacking
     }
     [SerializeField] private PlayerUnitFSM state = PlayerUnitFSM.Idle;
-    
-    // necessary references
-    private GridEntityMap gridEntityMap;
-    private BattleMap battleMap;
-    private SpriteAnimator spriteAnimator;
-    private EntityPathfinder mapPathfinder;
-    private UnitStats unitStats;
-
-    // other
-    private MoveRange moveRange;
-    private AttackRange attackRange;
-
-    void Awake() {
-        spriteAnimator = GetComponent<SpriteAnimator>();
-        mapPathfinder = GetComponent<EntityPathfinder>();
-        unitStats = GetComponent<UnitStats>();
-
-        Battle _topBattleRef = GetComponentInParent<Battle>();
-        gridEntityMap        = _topBattleRef.GetComponent<GridEntityMap>();
-        battleMap            = _topBattleRef.GetComponentInChildren<BattleMap>();
-    }
 
     void Start() {
         moveRange = new MoveRange(gridPosition);    // empty
@@ -67,7 +53,7 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
                 break;
 
             case PlayerUnitFSM.Moving:
-                gridEntityMap.MoveEntity(this, gridPosition);
+                unitMap.MoveUnit(this, gridPosition);
                 break;
 
             case PlayerUnitFSM.AttackSelection:
@@ -85,13 +71,16 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
         state = enteringState;
 
         switch (state) {
+            // when you're entering Idle, it's from being selected
+            // therefore, reset your controller's selections
             case PlayerUnitFSM.Idle:
+                ParentController.ChangeState(PlayerUnitController.ControllerFSM.NoSelection);
                 break;
 
             // re-calc move range, and display it
             case PlayerUnitFSM.MoveSelection:
-                moveRange = RegenerateMoveRange(gridPosition, unitStats.MOVE);
-                attackRange = RegenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+                moveRange = GenerateMoveRange(gridPosition, unitStats.MOVE);
+                attackRange = GenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
                 // always display AttackRange first, because it is partially overwritten by MoveRange by definition
                 attackRange.Display(battleMap);
@@ -102,8 +91,8 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
                 break;
 
             case PlayerUnitFSM.AttackSelection:
-                moveRange = RegenerateMoveRange(gridPosition, 0);
-                attackRange = RegenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+                moveRange = GenerateMoveRange(gridPosition, 0);
+                attackRange = GenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
                 attackRange.Display(battleMap);
                 break;
@@ -135,10 +124,10 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
                     Path<GridPosition>? pathTo = moveRange.BFS(gridPosition, gp);
 
                     // if a path exists to the destination, smoothly move along the path
-                    // after reaching your destination, officially move via GridEntityMap
+                    // after reaching your destination, officially move via unitMap
                     if (pathTo != null) {
                         StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
-                        gridPosition = gp;  // save for ContextualNoInteract to move via gridEntityMap
+                        gridPosition = gp;  // save for ContextualNoInteract to move via unitMap
                         ChangeState(PlayerUnitFSM.Moving);
                     } else {
                         Debug.Log($"Found no path from {gridPosition} to {gp}");
@@ -185,7 +174,7 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
             ///////////////////////////////////////////////////////////
             // Every frame that we are moving (after MoveSelection), //
             // check the spriteAnimator. As soon as we stop moving,  //
-            // update our position via gridEntityMap and ChangeState //
+            // update our position via unitMap and ChangeState       //
             ///////////////////////////////////////////////////////////
             case PlayerUnitFSM.Moving:
                 if (spriteAnimator.isMoving) {    
@@ -198,6 +187,11 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
             case PlayerUnitFSM.AttackSelection:
                 break;
 
+            ////////////////////////////////////////////////////////////////////
+            // Every frame that we're animating our attack (after selecting), //
+            // check the spriterAnimator. As soon as we stop animating,       //
+            // disable your phase and move into Idle                          //
+            ////////////////////////////////////////////////////////////////////
             case PlayerUnitFSM.Attacking:
                 if (spriteAnimator.isMoving || spriteAnimator.isAnimating) {    
                     // just spin
@@ -206,13 +200,5 @@ public abstract class PlayerUnit : GridEntity, IStateMachine<PlayerUnit.PlayerUn
                 }
                 break;
         }
-    }
-
-    private MoveRange RegenerateMoveRange(GridPosition gp, int range) {
-        return mapPathfinder.GenerateFlowField<MoveRange>(gp, range: range);
-    }
-
-    private AttackRange RegenerateAttackRange(int minRange, int maxRange) {
-        return new AttackRange(moveRange, minRange, maxRange);
     }
 }

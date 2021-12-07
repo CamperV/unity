@@ -126,16 +126,8 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
         return (baseTilemap.GetTile(gp) as TerrainTile).cost;
 	}
 
-    public int OverrideCost(GridPosition gp, TerrainCostOverride tco) {
-        TerrainTile tt = baseTilemap.GetTile(gp) as TerrainTile;
-
-        // if the terrain is now marked as impassable
-        if (tco.overrides.ContainsKey(tt)) {
-            return tco.overrides[tt];
-        }
-
-        // default, return just the base cost
-        return tt.cost;
+    public TerrainTile TerrainAt(GridPosition gp) {
+        return (baseTilemap.GetTile(gp) as TerrainTile);
     }
 
 	public void Highlight(GridPosition gp, Color color) {

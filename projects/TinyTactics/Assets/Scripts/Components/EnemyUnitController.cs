@@ -13,6 +13,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         Active
     }
     [SerializeField] private ControllerFSM state = ControllerFSM.Inactive;
+    [SerializeField] private EnemyUnit currentSelection;
 
     void Start() {
         // this accounts for all in-scene Entities, not instatiated prefabs
@@ -66,9 +67,16 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             /////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.Active:
                 EnemyUnit? en = MatchingUnitAt(gp);
-                if (en != null) {
-                    Debug.Log($"Enemy {en} found at {gp}");
-                }
+                en?.ContextualInteractAt(gp);
+
+                // // if you click on another EnemyUnit while in selection of another, switch
+                // if (en != null && en != currentSelection) {
+                //     currentSelection?.ChangeState(EnemyUnit.EnemyUnitFSM.Idle);
+                //     currentSelection = en;
+                // }
+
+                // // regardless of whomever the currentSelection is, have them fire ContextualInteractAt
+                // currentSelection.ContextualInteractAt(gp);
                 break;
         }
     }

@@ -4,14 +4,28 @@ using System;
 using UnityEngine;
 
 
-public class EntityPathfinder : MonoBehaviour
+public class UnitPathfinder : MonoBehaviour
 {
 	private BattleMap battleMap;
+
+    public TerrainTile[] terrainTiles;
+    public int[] _terrainCostOverrides;
+	
+    public Dictionary<TerrainTile, int> terrainCostOverrides;
 
 	// get your own IPathable
 	void Awake(){
 		Battle _topBattleRef = GetComponentInParent<Battle>();
 		battleMap = _topBattleRef.GetComponentInChildren<BattleMap>();
+
+	    Debug.Assert(terrainTiles.Length == _terrainCostOverrides.Length);
+
+        terrainCostOverrides = new Dictionary<TerrainTile, int>();
+
+        for (int o = 0; o < terrainTiles.Length; o++) {
+            TerrainTile tt = terrainTiles[o];
+            terrainCostOverrides[tt] = _terrainCostOverrides[o];
+        }
 	}
 
 	public Path<GridPosition>? BFS(GridPosition startPosition, GridPosition targetPosition) {
@@ -28,8 +42,6 @@ public class EntityPathfinder : MonoBehaviour
 		
 		PriorityQueue<GridPosition> pathQueue = new PriorityQueue<GridPosition>();
 		pathQueue.Enqueue(0, currentPos);
-
-		TerrainCostOverride tco = GetComponent<TerrainCostOverride>();
 		
 		// BFS search here
 		while (pathQueue.Count != 0) {
@@ -44,7 +56,10 @@ public class EntityPathfinder : MonoBehaviour
 			// available positions are: your neighbors that are "moveable",
 			// minus any endpoints other pathers have scoped out
 			foreach (GridPosition adjacent in battleMap.GetNeighbors(currentPos)) {
-				int costAt = (tco == null) ? battleMap.BaseCost(adjacent) : battleMap.OverrideCost(adjacent, tco);
+
+				// if the terrain is now marked as impassable, or modified
+				TerrainTile terrainAt = battleMap.TerrainAt(adjacent);
+				int costAt = (terrainCostOverrides.ContainsKey(terrainAt)) ? terrainCostOverrides[terrainAt] : terrainAt.cost;
 				if (costAt == -1) continue;	// -1 indicates this area is impassable
 
 				// units can move through units of similar types, but not enemy types
@@ -91,18 +106,16 @@ public class EntityPathfinder : MonoBehaviour
 		GridPosition currentPos = startPosition;
 		fieldQueue.Enqueue(0, currentPos);
 		distance[startPosition] = 0;
-
-		// if a TCO exists, use its values when applicable
-		TerrainCostOverride tco = GetComponent<TerrainCostOverride>();
 		
 		while (fieldQueue.Count != 0) {
 			currentPos = fieldQueue.Dequeue();
 					
 			foreach (GridPosition adjacent in battleMap.GetNeighbors(currentPos)) {
 				if (distance.Count > numElements) continue;
-
-				// int costAt = battleMap.BaseCost(adjacent);
-				int costAt = (tco == null) ? battleMap.BaseCost(adjacent) : battleMap.OverrideCost(adjacent, tco);
+				
+				// if the terrain is now marked as impassable, or modified
+				TerrainTile terrainAt = battleMap.TerrainAt(adjacent);
+				int costAt = (terrainCostOverrides.ContainsKey(terrainAt)) ? terrainCostOverrides[terrainAt] : terrainAt.cost;
 				if (costAt == -1) continue;	// -1 indicates this area is impassable
 				
 				int distSoFar = (distance.ContainsKey(currentPos)) ? distance[currentPos] : 0;

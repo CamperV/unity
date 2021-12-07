@@ -5,18 +5,18 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[RequireComponent(typeof(GridEntityMap))]
+[RequireComponent(typeof(UnitMap))]
 public class Battle : MonoBehaviour
 {
     [SerializeField] private PlayerInputController inputController;
 
-    [SerializeField] private GridEntityMap gridEntityMap;
+    [SerializeField] private UnitMap UnitMap;
     [SerializeField] private BattleMap battleMap;
     [SerializeField] private PlayerUnitController playerUnitController;
     [SerializeField] private EnemyUnitController enemyUnitController;
 
     void Awake() {
-        gridEntityMap = GetComponent<GridEntityMap>();
+        UnitMap = GetComponent<UnitMap>();
         battleMap = GetComponentInChildren<BattleMap>();
         playerUnitController = GetComponentInChildren<PlayerUnitController>();
         enemyUnitController = GetComponentInChildren<EnemyUnitController>();

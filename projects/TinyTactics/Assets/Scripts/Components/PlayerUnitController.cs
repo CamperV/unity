@@ -26,6 +26,10 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         EnterState(ControllerFSM.NoSelection);
     }
 
+    void Update() {
+        ContextualNoInteract();
+    }
+
     public void ChangeState(ControllerFSM newState) {
         ExitState(state);
         EnterState(newState);
@@ -90,7 +94,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             case ControllerFSM.Selection:
                 PlayerUnit? en = MatchingUnitAt(gp);
 
-                // if you click on another Entity while in Selection of another, switch
+                // if you click on another Unit while in Selection of another, switch
                 if (en != null && en != currentSelection) {
                     currentSelection?.ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
                     currentSelection = en;
@@ -102,9 +106,21 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         }
     }
 
+    public void ContextualNoInteract() {
+        switch (state) {
+            case ControllerFSM.Inactive:
+            case ControllerFSM.NoSelection:
+                break;
+            case ControllerFSM.Selection:
+                // if (currentSelection)
+                break;
+        }
+    }
+
     public void ClearInteraction() {
         currentSelection?.ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
         ChangeState(ControllerFSM.NoSelection);
+        // leaving Selection stage will reset currentSelection=null
     }
 
     public PlayerUnit? MatchingUnitAt(GridPosition gp) {
