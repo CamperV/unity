@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitController.ControllerFSM>
 {
+    // debug
+    public Text debugStateLabel;
+
     [SerializeField] public List<EnemyUnit> entities;
 
     public enum ControllerFSM {
         Inactive,
-        Active
+        NoSelection,
+        Selection
     }
-    [SerializeField] private ControllerFSM state = ControllerFSM.Inactive;
+    [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
     [SerializeField] private EnemyUnit currentSelection;
 
     void Start() {
@@ -21,7 +26,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             entities.Add(en);
         }
 
-        EnterState(ControllerFSM.Active);
+        EnterState(ControllerFSM.NoSelection);
     }
 
     public void ChangeState(ControllerFSM newState) {
@@ -30,24 +35,28 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
 
     public void ExitState(ControllerFSM exitingState) {
-        Debug.Log($"{this} exiting state {exitingState}");
-
         switch (exitingState) {
             case ControllerFSM.Inactive:
+            case ControllerFSM.NoSelection:
                 break;
-            case ControllerFSM.Active:
+
+            case ControllerFSM.Selection:
+                currentSelection = null;
                 break;
         }
         state = ControllerFSM.Inactive;
     }
 
     public void EnterState(ControllerFSM enteringState) {
-        Debug.Log($"{this} entering state {enteringState}");
         state = enteringState;
+
+        // debug
+        debugStateLabel.text = $"EnemyUnitController: {state.ToString()}";
 
         switch (state) {
             case ControllerFSM.Inactive:
-            case ControllerFSM.Active:
+            case ControllerFSM.NoSelection:
+            case ControllerFSM.Selection:
                 break;
         }
     }
@@ -65,19 +74,25 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             // When the player interacts with the grid while there is no active selection, //
             // we attempt to make a selection.                                             //
             /////////////////////////////////////////////////////////////////////////////////
-            case ControllerFSM.Active:
-                EnemyUnit? en = MatchingUnitAt(gp);
-                en?.ContextualInteractAt(gp);
+            case ControllerFSM.NoSelection:
+                currentSelection = MatchingUnitAt(gp);
 
-                // // if you click on another EnemyUnit while in selection of another, switch
-                // if (en != null && en != currentSelection) {
-                //     currentSelection?.ChangeState(EnemyUnit.EnemyUnitFSM.Idle);
-                //     currentSelection = en;
-                // }
-
-                // // regardless of whomever the currentSelection is, have them fire ContextualInteractAt
-                // currentSelection.ContextualInteractAt(gp);
+                if (currentSelection != null) {
+                    currentSelection.ContextualInteractAt(gp);
+                    ChangeState(ControllerFSM.Selection);
+                }
                 break;
+
+            case ControllerFSM.Selection:
+                currentSelection?.ContextualInteractAt(gp);
+                break;
+        }
+    }
+
+    // leaving Selection stage will reset currentSelection=null
+    public void ClearInteraction() {
+        if (state == ControllerFSM.Selection) {
+            ChangeState(ControllerFSM.NoSelection);
         }
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 {
@@ -22,9 +23,12 @@ public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         AttackSelection,
         Attacking
     }
-    [SerializeField] private PlayerUnitFSM state = PlayerUnitFSM.Idle;
+    [SerializeField] public PlayerUnitFSM state { get; set; } = PlayerUnitFSM.Idle;
 
     void Start() {
+        // register any relevant events
+        EventManager.inst.inputController.RightMouseClickEvent += _ => ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
+
         moveRange = new MoveRange(gridPosition);    // empty
         attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
@@ -36,45 +40,23 @@ public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     }
 
     public void ChangeState(PlayerUnitFSM newState) {
+        if (newState == state) return;
+        
         ExitState(state);
         EnterState(newState);
     }
 
-    public void ExitState(PlayerUnitFSM exitingState) {
-        Debug.Log($"{this} exiting state {exitingState}");
-
-        switch (exitingState) {
-            case PlayerUnitFSM.Idle:
-                break;
-
-            case PlayerUnitFSM.MoveSelection:
-                moveRange?.ClearDisplay(battleMap);
-                attackRange?.ClearDisplay(battleMap);
-                break;
-
-            case PlayerUnitFSM.Moving:
-                unitMap.MoveUnit(this, gridPosition);
-                break;
-
-            case PlayerUnitFSM.AttackSelection:
-                attackRange?.ClearDisplay(battleMap);   
-                break;
-
-            case PlayerUnitFSM.Attacking:
-                break;
-        }
-        state = PlayerUnitFSM.Idle;
-    }
-
     public void EnterState(PlayerUnitFSM enteringState) {
-        Debug.Log($"{this} entering state {enteringState}");
         state = enteringState;
+
+        // debug
+        GetComponentInChildren<TextMeshPro>().SetText(state.ToString());
 
         switch (state) {
             // when you're entering Idle, it's from being selected
             // therefore, reset your controller's selections
             case PlayerUnitFSM.Idle:
-                ParentController.ChangeState(PlayerUnitController.ControllerFSM.NoSelection);
+                ParentController.ClearInteraction();
                 break;
 
             // re-calc move range, and display it
@@ -85,6 +67,7 @@ public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 // always display AttackRange first, because it is partially overwritten by MoveRange by definition
                 attackRange.Display(battleMap);
                 moveRange.Display(battleMap);
+                battleMap.Highlight(gridPosition, Constants.selectColorWhite);
                 break;
 
             case PlayerUnitFSM.Moving:
@@ -95,11 +78,37 @@ public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 attackRange = GenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
                 attackRange.Display(battleMap);
+                battleMap.Highlight(gridPosition, Constants.selectColorWhite);
                 break;
 
             case PlayerUnitFSM.Attacking:
                 break;
         }
+    }
+
+    public void ExitState(PlayerUnitFSM exitingState) {
+        Debug.Log($"{this} exiting state {exitingState}");
+
+        switch (exitingState) {
+            case PlayerUnitFSM.Idle:
+                break;
+
+            case PlayerUnitFSM.MoveSelection:
+                battleMap.ResetHighlight();
+                break;
+
+            case PlayerUnitFSM.Moving:
+                unitMap.MoveUnit(this, gridPosition);
+                break;
+
+            case PlayerUnitFSM.AttackSelection:
+                battleMap.ResetHighlight();  
+                break;
+
+            case PlayerUnitFSM.Attacking:
+                break;
+        }
+        state = PlayerUnitFSM.Idle;
     }
 
     public void ContextualInteractAt(GridPosition gp) {
@@ -127,7 +136,10 @@ public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                     // after reaching your destination, officially move via unitMap
                     if (pathTo != null) {
                         StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
+
+                        unitMap.ReservePosition(this, gp);
                         gridPosition = gp;  // save for ContextualNoInteract to move via unitMap
+
                         ChangeState(PlayerUnitFSM.Moving);
                     } else {
                         Debug.Log($"Found no path from {gridPosition} to {gp}");

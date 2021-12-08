@@ -6,6 +6,7 @@ using UnityEngine;
 
 public interface IStateMachine<E>
 {
+    E state { get; set; }
     void ChangeState(E e);
     void EnterState(E e);
     void ExitState(E e);

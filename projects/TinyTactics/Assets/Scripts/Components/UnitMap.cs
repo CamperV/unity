@@ -7,18 +7,25 @@ using UnityEngine.Tilemaps;
 
 public class UnitMap : MonoBehaviour
 {
-    private Dictionary<GridPosition, Unit> unitMap;
     private BattleMap battleMap;
+    private Dictionary<GridPosition, Unit> map;
+
+    private Dictionary<GridPosition, Unit> reservations;
+    public int resCount;
+    [field: SerializeField] private int currentReservations {
+        get => reservations.Keys.Where(k => reservations[k] != null).ToList().Count;
+    }
 
     void Awake() {
-        unitMap = new Dictionary<GridPosition, Unit>();
         battleMap = GetComponentInChildren<BattleMap>();
+        map = new Dictionary<GridPosition, Unit>();
+        reservations = new Dictionary<GridPosition, Unit>();
     }
 
     void Start() {
         // init map to have no blanks
         foreach (GridPosition gp in battleMap.Positions) {
-            unitMap[gp] = null;
+            map[gp] = reservations[gp] = null;
         }
 
         // find all active objects that have a gridPosition
@@ -28,22 +35,46 @@ public class UnitMap : MonoBehaviour
             MoveUnit(unit, startingGP);
         }
     }
-    
-    private void AlignUnit(Unit unit, GridPosition gp) {
-        unit.gridPosition = gp;
-        unit.transform.position = battleMap.GridToWorld(gp);
+
+    void Update() => resCount = currentReservations;
+
+    public Unit? UnitAt(GridPosition gp) {
+        return reservations[gp] ?? map[gp];
+    }
+
+    public bool VacantAt(GridPosition gp) {
+        return (map[gp] == null) && (reservations[gp] == null);
     }
 
     // accessible area
+    // move a unit into a gridPosition, transform and all. ONly if not reserved
     public void MoveUnit(Unit unit, GridPosition gp) {
-        if (unitMap[gp] == null) {
+        if (map[gp] == null && (reservations[gp] == null || reservations[gp] == unit)) {
             GridPosition prevGridPosition = unit.gridPosition;
             AlignUnit(unit, gp);
 
-            unitMap[unit.gridPosition] = unit;
-            if (prevGridPosition != null) unitMap[prevGridPosition] = null;
+            map[unit.gridPosition] = unit;
+            if (prevGridPosition != null) map[prevGridPosition] = null;
+
+            if (reservations[gp] == unit) {
+                reservations[gp] = null;
+            }
         } else {
             Debug.Log($"Failed to move {unit} into occupied GP {gp}");
         }
+    }
+
+    // ie, Move the unit in the map, but don't move it's transform yet
+    public void ReservePosition(Unit unit, GridPosition gp) {
+        if (map[gp] == null && reservations[gp] == null) {
+            reservations[gp] = unit;
+        } else {
+            Debug.Log($"{unit} cannot reserve {gp}, {map[gp]} exists there");
+        }
+    }
+        
+    private void AlignUnit(Unit unit, GridPosition gp) {
+        unit.gridPosition = gp;
+        unit.transform.position = battleMap.GridToWorld(gp);
     }
 }

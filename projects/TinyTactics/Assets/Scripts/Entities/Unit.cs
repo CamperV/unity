@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(SpriteAnimator))]
@@ -32,7 +33,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition
     }
 
     protected MoveRange GenerateMoveRange(GridPosition gp, int range) {
-        return mapPathfinder.GenerateFlowField<MoveRange>(gp, range: range);
+        MoveRange _moveRange = mapPathfinder.GenerateFlowField<MoveRange>(gp, range: range);
+        _moveRange.RegisterValidMoveFunc(unitMap.VacantAt);
+        return _moveRange;
     }
 
     protected AttackRange GenerateAttackRange(int minRange, int maxRange) {

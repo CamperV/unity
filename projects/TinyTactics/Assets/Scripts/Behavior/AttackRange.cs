@@ -11,8 +11,9 @@ public class AttackRange : FlowField<GridPosition>
 		origin = moveRange.origin;
 		field = new Dictionary<GridPosition, int>(moveRange.field);
 
-    	foreach (GridPosition standingPos in moveRange.field.Keys) {				
-            // TODO: there are some inefficiences here, but do we really care?
+    	foreach (GridPosition standingPos in moveRange.field.Keys) {
+			if (!moveRange.ValidMove(standingPos)) continue;
+
             // blossom out until we hit "range"
             foreach (GridPosition withinRange in standingPos.Radiate(maxRange, min: minRange)) {	
                 if (moveRange.field.ContainsKey(withinRange)) continue;
@@ -34,9 +35,5 @@ public class AttackRange : FlowField<GridPosition>
 		foreach (GridPosition tilePos in field.Keys) {
 			target.Highlight(tilePos, Constants.threatColorRed);
 		}
-	}
-
-	public void ClearDisplay(IGrid<GridPosition> target) {
-		target.ResetHighlight();
 	}
 }

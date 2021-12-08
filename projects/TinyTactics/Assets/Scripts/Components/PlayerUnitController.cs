@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitController.ControllerFSM>
 {
+    // debug
+    public Text debugStateLabel;
+
     [SerializeField] public List<PlayerUnit> entities;
 
     public enum ControllerFSM {
@@ -13,7 +17,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         NoSelection,
         Selection
     }
-    [SerializeField] private ControllerFSM state = ControllerFSM.Inactive;
+    [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
     [SerializeField] private PlayerUnit currentSelection;
 
 
@@ -55,6 +59,9 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public void EnterState(ControllerFSM enteringState) {
         Debug.Log($"{this} entering state {enteringState}");
         state = enteringState;
+    
+        // debug
+        debugStateLabel.text = $"PlayerUnitController: {state.ToString()}";
 
         switch (state) {
             case ControllerFSM.Inactive:
@@ -92,15 +99,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             //      2) If you don't, currentSelection will polymorphically decide what it wants to do (via its state) //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.Selection:
-                PlayerUnit? en = MatchingUnitAt(gp);
-
-                // if you click on another Unit while in Selection of another, switch
-                if (en != null && en != currentSelection) {
-                    currentSelection?.ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
-                    currentSelection = en;
-                }
-
-                // regardless of whomever the currentSelection is, have them fire ContextualInteractAt
                 currentSelection.ContextualInteractAt(gp);
                 break;
         }
@@ -110,17 +108,16 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         switch (state) {
             case ControllerFSM.Inactive:
             case ControllerFSM.NoSelection:
-                break;
             case ControllerFSM.Selection:
-                // if (currentSelection)
                 break;
         }
     }
 
+    // leaving Selection stage will reset currentSelection=null
     public void ClearInteraction() {
-        currentSelection?.ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
-        ChangeState(ControllerFSM.NoSelection);
-        // leaving Selection stage will reset currentSelection=null
+        if (state == ControllerFSM.Selection) {
+            ChangeState(ControllerFSM.NoSelection);
+        }
     }
 
     public PlayerUnit? MatchingUnitAt(GridPosition gp) {

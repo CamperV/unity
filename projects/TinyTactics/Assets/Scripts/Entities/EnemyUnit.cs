@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public abstract class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 {
@@ -10,9 +11,12 @@ public abstract class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         Moving,
         Attacking
     }
-    [SerializeField] private EnemyUnitFSM state = EnemyUnitFSM.Idle;
+    [SerializeField] public EnemyUnitFSM state { get; set; } = EnemyUnitFSM.Idle;
 
     void Start() {
+        // register any relevant events
+        EventManager.inst.inputController.RightMouseClickEvent += _ => ChangeState(EnemyUnit.EnemyUnitFSM.Idle);
+
         moveRange = new MoveRange(gridPosition);    // empty
         attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
@@ -20,34 +24,17 @@ public abstract class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     }
 
     public void ChangeState(EnemyUnitFSM newState) {
+        if (newState == state) return;
+
         ExitState(state);
         EnterState(newState);
     }
 
-    public void ExitState(EnemyUnitFSM exitingState) {
-        Debug.Log($"{this} exiting state {exitingState}");
-
-        switch (exitingState) {
-            case EnemyUnitFSM.Idle:
-                break;
-
-            case EnemyUnitFSM.Preview:
-                moveRange?.ClearDisplay(battleMap);
-                attackRange?.ClearDisplay(battleMap);
-                break;
-
-            case EnemyUnitFSM.Moving:
-                break;
-
-            case EnemyUnitFSM.Attacking:
-                break;
-        }
-        state = EnemyUnitFSM.Idle;
-    }
-
     public void EnterState(EnemyUnitFSM enteringState) {
-        Debug.Log($"{this} entering state {enteringState}");
         state = enteringState;
+        
+        // debug
+        GetComponentInChildren<TextMeshPro>().SetText(state.ToString());
 
         switch (enteringState) {
             case EnemyUnitFSM.Idle:
@@ -68,6 +55,26 @@ public abstract class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             case EnemyUnitFSM.Attacking:
                 break;
         }
+    }
+
+    public void ExitState(EnemyUnitFSM exitingState) {
+        Debug.Log($"{this} exiting state {exitingState}");
+
+        switch (exitingState) {
+            case EnemyUnitFSM.Idle:
+                break;
+
+            case EnemyUnitFSM.Preview:
+                battleMap.ResetHighlight();
+                break;
+
+            case EnemyUnitFSM.Moving:
+                break;
+
+            case EnemyUnitFSM.Attacking:
+                break;
+        }
+        state = EnemyUnitFSM.Idle;
     }
 
     public void ContextualInteractAt(GridPosition gp) {

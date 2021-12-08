@@ -6,6 +6,10 @@ using Extensions;
 
 public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 {	
+	// this list is invoked to determine all rules that allow a ValidMove to exist
+	// MoveRange users will add to this list, this class will execute
+	private List<Func<GridPosition, bool>> _ValidMoveFuncPool = new List<Func<GridPosition, bool>>();
+
 	public MoveRange(){}
 	public MoveRange(GridPosition _origin) {
 		origin = _origin;
@@ -14,10 +18,19 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 		};
 	}
 
+	public void RegisterValidMoveFunc(Func<GridPosition, bool> Func) {
+		_ValidMoveFuncPool.Add(Func);
+	}
+
 	// ValidMoves will indicate what can be passed through,
 	// and MoveRange will indicate what must be pathed around
-	public bool ValidMove(GridPosition tilePos) {
-		return field.ContainsKey(tilePos);
+	public bool ValidMove(GridPosition gp) {
+		bool valid = field.ContainsKey(gp);
+
+		foreach (var Func in _ValidMoveFuncPool) {
+			valid &= Func(gp);
+		}
+		return valid;
 	}
 
 	// IPathable definitions
@@ -42,10 +55,6 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 				target.Highlight(tilePos, Constants.selectColorBlue);
 			}
 		}
-	}
-
-	public void ClearDisplay(IGrid<GridPosition> target) {
-		target.ResetHighlight();
 	}
 
     public Path<GridPosition>? BFS(GridPosition startPosition, GridPosition targetPosition) {

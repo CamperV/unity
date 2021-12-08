@@ -25,16 +25,4 @@ public class FlowField<T> where T : struct
 		
 		field = mergedField;
 	}
-	
-	// public virtual void Display(GameGrid grid) {
-	// 	foreach (Vector3Int tilePos in field.Keys) {
-	// 		grid.UnderlayAt(tilePos, Constants.threatColorRed);
-	// 	}
-	// }
-
-	// public virtual void ClearDisplay(GameGrid grid) {
-	// 	foreach (Vector3Int tilePos in field.Keys) {
-	// 		grid.ResetUnderlayAt(tilePos);
-	// 	}
-	// }
 }
