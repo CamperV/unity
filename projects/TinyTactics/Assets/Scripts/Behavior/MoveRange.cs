@@ -8,7 +8,7 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 {	
 	// this list is invoked to determine all rules that allow a ValidMove to exist
 	// MoveRange users will add to this list, this class will execute
-	private List<Func<GridPosition, bool>> _ValidMoveFuncPool = new List<Func<GridPosition, bool>>();
+	private List<Func<GridPosition, bool>> _ValidMoveToFuncPool = new List<Func<GridPosition, bool>>();
 
 	public MoveRange(){}
 	public MoveRange(GridPosition _origin) {
@@ -18,16 +18,16 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 		};
 	}
 
-	public void RegisterValidMoveFunc(Func<GridPosition, bool> Func) {
-		_ValidMoveFuncPool.Add(Func);
+	public void RegisterValidMoveToFunc(Func<GridPosition, bool> Func) {
+		_ValidMoveToFuncPool.Add(Func);
 	}
 
 	// ValidMoves will indicate what can be passed through,
 	// and MoveRange will indicate what must be pathed around
-	public bool ValidMove(GridPosition gp) {
+	public bool ValidMoveTo(GridPosition gp) {
 		bool valid = field.ContainsKey(gp);
 
-		foreach (var Func in _ValidMoveFuncPool) {
+		foreach (var Func in _ValidMoveToFuncPool) {
 			valid &= Func(gp);
 		}
 		return valid;
@@ -51,15 +51,13 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 
 	public void Display(IGrid<GridPosition> target) {
 		foreach (GridPosition tilePos in field.Keys) {
-			if (ValidMove(tilePos)) {
-				target.Highlight(tilePos, Constants.selectColorBlue);
-			}
+			target.Highlight(tilePos, Constants.selectColorBlue);
 		}
 	}
 
     public Path<GridPosition>? BFS(GridPosition startPosition, GridPosition targetPosition) {
         // we can short-circuit easily - if the MoveRange doesn't have the key, don't even try
-        if (!ValidMove(targetPosition)) {
+        if (!ValidMoveTo(targetPosition)) {
             return null;
         }
 

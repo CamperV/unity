@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
+public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 {
     // additional Component references
     private PlayerUnitController _parentController;
@@ -98,7 +98,7 @@ public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.Moving:
-                unitMap.MoveUnit(this, gridPosition);
+                unitMap.MoveUnit(this, _reservedGridPosition);
                 break;
 
             case PlayerUnitFSM.AttackSelection:
@@ -138,7 +138,7 @@ public abstract class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
 
                         unitMap.ReservePosition(this, gp);
-                        gridPosition = gp;  // save for ContextualNoInteract to move via unitMap
+                        _reservedGridPosition = gp;  // save for ContextualNoInteract to move via unitMap
 
                         ChangeState(PlayerUnitFSM.Moving);
                     } else {

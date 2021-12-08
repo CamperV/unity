@@ -8,13 +8,12 @@ using UnityEngine.Tilemaps;
 public class UnitMap : MonoBehaviour
 {
     private BattleMap battleMap;
-    private Dictionary<GridPosition, Unit> map;
 
+    private Dictionary<GridPosition, Unit> map;
     private Dictionary<GridPosition, Unit> reservations;
-    public int resCount;
-    [field: SerializeField] private int currentReservations {
-        get => reservations.Keys.Where(k => reservations[k] != null).ToList().Count;
-    }
+
+    public List<GridPosition> currentMap = new List<GridPosition>();
+    public List<GridPosition> currentRes = new List<GridPosition>();
 
     void Awake() {
         battleMap = GetComponentInChildren<BattleMap>();
@@ -36,14 +35,13 @@ public class UnitMap : MonoBehaviour
         }
     }
 
-    void Update() => resCount = currentReservations;
+    void Update() {
+        currentMap = map.Keys.Where(k => map[k] != null).ToList();
+        currentRes = reservations.Keys.Where(k => reservations[k] != null).ToList();
+    }
 
     public Unit? UnitAt(GridPosition gp) {
         return reservations[gp] ?? map[gp];
-    }
-
-    public bool VacantAt(GridPosition gp) {
-        return (map[gp] == null) && (reservations[gp] == null);
     }
 
     // accessible area
@@ -51,10 +49,15 @@ public class UnitMap : MonoBehaviour
     public void MoveUnit(Unit unit, GridPosition gp) {
         if (map[gp] == null && (reservations[gp] == null || reservations[gp] == unit)) {
             GridPosition prevGridPosition = unit.gridPosition;
+            Debug.Log($"Captured prev position {prevGridPosition}");
             AlignUnit(unit, gp);
 
             map[unit.gridPosition] = unit;
-            if (prevGridPosition != null) map[prevGridPosition] = null;
+            Debug.Log($"Inserted {unit} into {unit.gridPosition}");
+            if (prevGridPosition != null) {
+                Debug.Log($"Setting {prevGridPosition} to null");
+                map[prevGridPosition] = null;
+            }
 
             if (reservations[gp] == unit) {
                 reservations[gp] = null;

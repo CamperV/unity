@@ -3,8 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public abstract class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
+public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 {
+    // additional Component references
+    private EnemyUnitController _parentController;
+    public EnemyUnitController ParentController { 
+        get {
+            if (_parentController == null) {
+                _parentController = GetComponentInParent<EnemyUnitController>();
+            }
+            return _parentController;
+        }
+    }
+
     public enum EnemyUnitFSM {
         Idle,
         Preview,
@@ -37,8 +48,12 @@ public abstract class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         GetComponentInChildren<TextMeshPro>().SetText(state.ToString());
 
         switch (enteringState) {
+            // when you're entering Idle, it's from being selected
+            // therefore, reset your controller's selections
             case EnemyUnitFSM.Idle:
+                ParentController.ClearInteraction();
                 break;
+
 
             case EnemyUnitFSM.Preview:
                 moveRange = GenerateMoveRange(gridPosition, unitStats.MOVE);

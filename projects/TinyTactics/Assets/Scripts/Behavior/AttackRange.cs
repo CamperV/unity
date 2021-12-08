@@ -12,8 +12,7 @@ public class AttackRange : FlowField<GridPosition>
 		field = new Dictionary<GridPosition, int>(moveRange.field);
 
     	foreach (GridPosition standingPos in moveRange.field.Keys) {
-			if (!moveRange.ValidMove(standingPos)) continue;
-
+			
             // blossom out until we hit "range"
             foreach (GridPosition withinRange in standingPos.Radiate(maxRange, min: minRange)) {	
                 if (moveRange.field.ContainsKey(withinRange)) continue;

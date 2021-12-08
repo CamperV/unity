@@ -71,9 +71,11 @@ public class UnitPathfinder : MonoBehaviour
 				if (otherUnit != null) {
 					var thisUnit = GetComponent<Unit>();
 
-					string thisBaseType = thisUnit.GetType().BaseType.Name;
-					string otherBaseType = otherUnit.GetType().BaseType.Name;
-					if (thisBaseType != otherBaseType) // PlayerUnit != EnemyUnit
+					// string thisBaseType = thisUnit.GetType().BaseType.Name;
+					// string otherBaseType = otherUnit.GetType().BaseType.Name;
+					// if (thisBaseType != otherBaseType) // PlayerUnit != EnemyUnit
+					// 	continue;
+					if (thisUnit.GetType() != otherUnit.GetType()) // PlayerUnit != EnemyUnit
 						continue;
 				}
 				

@@ -24,13 +24,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7142497734743283761}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1d4c21fb616ff04eb7147f3380704b5, type: 3}
+  m_Script: {fileID: 11500000, guid: adb1cb1c4ef25854096b14b492813d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <gridPosition>k__BackingField:
     x: 0
     y: 0
-  state: 0
 --- !u!114 &7307107380924533155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,15 +69,15 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 46abb5a20de0b1c42b711d0a14d81799, type: 3}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.b
-      value: 0.5058824
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.g
-      value: 0.83137256
+      value: 0.5707547
       objectReference: {fileID: 0}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.r
-      value: 0.6666667
+      value: 0.7156078
       objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name

@@ -36,13 +36,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1592419135145105817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54e76c255998f554f890f29abdc82b51, type: 3}
+  m_Script: {fileID: 11500000, guid: adb1cb1c4ef25854096b14b492813d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <gridPosition>k__BackingField:
     x: 0
     y: 0
-  state: 0
 --- !u!114 &7726113186437740837
 MonoBehaviour:
   m_ObjectHideFlags: 0

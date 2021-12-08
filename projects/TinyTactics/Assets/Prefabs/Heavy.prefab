@@ -27,6 +27,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5005427817321148837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3708135186360528908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adb1cb1c4ef25854096b14b492813d6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <gridPosition>k__BackingField:
+    x: 0
+    y: 0
 --- !u!114 &5616053730634875838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42,22 +57,6 @@ MonoBehaviour:
   MOVE: 3
   MIN_RANGE: 1
   MAX_RANGE: 1
---- !u!114 &5005427817321148837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3708135186360528908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1f44d8938eaaae4eb257cced521167a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <gridPosition>k__BackingField:
-    x: 0
-    y: 0
-  state: 0
 --- !u!1001 &7487578033757355667
 PrefabInstance:
   m_ObjectHideFlags: 0
