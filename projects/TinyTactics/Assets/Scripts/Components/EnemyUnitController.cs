@@ -31,6 +31,12 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             }
         }
     }
+    
+    private TurnManager turnManager;
+
+    void Awake() {
+        turnManager = GetComponentInParent<TurnManager>();
+    }
 
     void Start() {
         // this accounts for all in-scene Entities, not instatiated prefabs

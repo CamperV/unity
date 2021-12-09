@@ -32,6 +32,11 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         }
     }
 
+    private TurnManager turnManager;
+
+    void Awake() {
+        turnManager = GetComponentInParent<TurnManager>();
+    }
 
     void Start() {
         // this accounts for all in-scene Entities, not instatiated prefabs
@@ -116,8 +121,22 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public void ContextualNoInteract() {
         switch (state) {
             case ControllerFSM.Inactive:
+                break;
+
             case ControllerFSM.NoSelection:
             case ControllerFSM.Selection:
+                // TODO: SOON, CHANGE TO EVENT-BASED
+                // IE, EACH UNIT SENDS AN EVENT WHEN IT IS FINISHED?
+                //
+                // every frame, check if we should end PlayerPhase or not
+                // why don't we do this only on contextualActions?
+                // because of the "Attacking" state. We must wait until animations are over
+                bool endPlayerPhase = true;
+                foreach (PlayerUnit unit in entities) {
+                    endPlayerPhase &= !unit.turnActive;
+                }
+                
+                if (endPlayerPhase) turnManager.playerPhase.TriggerEnd();
                 break;
         }
     }

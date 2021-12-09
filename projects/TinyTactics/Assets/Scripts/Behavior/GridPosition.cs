@@ -4,10 +4,6 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public interface IGridPosition
-{
-    GridPosition gridPosition { get; set; }
-}
 
 [Serializable]
 public struct GridPosition : IEquatable<GridPosition>

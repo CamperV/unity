@@ -42,6 +42,8 @@ MonoBehaviour:
   <gridPosition>k__BackingField:
     x: 0
     y: 0
+  blocking: 0
+  cancelSignal: 0
 --- !u!114 &7726113186437740837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57,6 +59,18 @@ MonoBehaviour:
   terrainTiles:
   - {fileID: 11400000, guid: 19b51b86749e43047abaf006598f9cfc, type: 2}
   _terrainCostOverrides: ffffffff
+--- !u!114 &-6140512985146284237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1592419135145105817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9e42f44cd101a94abf202e3af5587a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4793414429907703558
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -15,6 +15,8 @@ MonoBehaviour:
   <gridPosition>k__BackingField:
     x: 0
     y: 0
+  blocking: 0
+  cancelSignal: 0
 --- !u!114 &2057809623227539322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56,6 +58,18 @@ MonoBehaviour:
   MOVE: 3
   MIN_RANGE: 2
   MAX_RANGE: 2
+--- !u!114 &3533616260537569892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4081257334139278387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9e42f44cd101a94abf202e3af5587a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7800023651149863596
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -81,7 +95,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
-      value: Archer
+      value: Ranger
       objectReference: {fileID: 0}
     - target: {fileID: 7419503456615491691, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_RootOrder

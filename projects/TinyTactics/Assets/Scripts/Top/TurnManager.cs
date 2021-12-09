@@ -14,9 +14,17 @@ public class TurnManager : MonoBehaviour
     public bool enable = true;
     public bool suspend = false;
 
+    public string currentPhaseName;
+    public Phase.PhaseState currentPhaseState;
+
     void Awake() {
         playerPhase = new Phase("Player");
         enemyPhase = new Phase("Enemy");
+    }
+
+    void Update() {
+        currentPhaseName = currentPhase?.name ?? "n/a";
+        currentPhaseState = currentPhase?.state ?? Phase.PhaseState.Inactive;
     }
 
     // this will execute Enable() at the end of the Start frame

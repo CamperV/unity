@@ -20,6 +20,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     void Start() {
         // register any relevant events
         EventManager.inst.inputController.RightMouseClickEvent += _ => ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
+
+        unitPhase = GetComponent<PlayerUnitPhase>();
         moveRange = null;
         attackRange = null;
         EnterState(PlayerUnitFSM.Idle);
@@ -60,9 +62,10 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.AttackSelection:
-                moveRange = GenerateMoveRange(gridPosition, 0);
-                attackRange = GenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+                // disable enemy unit controller for a time
+                enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.Inactive);
 
+                UpdateThreatRange(standing: true);
                 StartCoroutine( Utils.LateFrame(DisplayThreatRange) );
                 break;
 
@@ -72,8 +75,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     }
 
     public void ExitState(PlayerUnitFSM exitingState) {
-        Debug.Log($"{this} exiting state {exitingState}");
-
         switch (exitingState) {
             case PlayerUnitFSM.Idle:
                 break;
@@ -88,6 +89,14 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.AttackSelection:
+                // re-enable EnemyUnitController at the end of the frame
+                // this is to avoid any same-frame reactivation and Event triggering/listening
+                StartCoroutine(
+                    Utils.LateFrame(() => {
+                        enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoSelection);
+                    })
+                );
+
                 battleMap.ResetHighlight();  
                 break;
 
@@ -98,13 +107,18 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     }
 
     public void ContextualInteractAt(GridPosition gp) {
-        switch (state) {
+        if (!unitPhase.active) return;
 
+        switch (state) {
             ///////////////////////////////////////////////
             // ie Active the unit, go to select movement //
             ///////////////////////////////////////////////
             case PlayerUnitFSM.Idle:
-                ChangeState(PlayerUnitFSM.MoveSelection);
+                if (unitPhase.moveAvailable) {
+                    ChangeState(PlayerUnitFSM.MoveSelection);
+                } else if (unitPhase.attackAvailable) {
+                    ChangeState(PlayerUnitFSM.AttackSelection);
+                }
                 break;
 
             ////////////////////////////////////////////////////////////////////////
@@ -112,7 +126,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             ////////////////////////////////////////////////////////////////////////
             case PlayerUnitFSM.MoveSelection:
                 if (gp == gridPosition) {
-                    ChangeState(PlayerUnitFSM.AttackSelection);
+                    if (unitPhase.attackAvailable) ChangeState(PlayerUnitFSM.AttackSelection);
 
                 // else if it's a valid movement to be had:
                 } else {
@@ -125,6 +139,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
                         unitMap.ReservePosition(this, gp);
                         _reservedGridPosition = gp;  // save for ContextualNoInteract to move via unitMap
+                        unitPhase.moveAvailable = false;
 
                         ChangeState(PlayerUnitFSM.Moving);
                     } else {
@@ -147,6 +162,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 } else {
                     if (attackRange.ValidAttack(gp)) {
                         StartCoroutine( spriteAnimator.BumpTowards<GridPosition>(gp, battleMap) );
+                        unitPhase.attackAvailable = false;
 
                         ChangeState(PlayerUnitFSM.Attacking);
                     } else {
@@ -184,7 +200,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         cancelSignal = false;
                         ChangeState(PlayerUnitFSM.Idle);
                     } else {
-                        ChangeState(PlayerUnitFSM.AttackSelection);
+                        if (unitPhase.attackAvailable) ChangeState(PlayerUnitFSM.AttackSelection);
                     }
                 }
                 break;
@@ -205,6 +221,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         cancelSignal = false;
                         ChangeState(PlayerUnitFSM.Idle);
                     } else {
+                        unitPhase.Finish();
                         ChangeState(PlayerUnitFSM.Idle);
                     }
                 }
@@ -252,11 +269,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 		HashSet<GridPosition> threatened = new HashSet<GridPosition>();
 
 		foreach (EnemyUnit unit in enemyUnitController.entities) {
-            if (unit.attackRange == null) {
-                Debug.Log($"Triggered update of {unit}'s attackRange");
-                unit.UpdateThreatRange();
-                Debug.Log($"{unit} has an attack range that == null? {unit.attackRange == null}");
-            }
+            if (unit.attackRange == null) unit.UpdateThreatRange();
 			threatened.UnionWith(unit.attackRange.field.Keys);
 		}
 

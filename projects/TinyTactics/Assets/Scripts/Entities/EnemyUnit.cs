@@ -16,7 +16,8 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     void Start() {
         // register any relevant events
         EventManager.inst.inputController.RightMouseClickEvent += _ => ChangeState(EnemyUnit.EnemyUnitFSM.Idle);
-
+        
+        unitPhase = GetComponent<EnemyUnitPhase>();
         moveRange = null;
         attackRange = null;
         EnterState(EnemyUnitFSM.Idle);

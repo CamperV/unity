@@ -17,13 +17,15 @@ public abstract class Unit : MonoBehaviour, IGridPosition
     protected SpriteAnimator spriteAnimator;
     protected UnitPathfinder mapPathfinder;
     protected UnitStats unitStats;
-    protected UnitPhase unitPhase;
+    protected IUnitPhase unitPhase;
     protected PlayerUnitController playerUnitController;
     protected EnemyUnitController enemyUnitController;
 
     // other
     public MoveRange moveRange;
     public AttackRange attackRange;
+
+    public bool turnActive { get=> unitPhase.active; }
 
     void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
@@ -42,18 +44,11 @@ public abstract class Unit : MonoBehaviour, IGridPosition
     // The MoveRange field.Keys indicate what tiles can be pathed through
     // However, MoveRange doesn't know what tiles it cannot stand on
     // we pass it a UnitAt lambda to tell it you can't validly stand on occupied tiles
-    protected MoveRange GenerateMoveRange(GridPosition gp, int range) {
-        MoveRange _moveRange = mapPathfinder.GenerateFlowField<MoveRange>(gp, range: range);
-        _moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
-        return _moveRange;
-    }
+    public void UpdateThreatRange(bool standing = false) {
+        int movement = (unitPhase.moveAvailable && standing == false) ? unitStats.MOVE : 0;
+        moveRange = mapPathfinder.GenerateFlowField<MoveRange>(gridPosition, range: movement);
+        moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
 
-    protected AttackRange GenerateAttackRange(int minRange, int maxRange) {
-        return new AttackRange(moveRange, minRange, maxRange);
-    }
-
-    public void UpdateThreatRange() {
-        moveRange = GenerateMoveRange(gridPosition, unitStats.MOVE);
-        attackRange = GenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+        attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
     }
 }
