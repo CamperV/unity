@@ -11,7 +11,7 @@ public class SpriteAnimator : MonoBehaviour
 {
     // we want it to take X seconds to go over one tile
 	public static float speedMultiplier = 1f;
-	public static float fixedTimePerTile { get => 0.10f / speedMultiplier; }
+	public static float fixedTimePerTile { get => 2f / speedMultiplier; }
 	public static bool skipMovement = false;
 
 	public Action<Vector3> PositionUpdater;

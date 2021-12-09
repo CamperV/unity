@@ -27,9 +27,12 @@ public class EventManager : MonoBehaviour
 
     void Start() {
         inputController.MousePositionEvent += battleMap.CheckMouseOver;
+        
         inputController.LeftMouseClickEvent += battleMap.CheckLeftMouseClick;
+
         inputController.RightMouseClickEvent += battleMap.CheckRightMouseClick;
-        inputController.RightMouseClickEvent += _ => playerUnitController.ClearInteraction();
+        inputController.RightMouseClickEvent += _ => playerUnitController.ClearSelection();
+        inputController.RightMouseClickEvent += _ => enemyUnitController.ClearSelection();
 
         battleMap.InteractEvent += playerUnitController.ContextualInteractAt;
         battleMap.InteractEvent += enemyUnitController.ContextualInteractAt;

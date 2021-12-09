@@ -5,17 +5,6 @@ using TMPro;
 
 public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 {
-    // additional Component references
-    private EnemyUnitController _parentController;
-    public EnemyUnitController ParentController { 
-        get {
-            if (_parentController == null) {
-                _parentController = GetComponentInParent<EnemyUnitController>();
-            }
-            return _parentController;
-        }
-    }
-
     public enum EnemyUnitFSM {
         Idle,
         Preview,
@@ -28,9 +17,8 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         // register any relevant events
         EventManager.inst.inputController.RightMouseClickEvent += _ => ChangeState(EnemyUnit.EnemyUnitFSM.Idle);
 
-        moveRange = new MoveRange(gridPosition);    // empty
-        attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
-
+        moveRange = null;
+        attackRange = null;
         EnterState(EnemyUnitFSM.Idle);
     }
 
@@ -42,6 +30,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     }
 
     public void EnterState(EnemyUnitFSM enteringState) {
+        Debug.Log($"{this} entering {enteringState}");
         state = enteringState;
         
         // debug
@@ -51,30 +40,22 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             // when you're entering Idle, it's from being selected
             // therefore, reset your controller's selections
             case EnemyUnitFSM.Idle:
-                ParentController.ClearInteraction();
+                enemyUnitController.ClearSelection();
                 break;
 
-
             case EnemyUnitFSM.Preview:
-                moveRange = GenerateMoveRange(gridPosition, unitStats.MOVE);
-                attackRange = GenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
-
-                // always display AttackRange first, because it is partially overwritten by MoveRange by definition
-                attackRange.Display(battleMap);
-                moveRange.Display(battleMap);
+                UpdateThreatRange();
+                StartCoroutine( Utils.LateFrame(DisplayThreatRange) );
                 break;
 
             case EnemyUnitFSM.Moving:
-                break;
-
             case EnemyUnitFSM.Attacking:
                 break;
         }
     }
 
     public void ExitState(EnemyUnitFSM exitingState) {
-        Debug.Log($"{this} exiting state {exitingState}");
-
+        Debug.Log($"{this} exiting {exitingState}");
         switch (exitingState) {
             case EnemyUnitFSM.Idle:
                 break;
@@ -84,8 +65,6 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
                 break;
 
             case EnemyUnitFSM.Moving:
-                break;
-
             case EnemyUnitFSM.Attacking:
                 break;
         }
@@ -115,5 +94,18 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             case EnemyUnitFSM.Attacking:
                 break;
         }
+    }
+
+    // this essentially is an "undo" for us
+    // undo all the way to Idle
+    public void Cancel() {
+        if (state == EnemyUnitFSM.Idle) return;
+        ChangeState(EnemyUnitFSM.Idle);
+    }
+
+    protected void DisplayThreatRange() {
+        attackRange.Display(battleMap);
+        moveRange.Display(battleMap, Constants.threatColorYellow);
+        battleMap.Highlight(gridPosition, Constants.selectColorWhite);
     }
 }

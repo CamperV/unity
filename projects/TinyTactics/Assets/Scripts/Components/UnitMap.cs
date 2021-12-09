@@ -41,7 +41,11 @@ public class UnitMap : MonoBehaviour
     }
 
     public Unit? UnitAt(GridPosition gp) {
-        return reservations[gp] ?? map[gp];
+        return map[gp];
+    }
+    
+    public bool CanMoveInto(GridPosition gp) {
+        return map[gp] == null && reservations[gp] == null;
     }
 
     // accessible area

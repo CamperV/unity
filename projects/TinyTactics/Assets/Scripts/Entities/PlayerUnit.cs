@@ -5,17 +5,6 @@ using TMPro;
 
 public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 {
-    // additional Component references
-    private PlayerUnitController _parentController;
-    public PlayerUnitController ParentController { 
-        get {
-            if (_parentController == null) {
-                _parentController = GetComponentInParent<PlayerUnitController>();
-            }
-            return _parentController;
-        }
-    }
-
     public enum PlayerUnitFSM {
         Idle,
         MoveSelection,
@@ -25,13 +14,14 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     }
     [SerializeField] public PlayerUnitFSM state { get; set; } = PlayerUnitFSM.Idle;
 
+    public bool blocking = false;
+    public bool cancelSignal = false;
+
     void Start() {
         // register any relevant events
         EventManager.inst.inputController.RightMouseClickEvent += _ => ChangeState(PlayerUnit.PlayerUnitFSM.Idle);
-
-        moveRange = new MoveRange(gridPosition);    // empty
-        attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
-
+        moveRange = null;
+        attackRange = null;
         EnterState(PlayerUnitFSM.Idle);
     }
 
@@ -56,29 +46,24 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             // when you're entering Idle, it's from being selected
             // therefore, reset your controller's selections
             case PlayerUnitFSM.Idle:
-                ParentController.ClearInteraction();
+                playerUnitController.ClearSelection();
                 break;
 
             // re-calc move range, and display it
             case PlayerUnitFSM.MoveSelection:
-                moveRange = GenerateMoveRange(gridPosition, unitStats.MOVE);
-                attackRange = GenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
-
-                // always display AttackRange first, because it is partially overwritten by MoveRange by definition
-                attackRange.Display(battleMap);
-                moveRange.Display(battleMap);
-                battleMap.Highlight(gridPosition, Constants.selectColorWhite);
+                UpdateThreatRange();
+                StartCoroutine( Utils.LateFrame(DisplayThreatRange) );
                 break;
 
             case PlayerUnitFSM.Moving:
+                blocking = true;
                 break;
 
             case PlayerUnitFSM.AttackSelection:
                 moveRange = GenerateMoveRange(gridPosition, 0);
                 attackRange = GenerateAttackRange(unitStats.MIN_RANGE, unitStats.MAX_RANGE);
 
-                attackRange.Display(battleMap);
-                battleMap.Highlight(gridPosition, Constants.selectColorWhite);
+                StartCoroutine( Utils.LateFrame(DisplayThreatRange) );
                 break;
 
             case PlayerUnitFSM.Attacking:
@@ -99,6 +84,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
             case PlayerUnitFSM.Moving:
                 unitMap.MoveUnit(this, _reservedGridPosition);
+                blocking = false;
                 break;
 
             case PlayerUnitFSM.AttackSelection:
@@ -191,8 +177,15 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             case PlayerUnitFSM.Moving:
                 if (spriteAnimator.isMoving) {    
                     // just spin
+
+                // we've finished moving
                 } else {
-                    ChangeState(PlayerUnitFSM.AttackSelection);
+                    if (cancelSignal) {
+                        cancelSignal = false;
+                        ChangeState(PlayerUnitFSM.Idle);
+                    } else {
+                        ChangeState(PlayerUnitFSM.AttackSelection);
+                    }
                 }
                 break;
 
@@ -208,9 +201,65 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 if (spriteAnimator.isMoving || spriteAnimator.isAnimating) {    
                     // just spin
                 } else {
-                    ChangeState(PlayerUnitFSM.Idle);
+                    if (cancelSignal) {
+                        cancelSignal = false;
+                        ChangeState(PlayerUnitFSM.Idle);
+                    } else {
+                        ChangeState(PlayerUnitFSM.Idle);
+                    }
                 }
                 break;
         }
     }
+
+    // this essentially is an "undo" for us
+    // undo all the way to Idle
+    public void Cancel() {
+        if (state == PlayerUnitFSM.Idle) return;
+
+        switch (state) {
+            case PlayerUnitFSM.Moving:
+            case PlayerUnitFSM.Attacking:
+                cancelSignal = true;
+                break;
+
+            case PlayerUnitFSM.MoveSelection:
+            case PlayerUnitFSM.AttackSelection:
+                ChangeState(PlayerUnitFSM.Idle);
+                break;
+        }
+    }
+
+    // this needs to run at the end of the frame
+    // this is because of our decoupled event processing
+    // basically, the PlayerUnits are displaying  before the enemy units drop the display
+    //
+    // always display AttackRange first, because it is partially overwritten by MoveRange by definition
+    protected void DisplayThreatRange() {
+        attackRange.Display(battleMap);
+        moveRange.Display(battleMap);
+
+    	foreach (GridPosition gp in ThreatenedRange()) {
+			if (moveRange.field.ContainsKey(gp)) {
+				battleMap.Highlight(gp, Constants.threatColorIndigo);
+			}
+		}
+
+        battleMap.Highlight(gridPosition, Constants.selectColorWhite);
+    }
+
+    private IEnumerable<GridPosition> ThreatenedRange() {
+		HashSet<GridPosition> threatened = new HashSet<GridPosition>();
+
+		foreach (EnemyUnit unit in enemyUnitController.entities) {
+            if (unit.attackRange == null) {
+                Debug.Log($"Triggered update of {unit}'s attackRange");
+                unit.UpdateThreatRange();
+                Debug.Log($"{unit} has an attack range that == null? {unit.attackRange == null}");
+            }
+			threatened.UnionWith(unit.attackRange.field.Keys);
+		}
+
+		foreach (GridPosition gp in threatened) yield return gp;
+	}
 }

@@ -18,7 +18,19 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         Selection
     }
     [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
-    [SerializeField] private EnemyUnit currentSelection;
+
+    private EnemyUnit _currentSelection;
+    private EnemyUnit currentSelection {
+        get => _currentSelection;
+        set {
+            _currentSelection = value;
+            if (_currentSelection == null) {
+                ChangeState(ControllerFSM.NoSelection);
+            } else {
+                ChangeState(ControllerFSM.Selection);
+            }
+        }
+    }
 
     void Start() {
         // this accounts for all in-scene Entities, not instatiated prefabs
@@ -38,10 +50,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         switch (exitingState) {
             case ControllerFSM.Inactive:
             case ControllerFSM.NoSelection:
-                break;
-
             case ControllerFSM.Selection:
-                currentSelection = null;
                 break;
         }
         state = ControllerFSM.Inactive;
@@ -76,24 +85,26 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             /////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.NoSelection:
                 currentSelection = MatchingUnitAt(gp);
-
-                if (currentSelection != null) {
-                    currentSelection.ContextualInteractAt(gp);
-                    ChangeState(ControllerFSM.Selection);
-                }
+                currentSelection?.ContextualInteractAt(gp);
                 break;
 
             case ControllerFSM.Selection:
-                currentSelection?.ContextualInteractAt(gp);
+                EnemyUnit? unit = MatchingUnitAt(gp);
+
+                // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
+                // then REACQUIRE a currentSelection immediately afterwards
+                if (unit != null && unit != currentSelection) {
+                    currentSelection.Cancel();
+                    currentSelection = unit;
+                }
+
+                currentSelection.ContextualInteractAt(gp);
                 break;
         }
     }
 
-    // leaving Selection stage will reset currentSelection=null
-    public void ClearInteraction() {
-        if (state == ControllerFSM.Selection) {
-            ChangeState(ControllerFSM.NoSelection);
-        }
+    public void ClearSelection() {
+        currentSelection = null;
     }
 
     public EnemyUnit? MatchingUnitAt(GridPosition gp) {

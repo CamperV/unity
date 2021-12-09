@@ -18,7 +18,19 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         Selection
     }
     [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
-    [SerializeField] private PlayerUnit currentSelection;
+
+    private PlayerUnit _currentSelection;
+    private PlayerUnit currentSelection {
+        get => _currentSelection;
+        set {
+            _currentSelection = value;
+            if (_currentSelection == null) {
+                ChangeState(ControllerFSM.NoSelection);
+            } else {
+                ChangeState(ControllerFSM.Selection);
+            }
+        }
+    }
 
 
     void Start() {
@@ -40,24 +52,16 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
 
     public void ExitState(ControllerFSM exitingState) {
-        Debug.Log($"{this} exiting state {exitingState}");
-
         switch (exitingState) {
             case ControllerFSM.Inactive:
-                break;
-
             case ControllerFSM.NoSelection:
-                break;
-
             case ControllerFSM.Selection:
-                currentSelection = null;
                 break;
         }
         state = ControllerFSM.Inactive;
     }
 
     public void EnterState(ControllerFSM enteringState) {
-        Debug.Log($"{this} entering state {enteringState}");
         state = enteringState;
     
         // debug
@@ -86,11 +90,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             /////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.NoSelection:
                 currentSelection = MatchingUnitAt(gp);
-
-                if (currentSelection != null) {
-                    currentSelection.ContextualInteractAt(gp);
-                    ChangeState(ControllerFSM.Selection);
-                }
+                currentSelection?.ContextualInteractAt(gp);
                 break;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,6 +99,15 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             //      2) If you don't, currentSelection will polymorphically decide what it wants to do (via its state) //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.Selection:
+                PlayerUnit? unit = MatchingUnitAt(gp);
+
+                // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
+                // then REACQUIRE a currentSelection immediately afterwards
+                if (unit != null && unit != currentSelection) {
+                    currentSelection.Cancel();
+                    currentSelection = unit;
+                }
+
                 currentSelection.ContextualInteractAt(gp);
                 break;
         }
@@ -113,11 +122,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         }
     }
 
-    // leaving Selection stage will reset currentSelection=null
-    public void ClearInteraction() {
-        if (state == ControllerFSM.Selection) {
-            ChangeState(ControllerFSM.NoSelection);
-        }
+    public void ClearSelection() {
+        currentSelection = null;
     }
 
     public PlayerUnit? MatchingUnitAt(GridPosition gp) {
