@@ -5,11 +5,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class EventManager : MonoBehaviour
+public sealed class EventManager : MonoBehaviour
 {
-    public static EventManager inst;
+    public static EventManager inst = null; // enforces singleton behavior
 
     public PlayerInputController inputController;
+    public UIManager uiManager;
     public TurnManager turnManager;
     public BattleMap battleMap;
     public PlayerUnitController playerUnitController;
@@ -46,7 +47,7 @@ public class EventManager : MonoBehaviour
         turnManager.enemyPhase.StartEvent += enemyUnitController.TriggerPhase;
         turnManager.enemyPhase.EndEvent += enemyUnitController.EndPhase;
 
-        // turnManager.NewTurnEvent += UI listener;
-        // turnManager.NewPhaseEvent += UI listener;
+        turnManager.NewTurnEvent += uiManager.UpdateTurn;
+        turnManager.NewPhaseEvent += uiManager.UpdatePhase;
     }
 }

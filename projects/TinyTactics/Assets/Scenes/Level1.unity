@@ -1016,7 +1016,7 @@ Transform:
   - {fileID: 1470600145}
   - {fileID: 1111963513}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &881456442
 MonoBehaviour:
@@ -2051,6 +2051,7 @@ GameObject:
   - component: {fileID: 1357693836}
   - component: {fileID: 1357693835}
   - component: {fileID: 1357693834}
+  - component: {fileID: 1357693838}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2135,13 +2136,27 @@ RectTransform:
   - {fileID: 560461939}
   - {fileID: 274523161}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1357693838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357693833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7167d7569365d8947a55a5f797369386, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentTurnText: {fileID: 274523162}
+  currentPhaseText: {fileID: 560461940}
 --- !u!1001 &1361409888
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2234,6 +2249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputController: {fileID: 1490333195}
+  uiManager: {fileID: 1357693838}
   turnManager: {fileID: 881456442}
   battleMap: {fileID: 1636068311}
   playerUnitController: {fileID: 1470600146}
@@ -2393,7 +2409,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1490333195
 MonoBehaviour:
