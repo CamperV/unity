@@ -32,12 +32,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         }
     }
 
-    private TurnManager turnManager;
-
-    void Awake() {
-        turnManager = GetComponentInParent<TurnManager>();
-    }
-
     void Start() {
         // this accounts for all in-scene Entities, not instatiated prefabs
         foreach (PlayerUnit en in GetComponentsInChildren<PlayerUnit>()) {
@@ -54,6 +48,11 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public void ChangeState(ControllerFSM newState) {
         ExitState(state);
         EnterState(newState);
+    }
+
+    public void InitialState() {
+        ExitState(state);
+        EnterState(ControllerFSM.NoSelection);
     }
 
     public void ExitState(ControllerFSM exitingState) {
@@ -77,6 +76,20 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             case ControllerFSM.NoSelection:
             case ControllerFSM.Selection:
                 break;
+        }
+    }
+
+    public void TriggerPhase() {
+        foreach (IUnitPhaseInfo en in entities) {
+            en.StartTurn();
+        }
+    }
+
+    public void EndPhase() {
+        foreach (IUnitPhaseInfo en in entities) {
+            if (en.turnActive) {
+                en.FinishTurn();
+            }
         }
     }
 
@@ -121,22 +134,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public void ContextualNoInteract() {
         switch (state) {
             case ControllerFSM.Inactive:
-                break;
-
             case ControllerFSM.NoSelection:
             case ControllerFSM.Selection:
-                // TODO: SOON, CHANGE TO EVENT-BASED
-                // IE, EACH UNIT SENDS AN EVENT WHEN IT IS FINISHED?
-                //
-                // every frame, check if we should end PlayerPhase or not
-                // why don't we do this only on contextualActions?
-                // because of the "Attacking" state. We must wait until animations are over
-                bool endPlayerPhase = true;
-                foreach (PlayerUnit unit in entities) {
-                    endPlayerPhase &= !unit.turnActive;
-                }
-                
-                if (endPlayerPhase) turnManager.playerPhase.TriggerEnd();
                 break;
         }
     }
@@ -150,5 +149,17 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             if (en.gridPosition == gp) return en;
         }
         return null;
+    }
+
+    public void CheckEndPhase() {
+        // check every time a unit finishes a turn
+        // why don't we do this only on contextualActions?
+        // because of the "Attacking" state. We must wait until animations are over
+        bool endPlayerPhase = true;
+        foreach (PlayerUnit unit in entities) {
+            endPlayerPhase &= !unit.turnActive;
+        }
+        
+        if (endPlayerPhase) GetComponentInParent<TurnManager>().playerPhase.TriggerEnd();
     }
 }

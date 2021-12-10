@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer), typeof(SpriteAnimator))]
 [RequireComponent(typeof(UnitPathfinder))]
 [RequireComponent(typeof(UnitStats))]
-public abstract class Unit : MonoBehaviour, IGridPosition
+public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 {
     [field: SerializeField] public GridPosition gridPosition { get; set; }
     protected GridPosition _reservedGridPosition; // this is for maintaining state while animating/moving
@@ -15,9 +15,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition
     protected UnitMap unitMap;
     protected BattleMap battleMap;
     protected SpriteAnimator spriteAnimator;
+    protected SpriteRenderer spriteRenderer;
     protected UnitPathfinder mapPathfinder;
     protected UnitStats unitStats;
-    protected IUnitPhase unitPhase;
     protected PlayerUnitController playerUnitController;
     protected EnemyUnitController enemyUnitController;
 
@@ -25,10 +25,20 @@ public abstract class Unit : MonoBehaviour, IGridPosition
     public MoveRange moveRange;
     public AttackRange attackRange;
 
-    public bool turnActive { get=> unitPhase.active; }
+    // abstract
+    public abstract void Cancel();
+    protected abstract void DisplayThreatRange();
+
+    // IUnitPhaseInfo
+    public bool turnActive { get; set; } = true;
+    public bool moveAvailable { get; set; } = true;
+    public bool attackAvailable { get; set; } = true;
+    //
+    protected Color originalColor = Color.magenta; // aka no texture, lol
 
     void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         mapPathfinder = GetComponent<UnitPathfinder>();
         unitStats = GetComponent<UnitStats>();
 
@@ -45,10 +55,27 @@ public abstract class Unit : MonoBehaviour, IGridPosition
     // However, MoveRange doesn't know what tiles it cannot stand on
     // we pass it a UnitAt lambda to tell it you can't validly stand on occupied tiles
     public void UpdateThreatRange(bool standing = false) {
-        int movement = (unitPhase.moveAvailable && standing == false) ? unitStats.MOVE : 0;
+        int movement = (moveAvailable && standing == false) ? unitStats.MOVE : 0;
         moveRange = mapPathfinder.GenerateFlowField<MoveRange>(gridPosition, range: movement);
         moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
 
         attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+    }
+
+
+    // IUnitPhaseInfo
+    public void StartTurn() {
+        turnActive = true;
+        moveAvailable = true;
+        attackAvailable = true;
+        spriteRenderer.color = originalColor;
+    }
+
+    // IUnitPhaseInfo
+    public virtual void FinishTurn() {
+        turnActive = false;
+        moveAvailable = false;
+        attackAvailable = false;
+        spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
     }
 }

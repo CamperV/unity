@@ -2,14 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IUnitPhase
+public interface IUnitPhaseInfo
 {
-    bool active { get; set; }
+    bool turnActive { get; set; }
     bool moveAvailable { get; set; }
     bool attackAvailable { get; set; }
 
-    void Refresh();
-    void TriggerPhase();
-    void EndPhase();
-    void Finish();
+    void StartTurn();
+    void FinishTurn();
 }

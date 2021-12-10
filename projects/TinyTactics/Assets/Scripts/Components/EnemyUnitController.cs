@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitController.ControllerFSM>
+public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitController.ControllerFSM>, IUnitPhaseController
 {
     // debug
     public Text debugStateLabel;
@@ -31,12 +31,6 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             }
         }
     }
-    
-    private TurnManager turnManager;
-
-    void Awake() {
-        turnManager = GetComponentInParent<TurnManager>();
-    }
 
     void Start() {
         // this accounts for all in-scene Entities, not instatiated prefabs
@@ -50,6 +44,11 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     public void ChangeState(ControllerFSM newState) {
         ExitState(state);
         EnterState(newState);
+    }
+
+    public void InitialState() {
+        ExitState(state);
+        EnterState(ControllerFSM.NoSelection);
     }
 
     public void ExitState(ControllerFSM exitingState) {
@@ -73,6 +72,20 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             case ControllerFSM.NoSelection:
             case ControllerFSM.Selection:
                 break;
+        }
+    }
+
+    public void TriggerPhase() {
+        foreach (IUnitPhaseInfo en in entities) {
+            en.StartTurn();
+        }
+    }
+
+    public void EndPhase() {
+        foreach (IUnitPhaseInfo en in entities) {
+            if (en.turnActive) {
+                en.FinishTurn();
+            }
         }
     }
 

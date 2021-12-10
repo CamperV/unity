@@ -10,4 +10,5 @@ public interface IStateMachine<E>
     void ChangeState(E e);
     void EnterState(E e);
     void ExitState(E e);
+    void InitialState();
 }

@@ -5,6 +5,7 @@ using TMPro;
 
 public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 {
+    // IStateMachine<>
     public enum EnemyUnitFSM {
         Idle,
         Preview,
@@ -15,14 +16,15 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
     void Start() {
         // register any relevant events
-        EventManager.inst.inputController.RightMouseClickEvent += _ => ChangeState(EnemyUnit.EnemyUnitFSM.Idle);
+        EventManager.inst.inputController.RightMouseClickEvent += at => Cancel();
         
-        unitPhase = GetComponent<EnemyUnitPhase>();
+        originalColor = spriteRenderer.color;
         moveRange = null;
         attackRange = null;
         EnterState(EnemyUnitFSM.Idle);
     }
 
+    // IStateMachine<>
     public void ChangeState(EnemyUnitFSM newState) {
         if (newState == state) return;
 
@@ -30,6 +32,13 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         EnterState(newState);
     }
 
+    // IStateMachine<> 
+    public void InitialState() {
+        ExitState(state);
+        EnterState(EnemyUnitFSM.Idle);
+    }
+
+    // IStateMachine<>
     public void EnterState(EnemyUnitFSM enteringState) {
         Debug.Log($"{this} entering {enteringState}");
         state = enteringState;
@@ -55,6 +64,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         }
     }
 
+    // IStateMachine<>
     public void ExitState(EnemyUnitFSM exitingState) {
         Debug.Log($"{this} exiting {exitingState}");
         switch (exitingState) {
@@ -99,12 +109,12 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
     // this essentially is an "undo" for us
     // undo all the way to Idle
-    public void Cancel() {
+    public override void Cancel() {
         if (state == EnemyUnitFSM.Idle) return;
         ChangeState(EnemyUnitFSM.Idle);
     }
 
-    protected void DisplayThreatRange() {
+    protected override void DisplayThreatRange() {
         attackRange.Display(battleMap);
         moveRange.Display(battleMap, Constants.threatColorYellow);
         battleMap.Highlight(gridPosition, Constants.selectColorWhite);

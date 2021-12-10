@@ -17,6 +17,11 @@ public class TurnManager : MonoBehaviour
     public string currentPhaseName;
     public Phase.PhaseState currentPhaseState;
 
+    public delegate void NewTurn(int newTurn);
+    public delegate void NewPhase(Phase newPhase);
+    public event NewTurn NewTurnEvent;
+    public event NewPhase NewPhaseEvent;
+
     void Awake() {
         playerPhase = new Phase("Player");
         enemyPhase = new Phase("Enemy");
@@ -63,6 +68,8 @@ public class TurnManager : MonoBehaviour
         while (enable) {
             turnCount++;
             Debug.Log($"beginning {gameObject.name} Turn {turnCount}");
+
+            NewTurnEvent(turnCount);
             yield return ExecutePhases(playerPhase, enemyPhase);
         }
     }
@@ -79,6 +86,7 @@ public class TurnManager : MonoBehaviour
 
             Debug.Log($"Triggering phase {phase.name}");
             currentPhase = phase;
+            NewPhaseEvent(currentPhase);
             phase.TriggerStart();
 
             yield return new WaitUntil(() => phase.state == Phase.PhaseState.Complete);
