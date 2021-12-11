@@ -103,7 +103,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 // this is to avoid any same-frame reactivation and Event triggering/listening
                 StartCoroutine(
                     Utils.LateFrame(() => {
-                        enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoSelection);
+                        enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
                     })
                 );
 
@@ -266,7 +266,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         attackRange.Display(battleMap);
         moveRange.Display(battleMap);
 
-    	foreach (GridPosition gp in ThreatenedRange()) {
+    	foreach (GridPosition gp in _ThreatenedRange()) {
 			if (moveRange.field.ContainsKey(gp)) {
 				battleMap.Highlight(gp, Constants.threatColorIndigo);
 			}
@@ -275,7 +275,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         battleMap.Highlight(gridPosition, Constants.selectColorWhite);
     }
 
-    private IEnumerable<GridPosition> ThreatenedRange() {
+    private IEnumerable<GridPosition> _ThreatenedRange() {
 		HashSet<GridPosition> threatened = new HashSet<GridPosition>();
 
 		foreach (EnemyUnit enemy in enemyUnitController.entities) {
@@ -288,7 +288,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
 
     // diff from Unit.FinishTurn: send signal to the parent controller
-    public virtual void FinishTurn() {
+    public override void FinishTurn() {
         turnActive = false;
         moveAvailable = false;
         attackAvailable = false;

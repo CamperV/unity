@@ -8,6 +8,6 @@ public interface IUnitPhaseInfo
     bool moveAvailable { get; set; }
     bool attackAvailable { get; set; }
 
-    void StartTurn();
+    void RefreshInfo();
     void FinishTurn();
 }

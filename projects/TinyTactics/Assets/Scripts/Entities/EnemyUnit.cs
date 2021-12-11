@@ -3,8 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+[RequireComponent(typeof(EnemyBrain))]
 public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 {
+    // additional components
+    private EnemyBrain brain;
+
+    private int _Initiative;
+    public int Initiative {
+        get {
+            if (_Initiative == null) _Initiative = brain.CalculateInitiative();
+            return _Initiative;
+        }
+    }
+
     // IStateMachine<>
     public enum EnemyUnitFSM {
         Idle,
@@ -13,6 +25,11 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         Attacking
     }
     [SerializeField] public EnemyUnitFSM state { get; set; } = EnemyUnitFSM.Idle;
+
+    protected override void Awake() {
+        base.Awake();
+        brain = GetComponent<EnemyBrain>();
+    }
 
     void Start() {
         // register any relevant events
@@ -40,7 +57,6 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
     // IStateMachine<>
     public void EnterState(EnemyUnitFSM enteringState) {
-        Debug.Log($"{this} entering {enteringState}");
         state = enteringState;
         
         // debug
@@ -50,7 +66,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             // when you're entering Idle, it's from being selected
             // therefore, reset your controller's selections
             case EnemyUnitFSM.Idle:
-                enemyUnitController.ClearSelection();
+                enemyUnitController.ClearPreview();
                 break;
 
             case EnemyUnitFSM.Preview:
@@ -66,7 +82,6 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
     // IStateMachine<>
     public void ExitState(EnemyUnitFSM exitingState) {
-        Debug.Log($"{this} exiting {exitingState}");
         switch (exitingState) {
             case EnemyUnitFSM.Idle:
                 break;
@@ -100,11 +115,44 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
                 break;
 
             case EnemyUnitFSM.Moving:
-                break;
-
             case EnemyUnitFSM.Attacking:
                 break;
         }
+    }
+
+    public void TakeActionFlowChart() {
+        Debug.Log($"{this} is taking action!");
+        FinishTurn();
+
+        // move to
+            // now, find a full path to the location
+            // even if we can't reach it, just go as far as you can
+            // CAVEAT: we can't just clip it
+            // if we do, we can have enemies standing in the same place.
+            // instead, we have to do the laborious thing, and REpath-find to the new clipped position
+            //
+            // Debug.Log($"{subject}@{subject.gridPosition} found {optimalPosition} to attack {target}@{target.gridPosition}");
+            // Path pathToTarget = new UnitPathfinder(subject.obstacles).BFS<Path>(subject.gridPosition, optimalPosition);
+            // pathToTarget.Clip(subject.moveRange);
+
+        // attack at
+            // if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, target.gridPosition)) {
+            // subject.SetOption("Attack", false);
+            // Engagement engagement = new Engagement(subject, target);
+
+            // // wait until the engagement has ended
+            // StartCoroutine(engagement.ResolveResults());
+            // while (!engagement.resolved) { yield return null; }
+
+            // // wait until results have killed units, if necessary
+            // StartCoroutine(engagement.results.ResolveCasualties());
+            // while (!engagement.results.resolved) { yield return null; }
+
+        // finally:
+        // this will discolor the unit and set its options to false, after movement is complete
+        // BUT, don't let the other units move until this subject has finished
+            // subject.OnEndTurn();
+            // yield return null;
     }
 
     // this essentially is an "undo" for us

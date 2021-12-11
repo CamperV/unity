@@ -35,7 +35,7 @@ public sealed class EventManager : MonoBehaviour
 
         inputController.RightMouseClickEvent += battleMap.CheckRightMouseClick;
         inputController.RightMouseClickEvent += _ => playerUnitController.ClearSelection();
-        inputController.RightMouseClickEvent += _ => enemyUnitController.ClearSelection();
+        inputController.RightMouseClickEvent += _ => enemyUnitController.ClearPreview();
 
         // battlemap events
         battleMap.InteractEvent += playerUnitController.ContextualInteractAt;

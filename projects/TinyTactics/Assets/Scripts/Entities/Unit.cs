@@ -18,6 +18,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     protected SpriteRenderer spriteRenderer;
     protected UnitPathfinder mapPathfinder;
     protected UnitStats unitStats;
+    
+    // I don't love this, but it makes things much cleaner.
     protected PlayerUnitController playerUnitController;
     protected EnemyUnitController enemyUnitController;
 
@@ -36,7 +38,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     //
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
-    void Awake() {
+    protected virtual void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         mapPathfinder = GetComponent<UnitPathfinder>();
@@ -64,7 +66,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
 
     // IUnitPhaseInfo
-    public void StartTurn() {
+    public void RefreshInfo() {
         turnActive = true;
         moveAvailable = true;
         attackAvailable = true;

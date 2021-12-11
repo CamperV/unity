@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitController.ControllerFSM>, IUnitPhaseController
 {
+    public static float timeBetweenUnitActions = 1.0f; // seconds
+
     // debug
     public Text debugStateLabel;
 
@@ -14,20 +16,21 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
 
     public enum ControllerFSM {
         Inactive,
-        NoSelection,
-        Selection
+        NoPreview,
+        Preview,
+        TakeActions
     }
     [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
 
-    private EnemyUnit _currentSelection;
-    private EnemyUnit currentSelection {
-        get => _currentSelection;
+    private EnemyUnit _currentPreview;
+    private EnemyUnit currentPreview {
+        get => _currentPreview;
         set {
-            _currentSelection = value;
-            if (_currentSelection == null) {
-                ChangeState(ControllerFSM.NoSelection);
+            _currentPreview = value;
+            if (_currentPreview == null) {
+                ChangeState(ControllerFSM.NoPreview);
             } else {
-                ChangeState(ControllerFSM.Selection);
+                ChangeState(ControllerFSM.Preview);
             }
         }
     }
@@ -38,7 +41,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             entities.Add(en);
         }
 
-        EnterState(ControllerFSM.NoSelection);
+        EnterState(ControllerFSM.NoPreview);
     }
 
     public void ChangeState(ControllerFSM newState) {
@@ -48,14 +51,15 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
 
     public void InitialState() {
         ExitState(state);
-        EnterState(ControllerFSM.NoSelection);
+        EnterState(ControllerFSM.NoPreview);
     }
 
     public void ExitState(ControllerFSM exitingState) {
         switch (exitingState) {
             case ControllerFSM.Inactive:
-            case ControllerFSM.NoSelection:
-            case ControllerFSM.Selection:
+            case ControllerFSM.NoPreview:
+            case ControllerFSM.Preview:
+            case ControllerFSM.TakeActions:
                 break;
         }
         state = ControllerFSM.Inactive;
@@ -69,24 +73,27 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
 
         switch (state) {
             case ControllerFSM.Inactive:
-            case ControllerFSM.NoSelection:
-            case ControllerFSM.Selection:
+            case ControllerFSM.NoPreview:
+            case ControllerFSM.Preview:
+                break;
+
+            case ControllerFSM.TakeActions:
+                StartCoroutine( TakeActionAll() );
                 break;
         }
     }
 
     public void TriggerPhase() {
-        foreach (IUnitPhaseInfo en in entities) {
-            en.StartTurn();
-        }
+        ChangeState(ControllerFSM.TakeActions);
     }
 
+    // we refresh at the end of the phase,
+    // because we want color when it isn't your turn,
+    // and because it's possible the other team could add statuses that 
+    // disable attackAvailable/moveAvailable etc
     public void EndPhase() {
-        foreach (IUnitPhaseInfo en in entities) {
-            if (en.turnActive) {
-                en.FinishTurn();
-            }
-        }
+        entities.ForEach(it => it.RefreshInfo());
+        ChangeState(ControllerFSM.NoPreview);
     }
 
     public void ContextualInteractAt(GridPosition gp) {
@@ -95,41 +102,94 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             // When the Controller is inactive, we do nothing. //
             /////////////////////////////////////////////////////
             case ControllerFSM.Inactive:
-                Debug.Log($"Sorry, I'm inactive");
+                Debug.Log($"{this} is inactive, discarding input");
                 break;
 
             /////////////////////////////////////////////////////////////////////////////////
             // When the player interacts with the grid while there is no active selection, //
             // we attempt to make a selection.                                             //
             /////////////////////////////////////////////////////////////////////////////////
-            case ControllerFSM.NoSelection:
-                currentSelection = MatchingUnitAt(gp);
-                currentSelection?.ContextualInteractAt(gp);
+            case ControllerFSM.NoPreview:
+                currentPreview = MatchingUnitAt(gp);
+                currentPreview?.ContextualInteractAt(gp);
                 break;
 
-            case ControllerFSM.Selection:
+            case ControllerFSM.Preview:
                 EnemyUnit? unit = MatchingUnitAt(gp);
 
-                // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
-                // then REACQUIRE a currentSelection immediately afterwards
-                if (unit != null && unit != currentSelection) {
-                    currentSelection.Cancel();
-                    currentSelection = unit;
+                // swap to the new unit. This will rapidly drop currentPreview (via Cancel/ChangeState(Idle))
+                // then REACQUIRE a currentPreview immediately afterwards
+                if (unit != null && unit != currentPreview) {
+                    currentPreview.Cancel();
+                    currentPreview = unit;
                 }
 
-                currentSelection.ContextualInteractAt(gp);
+                currentPreview.ContextualInteractAt(gp);
+                break;
+
+            case ControllerFSM.TakeActions:
+                Debug.Log($"{this} is taking actions, discarding input");
                 break;
         }
     }
 
-    public void ClearSelection() {
-        currentSelection = null;
+    public void ClearPreview() {
+        currentPreview = null;
     }
 
-    public EnemyUnit? MatchingUnitAt(GridPosition gp) {
+    private EnemyUnit? MatchingUnitAt(GridPosition gp) {
         foreach (EnemyUnit en in entities) {
             if (en.gridPosition == gp) return en;
         }
         return null;
     }
+
+	private IEnumerator TakeActionAll() {
+        // List<MovingGridObject> orderedRegistry = activeRegistry.OrderBy(it => (it as EnemyArmy).CalculateInitiative()).ToList();
+
+        // public float CalculateInitiative() {
+        //     int md = gridPosition.ManhattanDistance(GlobalPlayerState.army.gridPosition);
+
+        //     float directionScore = 0.0f;
+        //     switch (gridPosition - GlobalPlayerState.army.gridPosition) {
+        //         case Vector3Int v when v.Equals(Vector3Int.up):
+        //             directionScore = 0.0f;
+        //             break;
+        //         case Vector3Int v when v.Equals(Vector3Int.right):
+        //             directionScore = 0.1f;
+        //             break;
+        //         case Vector3Int v when v.Equals(Vector3Int.down):
+        //             directionScore = 0.2f;
+        //             break;
+        //         case Vector3Int v when v.Equals(Vector3Int.left):
+        //             directionScore = 0.3f;
+        //             break;
+        //     }
+
+        //     return (float)md + directionScore;
+        // }
+        foreach (EnemyUnit unit in entities.OrderBy(unit => unit.Initiative)) {
+            // Brain: get optimal target
+            // Brain: find optimal position to attack target
+            // two tiers: can reach (in MoveRange), can't reach
+            // TODO improved AI: if you'll probably die when attacking "optimal target in move range",
+            // switch to getting optimal target instead, even if not in the move range
+
+            // if moving without attacking, wait a short bit and execute the next unit's action
+            // if you're going to attack, let the entire thing play out before moving on
+            // try to batch these together!
+            // ie, move all "non-attackers" first, then play the deferred attackers
+            // aactually, do the attackers first, because a unit going down might affect how the next unit's turn works
+            
+            // wait until the unit says you can move on
+            // generally this is until the unit's turn is over,
+            // but if the unit is only moving (and not attacking), just execute the next unit's whole situation
+            unit.TakeActionFlowChart();
+            while (unit.turnActive) yield return null;
+            
+            yield return new WaitForSeconds(timeBetweenUnitActions);
+        }
+
+        GetComponentInParent<TurnManager>().enemyPhase.TriggerEnd();
+	}
 }

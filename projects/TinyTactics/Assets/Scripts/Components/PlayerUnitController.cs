@@ -80,17 +80,16 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
 
     public void TriggerPhase() {
-        foreach (IUnitPhaseInfo en in entities) {
-            en.StartTurn();
-        }
+        ChangeState(ControllerFSM.NoSelection);
     }
 
+    // we refresh at the end of the phase,
+    // because we want color when it isn't your turn,
+    // and because it's possible the other team could add statuses that 
+    // disable attackAvailable/moveAvailable etc
     public void EndPhase() {
-        foreach (IUnitPhaseInfo en in entities) {
-            if (en.turnActive) {
-                en.FinishTurn();
-            }
-        }
+        entities.ForEach(it => it.RefreshInfo());
+        ChangeState(ControllerFSM.Inactive);
     }
 
     public void ContextualInteractAt(GridPosition gp) {
