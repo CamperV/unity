@@ -12,6 +12,7 @@ public sealed class EventManager : MonoBehaviour
     public PlayerInputController inputController;
     public UIManager uiManager;
     public TurnManager turnManager;
+    public UnitMap unitMap;
     public BattleMap battleMap;
     public PlayerUnitController playerUnitController;
     public EnemyUnitController enemyUnitController;
@@ -49,5 +50,9 @@ public sealed class EventManager : MonoBehaviour
 
         turnManager.NewTurnEvent += uiManager.UpdateTurn;
         turnManager.NewPhaseEvent += uiManager.UpdatePhase;
+
+        // board state events
+        unitMap.NewBoardStateEvent += () => playerUnitController.entities.ForEach(en => en.UpdateThreatRange());
+        unitMap.NewBoardStateEvent += () => enemyUnitController.entities.ForEach(en => en.UpdateThreatRange());
     }
 }

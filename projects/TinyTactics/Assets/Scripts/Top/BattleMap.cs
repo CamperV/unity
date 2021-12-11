@@ -8,7 +8,7 @@ using Extensions;
 
 public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosition>
 {
-    //publicly available events
+    // publicly available events
     public delegate void GridInteraction(GridPosition gridPosition);
     public event GridInteraction InteractEvent;
     //

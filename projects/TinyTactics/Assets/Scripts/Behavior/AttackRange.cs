@@ -6,6 +6,14 @@ using Extensions;
 
 public class AttackRange : FlowField<GridPosition>
 {	
+	public static AttackRange Empty {
+		get {
+			AttackRange ar = new AttackRange();
+			ar.field = new Dictionary<GridPosition, int>();
+			return ar;
+		}
+	}
+	
 	public AttackRange(){}
 	public AttackRange(MoveRange moveRange, int minRange, int maxRange) {
 		origin = moveRange.origin;
@@ -26,8 +34,8 @@ public class AttackRange : FlowField<GridPosition>
 		field.Remove(origin);
 	}
 
-	public bool ValidAttack(GridPosition tilePos) {
-		return field.ContainsKey(tilePos);
+	public bool ValidAttack(GridPosition gp) {
+		return field.ContainsKey(gp);
 	}
 
 	public void Display(IGrid<GridPosition> target) {

@@ -2251,6 +2251,7 @@ MonoBehaviour:
   inputController: {fileID: 1490333195}
   uiManager: {fileID: 1357693838}
   turnManager: {fileID: 881456442}
+  unitMap: {fileID: 881456444}
   battleMap: {fileID: 1636068311}
   playerUnitController: {fileID: 1470600146}
   enemyUnitController: {fileID: 1111963512}

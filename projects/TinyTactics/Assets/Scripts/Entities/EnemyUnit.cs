@@ -34,11 +34,15 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     void Start() {
         // register any relevant events
         EventManager.inst.inputController.RightMouseClickEvent += at => Cancel();
-        
+
         originalColor = spriteRenderer.color;
         moveRange = null;
         attackRange = null;
         EnterState(EnemyUnitFSM.Idle);
+    }
+
+    void Update() {
+        ContextualNoInteract();
     }
 
     // IStateMachine<>
@@ -91,6 +95,9 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
                 break;
 
             case EnemyUnitFSM.Moving:
+                unitMap.MoveUnit(this, _reservedGridPosition);
+                break;
+
             case EnemyUnitFSM.Attacking:
                 break;
         }
@@ -120,39 +127,74 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         }
     }
 
-    public void TakeActionFlowChart() {
-        Debug.Log($"{this} is taking action!");
+    public void ContextualNoInteract() {
+        switch (state) {
+            case EnemyUnitFSM.Idle:
+                break;
+
+            ///////////////////////////////////////////////////////////
+            // Every frame that we are moving (after FlowChart),     //
+            // check the spriteAnimator. As soon as we stop moving,  //
+            // update our position via unitMap and ChangeState       //
+            ///////////////////////////////////////////////////////////
+            case EnemyUnitFSM.Moving:
+                if (spriteAnimator.isMoving) {    
+                    // just spin
+
+                // we've finished moving
+                } else {
+                    ChangeState(EnemyUnitFSM.Idle);
+                }
+                break;
+
+            ////////////////////////////////////////////////////////////////////
+            // Every frame that we're animating our attack (after selecting), //
+            // check the spriterAnimator. As soon as we stop animating,       //
+            // disable your phase and move into Idle                          //
+            ////////////////////////////////////////////////////////////////////
+            case EnemyUnitFSM.Attacking:
+                if (spriteAnimator.isMoving || spriteAnimator.isAnimating) {    
+                    // just spin
+                } else {
+                    ChangeState(EnemyUnitFSM.Idle);
+                }
+                break;
+        }
+    }
+
+    public IEnumerator TakeActionFlowChart() {
+
+        // 1
+        brain.RefreshTargets(playerUnitController.entities);
+        
+        // 2 determine optimal DamagePackage, which determines move and target
+        // 2a if no DamagePackages exist... don't do anything
+        foreach (EnemyBrain.DamagePackage dp in brain.OptimalDamagePackages()) {
+            // Debug.Log($"Got DamagePackage -> {dp.target} [{dp.potentialDamage}] from {dp.fromPosition}");
+
+            Path<GridPosition>? pathTo = moveRange.BFS(gridPosition, dp.fromPosition);
+
+            // if a path exists to the destination, smoothly move along the path
+            // after reaching your destination, officially move via unitMap
+            if (pathTo != null) {
+                StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
+
+                unitMap.ReservePosition(this, dp.fromPosition);
+                _reservedGridPosition = dp.fromPosition;  // save for ContextualNoInteract to move via unitMap
+                moveAvailable = false;
+                ChangeState(EnemyUnitFSM.Moving);
+
+                // WAIT FOR MOVEMENT TO COMPLETE
+                yield return new WaitUntil(() => state == EnemyUnitFSM.Idle);
+                // WAIT FOR MOVEMENT TO COMPLETE
+
+                Debug.Log($"Now I, {this}, will attack {dp.target} from my gridPosition, {gridPosition}. [{gridPosition == dp.fromPosition}]");
+                break;
+            }
+        }
+
+        // after you've attacked, finish your turn
         FinishTurn();
-
-        // move to
-            // now, find a full path to the location
-            // even if we can't reach it, just go as far as you can
-            // CAVEAT: we can't just clip it
-            // if we do, we can have enemies standing in the same place.
-            // instead, we have to do the laborious thing, and REpath-find to the new clipped position
-            //
-            // Debug.Log($"{subject}@{subject.gridPosition} found {optimalPosition} to attack {target}@{target.gridPosition}");
-            // Path pathToTarget = new UnitPathfinder(subject.obstacles).BFS<Path>(subject.gridPosition, optimalPosition);
-            // pathToTarget.Clip(subject.moveRange);
-
-        // attack at
-            // if (subject.OptionActive("Attack") && subject.attackRange.ValidAttack(subject, target.gridPosition)) {
-            // subject.SetOption("Attack", false);
-            // Engagement engagement = new Engagement(subject, target);
-
-            // // wait until the engagement has ended
-            // StartCoroutine(engagement.ResolveResults());
-            // while (!engagement.resolved) { yield return null; }
-
-            // // wait until results have killed units, if necessary
-            // StartCoroutine(engagement.results.ResolveCasualties());
-            // while (!engagement.results.resolved) { yield return null; }
-
-        // finally:
-        // this will discolor the unit and set its options to false, after movement is complete
-        // BUT, don't let the other units move until this subject has finished
-            // subject.OnEndTurn();
-            // yield return null;
     }
 
     // this essentially is an "undo" for us
@@ -163,6 +205,8 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     }
 
     protected override void DisplayThreatRange() {
+        if (moveRange == null || attackRange == null) UpdateThreatRange();
+
         attackRange.Display(battleMap);
         moveRange.Display(battleMap, Constants.threatColorYellow);
         battleMap.Highlight(gridPosition, Constants.selectColorWhite);

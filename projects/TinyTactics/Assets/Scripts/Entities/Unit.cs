@@ -17,7 +17,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     protected SpriteAnimator spriteAnimator;
     protected SpriteRenderer spriteRenderer;
     protected UnitPathfinder mapPathfinder;
-    protected UnitStats unitStats;
+    public UnitStats unitStats;
     
     // I don't love this, but it makes things much cleaner.
     protected PlayerUnitController playerUnitController;
@@ -32,9 +32,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     protected abstract void DisplayThreatRange();
 
     // IUnitPhaseInfo
-    public bool turnActive { get; set; } = true;
-    public bool moveAvailable { get; set; } = true;
-    public bool attackAvailable { get; set; } = true;
+    [field: SerializeField] public bool turnActive { get; set; } = true;
+    [field: SerializeField] public bool moveAvailable { get; set; } = true;
+    [field: SerializeField] public bool attackAvailable { get; set; } = true;
     //
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
@@ -61,7 +61,11 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         moveRange = mapPathfinder.GenerateFlowField<MoveRange>(gridPosition, range: movement);
         moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
 
-        attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+        if (attackAvailable) {
+            attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+        } else {
+            attackRange = AttackRange.Empty;
+        }
     }
 
 

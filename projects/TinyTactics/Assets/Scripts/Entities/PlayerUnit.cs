@@ -263,6 +263,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     //
     // always display AttackRange first, because it is partially overwritten by MoveRange by definition
     protected override void DisplayThreatRange() {
+        if (moveRange == null || attackRange == null) UpdateThreatRange();
+        
         attackRange.Display(battleMap);
         moveRange.Display(battleMap);
 

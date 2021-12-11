@@ -13,4 +13,6 @@ public class UnitStats : MonoBehaviour
     public int MOVE;
     public int MIN_RANGE;
     public int MAX_RANGE;
+
+    public int _DAMAGE_REDUCTION; // cheat with this now
 }

@@ -7,6 +7,11 @@ using UnityEngine.Tilemaps;
 
 public class UnitMap : MonoBehaviour
 {
+    //publicly available events
+    public delegate void BoardState();
+    public event BoardState NewBoardStateEvent;
+    //
+
     private BattleMap battleMap;
 
     private Dictionary<GridPosition, Unit> map;
@@ -31,7 +36,7 @@ public class UnitMap : MonoBehaviour
         // this happens only for Entities already in the hierarchy
         foreach (Unit unit in GetComponentsInChildren<Unit>()) {
             GridPosition startingGP = battleMap.ClosestGridPosition(unit.transform.position);
-            MoveUnit(unit, startingGP);
+            MoveUnit(unit, startingGP, newBoardEvent: false);
         }
     }
 
@@ -50,22 +55,19 @@ public class UnitMap : MonoBehaviour
 
     // accessible area
     // move a unit into a gridPosition, transform and all. ONly if not reserved
-    public void MoveUnit(Unit unit, GridPosition gp) {
+    public void MoveUnit(Unit unit, GridPosition gp, bool newBoardEvent = true) {
         if (map[gp] == null && (reservations[gp] == null || reservations[gp] == unit)) {
+
             GridPosition prevGridPosition = unit.gridPosition;
-            Debug.Log($"Captured prev position {prevGridPosition}");
             AlignUnit(unit, gp);
 
             map[unit.gridPosition] = unit;
-            Debug.Log($"Inserted {unit} into {unit.gridPosition}");
-            if (prevGridPosition != null) {
-                Debug.Log($"Setting {prevGridPosition} to null");
-                map[prevGridPosition] = null;
-            }
 
-            if (reservations[gp] == unit) {
-                reservations[gp] = null;
-            }
+            if (prevGridPosition != null) map[prevGridPosition] = null;
+            if (reservations[gp] == unit) reservations[gp] = null;
+
+            // since this was successful, trigger the new state event
+            if (newBoardEvent) NewBoardStateEvent.Invoke();
         } else {
             Debug.Log($"Failed to move {unit} into occupied GP {gp}");
         }

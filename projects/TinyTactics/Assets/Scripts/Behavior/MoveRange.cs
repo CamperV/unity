@@ -25,11 +25,16 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 	// ValidMoves will indicate what can be passed through,
 	// and MoveRange will indicate what must be pathed around
 	public bool ValidMoveTo(GridPosition gp) {
-		bool valid = field.ContainsKey(gp);
+		if (gp == origin) return true;
 
-		foreach (var Func in _ValidMoveToFuncPool) {
-			valid &= Func(gp);
+		bool valid = field.ContainsKey(gp);
+		if (valid) {
+			// additional testers, such as a VacantAt signal from a UnitMap
+			foreach (var Func in _ValidMoveToFuncPool) {
+				valid &= Func(gp);
+			}
 		}
+
 		return valid;
 	}
 
