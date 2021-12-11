@@ -42,6 +42,10 @@ MonoBehaviour:
   <gridPosition>k__BackingField:
     x: 0
     y: 0
+  unitStats: {fileID: 0}
+  <turnActive>k__BackingField: 1
+  <moveAvailable>k__BackingField: 1
+  <attackAvailable>k__BackingField: 1
   blocking: 0
   cancelSignal: 0
 --- !u!114 &5616053730634875838
@@ -56,9 +60,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de54ba498d272848aa4102bd1ebee66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  VITALITY: 10
   MOVE: 3
   MIN_RANGE: 1
   MAX_RANGE: 1
+  _CURRENT_HP: 0
+  _DAMAGE_REDUCTION: 1
 --- !u!1001 &7487578033757355667
 PrefabInstance:
   m_ObjectHideFlags: 0

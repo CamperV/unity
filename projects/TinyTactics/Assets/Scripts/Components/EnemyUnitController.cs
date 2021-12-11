@@ -145,29 +145,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
 
 	private IEnumerator TakeActionAll() {
-        // List<MovingGridObject> orderedRegistry = activeRegistry.OrderBy(it => (it as EnemyArmy).CalculateInitiative()).ToList();
 
-        // public float CalculateInitiative() {
-        //     int md = gridPosition.ManhattanDistance(GlobalPlayerState.army.gridPosition);
-
-        //     float directionScore = 0.0f;
-        //     switch (gridPosition - GlobalPlayerState.army.gridPosition) {
-        //         case Vector3Int v when v.Equals(Vector3Int.up):
-        //             directionScore = 0.0f;
-        //             break;
-        //         case Vector3Int v when v.Equals(Vector3Int.right):
-        //             directionScore = 0.1f;
-        //             break;
-        //         case Vector3Int v when v.Equals(Vector3Int.down):
-        //             directionScore = 0.2f;
-        //             break;
-        //         case Vector3Int v when v.Equals(Vector3Int.left):
-        //             directionScore = 0.3f;
-        //             break;
-        //     }
-
-        //     return (float)md + directionScore;
-        // }
         foreach (EnemyUnit unit in entities.OrderBy(unit => unit.Initiative)) {
             // Brain: get optimal target
             // Brain: find optimal position to attack target
@@ -184,8 +162,6 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             // wait until the unit says you can move on
             // generally this is until the unit's turn is over,
             // but if the unit is only moving (and not attacking), just execute the next unit's whole situation
-            // unit.TakeActionFlowChart();
-            // while (unit.turnActive) yield return null;
             yield return unit.TakeActionFlowChart();
             yield return new WaitForSeconds(timeBetweenUnitActions);
         }

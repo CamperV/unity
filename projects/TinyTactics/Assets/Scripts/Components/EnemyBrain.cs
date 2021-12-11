@@ -39,8 +39,9 @@ public class EnemyBrain : MonoBehaviour
 		thisUnit = GetComponent<EnemyUnit>();
 	}
 
-	public int CalculateInitiative() {
-		return 1;
+	public int CalculateInitiative(List<PlayerUnit> targets) {
+		// get the smallest distance between you and any of the opposition
+		return targets.Min(en => thisUnit.gridPosition.ManhattanDistance(en.gridPosition));
 	}
 
 	public void RefreshTargets(List<PlayerUnit> _targets) => targets = _targets;
@@ -90,7 +91,7 @@ public class EnemyBrain : MonoBehaviour
 	}
 
 	private int SimulateDamage(PlayerUnit target, GridPosition fromPosition) {
-		return 10;
+		return 10 - target.unitStats._DAMAGE_REDUCTION;
 	}
 
 	private int PotentialDamage(DamagePackage dp) => dp.potentialDamage;

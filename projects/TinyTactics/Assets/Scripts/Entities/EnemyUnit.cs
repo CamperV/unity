@@ -9,13 +9,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     // additional components
     private EnemyBrain brain;
 
-    private int _Initiative;
-    public int Initiative {
-        get {
-            if (_Initiative == null) _Initiative = brain.CalculateInitiative();
-            return _Initiative;
-        }
-    }
+    public int Initiative { get => brain.CalculateInitiative(playerUnitController.entities); }
 
     // IStateMachine<>
     public enum EnemyUnitFSM {

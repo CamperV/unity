@@ -17,7 +17,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     protected SpriteAnimator spriteAnimator;
     protected SpriteRenderer spriteRenderer;
     protected UnitPathfinder mapPathfinder;
-    public UnitStats unitStats;
+    [HideInInspector] public UnitStats unitStats;
     
     // I don't love this, but it makes things much cleaner.
     protected PlayerUnitController playerUnitController;
@@ -50,6 +50,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
         playerUnitController = _topBattleRef.GetComponentInChildren<PlayerUnitController>();
         enemyUnitController = _topBattleRef.GetComponentInChildren<EnemyUnitController>();
+
+        // some init things that need to be taken care of
+        unitStats.UpdateHP(unitStats.VITALITY);
     }
 
     // we must take care to add certain functions to the MoveRange
