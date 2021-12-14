@@ -12,7 +12,10 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     // debug
     public Text debugStateLabel;
 
-    [SerializeField] public List<EnemyUnit> entities;
+    [SerializeField] private List<EnemyUnit> _activeUnits;
+    public List<EnemyUnit> activeUnits {
+        get => _activeUnits.Where(en => en.gameObject.activeInHierarchy).ToList();
+    }
 
     public enum ControllerFSM {
         Inactive,
@@ -36,9 +39,9 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
 
     void Start() {
-        // this accounts for all in-scene Entities, not instatiated prefabs
+        // this accounts for all in-scene activeUnits, not instatiated prefabs
         foreach (EnemyUnit en in GetComponentsInChildren<EnemyUnit>()) {
-            entities.Add(en);
+            _activeUnits.Add(en);
         }
 
         EnterState(ControllerFSM.NoPreview);
@@ -92,7 +95,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     // and because it's possible the other team could add statuses that 
     // disable attackAvailable/moveAvailable etc
     public void EndPhase() {
-        entities.ForEach(it => it.RefreshInfo());
+        activeUnits.ForEach(it => it.RefreshInfo());
         ChangeState(ControllerFSM.NoPreview);
     }
 
@@ -138,7 +141,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
 
     private EnemyUnit? MatchingUnitAt(GridPosition gp) {
-        foreach (EnemyUnit en in entities) {
+        foreach (EnemyUnit en in activeUnits) {
             if (en.gridPosition == gp) return en;
         }
         return null;
@@ -146,7 +149,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
 
 	private IEnumerator TakeActionAll() {
 
-        foreach (EnemyUnit unit in entities.OrderBy(unit => unit.Initiative)) {
+        foreach (EnemyUnit unit in activeUnits.OrderBy(unit => unit.Initiative)) {
             // Brain: get optimal target
             // Brain: find optimal position to attack target
             // two tiers: can reach (in MoveRange), can't reach

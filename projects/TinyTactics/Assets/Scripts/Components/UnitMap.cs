@@ -33,7 +33,7 @@ public class UnitMap : MonoBehaviour
         }
 
         // find all active objects that have a gridPosition
-        // this happens only for Entities already in the hierarchy
+        // this happens only for activeUnits already in the hierarchy
         foreach (Unit unit in GetComponentsInChildren<Unit>()) {
             GridPosition startingGP = battleMap.ClosestGridPosition(unit.transform.position);
             MoveUnit(unit, startingGP, newBoardEvent: false);

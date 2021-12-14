@@ -43,7 +43,7 @@ public class Engagement
     }
 
     private static bool CounterAttackPossible(Unit agg, Unit def) {
-        AttackRange defenderAttackRange = new AttackRange(
+        AttackRange defenderAttackRange = AttackRange.Standing(
             def.gridPosition,
             def.unitStats.MIN_RANGE,
             def.unitStats.MAX_RANGE
@@ -91,18 +91,7 @@ public class Engagement
             attack, counterAttack
         );
 
-        //
-        // animate the consequences of the Engagement
-        if (!defenderSurvived) defender.TriggerDeathAnimation();
-        if (!aggressorSurvived) aggressor.TriggerDeathAnimation();
-
-        if (!defenderSurvived) defender.DeathCleanUp();
-        if (!aggressorSurvived) aggressor.DeathCleanUp();
-
-        // why do we do separate checks here?
-        // because, if we do defender.DeathCleanUp() before the aggressorSurvived check, 
-        // we want these to serially animate, so the user knows what exactly happened
-        // this state, in which they simulatneously die, can happen due to something akin to spikes, poison, etc
+        yield return new WaitUntil( () => !aggressor.spriteAnimator.isAnimating && !defender.spriteAnimator.isAnimating );
         resolvedFlag = true;
     }
 

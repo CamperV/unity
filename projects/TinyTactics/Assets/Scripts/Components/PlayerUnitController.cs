@@ -10,7 +10,10 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     // debug
     public Text debugStateLabel;
 
-    [SerializeField] public List<PlayerUnit> entities;
+    [SerializeField] private List<PlayerUnit> _activeUnits;
+    public List<PlayerUnit> activeUnits {
+        get => _activeUnits.Where(en => en.gameObject.activeInHierarchy).ToList();
+    }
 
     public enum ControllerFSM {
         Inactive,
@@ -33,9 +36,9 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
 
     void Start() {
-        // this accounts for all in-scene Entities, not instatiated prefabs
+        // this accounts for all in-scene activeUnits, not instatiated prefabs
         foreach (PlayerUnit en in GetComponentsInChildren<PlayerUnit>()) {
-            entities.Add(en);
+            _activeUnits.Add(en);
         }
 
         EnterState(ControllerFSM.NoSelection);
@@ -88,7 +91,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     // and because it's possible the other team could add statuses that 
     // disable attackAvailable/moveAvailable etc
     public void EndPhase() {
-        entities.ForEach(it => it.RefreshInfo());
+        activeUnits.ForEach(it => it.RefreshInfo());
         ChangeState(ControllerFSM.Inactive);
     }
 
@@ -144,7 +147,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
 
     public PlayerUnit? MatchingUnitAt(GridPosition gp) {
-        foreach (PlayerUnit en in entities) {
+        foreach (PlayerUnit en in activeUnits) {
             if (en.gridPosition == gp) return en;
         }
         return null;
@@ -155,7 +158,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         // why don't we do this only on contextualActions?
         // because of the "Attacking" state. We must wait until animations are over
         bool endPlayerPhase = true;
-        foreach (PlayerUnit unit in entities) {
+        foreach (PlayerUnit unit in activeUnits) {
             endPlayerPhase &= !unit.turnActive;
         }
         

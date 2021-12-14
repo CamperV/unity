@@ -15,7 +15,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     // necessary Component references
     protected UnitMap unitMap;
     protected BattleMap battleMap;
-    protected SpriteAnimator spriteAnimator;
+    public SpriteAnimator spriteAnimator;
     protected SpriteRenderer spriteRenderer;
     protected UnitPathfinder mapPathfinder;
     [HideInInspector] public UnitStats unitStats;
@@ -51,9 +51,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
         playerUnitController = _topBattleRef.GetComponentInChildren<PlayerUnitController>();
         enemyUnitController = _topBattleRef.GetComponentInChildren<EnemyUnitController>();
-
-        // some init things that need to be taken care of
-        unitStats.UpdateHP(unitStats.VITALITY);
     }
 
     // we must take care to add certain functions to the MoveRange
@@ -127,8 +124,15 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 	}
 
 	protected bool SufferDamage(int incomingDamage) {
-        unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage);
-		return unitStats._CURRENT_HP > 0;
+        unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage, unitStats.VITALITY);
+		bool survived = unitStats._CURRENT_HP > 0;
+
+        if (!survived) {
+            TriggerDeathAnimation();
+            DeathCleanUp();
+        }
+
+        return survived;
 	}
 
     public void TriggerAttackAnimation(GridPosition towards) {
@@ -148,12 +152,14 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
 	public void TriggerDeathAnimation() {
 		StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
-			StartCoroutine( spriteAnimator.FadeDown(1.0f) );
+			StartCoroutine( spriteAnimator.FadeDownAll(1.0f) );
 		}));
 	}
 
-	public void DeathCleanUp() {
-        Destroy(gameObject);
-        unitMap.ClearPosition(gridPosition);
+	protected void DeathCleanUp() {
+    	StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
+            gameObject.SetActive(false);
+            unitMap.ClearPosition(gridPosition);
+		}));
 	}
 }

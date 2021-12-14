@@ -33,14 +33,17 @@ public class AttackRange : FlowField<GridPosition>
 
 		field.Remove(origin);
 	}
-	public AttackRange(GridPosition gp, int minRange, int maxRange) {
-		origin = gp;
-		field = new Dictionary<GridPosition, int>();
+
+	public static AttackRange Standing(GridPosition gp, int minRange, int maxRange) {
+		AttackRange ar = new AttackRange();
+		ar.origin = gp;
+		ar.field = new Dictionary<GridPosition, int>();
 			
 		// blossom out until we hit "range"
-		foreach (GridPosition withinRange in origin.Radiate(maxRange, min: minRange)) {	
-			field[withinRange] = origin.ManhattanDistance(withinRange);
+		foreach (GridPosition withinRange in ar.origin.Radiate(maxRange, min: minRange)) {	
+			ar.field[withinRange] = ar.origin.ManhattanDistance(withinRange);
 		}
+		return ar;
 	}
 
 	public bool ValidAttack(GridPosition gp) {

@@ -9,7 +9,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     // additional components
     private EnemyBrain brain;
 
-    public int Initiative { get => brain.CalculateInitiative(playerUnitController.entities); }
+    public int Initiative { get => brain.CalculateInitiative(playerUnitController.activeUnits); }
 
     // IStateMachine<>
     public enum EnemyUnitFSM {
@@ -28,6 +28,9 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     void Start() {
         // register any relevant events
         EventManager.inst.inputController.RightMouseClickEvent += at => Cancel();
+                
+        // some init things that need to be taken care of
+        unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
 
         originalColor = spriteRenderer.color;
         moveRange = null;
@@ -159,7 +162,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     public IEnumerator TakeActionFlowChart() {
 
         // 1
-        brain.RefreshTargets(playerUnitController.entities);
+        brain.RefreshTargets(playerUnitController.activeUnits);
         
         // 2 determine optimal DamagePackage, which determines move and target
         // 2a if no DamagePackages exist... don't do anything

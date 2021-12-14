@@ -8,4 +8,7 @@ using UnityEngine.Tilemaps;
 [RequireComponent(typeof(UnitMap))]
 public class Battle : MonoBehaviour
 {
+    public void StartBattle() {
+        // turnManager enable
+    }
 }

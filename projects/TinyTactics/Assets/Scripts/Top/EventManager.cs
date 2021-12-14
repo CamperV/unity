@@ -52,7 +52,7 @@ public sealed class EventManager : MonoBehaviour
         turnManager.NewPhaseEvent += uiManager.UpdatePhase;
 
         // board state events
-        unitMap.NewBoardStateEvent += () => playerUnitController.entities.ForEach(en => en.UpdateThreatRange());
-        unitMap.NewBoardStateEvent += () => enemyUnitController.entities.ForEach(en => en.UpdateThreatRange());
+        unitMap.NewBoardStateEvent += () => playerUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
+        unitMap.NewBoardStateEvent += () => enemyUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
     }
 }

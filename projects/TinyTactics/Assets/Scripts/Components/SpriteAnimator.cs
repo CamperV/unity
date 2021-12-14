@@ -73,6 +73,25 @@ public class SpriteAnimator : MonoBehaviour
 		animationStack--;
 	}
 
+	public IEnumerator FadeDownAll(float fixedTime) {
+		animationStack++;
+		//
+		SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+
+		float timeRatio = 0.0f;
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+
+			foreach (var r in renderers) {
+				r.color = r.color.WithAlpha(1.0f - timeRatio);
+			}
+			yield return null;
+		}
+
+		//
+		animationStack--;
+	}
+
 	public IEnumerator FadeDownThen(float fixedTime, Action PostExec) {
 		animationStack++;
 		//
@@ -234,11 +253,21 @@ public class SpriteAnimator : MonoBehaviour
 
 		Vector3 startPos = transform.position;
 		Vector3 peakPos = startPos + (endpoint - transform.position)/distanceScale;
+
+		// this version of SmoothBump leaves all children transforms in place
+		List<Vector3> childOgPositions = new List<Vector3>();
+		foreach (Transform child in transform) childOgPositions.Add(child.position);
 		
 		float timeStep = 0.0f;
 		while (timeStep < 1.0f) {
 			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
 			PositionUpdater(Vector3.Lerp(startPos, peakPos, timeStep));
+
+			int index = 0;
+			foreach (Transform child in transform) {
+				child.position = childOgPositions[index];
+				index++;
+			}
 			yield return null;
 		}
 
@@ -247,6 +276,12 @@ public class SpriteAnimator : MonoBehaviour
 		while (timeStep < 1.0f)  {
 			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
 			PositionUpdater(Vector3.Lerp(peakPos, startPos, timeStep));
+
+			int index = 0;
+			foreach (Transform child in transform) {
+				child.position = childOgPositions[index];
+				index++;
+			}
 			yield return null;
 		}
 		

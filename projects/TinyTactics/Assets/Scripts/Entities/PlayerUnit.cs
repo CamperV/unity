@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 
@@ -22,6 +23,9 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     void Start() {
         // register any relevant events
         EventManager.inst.inputController.RightMouseClickEvent += at => Cancel();
+        
+        // some init things that need to be taken care of
+        unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
 
         originalColor = spriteRenderer.color;
         moveRange = null;
@@ -171,7 +175,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
                 } else {
 
-                    // if there's a ValidAttack (valid tile to attack)
+                    // if there's a ValidAttack on the mouseclick'd area
                     if (attackRange.ValidAttack(gp)) {
                         Unit? enemy = unitMap.UnitAt(gp);
 
@@ -232,7 +236,16 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         cancelSignal = false;
                         ChangeState(PlayerUnitFSM.Idle);
                     } else {
-                        if (attackAvailable) ChangeState(PlayerUnitFSM.AttackSelection);
+
+                        // if there's an in-range enemy, go to AttackSelection
+                        if (attackAvailable && ValidAttackExistsFrom(_reservedGridPosition)) {
+                            ChangeState(PlayerUnitFSM.AttackSelection);
+
+                        // there's no one around to receive your attack, so just end turn
+                        } else {
+                            FinishTurn();
+                            ChangeState(PlayerUnitFSM.Idle);
+                        }
                     }
                 }
                 break;
@@ -305,7 +318,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     private IEnumerable<GridPosition> _ThreatenedRange() {
 		HashSet<GridPosition> threatened = new HashSet<GridPosition>();
 
-		foreach (EnemyUnit enemy in enemyUnitController.entities) {
+		foreach (EnemyUnit enemy in enemyUnitController.activeUnits) {
             if (enemy.attackRange == null) enemy.UpdateThreatRange();
 			threatened.UnionWith(enemy.attackRange.field.Keys);
 		}
@@ -322,5 +335,11 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
 
         playerUnitController.CheckEndPhase();
+    }
+
+    private bool ValidAttackExistsFrom(GridPosition fromPosition) {
+        AttackRange standing = AttackRange.Standing(fromPosition, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+        return enemyUnitController.activeUnits.Where(enemy => standing.ValidAttack(enemy.gridPosition)).Any();
+
     }
 }
