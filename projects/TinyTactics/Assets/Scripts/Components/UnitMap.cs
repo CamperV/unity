@@ -81,6 +81,12 @@ public class UnitMap : MonoBehaviour
             Debug.Log($"{unit} cannot reserve {gp}, {map[gp]} exists there");
         }
     }
+
+    public void ClearPosition(GridPosition gp) {
+        map[gp] = null;
+        reservations[gp] = null;
+        NewBoardStateEvent.Invoke();  
+    }
         
     private void AlignUnit(Unit unit, GridPosition gp) {
         unit.gridPosition = gp;

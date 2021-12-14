@@ -56,6 +56,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VITALITY: 10
+  STRENGTH: 5
+  DEXTERITY: 8
+  REFLEX: 2
   MOVE: 3
   MIN_RANGE: 1
   MAX_RANGE: 1

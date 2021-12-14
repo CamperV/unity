@@ -15,8 +15,9 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     }
     [SerializeField] public PlayerUnitFSM state { get; set; } = PlayerUnitFSM.Idle;
 
-    public bool blocking = false;
     public bool cancelSignal = false;
+    private EngagementResults attackResults;
+    private bool awaitResults = false;
 
     void Start() {
         // register any relevant events
@@ -67,7 +68,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.Moving:
-                blocking = true;
                 break;
 
             case PlayerUnitFSM.AttackSelection:
@@ -95,7 +95,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
             case PlayerUnitFSM.Moving:
                 unitMap.MoveUnit(this, _reservedGridPosition);
-                blocking = false;
                 break;
 
             case PlayerUnitFSM.AttackSelection:
@@ -111,6 +110,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.Attacking:
+                awaitResults = false;
                 break;
         }
         state = PlayerUnitFSM.Idle;
@@ -170,11 +170,33 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                     ChangeState(PlayerUnitFSM.Idle);
 
                 } else {
-                    if (attackRange.ValidAttack(gp)) {
-                        StartCoroutine( spriteAnimator.BumpTowards<GridPosition>(gp, battleMap) );
-                        attackAvailable = false;
 
-                        ChangeState(PlayerUnitFSM.Attacking);
+                    // if there's a ValidAttack (valid tile to attack)
+                    if (attackRange.ValidAttack(gp)) {
+                        Unit? enemy = unitMap.UnitAt(gp);
+
+                        // if there's an enemy unit at that spot, create and execute an Engagement
+                        if (enemy != null) {
+                            Engagement engagement = Engagement.Create(this, enemy);
+                            StartCoroutine( engagement.Resolve() );
+
+                            // wait until the engagement has ended
+                            // once the engagement has processed, resolve the casualties
+                            // once the casualties are resolved, EndTurnSelectedUnit()
+                            StartCoroutine(
+                                engagement.ExecuteAfterResolving(() => {
+                                    attackAvailable = false;
+                                    ChangeState(PlayerUnitFSM.Attacking);
+                                })
+                            );
+                                                            
+
+                        // else, just end your turn for now
+                        // by changing state to Attacking, you'll end your turn pretty much immediately
+                        } else {
+                            ChangeState(PlayerUnitFSM.Attacking);
+                        }
+
                     } else {
                         Debug.Log($"No valid attack exists from {gridPosition} to {gp}");
                         ChangeState(PlayerUnitFSM.Idle);
@@ -224,8 +246,11 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             // disable your phase and move into Idle                          //
             ////////////////////////////////////////////////////////////////////
             case PlayerUnitFSM.Attacking:
+
+                // wait until simply animating
                 if (spriteAnimator.isMoving || spriteAnimator.isAnimating) {    
                     // just spin
+
                 } else {
                     if (cancelSignal) {
                         cancelSignal = false;

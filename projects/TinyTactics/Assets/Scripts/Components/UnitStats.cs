@@ -11,9 +11,9 @@ public class UnitStats : MonoBehaviour
     public event StatChange UpdateHPEvent;
 
     public int VITALITY;
-    // public int STRENGTH;
-    // public int DEXTERITY;
-    // public int REFLEX;
+    public int STRENGTH;
+    public int DEXTERITY;
+    public int REFLEX;
     public int MOVE;
     public int MIN_RANGE;
     public int MAX_RANGE;
@@ -22,7 +22,7 @@ public class UnitStats : MonoBehaviour
     public int _DAMAGE_REDUCTION; // cheat with this now
 
     public void UpdateHP(int newValue) {
-        _CURRENT_HP = newValue;
+        _CURRENT_HP = Mathf.Max(0, newValue);
         // UpdateHPEvent(newValue);
     }
 }

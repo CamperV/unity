@@ -25,6 +25,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VITALITY: 10
+  STRENGTH: 5
+  DEXTERITY: 10
+  REFLEX: 2
   MOVE: 5
   MIN_RANGE: 1
   MAX_RANGE: 1
@@ -49,7 +52,6 @@ MonoBehaviour:
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
-  blocking: 0
   cancelSignal: 0
 --- !u!114 &7726113186437740837
 MonoBehaviour:

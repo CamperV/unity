@@ -69,6 +69,7 @@ public class UnitPathfinder : MonoBehaviour
 				////////////////////////////////////////////////////////////////////////////////
 				var otherUnit = unitMap.UnitAt(adjacent);
 				if (otherUnit != null) {
+					Debug.Log($"Found adjacent unit: {otherUnit}");
 					var thisUnit = GetComponent<Unit>();
 
 					// string thisBaseType = thisUnit.GetType().BaseType.Name;

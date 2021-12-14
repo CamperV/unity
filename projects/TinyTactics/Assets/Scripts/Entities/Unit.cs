@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(SpriteAnimator))]
 [RequireComponent(typeof(UnitPathfinder))]
@@ -87,4 +88,72 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         attackAvailable = false;
         spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
     }
+
+    public Attack GenerateAttack() {
+        return new Attack(
+            unitStats.STRENGTH,         // damage
+            unitStats.DEXTERITY * 10,   // hit rate
+            0                           // crit rate
+        );
+    }
+
+    public bool ReceiveAttack(Attack incomingAttack) {
+		// calc hit/crit
+		int diceRoll = Random.Range(0, 100);
+		bool isHit = diceRoll < incomingAttack.hitRate;
+
+		// final retval
+		bool survived = true;
+		if (isHit) {
+			bool isCrit = diceRoll < incomingAttack.critRate;
+			float finalDamage = (float)incomingAttack.damage;
+
+			if (isCrit) {
+				finalDamage *= 3f;
+				Debug.Log($"Critical hit! ({incomingAttack.critRate}%) for {finalDamage} damage");
+			}
+
+            // ouchies, play the animations for hurt
+            TriggerHurtAnimation(isCritical: isCrit);
+			survived = SufferDamage((int)finalDamage);
+
+        // miss
+		} else {
+            TriggerMissAnimation();
+			Debug.Log($"{this} dodged the attack! ({incomingAttack.hitRate}% to hit)");
+		}
+
+		return survived;
+	}
+
+	protected bool SufferDamage(int incomingDamage) {
+        unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage);
+		return unitStats._CURRENT_HP > 0;
+	}
+
+    public void TriggerAttackAnimation(GridPosition towards) {
+        StartCoroutine(
+            spriteAnimator.BumpTowards<GridPosition>(towards, battleMap, distanceScale: 7.0f)
+        );
+    }
+
+    protected void TriggerHurtAnimation(bool isCritical = false) {
+		StartCoroutine( spriteAnimator.FlashColor(Constants.threatColorRed) );
+		StartCoroutine( spriteAnimator.Shake((isCritical) ? 0.15f : 0.075f) );
+    }
+
+    protected void TriggerMissAnimation() {
+		StartCoroutine( spriteAnimator.FlashColor(Constants.selectColorWhite) );
+    }
+
+	public void TriggerDeathAnimation() {
+		StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
+			StartCoroutine( spriteAnimator.FadeDown(1.0f) );
+		}));
+	}
+
+	public void DeathCleanUp() {
+        Destroy(gameObject);
+        unitMap.ClearPosition(gridPosition);
+	}
 }
