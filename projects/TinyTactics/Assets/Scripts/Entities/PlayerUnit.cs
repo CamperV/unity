@@ -17,8 +17,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     [SerializeField] public PlayerUnitFSM state { get; set; } = PlayerUnitFSM.Idle;
 
     public bool cancelSignal = false;
-    private EngagementResults attackResults;
-    private bool awaitResults = false;
+    private bool engagementResolveFlag = false;
 
     void Start() {
         // register any relevant events
@@ -50,6 +49,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         ExitState(state);
         EnterState(PlayerUnitFSM.Idle);
     }
+
+    protected override void DisableFSM() => InitialState();
 
     // IStateMachine<>
     public void EnterState(PlayerUnitFSM enteringState) {
@@ -110,11 +111,12 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                     })
                 );
 
-                battleMap.ResetHighlight();  
+                // disable enemy unit controller for a time
+                playerUnitController.ClearSelection();
+                battleMap.ResetHighlight();
                 break;
 
             case PlayerUnitFSM.Attacking:
-                awaitResults = false;
                 break;
         }
         state = PlayerUnitFSM.Idle;
@@ -181,6 +183,10 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
                         // if there's an enemy unit at that spot, create and execute an Engagement
                         if (enemy != null) {
+                            ChangeState(PlayerUnitFSM.Attacking);
+                            attackAvailable = false;
+
+                            engagementResolveFlag = true;
                             Engagement engagement = Engagement.Create(this, enemy);
                             StartCoroutine( engagement.Resolve() );
 
@@ -189,8 +195,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                             // once the casualties are resolved, EndTurnSelectedUnit()
                             StartCoroutine(
                                 engagement.ExecuteAfterResolving(() => {
-                                    attackAvailable = false;
-                                    ChangeState(PlayerUnitFSM.Attacking);
+                                    engagementResolveFlag = false;
                                 })
                             );
                                                             
@@ -198,7 +203,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         // else, just end your turn for now
                         // by changing state to Attacking, you'll end your turn pretty much immediately
                         } else {
-                            ChangeState(PlayerUnitFSM.Attacking);
+                            ChangeState(PlayerUnitFSM.Idle);
                         }
 
                     } else {
@@ -261,17 +266,12 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             case PlayerUnitFSM.Attacking:
 
                 // wait until simply animating
-                if (spriteAnimator.isMoving || spriteAnimator.isAnimating) {    
+                if (engagementResolveFlag || spriteAnimator.isMoving || spriteAnimator.isAnimating) {    
                     // just spin
 
                 } else {
-                    if (cancelSignal) {
-                        cancelSignal = false;
-                        ChangeState(PlayerUnitFSM.Idle);
-                    } else {
-                        FinishTurn();
-                        ChangeState(PlayerUnitFSM.Idle);
-                    }
+                    FinishTurn();
+                    ChangeState(PlayerUnitFSM.Idle);
                 }
                 break;
         }

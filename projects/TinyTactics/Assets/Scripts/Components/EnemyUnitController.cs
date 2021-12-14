@@ -38,6 +38,13 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         }
     }
 
+    private PlayerUnitController playerUnitController;
+
+    void Awake() {
+        Battle _topBattleRef = GetComponentInParent<Battle>();
+        playerUnitController = _topBattleRef.GetComponentInChildren<PlayerUnitController>();
+    }
+
     void Start() {
         // this accounts for all in-scene activeUnits, not instatiated prefabs
         foreach (EnemyUnit en in GetComponentsInChildren<EnemyUnit>()) {
@@ -57,17 +64,6 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         EnterState(ControllerFSM.NoPreview);
     }
 
-    public void ExitState(ControllerFSM exitingState) {
-        switch (exitingState) {
-            case ControllerFSM.Inactive:
-            case ControllerFSM.NoPreview:
-            case ControllerFSM.Preview:
-            case ControllerFSM.TakeActions:
-                break;
-        }
-        state = ControllerFSM.Inactive;
-    }
-
     public void EnterState(ControllerFSM enteringState) {
         state = enteringState;
 
@@ -81,9 +77,25 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
                 break;
 
             case ControllerFSM.TakeActions:
+                // disable enemy unit controller for a time
+                playerUnitController.ChangeState(PlayerUnitController.ControllerFSM.Inactive);
                 StartCoroutine( TakeActionAll() );
                 break;
         }
+    }
+
+    public void ExitState(ControllerFSM exitingState) {
+        switch (exitingState) {
+            case ControllerFSM.Inactive:
+            case ControllerFSM.NoPreview:
+            case ControllerFSM.Preview:
+                break;
+                
+            case ControllerFSM.TakeActions:
+                playerUnitController.ChangeState(PlayerUnitController.ControllerFSM.NoSelection);
+                break;
+        }
+        state = ControllerFSM.Inactive;
     }
 
     public void TriggerPhase() {
@@ -165,7 +177,9 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             // wait until the unit says you can move on
             // generally this is until the unit's turn is over,
             // but if the unit is only moving (and not attacking), just execute the next unit's whole situation
+            Debug.Log($"Unit {unit} is taking actions");
             yield return unit.TakeActionFlowChart();
+            Debug.Log($"Successfully got through {unit} Coroutine execution");
             yield return new WaitForSeconds(timeBetweenUnitActions);
         }
 

@@ -20,6 +20,8 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     }
     [SerializeField] public EnemyUnitFSM state { get; set; } = EnemyUnitFSM.Idle;
 
+    private bool engagementResolveFlag = false;
+
     protected override void Awake() {
         base.Awake();
         brain = GetComponent<EnemyBrain>();
@@ -55,6 +57,8 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         ExitState(state);
         EnterState(EnemyUnitFSM.Idle);
     }
+
+    protected override void DisableFSM() => InitialState();
 
     // IStateMachine<>
     public void EnterState(EnemyUnitFSM enteringState) {
@@ -150,8 +154,9 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             // disable your phase and move into Idle                          //
             ////////////////////////////////////////////////////////////////////
             case EnemyUnitFSM.Attacking:
-                if (spriteAnimator.isMoving || spriteAnimator.isAnimating) {    
+                if (engagementResolveFlag || spriteAnimator.isMoving || spriteAnimator.isAnimating) {    
                     // just spin
+
                 } else {
                     ChangeState(EnemyUnitFSM.Idle);
                 }
@@ -160,35 +165,60 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     }
 
     public IEnumerator TakeActionFlowChart() {
-
         // 1
         brain.RefreshTargets(playerUnitController.activeUnits);
         
         // 2 determine optimal DamagePackage, which determines move and target
         // 2a if no DamagePackages exist... don't do anything
-        foreach (EnemyBrain.DamagePackage dp in brain.OptimalDamagePackages()) {
-            // Debug.Log($"Got DamagePackage -> {dp.target} [{dp.potentialDamage}] from {dp.fromPosition}");
+        EnemyBrain.DamagePackage? selectedDmgPkg = null;
+        Path<GridPosition>? pathTo = null;
 
-            Path<GridPosition>? pathTo = moveRange.BFS(gridPosition, dp.fromPosition);
+        foreach (EnemyBrain.DamagePackage candidateDmgPkg in brain.OptimalDamagePackages()) {
+            Debug.Log($"Got DamagePackage -> {candidateDmgPkg.target} [{candidateDmgPkg.potentialDamage}] from {candidateDmgPkg.fromPosition}");
+
+            pathTo = moveRange.BFS(gridPosition, candidateDmgPkg.fromPosition);
 
             // if a path exists to the destination, smoothly move along the path
             // after reaching your destination, officially move via unitMap
             if (pathTo != null) {
-                StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
-
-                unitMap.ReservePosition(this, dp.fromPosition);
-                _reservedGridPosition = dp.fromPosition;  // save for ContextualNoInteract to move via unitMap
-                moveAvailable = false;
-                ChangeState(EnemyUnitFSM.Moving);
-
-                // WAIT FOR MOVEMENT TO COMPLETE
-                yield return new WaitUntil(() => state == EnemyUnitFSM.Idle);
-                // WAIT FOR MOVEMENT TO COMPLETE
-
-                Debug.Log($"Now I, {this}, will attack {dp.target} from my gridPosition, {gridPosition}. [{gridPosition == dp.fromPosition}]");
+                selectedDmgPkg = candidateDmgPkg;
                 break;
             }
         }
+        if (pathTo == null) {
+            Debug.Log($"Finishing turn early, {this} can't find a path to anything it wants to do.");
+            FinishTurn();
+            yield break;
+        }
+
+        //
+        // execute movement portion
+        StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
+
+        unitMap.ReservePosition(this, selectedDmgPkg.Value.fromPosition);
+        _reservedGridPosition = selectedDmgPkg.Value.fromPosition;  // save for ContextualNoInteract to move via unitMap
+        moveAvailable = false;
+        ChangeState(EnemyUnitFSM.Moving);
+
+        // WAIT FOR MOVEMENT TO COMPLETE
+        yield return new WaitUntil(() => state == EnemyUnitFSM.Idle);
+        // WAIT FOR MOVEMENT TO COMPLETE
+
+        Engagement engagement = Engagement.Create(this, selectedDmgPkg.Value.target);
+        attackAvailable = false;
+        ChangeState(EnemyUnitFSM.Attacking);
+        //
+        engagementResolveFlag = true;
+        StartCoroutine( engagement.Resolve() );
+        StartCoroutine(
+            engagement.ExecuteAfterResolving(() => {
+                engagementResolveFlag = false;
+            })
+        );
+
+        // WAIT FOR ENGAGEMENT TO RESOLVE
+        yield return new WaitUntil(() => state == EnemyUnitFSM.Idle);
+        // WAIT FOR ENGAGEMENT TO RESOLVE
 
         // after you've attacked, finish your turn
         FinishTurn();

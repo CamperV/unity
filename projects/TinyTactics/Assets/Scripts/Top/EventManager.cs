@@ -9,6 +9,7 @@ public sealed class EventManager : MonoBehaviour
 {
     public static EventManager inst = null; // enforces singleton behavior
 
+    public Battle topBattleRef;
     public PlayerInputController inputController;
     public UIManager uiManager;
     public TurnManager turnManager;
@@ -54,5 +55,9 @@ public sealed class EventManager : MonoBehaviour
         // board state events
         unitMap.NewBoardStateEvent += () => playerUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
         unitMap.NewBoardStateEvent += () => enemyUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
+
+        // all board state update events should make TopBattle check if it should end now
+        unitMap.NewBoardStateEvent += topBattleRef.CheckVictoryConditions;
+        unitMap.NewBoardStateEvent += topBattleRef.CheckDefeatConditions;
     }
 }

@@ -31,6 +31,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     // abstract
     public abstract void Cancel();
     protected abstract void DisplayThreatRange();
+    protected abstract void DisableFSM();
 
     // IUnitPhaseInfo
     [field: SerializeField] public bool turnActive { get; set; } = true;
@@ -159,6 +160,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 	protected void DeathCleanUp() {
     	StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
             gameObject.SetActive(false);
+            DisableFSM();
             unitMap.ClearPosition(gridPosition);
 		}));
 	}
