@@ -11,10 +11,13 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     // publicly available events
     public delegate void GridInteraction(GridPosition gridPosition);
     public event GridInteraction InteractEvent;
+    public event GridInteraction AuxiliaryInteractEvent_0;
+    public event GridInteraction AuxiliaryInteractEvent_1;
     //
 
     [SerializeField] private Tile mouseOverOverlayTile;
     private GridPosition recentMouseOver;
+    public GridPosition CurrentMouseGridPosition { get => recentMouseOver; }
 
     private Tilemap overlayTilemap;
     private Tilemap highlightTilemap;
@@ -82,7 +85,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
         Debug.Log($"BattleMap has seen that you clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
-            InteractEvent(gridPosition);
+            InteractEvent?.Invoke(gridPosition);
         }
     }
     
@@ -100,6 +103,26 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
                 overlayTilemap.SetTile(gridPosition, mouseOverOverlayTile);
             }
             recentMouseOver = gridPosition;
+        }
+    }
+
+    public void CheckLeftMouseHoldStart(Vector3 screenPosition) {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+        GridPosition gridPosition = WorldToGrid(worldPosition);
+        Debug.Log($"BattleMap has seen that you started holding mouse @ {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
+
+        if (IsInBounds(gridPosition)) {
+            AuxiliaryInteractEvent_0?.Invoke(gridPosition);
+        }
+    }
+
+    public void CheckLeftMouseHoldEnd(Vector3 screenPosition) {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+        GridPosition gridPosition = WorldToGrid(worldPosition);
+        Debug.Log($"BattleMap has seen that you released mouse @ {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
+
+        if (IsInBounds(gridPosition)) {
+            AuxiliaryInteractEvent_1?.Invoke(gridPosition);
         }
     }
 

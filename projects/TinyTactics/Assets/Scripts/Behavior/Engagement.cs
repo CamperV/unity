@@ -69,7 +69,7 @@ public class Engagement
         aggressor.TriggerAttackAnimation(defender.gridPosition);
         defenderSurvived = defender.ReceiveAttack(attack);
         ///
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.75f);
         ///
 
         // if we can counterattack:
@@ -80,7 +80,7 @@ public class Engagement
             defender.TriggerAttackAnimation(aggressor.gridPosition);
             aggressorSurvived = aggressor.ReceiveAttack(counterAttack.Value);
             ///
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.75f);
             ///
         }
 

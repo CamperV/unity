@@ -337,6 +337,13 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         playerUnitController.CheckEndPhase();
     }
 
+    public void FinishTurnNoCheck() {
+        turnActive = false;
+        moveAvailable = false;
+        attackAvailable = false;
+        spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
+    }
+
     private bool ValidAttackExistsFrom(GridPosition fromPosition) {
         AttackRange standing = AttackRange.Standing(fromPosition, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
         return enemyUnitController.activeUnits.Where(enemy => standing.ValidAttack(enemy.gridPosition)).Any();

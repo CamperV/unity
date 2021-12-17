@@ -14,9 +14,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     // necessary Component references
     protected UnitMap unitMap;
-    protected BattleMap battleMap;
+    public BattleMap battleMap;
     public SpriteAnimator spriteAnimator;
-    protected SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     protected UnitPathfinder mapPathfinder;
     [HideInInspector] public UnitStats unitStats;
     
@@ -77,6 +77,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         moveAvailable = true;
         attackAvailable = true;
         spriteRenderer.color = originalColor;
+
+        UpdateThreatRange();
     }
 
     // IUnitPhaseInfo

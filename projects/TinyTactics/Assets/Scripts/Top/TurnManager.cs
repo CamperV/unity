@@ -6,6 +6,8 @@ using Extensions;
 
 public class TurnManager : MonoBehaviour
 {
+    public static float endPhaseDelay = 1.0f;
+
     public Phase playerPhase;
     public Phase enemyPhase;
     public Phase currentPhase;
@@ -13,9 +15,6 @@ public class TurnManager : MonoBehaviour
     public int turnCount = 0;
     public bool enable = true;
     public bool suspend = false;
-
-    public string currentPhaseName;
-    public Phase.PhaseState currentPhaseState;
 
     public delegate void NewTurn(int newTurn);
     public delegate void NewPhase(Phase newPhase);
@@ -25,11 +24,6 @@ public class TurnManager : MonoBehaviour
     void Awake() {
         playerPhase = new Phase("Player");
         enemyPhase = new Phase("Enemy");
-    }
-
-    void Update() {
-        currentPhaseName = currentPhase?.name ?? "n/a";
-        currentPhaseState = currentPhase?.state ?? Phase.PhaseState.Inactive;
     }
 
     // this will execute Enable() at the end of the Start frame
@@ -71,6 +65,8 @@ public class TurnManager : MonoBehaviour
 
             NewTurnEvent(turnCount);
             yield return ExecutePhases(playerPhase, enemyPhase);
+
+            // between turn things happen here
         }
     }
 
@@ -90,6 +86,9 @@ public class TurnManager : MonoBehaviour
             phase.TriggerStart();
 
             yield return new WaitUntil(() => phase.state == Phase.PhaseState.Complete);
+
+            // post-phase delay
+            yield return new WaitForSeconds(endPhaseDelay);
         }
     }
 }

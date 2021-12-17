@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using System.Linq;
 using Extensions;
+using TMPro;
 
 public class MiniHealthBar : MonoBehaviour
 {	
@@ -61,6 +62,9 @@ public class MiniHealthBar : MonoBehaviour
         barLevel.transform.localScale = toScale;
         barColor = HueSatLerp(color_0, color_1, healthRatio*healthRatio);
         barRenderer.color = barColor;
+
+        // debug
+        GetComponentInChildren<TextMeshPro>().SetText($"{currVal}/{maxVal}");
     }
 
     public static Color HueSatLerp(Color A, Color B, float ratio) {
@@ -76,12 +80,16 @@ public class MiniHealthBar : MonoBehaviour
     public IEnumerator AnimateBar(Vector3 fromScale, Vector3 toScale, Color color, float delayTime, float fixedTime) {
 		GameObject go = new GameObject($"AnimBar", typeof(SpriteRenderer));
 
-        go.GetComponent<SpriteRenderer>().sprite = barRenderer.sprite;
-        go.GetComponent<SpriteRenderer>().color = color;
+        SpriteRenderer goSR = go.GetComponent<SpriteRenderer>();
+        goSR.sprite = barRenderer.sprite;
+        goSR.color = color;
+        goSR.sortingLayerName = barLevel.GetComponent<SpriteRenderer>().sortingLayerName;
+        goSR.sortingOrder     = barLevel.GetComponent<SpriteRenderer>().sortingOrder - 1;
 
         go.transform.SetParent(barLevel.parent);
         go.transform.localPosition = barLevel.localPosition;
         go.transform.localScale = fromScale;
+
 
         // wait procedurally
         yield return new WaitForSeconds(delayTime);

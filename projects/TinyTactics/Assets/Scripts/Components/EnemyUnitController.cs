@@ -90,7 +90,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             case ControllerFSM.NoPreview:
             case ControllerFSM.Preview:
                 break;
-                
+
             case ControllerFSM.TakeActions:
                 playerUnitController.ChangeState(PlayerUnitController.ControllerFSM.NoSelection);
                 break;
@@ -107,9 +107,10 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     // and because it's possible the other team could add statuses that 
     // disable attackAvailable/moveAvailable etc
     public void EndPhase() {
-        activeUnits.ForEach(it => it.RefreshInfo());
         ChangeState(ControllerFSM.NoPreview);
     }
+
+    public void RefreshUnits() => activeUnits.ForEach(it => it.RefreshInfo());
 
     public void ContextualInteractAt(GridPosition gp) {
         switch (state) {

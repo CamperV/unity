@@ -1,0 +1,44 @@
+{
+    "name": "KeyboardInput",
+    "maps": [
+        {
+            "name": "KeyboardActionMap",
+            "id": "52c45229-9194-4eea-8608-ba784345b30f",
+            "actions": [
+                {
+                    "name": "MainInteractButton",
+                    "type": "Button",
+                    "id": "4ed8aca1-17a1-4943-9892-3f8ac4483d49",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b543a0f3-3e71-4f5a-bc5e-696d37a6ea19",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MainInteractButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7e06db6d-72a7-4296-959c-ac74074ddee8",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MainInteractButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

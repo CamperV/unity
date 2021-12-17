@@ -39,9 +39,17 @@ public sealed class EventManager : MonoBehaviour
         inputController.RightMouseClickEvent += _ => playerUnitController.ClearSelection();
         inputController.RightMouseClickEvent += _ => enemyUnitController.ClearPreview();
 
+        inputController.LeftMouseHoldStartEvent += battleMap.CheckLeftMouseHoldStart;
+        inputController.LeftMouseHoldEndEvent += battleMap.CheckLeftMouseHoldEnd;
+
+        inputController.MainInteractButtonEvent += playerUnitController.ForceEndPlayerPhase;
+
         // battlemap events
         battleMap.InteractEvent += playerUnitController.ContextualInteractAt;
         battleMap.InteractEvent += enemyUnitController.ContextualInteractAt;
+
+        battleMap.AuxiliaryInteractEvent_0 += playerUnitController.StartHoldTimer;
+        battleMap.AuxiliaryInteractEvent_1 += playerUnitController.EndHoldTimer;
 
         // turn management events
         turnManager.playerPhase.StartEvent += playerUnitController.TriggerPhase;
@@ -51,6 +59,8 @@ public sealed class EventManager : MonoBehaviour
 
         turnManager.NewTurnEvent += uiManager.UpdateTurn;
         turnManager.NewPhaseEvent += uiManager.UpdatePhase;
+        turnManager.NewPhaseEvent += _ => playerUnitController.RefreshUnits();
+        turnManager.NewPhaseEvent += _ => enemyUnitController.RefreshUnits();
 
         // board state events
         unitMap.NewBoardStateEvent += () => playerUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
