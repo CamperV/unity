@@ -22,12 +22,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
     [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
 
-    // for determining how long the mouse is held over certain units
-    private float holdTimeElapsed;
-    private Coroutine holdTimer;
-    private PlayerUnit holdUnit;
-    private Color holdUnitOG;
-
     private PlayerUnit _currentSelection;
     private PlayerUnit currentSelection {
         get => _currentSelection;
@@ -183,49 +177,15 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     private void _EndPlayerPhase() => GetComponentInParent<TurnManager>().playerPhase.TriggerEnd();
 
     // this gets called when the BattleMap has a tile that a MouseHold event has triggered over
-    public void StartHoldTimer(GridPosition gp) {
+    private PlayerUnit _holdUnit;
+
+    public void CheckWaitAt(GridPosition gp) {
         PlayerUnit? unit = MatchingUnitAt(gp);
-
-        // if we find a unit at this place, start the HoldTimer
-        if (unit != null) {
-            holdUnit = unit;
-            holdUnitOG = unit.spriteRenderer.color;
-            holdTimeElapsed = 0f;
-            holdTimer = StartCoroutine( _HoldTimer(unit, 1f) );
-        }
+        unit?.ContextualHoldTimer();
+        _holdUnit = unit;
     }
 
-    public void EndHoldTimer(GridPosition gp) {
-        if (holdTimer != null) StopCoroutine(holdTimer);
-        if (holdUnit != null) holdUnit.spriteRenderer.color = holdUnitOG;
-        holdTimeElapsed = 0f;
-    }
-
-    private IEnumerator _HoldTimer(PlayerUnit unit, float maxTime) {
-        Color originalColor = unit.spriteRenderer.color;
-
-        // count until you reach maxTime
-        while (holdTimeElapsed < maxTime) {
-
-            // if the GridPosition  where the MouseHold was initiated is the same, continually count up
-            if (unit.battleMap.CurrentMouseGridPosition == unit.gridPosition) {
-                holdTimeElapsed += Time.deltaTime;
-
-                float percComplete = holdTimeElapsed / maxTime;
-                unit.spriteRenderer.color = Color.Lerp(originalColor, Color.magenta, percComplete);
-                yield return null;
-        
-            // break out here if the mouse has been moved out of the tile
-            } else {
-                unit.spriteRenderer.color = originalColor;
-                Debug.Log($"No way Jose");
-                yield break;
-            }
-        }
-
-        // if you've made it here, you legally completed holding down the mouse in one area
-        // otherwise you would have exited early
-        unit.spriteRenderer.color = originalColor;
-        Debug.Log($"You made it!!!!");
+    public void CancelWait(GridPosition gp) {
+        _holdUnit?.CancelHoldTimer();
     }
 }

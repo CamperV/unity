@@ -48,8 +48,8 @@ public sealed class EventManager : MonoBehaviour
         battleMap.InteractEvent += playerUnitController.ContextualInteractAt;
         battleMap.InteractEvent += enemyUnitController.ContextualInteractAt;
 
-        battleMap.AuxiliaryInteractEvent_0 += playerUnitController.StartHoldTimer;
-        battleMap.AuxiliaryInteractEvent_1 += playerUnitController.EndHoldTimer;
+        battleMap.AuxiliaryInteractEvent_0 += playerUnitController.CheckWaitAt; // hold down
+        battleMap.AuxiliaryInteractEvent_1 += playerUnitController.CancelWait;  // release
 
         // turn management events
         turnManager.playerPhase.StartEvent += playerUnitController.TriggerPhase;
