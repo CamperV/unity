@@ -19,6 +19,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     protected SpriteRenderer spriteRenderer;
     protected UnitPathfinder mapPathfinder;
     [HideInInspector] public UnitStats unitStats;
+    [HideInInspector] protected HoldTimer holdTimer;
     
     // I don't love this, but it makes things much cleaner.
     protected PlayerUnitController playerUnitController;
@@ -40,11 +41,14 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     //
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
+    public bool MouseHovering { get => battleMap.CurrentMouseGridPosition == gridPosition; }
+
     protected virtual void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         mapPathfinder = GetComponent<UnitPathfinder>();
         unitStats = GetComponent<UnitStats>();
+        holdTimer = GetComponent<HoldTimer>();
 
         Battle _topBattleRef = GetComponentInParent<Battle>();
         unitMap = _topBattleRef.GetComponent<UnitMap>();
@@ -70,13 +74,20 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         }
     }
 
+    public void RevertColor() {
+        spriteRenderer.color = originalColor;
+    }
+
+    public void LerpInactiveColor(float lerpValue) {
+        spriteRenderer.color = Color.Lerp(originalColor, new Color(0.75f, 0.75f, 0.75f, 1f), lerpValue);
+    }
 
     // IUnitPhaseInfo
     public void RefreshInfo() {
         turnActive = true;
         moveAvailable = true;
         attackAvailable = true;
-        spriteRenderer.color = originalColor;
+        RevertColor();
 
         UpdateThreatRange();
     }

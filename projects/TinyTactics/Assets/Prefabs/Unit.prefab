@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9098362355150381176}
   - component: {fileID: 1011389671152865451}
   m_Layer: 0
-  m_Name: WaitIndicator
+  m_Name: HoldTimerVisualization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -185,6 +185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7419503456615491691}
   - component: {fileID: -9116924587232957335}
+  - component: {fileID: 8068655713362906146}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -260,6 +261,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8068655713362906146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6096969835717758623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a202481bc052ea7438339bab70dd0794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holdTimerVisualization: {fileID: 1011389671152865451}
 --- !u!1 &7090665412735883434
 GameObject:
   m_ObjectHideFlags: 0

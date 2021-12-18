@@ -41,7 +41,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             _activeUnits.Add(en);
         }
 
-        EnterState(ControllerFSM.NoSelection);
+        InitialState();
     }
 
     void Update() {
@@ -55,7 +55,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void InitialState() {
         ExitState(state);
-        EnterState(ControllerFSM.NoSelection);
+        EnterState(ControllerFSM.Inactive);
     }
 
     public void ExitState(ControllerFSM exitingState) {
@@ -181,11 +181,11 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void CheckWaitAt(GridPosition gp) {
         PlayerUnit? unit = MatchingUnitAt(gp);
-        unit?.ContextualHoldTimer();
+        unit?.ContextualWait();
         _holdUnit = unit;
     }
 
     public void CancelWait(GridPosition gp) {
-        _holdUnit?.CancelHoldTimer();
+        _holdUnit?.CancelWait();
     }
 }

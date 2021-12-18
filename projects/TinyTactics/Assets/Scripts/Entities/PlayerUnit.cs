@@ -26,13 +26,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     // waiting until an Engagement is done animating and resolving casualties
     private bool engagementResolveFlag = false;
 
-    // parameters/variables for the holdTimer visualization for Wait()
-    // TODO: move into its own Component?
-    private readonly float fixedHoldTime = 1f;
-    private float holdTimeElapsed;
-    private Coroutine holdTimer;
-    private Image holdTimerVisualization;
-    private Color originalHoldTimerColor;
 
     void Start() {
         // register any relevant events
@@ -100,8 +93,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.PreWait:
-                holdTimeElapsed = 0f;
-                holdTimer = StartCoroutine( _HoldTimer(fixedHoldTime, Wait) );
+                holdTimer.StartTimer(Wait, CancelWait);
                 break;
         }
     }
@@ -383,7 +375,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         ChangeState(PlayerUnitFSM.Idle);
     }
     
-    public void ContextualHoldTimer() {
+    public void ContextualWait() {
         if (turnActive && (moveAvailable || attackAvailable) ) {
             switch (state) {
                 case PlayerUnitFSM.Moving:
@@ -400,75 +392,13 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         }
     }
 
-    public void CancelHoldTimer() {
+    public void CancelWait() {
         if (state == PlayerUnitFSM.PreWait) {
-            holdTimeElapsed = 0f;
-            if (holdTimer != null) StopCoroutine(holdTimer);
-
-            // revert colors, etc
-            holdTimerVisualization.color = originalHoldTimerColor.WithAlpha(0f);
-            spriteRenderer.color = originalColor;
+            holdTimer.CancelTimer();
             
             // since you can only enter PreWait from AttackSelection, head back there
             // it will handle itself wrt going to Idle and checking attackAvailable
             ChangeState(PlayerUnitFSM.AttackSelection);
         }
-    }
-
-    private IEnumerator _HoldTimer(float maxTime, Action OnHold) {
-        if (holdTimerVisualization == null) holdTimerVisualization = GetComponentInChildren<Image>();
-        originalHoldTimerColor = holdTimerVisualization.color;
-
-        // count until you reach maxTime
-        while (holdTimeElapsed < maxTime) {
-
-            // if the GridPosition  where the MouseHold was initiated is the same, continually count up
-            if (battleMap.CurrentMouseGridPosition == gridPosition) {
-                holdTimeElapsed += Time.deltaTime;
-
-                float percentComplete = holdTimeElapsed / maxTime;
-                holdTimerVisualization.fillAmount = 1.5f*percentComplete;
-                holdTimerVisualization.color = Color.Lerp(new Color(0.75f, 0.75f, 0.75f, 1f).WithAlpha(0.25f), originalHoldTimerColor.WithAlpha(1f), 1.5f*percentComplete);
-
-                // float scaler = Mathf.Lerp(0.75f, 1f, percentComplete);
-                // // holdTimerVisualization.transform.localScale = scaler*Vector3.one;
-
-                spriteRenderer.color = Color.Lerp(originalColor, new Color(0.75f, 0.75f, 0.75f, 1f), percentComplete);
-                yield return null;
-        
-            // break out here if the mouse has been moved out of the tile
-            } else {
-                CancelHoldTimer();
-                yield break;
-            }
-        }
-
-        //
-        // trigger OnHold here
-        //
-        OnHold?.Invoke();
-        //
-        // trigger OnHold here
-        //
-
-        float flourishTime = 0f;
-        float flourishTotal = 0.4f;
-        while (flourishTime < flourishTotal) {
-            flourishTime += Time.deltaTime;
-            
-            float flourishComplete = flourishTime / flourishTotal;
-            float flourishEaseOut = 1f - Mathf.Pow(1f - flourishComplete, 5f);
-            holdTimerVisualization.color = Color.Lerp(originalHoldTimerColor.WithAlpha(1f), originalHoldTimerColor.WithAlpha(0f), flourishComplete);
-
-            float scaler = Mathf.Lerp(1f, 1.5f, flourishEaseOut);
-            holdTimerVisualization.transform.localScale = scaler*Vector3.one;
-            yield return null;
-        }
-
-        // if you've made it here, you legally completed holding down the mouse in one area
-        // otherwise you would have exited early
-        holdTimerVisualization.color = originalHoldTimerColor.WithAlpha(0f);
-        holdTimerVisualization.transform.localScale = Vector3.one;
-
     }
 }
