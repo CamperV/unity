@@ -47,7 +47,7 @@ public class AttackRange : FlowField<GridPosition>
 	}
 
 	public bool ValidAttack(GridPosition gp) {
-		return field.ContainsKey(gp);
+		return gp != origin && field.ContainsKey(gp);
 	}
 
 	public void Display(IGrid<GridPosition> target) {

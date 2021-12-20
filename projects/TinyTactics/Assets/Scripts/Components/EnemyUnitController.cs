@@ -37,6 +37,12 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             }
         }
     }
+    private PlayerUnitController playerUnitController;
+
+    void Awake() {
+        Battle _topBattleRef = GetComponentInParent<Battle>();
+        playerUnitController = _topBattleRef.GetComponentInChildren<PlayerUnitController>();
+    }
 
     void Start() {
         // this accounts for all in-scene activeUnits, not instatiated prefabs
@@ -66,10 +72,17 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         switch (state) {
             case ControllerFSM.Inactive:
             case ControllerFSM.NoPreview:
+                break;
+
             case ControllerFSM.Preview:
+                // disable player unit controller for a time
+                playerUnitController.ChangeState(PlayerUnitController.ControllerFSM.Inactive);
                 break;
 
             case ControllerFSM.TakeActions:
+                // disable player unit controller for a time
+                playerUnitController.ChangeState(PlayerUnitController.ControllerFSM.Inactive);
+
                 StartCoroutine( TakeActionAll() );
                 break;
         }
@@ -79,8 +92,11 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         switch (exitingState) {
             case ControllerFSM.Inactive:
             case ControllerFSM.NoPreview:
+                break;
+
             case ControllerFSM.Preview:
             case ControllerFSM.TakeActions:
+                playerUnitController.ChangeState(PlayerUnitController.ControllerFSM.NoSelection);
                 break;
         }
         state = ControllerFSM.Inactive;
@@ -124,7 +140,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
                 // swap to the new unit. This will rapidly drop currentPreview (via Cancel/ChangeState(Idle))
                 // then REACQUIRE a currentPreview immediately afterwards
                 if (unit != null && unit != currentPreview) {
-                    currentPreview.RevertTurn();
+                    ClearPreview();
                     currentPreview = unit;
                 }
 

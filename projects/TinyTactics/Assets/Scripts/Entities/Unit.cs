@@ -169,9 +169,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     }
 
 	public void TriggerDeathAnimation() {
-		StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
-			StartCoroutine( spriteAnimator.FadeDownAll(1.0f) );
-		}));
+        // note that this will probably start during the "taking damage" animation
+		StartCoroutine( spriteAnimator.FadeDownAll(1.0f) );
 	}
 
 	protected void DeathCleanUp() {

@@ -26,6 +26,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     // waiting until an Engagement is done animating and resolving casualties
     private bool engagementResolveFlag = false;
 
+    private GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
     private Path<GridPosition>? pathToMouseOver;
 
 
@@ -81,9 +82,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.AttackSelection:
-                // disable enemy unit controller for a time
-                enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.Inactive);
-
                 UpdateThreatRange(standing: true);
                 StartCoroutine( Utils.LateFrame(DisplayThreatRange) );
                 break;
@@ -124,14 +122,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.AttackSelection:
-                // re-enable EnemyUnitController at the end of the frame
-                // this is to avoid any same-frame reactivation and Event triggering/listening
-                StartCoroutine(
-                    Utils.LateFrame(() => {
-                        enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
-                    })
-                );
-
                 // disable enemy unit controller for a time
                 battleMap.ResetHighlight();
                 break;
@@ -169,8 +159,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
                 // else if it's a valid movement to be had:
                 } else {
-                    // Path<GridPosition>? pathTo = moveRange.BFS(gridPosition, gp);
 
+                    // pathToMouseOver is updated right before this in ContextualNoUpdate
                     // if a path exists to the destination, smoothly move along the path
                     // after reaching your destination, officially move via unitMap
                     if (pathToMouseOver != null) {
@@ -184,8 +174,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
                         ChangeState(PlayerUnitFSM.Moving);
                     } else {
-                        Debug.Log($"Found no path from {gridPosition} to {gp}");
-                        ChangeState(PlayerUnitFSM.Idle);
+                        // playerUnitController.ClearSelection();
                     }
                 }
                 break;
@@ -204,38 +193,30 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 } else {
 
                     // if there's a ValidAttack on the mouseclick'd area
-                    if (attackRange.ValidAttack(gp)) {
-                        Unit? enemy = unitMap.UnitAt(gp);
+                    if (attackRange.ValidAttack(gp) && EnemyAt(gp) != null) {
+                        EnemyUnit? enemy = EnemyAt(gp);
 
                         // if there's an enemy unit at that spot, create and execute an Engagement
-                        if (enemy != null) {
-                            ChangeState(PlayerUnitFSM.Attacking);
-                            attackAvailable = false;
+                        ChangeState(PlayerUnitFSM.Attacking);
+                        attackAvailable = false;
 
-                            engagementResolveFlag = true;
-                            Engagement engagement = Engagement.Create(this, enemy);
-                            StartCoroutine( engagement.Resolve() );
+                        engagementResolveFlag = true;
+                        Engagement engagement = Engagement.Create(this, enemy);
+                        StartCoroutine( engagement.Resolve() );
 
-                            // wait until the engagement has ended
-                            // once the engagement has processed, resolve the casualties
-                            // once the casualties are resolved, EndTurnSelectedUnit()
-                            StartCoroutine(
-                                engagement.ExecuteAfterResolving(() => {
-                                    engagementResolveFlag = false;
-                                })
-                            );
-                                                            
-
-                        // else, just end your turn for now
-                        // by changing state to Attacking, you'll end your turn pretty much immediately
-                        } else {
-                            ChangeState(PlayerUnitFSM.Idle);
-                        }
-
-                    } else {
-                        Debug.Log($"No valid attack exists from {gridPosition} to {gp}");
-                        ChangeState(PlayerUnitFSM.Idle);
+                        // wait until the engagement has ended
+                        // once the engagement has processed, resolve the casualties
+                        // once the casualties are resolved, EndTurnSelectedUnit()
+                        StartCoroutine(
+                            engagement.ExecuteAfterResolving(() => {
+                                engagementResolveFlag = false;
+                            })
+                        );
                     }
+
+                    // default: you've clicked an invalid square
+                    // undoMovement as well
+                    // playerUnitController.ClearSelection();
                 }
                 break;
 
@@ -248,8 +229,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         }
     }
 
-    private GridPosition _previousMouseOver;
-    //
     public void ContextualNoInteract() {
         switch (state) {
             case PlayerUnitFSM.Idle:
@@ -301,6 +280,17 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.AttackSelection:
+
+                // when the mouse-on-grid changes:
+                if (battleMap.CurrentMouseGridPosition != _previousMouseOver) {
+                    _previousMouseOver = battleMap.CurrentMouseGridPosition;
+                    DisplayThreatRange();
+
+                    if (attackRange.ValidAttack(battleMap.CurrentMouseGridPosition) && EnemyAt(battleMap.CurrentMouseGridPosition) != null) {
+                        EnemyUnit? enemy = EnemyAt(battleMap.CurrentMouseGridPosition);
+                        battleMap.Highlight(battleMap.CurrentMouseGridPosition, Constants.threatColorYellow);
+                    }
+                }
                 break;
 
             ////////////////////////////////////////////////////////////////////
@@ -423,6 +413,11 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         FinishTurn();
         ChangeState(PlayerUnitFSM.Idle);
     }
+
+    public void WaitNoCheck() {
+        FinishTurnNoCheck();
+        ChangeState(PlayerUnitFSM.Idle);
+    }
     
     public void ContextualWait() {
         if (turnActive && (moveAvailable || attackAvailable) ) {
@@ -449,5 +444,12 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             // it will handle itself wrt going to Idle and checking attackAvailable
             ChangeState(PlayerUnitFSM.AttackSelection);
         }
+    }
+
+    private EnemyUnit? EnemyAt(GridPosition gp) {
+        Unit? unit = unitMap.UnitAt(gp);
+        if (unit != null && unit.GetType() == typeof(EnemyUnit))
+            return (unit as EnemyUnit);
+        else return null;
     }
 }

@@ -34,6 +34,12 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             }
         }
     }
+    private EnemyUnitController enemyUnitController;
+
+    void Awake() {
+        Battle _topBattleRef = GetComponentInParent<Battle>();
+        enemyUnitController = _topBattleRef.GetComponentInChildren<EnemyUnitController>();
+    }
 
     void Start() {
         // this accounts for all in-scene activeUnits, not instatiated prefabs
@@ -62,7 +68,11 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         switch (exitingState) {
             case ControllerFSM.Inactive:
             case ControllerFSM.NoSelection:
+                break;
+
             case ControllerFSM.Selection:
+                // re-enable EnemyUnitController
+                enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
                 break;
         }
         state = ControllerFSM.Inactive;
@@ -77,7 +87,11 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         switch (state) {
             case ControllerFSM.Inactive:
             case ControllerFSM.NoSelection:
+                break;
+
             case ControllerFSM.Selection:
+                // disable enemy unit controller for a time
+                enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.Inactive);
                 break;
         }
     }
@@ -176,10 +190,12 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
 
     public void ForceEndPlayerPhase() {
-        foreach (PlayerUnit u in activeUnits) {
-            u.FinishTurnNoCheck();
+        if (state != ControllerFSM.Inactive) {
+            foreach (PlayerUnit u in activeUnits) {
+                u.WaitNoCheck();
+            }
+            _EndPlayerPhase();
         }
-        _EndPlayerPhase();
     }
 
     private void _EndPlayerPhase() => GetComponentInParent<TurnManager>().playerPhase.TriggerEnd();

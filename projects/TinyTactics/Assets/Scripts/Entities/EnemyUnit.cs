@@ -109,14 +109,14 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             // ie Active the unit, go to select preview //
             //////////////////////////////////////////////
             case EnemyUnitFSM.Idle:
-                ChangeState(EnemyUnitFSM.Preview);
+                if (gp == gridPosition) ChangeState(EnemyUnitFSM.Preview);
                 break;
 
             ////////////////////////////////////////////////
             // Any other click will send you back to idle //
             ////////////////////////////////////////////////
             case EnemyUnitFSM.Preview:
-                ChangeState(EnemyUnitFSM.Idle);
+                if (gp != gridPosition) ChangeState(EnemyUnitFSM.Idle);
                 break;
 
             case EnemyUnitFSM.Moving:
