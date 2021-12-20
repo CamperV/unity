@@ -11,6 +11,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 {
     [field: SerializeField] public GridPosition gridPosition { get; set; }
     protected GridPosition _reservedGridPosition; // this is for maintaining state while animating/moving
+    protected GridPosition _startingGridPosition; // this is for maintaining a revertable state when prevewing Engagements, etc
 
     // necessary Component references
     protected UnitMap unitMap;
@@ -30,7 +31,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public AttackRange attackRange;
 
     // abstract
-    public abstract void Cancel();
+    public abstract void RevertTurn();
     protected abstract void DisplayThreatRange();
     protected abstract void DisableFSM();
 
@@ -87,9 +88,12 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         turnActive = true;
         moveAvailable = true;
         attackAvailable = true;
-        RevertColor();
-
+        RevertColor();  // to original
         UpdateThreatRange();
+
+        // finally, store your starting location
+        // this is relevant for RevertTurn calls
+        _startingGridPosition = gridPosition;
     }
 
     // IUnitPhaseInfo

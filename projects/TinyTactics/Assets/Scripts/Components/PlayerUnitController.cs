@@ -125,7 +125,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
                 // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
                 // then REACQUIRE a currentSelection immediately afterwards
                 if (unit != null && unit != currentSelection) {
-                    currentSelection.Cancel();
+                    ClearSelection();
                     currentSelection = unit;
                 }
 
@@ -138,13 +138,21 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         switch (state) {
             case ControllerFSM.Inactive:
             case ControllerFSM.NoSelection:
+                break;
+
             case ControllerFSM.Selection:
+                if (currentSelection.turnActive == false) {
+                    ClearSelection();
+                }
                 break;
         }
     }
 
     public void ClearSelection() {
-        currentSelection = null;
+        if (state == ControllerFSM.Selection) {
+            if (currentSelection.turnActive) currentSelection.RevertTurn();
+            currentSelection = null;
+        }
     }
 
     public PlayerUnit? MatchingUnitAt(GridPosition gp) {
@@ -168,7 +176,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void ForceEndPlayerPhase() {
         foreach (PlayerUnit u in activeUnits) {
-            u.Cancel();
             u.FinishTurnNoCheck();
         }
         _EndPlayerPhase();

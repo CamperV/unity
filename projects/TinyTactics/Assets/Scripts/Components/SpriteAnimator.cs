@@ -239,6 +239,31 @@ public class SpriteAnimator : MonoBehaviour
 		movementStack--;
 	}
 
+	public IEnumerator SmoothMovementGrid<T>(T target, IGrid<T> surface, float _fixedTime = -1f) where T : struct {
+		Vector3 endpoint = surface.GridToWorld(target);
+
+		if (skipMovement) {
+			PositionUpdater(endpoint);
+			yield break;
+		}
+		movementStack++;
+        //
+
+		float timeStep = 0.0f;
+		Vector3 startPos = transform.position;
+
+        float fixedTime = (_fixedTime == -1f) ? fixedTimePerTile : _fixedTime;
+		while (timeStep < 1.0f) {
+			timeStep += (Time.deltaTime / fixedTime);
+			PositionUpdater(Vector3.Lerp(startPos, endpoint, timeStep));
+			yield return null;
+		}
+		
+		// after the while loop is broken:
+		PositionUpdater(endpoint);
+		movementStack--;
+	}
+
 	public IEnumerator BumpTowards<T>(T target, IGrid<T> surface, float distanceScale = 5.0f) where T : struct {
 		yield return SmoothBump(surface.GridToWorld(target), distanceScale);
 	}

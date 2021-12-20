@@ -48,6 +48,10 @@ public class UnitMap : MonoBehaviour
     public Unit? UnitAt(GridPosition gp) {
         return map[gp];
     }
+
+    public bool ReservedAt(GridPosition gp) {
+        return reservations[gp] != null;
+    }
     
     public bool CanMoveInto(GridPosition gp) {
         return map[gp] == null && reservations[gp] == null;
@@ -69,7 +73,8 @@ public class UnitMap : MonoBehaviour
             // since this was successful, trigger the new state event
             if (newBoardEvent) NewBoardStateEvent.Invoke();
         } else {
-            Debug.Log($"Failed to move {unit} into occupied GP {gp}");
+            if (map[gp] == unit || reservations[gp] == unit) AlignUnit(unit, gp);
+            else Debug.Log($"Failed to move {unit} into occupied GP {gp}");
         }
     }
 
@@ -82,13 +87,17 @@ public class UnitMap : MonoBehaviour
         }
     }
 
+    public void ClearReservation(GridPosition gp) {
+        reservations[gp] = null;
+    }
+
     public void ClearPosition(GridPosition gp) {
         map[gp] = null;
         reservations[gp] = null;
         NewBoardStateEvent.Invoke();  
     }
         
-    private void AlignUnit(Unit unit, GridPosition gp) {
+    public void AlignUnit(Unit unit, GridPosition gp) {
         unit.gridPosition = gp;
         unit.transform.position = battleMap.GridToWorld(gp);
     }

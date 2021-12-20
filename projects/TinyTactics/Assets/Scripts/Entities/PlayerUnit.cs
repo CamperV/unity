@@ -28,9 +28,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
 
     void Start() {
-        // register any relevant events
-        EventManager.inst.inputController.RightMouseClickEvent += at => Cancel();
-        
+               
         // some init things that need to be taken care of
         unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
 
@@ -69,7 +67,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             // when you're entering Idle, it's from being selected
             // therefore, reset your controller's selections
             case PlayerUnitFSM.Idle:
-                playerUnitController.ClearSelection();
                 break;
 
             // re-calc move range, and display it
@@ -109,7 +106,15 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.Moving:
-                unitMap.MoveUnit(this, _reservedGridPosition);
+                if (cancelSignal) {
+                    cancelSignal = false;
+
+                    unitMap.ClearReservation(_reservedGridPosition);
+                    UndoMovement();
+
+                } else {
+                    unitMap.MoveUnit(this, _reservedGridPosition);
+                }
                 break;
 
             case PlayerUnitFSM.AttackSelection:
@@ -122,7 +127,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 );
 
                 // disable enemy unit controller for a time
-                playerUnitController.ClearSelection();
                 battleMap.ResetHighlight();
                 break;
 
@@ -186,7 +190,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             ///////////////////////////////////////////////////////////////////////
             case PlayerUnitFSM.AttackSelection:
                 if (gp == gridPosition) {
-                    if (moveAvailable) ChangeState(PlayerUnitFSM.MoveSelection);
+                    // if (moveAvailable) ChangeState(PlayerUnitFSM.MoveSelection);
                     // else, do nothing at all
 
                 } else {
@@ -256,18 +260,18 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 // we've finished moving
                 } else {
                     if (cancelSignal) {
-                        cancelSignal = false;
                         ChangeState(PlayerUnitFSM.Idle);
+                        break;
+                    }
+
+                    // if there's an in-range enemy, go to AttackSelection
+                    // if (attackAvailable && ValidAttackExistsFrom(_reservedGridPosition)) {
+                    if (attackAvailable) {
+                        ChangeState(PlayerUnitFSM.AttackSelection);
+
+                    // there's no one around to receive your attack, so just end turn
                     } else {
-
-                        // if there's an in-range enemy, go to AttackSelection
-                        if (attackAvailable && ValidAttackExistsFrom(_reservedGridPosition)) {
-                            ChangeState(PlayerUnitFSM.AttackSelection);
-
-                        // there's no one around to receive your attack, so just end turn
-                        } else {
-                            Wait();
-                        }
+                        Wait();
                     }
                 }
                 break;
@@ -298,20 +302,36 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
     // this essentially is an "undo" for us
     // undo all the way to Idle
-    public override void Cancel() {
-        if (state == PlayerUnitFSM.Idle) return;
-
+    public override void RevertTurn() {
         switch (state) {
             case PlayerUnitFSM.Moving:
-            case PlayerUnitFSM.Attacking:
                 cancelSignal = true;
                 break;
 
             case PlayerUnitFSM.MoveSelection:
             case PlayerUnitFSM.AttackSelection:
-                ChangeState(PlayerUnitFSM.Idle);
+                if (turnActive) {
+                    if (moveAvailable == false) UndoMovement();
+                    ChangeState(PlayerUnitFSM.Idle);
+                }
                 break;
         }
+    }
+
+    // NOTE: This is janky as hell. Really, I should be using Reservations in the UnitMap, but this kinda works...
+    // there theoretically exists a period of time in which things snap around, as MoveUnit can move a Transform, like SpriteAnimator
+    // however, the SmoothMovementGrid should override that. I don't know the order of operations vis-a-vis coroutines etc
+    private void UndoMovement() {
+        // starts from gridPosition
+        // StartCoroutine(spriteAnimator.SmoothMovementGrid<GridPosition>(_startingGridPosition, battleMap, _fixedTime: 0.05f));
+
+        // modifies gridPosition & updates threat range
+        unitMap.MoveUnit(this, _startingGridPosition);
+        _reservedGridPosition = gridPosition;
+        RefreshInfo();
+
+        // re-aligns unit's transform without MoveUnit call
+        // StartCoroutine(spriteAnimator.ExecuteAfterMoving(() => unitMap.AlignUnit(this, _startingGridPosition) ));
     }
 
     // this needs to run at the end of the frame
@@ -330,6 +350,11 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 				battleMap.Highlight(gp, Constants.threatColorIndigo);
 			}
 		}
+        // foreach (GridPosition gp in moveRange.field.Keys) {
+		// 	if (unitMap.ReservedAt(gp)) {
+        //         battleMap.Highlight(gridPosition, Constants.reservedColorBlue);
+        //     }
+		// }
 
         battleMap.Highlight(gridPosition, Constants.selectColorWhite);
     }

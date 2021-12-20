@@ -27,10 +27,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         brain = GetComponent<EnemyBrain>();
     }
 
-    void Start() {
-        // register any relevant events
-        EventManager.inst.inputController.RightMouseClickEvent += at => Cancel();
-                
+    void Start() {                
         // some init things that need to be taken care of
         unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
 
@@ -226,7 +223,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
     // this essentially is an "undo" for us
     // undo all the way to Idle
-    public override void Cancel() {
+    public override void RevertTurn() {
         if (state == EnemyUnitFSM.Idle) return;
         ChangeState(EnemyUnitFSM.Idle);
     }

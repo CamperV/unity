@@ -124,7 +124,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
                 // swap to the new unit. This will rapidly drop currentPreview (via Cancel/ChangeState(Idle))
                 // then REACQUIRE a currentPreview immediately afterwards
                 if (unit != null && unit != currentPreview) {
-                    currentPreview.Cancel();
+                    currentPreview.RevertTurn();
                     currentPreview = unit;
                 }
 
@@ -138,7 +138,10 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
 
     public void ClearPreview() {
-        currentPreview = null;
+        if (state == ControllerFSM.Preview) {
+            currentPreview.RevertTurn();
+            currentPreview = null;
+        }
     }
 
     private EnemyUnit? MatchingUnitAt(GridPosition gp) {
