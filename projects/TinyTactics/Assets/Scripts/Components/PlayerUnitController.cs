@@ -140,10 +140,11 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             case ControllerFSM.NoSelection:
                 break;
 
+            ////////////////////////////////////////////////////////////////////////
+            // as soon as your currentSelection finishes their turn, change state //
+            ////////////////////////////////////////////////////////////////////////
             case ControllerFSM.Selection:
-                if (currentSelection.turnActive == false) {
-                    ClearSelection();
-                }
+                if (currentSelection.turnActive == false) ClearSelection();
                 break;
         }
     }

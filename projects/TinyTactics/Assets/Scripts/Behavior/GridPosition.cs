@@ -34,6 +34,8 @@ public struct GridPosition : IEquatable<GridPosition>
         return Mathf.Abs(x-o.x) + Mathf.Abs(y-o.y);
     }
 
+    public GridPosition X(int _x) => new GridPosition(_x, this.y);
+    public GridPosition Y(int _y) => new GridPosition(this.x, _y);
 
     // quick scalable approach: iterate through a virtual cube and simply check the bounds and yield if within
     // includes self, and if fully inclusive of min/range

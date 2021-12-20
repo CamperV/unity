@@ -16,8 +16,12 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     //
 
     [SerializeField] private Tile mouseOverOverlayTile;
+    [SerializeField] private Tile pathOverlayTile;
+    [SerializeField] private Tile pathEndOverlayTile;
+    
     private GridPosition recentMouseOver;
     public GridPosition CurrentMouseGridPosition { get => recentMouseOver; }
+    public bool MouseInBounds { get => IsInBounds(recentMouseOver); }
 
     private Tilemap overlayTilemap;
     private Tilemap highlightTilemap;
@@ -169,6 +173,25 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
                 highlightTilemap.SetTileFlags(v, TileFlags.None);
                 highlightTilemap.SetColor(v, Color.white.WithAlpha(0f));
             }
+        }
+	}
+    
+	public void DisplayPath(Path<GridPosition> path) {
+		foreach (GridPosition gp in path.Unwind()) {
+            Vector3Int as_V = new Vector3Int(gp.x, gp.y, -1);
+			overlayTilemap.SetTile(as_V, pathOverlayTile);
+		}
+
+        Vector3Int as_V2 = new Vector3Int(path.end.x, path.end.y, -1);
+        overlayTilemap.SetTile(as_V2, pathEndOverlayTile);
+	}
+
+    // this uses Vector3Int, to reach that special forbidden zone where GridPosition's cannot reach normally
+	public void ClearDisplayPath() {
+        overlayTilemap.CompressBounds();
+
+        foreach (Vector3Int v in overlayTilemap.cellBounds.allPositionsWithin) {
+            if (v.z == -1) overlayTilemap.SetTile(v, null);
         }
 	}
 }

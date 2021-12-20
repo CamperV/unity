@@ -26,6 +26,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     // waiting until an Engagement is done animating and resolving casualties
     private bool engagementResolveFlag = false;
 
+    private Path<GridPosition>? pathToMouseOver;
+
 
     void Start() {
                
@@ -38,7 +40,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         EnterState(PlayerUnitFSM.Idle);
     }
 
-    void Update() { ContextualNoInteract(); }
+    void Update() => ContextualNoInteract();
 
     // IStateMachine<>
     public void ChangeState(PlayerUnitFSM newState) {
@@ -103,6 +105,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
             case PlayerUnitFSM.MoveSelection:
                 battleMap.ResetHighlight();
+                battleMap.ClearDisplayPath();
                 break;
 
             case PlayerUnitFSM.Moving:
@@ -166,12 +169,14 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
                 // else if it's a valid movement to be had:
                 } else {
-                    Path<GridPosition>? pathTo = moveRange.BFS(gridPosition, gp);
+                    // Path<GridPosition>? pathTo = moveRange.BFS(gridPosition, gp);
 
                     // if a path exists to the destination, smoothly move along the path
                     // after reaching your destination, officially move via unitMap
-                    if (pathTo != null) {
-                        StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
+                    if (pathToMouseOver != null) {
+                        StartCoroutine(
+                            spriteAnimator.SmoothMovementPath<GridPosition>(pathToMouseOver, battleMap)
+                        );
 
                         unitMap.ReservePosition(this, gp);
                         _reservedGridPosition = gp;  // save for ContextualNoInteract to move via unitMap
@@ -243,12 +248,27 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         }
     }
 
+    private GridPosition _previousMouseOver;
+    //
     public void ContextualNoInteract() {
         switch (state) {
             case PlayerUnitFSM.Idle:
                 break;
 
+            // this is where we constantly recalculate/show the path to your mouse destination
             case PlayerUnitFSM.MoveSelection:
+
+                // when the mouse-on-grid changes:
+                if (battleMap.CurrentMouseGridPosition != _previousMouseOver) {
+                    battleMap.ClearDisplayPath();
+
+                    if (battleMap.MouseInBounds) {
+                        pathToMouseOver = moveRange.BFS(gridPosition, battleMap.CurrentMouseGridPosition);
+                        _previousMouseOver = battleMap.CurrentMouseGridPosition;
+
+                        if (pathToMouseOver != null) battleMap.DisplayPath(pathToMouseOver);
+                    }
+                }
                 break;
 
             ///////////////////////////////////////////////////////////
