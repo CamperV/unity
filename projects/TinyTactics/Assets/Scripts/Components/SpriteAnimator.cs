@@ -10,7 +10,7 @@ using Extensions;
 public class SpriteAnimator : MonoBehaviour
 {
     // we want it to take X seconds to go over one tile
-	public static float speedMultiplier = 1f;
+	public static float speedMultiplier = .5f;
 	public static float fixedTimePerTile { get => 0.10f / speedMultiplier; }
 	public static bool skipMovement = false;
 
@@ -42,6 +42,13 @@ public class SpriteAnimator : MonoBehaviour
 
 		// else if you don't have this component, construct a default Updater
 		PositionUpdater = v => transform.position = v;
+	}
+
+	public List<Coroutine> movementCrtStack = new List<Coroutine>();
+
+	public void ClearStacks() {
+		_movementStack = 0;
+		_animationStack = 0;
 	}
 
 	public IEnumerator ExecuteAfterAnimating(Action VoidAction) {

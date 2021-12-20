@@ -109,6 +109,9 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 if (cancelSignal) {
                     cancelSignal = false;
 
+                    StopAllCoroutines();
+                    spriteAnimator.ClearStacks();
+
                     unitMap.ClearReservation(_reservedGridPosition);
                     UndoMovement();
 
@@ -254,15 +257,16 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             // update our position via unitMap and ChangeState       //
             ///////////////////////////////////////////////////////////
             case PlayerUnitFSM.Moving:
+                if (cancelSignal) {
+                    ChangeState(PlayerUnitFSM.Idle);
+                    break;
+                }
+
                 if (spriteAnimator.isMoving) {    
                     // just spin
 
                 // we've finished moving
                 } else {
-                    if (cancelSignal) {
-                        ChangeState(PlayerUnitFSM.Idle);
-                        break;
-                    }
 
                     // if there's an in-range enemy, go to AttackSelection
                     // if (attackAvailable && ValidAttackExistsFrom(_reservedGridPosition)) {
