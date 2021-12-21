@@ -322,6 +322,57 @@ public class SpriteAnimator : MonoBehaviour
 		movementStack--;
 	}
 
+
+	// this coroutine performs a little 'bump' when you can't move
+	public IEnumerator SmoothBumpRandom(float radius) {
+		if (skipMovement) {
+			PositionUpdater(transform.position);
+			yield break;
+		}
+		movementStack++;
+
+		float timeScale = 0.5f*fixedTimePerTile;
+
+		// get random location for spike
+		Vector3 startPos = transform.position;
+		Vector3 peakPos = startPos + (Vector3)Random.insideUnitCircle*radius;
+
+		// this version of SmoothBump leaves all children transforms in place
+		List<Vector3> childOgPositions = new List<Vector3>();
+		foreach (Transform child in transform) childOgPositions.Add(child.position);
+		
+		float timeStep = 0.0f;
+		while (timeStep < 1.0f) {
+			timeStep += (Time.deltaTime / (timeScale/4f) );
+			PositionUpdater(Vector3.Lerp(startPos, peakPos, timeStep));
+
+			int index = 0;
+			foreach (Transform child in transform) {
+				child.position = childOgPositions[index];
+				index++;
+			}
+			yield return null;
+		}
+
+		// now for the return journey
+		timeStep = 0.0f;
+		while (timeStep < 1.0f)  {
+			timeStep += (Time.deltaTime / (4f*timeScale) );
+			PositionUpdater(Vector3.Lerp(peakPos, startPos, timeStep));
+
+			int index = 0;
+			foreach (Transform child in transform) {
+				child.position = childOgPositions[index];
+				index++;
+			}
+			yield return null;
+		}
+		
+		// after the while loop is broken:
+		PositionUpdater(startPos);
+		movementStack--;
+	}
+
 	public IEnumerator SmoothMovementPath<T>(Path<T> path, IGrid<T> surface) where T : struct {
 		if (skipMovement) {
 			PositionUpdater(surface.GridToWorld(path.end));

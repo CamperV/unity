@@ -166,6 +166,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     protected void TriggerMissAnimation() {
 		StartCoroutine( spriteAnimator.FlashColor(Constants.selectColorWhite) );
+        StartCoroutine( spriteAnimator.SmoothBumpRandom(0.10f) );
     }
 
 	public void TriggerDeathAnimation() {

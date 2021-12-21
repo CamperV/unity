@@ -27,6 +27,7 @@ MonoBehaviour:
   <gridPosition>k__BackingField:
     x: 0
     y: 0
+  spriteAnimator: {fileID: 0}
   unitStats: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
@@ -57,7 +58,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VITALITY: 10
   STRENGTH: 5
-  DEXTERITY: 8
+  DEXTERITY: 3
   REFLEX: 2
   MOVE: 3
   MIN_RANGE: 1
