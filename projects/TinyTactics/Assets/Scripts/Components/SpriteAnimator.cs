@@ -10,7 +10,7 @@ using Extensions;
 public class SpriteAnimator : MonoBehaviour
 {
     // we want it to take X seconds to go over one tile
-	public static float speedMultiplier = .5f;
+	public static float speedMultiplier = 1f;
 	public static float fixedTimePerTile { get => 0.10f / speedMultiplier; }
 	public static bool skipMovement = false;
 

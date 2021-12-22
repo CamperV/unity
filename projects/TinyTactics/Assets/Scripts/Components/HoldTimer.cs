@@ -10,7 +10,7 @@ using TMPro;
 
 public class HoldTimer : MonoBehaviour
 {
-    private readonly float fixedHoldTime = 1f;
+    private readonly float fixedHoldTime = 0.75f;
     private float holdTimeElapsed = 0f;
 
     private Coroutine holdCoroutine;

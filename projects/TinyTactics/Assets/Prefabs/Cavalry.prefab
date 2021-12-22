@@ -26,13 +26,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VITALITY: 10
   STRENGTH: 5
-  DEXTERITY: 10
+  DEXTERITY: 8
   REFLEX: 2
+  DAMAGE_REDUCTION: 1
   MOVE: 5
   MIN_RANGE: 1
   MAX_RANGE: 1
   _CURRENT_HP: 0
-  _DAMAGE_REDUCTION: 0
 --- !u!114 &3180318577213809699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48,6 +48,7 @@ MonoBehaviour:
   <gridPosition>k__BackingField:
     x: 0
     y: 0
+  spriteAnimator: {fileID: 0}
   unitStats: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1

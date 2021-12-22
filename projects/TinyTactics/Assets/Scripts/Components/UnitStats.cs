@@ -14,15 +14,15 @@ public class UnitStats : MonoBehaviour
     public int STRENGTH;
     public int DEXTERITY;
     public int REFLEX;
+    public int DAMAGE_REDUCTION;
     public int MOVE;
     public int MIN_RANGE;
     public int MAX_RANGE;
 
     public int _CURRENT_HP;
-    public int _DAMAGE_REDUCTION; // cheat with this now
 
     public void UpdateHP(int newValue, int maxValue) {
         _CURRENT_HP = Mathf.Max(0, newValue);
-        UpdateHPEvent(newValue, maxValue);
+        UpdateHPEvent(_CURRENT_HP, maxValue);
     }
 }

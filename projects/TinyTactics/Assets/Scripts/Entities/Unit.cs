@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(SpriteAnimator))]
 [RequireComponent(typeof(UnitPathfinder))]
@@ -13,12 +12,20 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     protected GridPosition _reservedGridPosition; // this is for maintaining state while animating/moving
     protected GridPosition _startingGridPosition; // this is for maintaining a revertable state when prevewing Engagements, etc
 
+    // these are used so that our various Perks can modify the mutable Attack/Defenses that are created during an Engagement
+    public delegate void AttackGeneration(ref MutableAttack mutAtt, Unit target);
+    public event AttackGeneration OnAttack;
+
+    public delegate void DefenseGeneration(ref MutableDefense mutDef, Unit attacker);
+    public event DefenseGeneration OnDefend;
+    //
+
     // necessary Component references
-    protected UnitMap unitMap;
-    protected BattleMap battleMap;
-    public SpriteAnimator spriteAnimator;
-    protected SpriteRenderer spriteRenderer;
-    protected UnitPathfinder mapPathfinder;
+    [HideInInspector] protected UnitMap unitMap;
+    [HideInInspector] protected BattleMap battleMap;
+    [HideInInspector] public SpriteAnimator spriteAnimator;
+    [HideInInspector] protected SpriteRenderer spriteRenderer;
+    [HideInInspector] protected UnitPathfinder mapPathfinder;
     [HideInInspector] public UnitStats unitStats;
     [HideInInspector] protected HoldTimer holdTimer;
     
@@ -104,44 +111,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
     }
 
-    public Attack GenerateAttack() {
-        return new Attack(
-            unitStats.STRENGTH,         // damage
-            unitStats.DEXTERITY * 10,   // hit rate
-            0                           // crit rate
-        );
-    }
-
-    public bool ReceiveAttack(Attack incomingAttack) {
-		// calc hit/crit
-		int diceRoll = Random.Range(0, 100);
-		bool isHit = diceRoll < incomingAttack.hitRate;
-
-		// final retval
-		bool survived = true;
-		if (isHit) {
-			bool isCrit = diceRoll < incomingAttack.critRate;
-			float finalDamage = (float)incomingAttack.damage;
-
-			if (isCrit) {
-				finalDamage *= 3f;
-				Debug.Log($"Critical hit! ({incomingAttack.critRate}%) for {finalDamage} damage");
-			}
-
-            // ouchies, play the animations for hurt
-            TriggerHurtAnimation(isCritical: isCrit);
-			survived = SufferDamage((int)finalDamage);
-
-        // miss
-		} else {
-            TriggerMissAnimation();
-			Debug.Log($"{this} dodged the attack! ({incomingAttack.hitRate}% to hit)");
-		}
-
-		return survived;
-	}
-
-	protected bool SufferDamage(int incomingDamage) {
+	public bool SufferDamage(int incomingDamage) {
         unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage, unitStats.VITALITY);
 		bool survived = unitStats._CURRENT_HP > 0;
 
@@ -159,26 +129,29 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         );
     }
 
-    protected void TriggerHurtAnimation(bool isCritical = false) {
+    public void TriggerHurtAnimation(bool isCritical = false) {
 		StartCoroutine( spriteAnimator.FlashColor(Constants.threatColorRed) );
 		StartCoroutine( spriteAnimator.Shake((isCritical) ? 0.15f : 0.075f) );
     }
 
-    protected void TriggerMissAnimation() {
+    public void TriggerMissAnimation() {
 		StartCoroutine( spriteAnimator.FlashColor(Constants.selectColorWhite) );
         StartCoroutine( spriteAnimator.SmoothBumpRandom(0.10f) );
     }
 
-	public void TriggerDeathAnimation() {
+	private void TriggerDeathAnimation() {
         // note that this will probably start during the "taking damage" animation
 		StartCoroutine( spriteAnimator.FadeDownAll(1.0f) );
 	}
 
-	protected void DeathCleanUp() {
+	private void DeathCleanUp() {
     	StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
             gameObject.SetActive(false);
             DisableFSM();
             unitMap.ClearPosition(gridPosition);
 		}));
 	}
+
+    public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(ref mutAtt, target);
+    public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(ref mutDef, attacker);
 }

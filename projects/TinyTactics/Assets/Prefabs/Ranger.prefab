@@ -15,6 +15,7 @@ MonoBehaviour:
   <gridPosition>k__BackingField:
     x: 0
     y: 0
+  spriteAnimator: {fileID: 0}
   unitStats: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
@@ -60,13 +61,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VITALITY: 10
   STRENGTH: 5
-  DEXTERITY: 10
+  DEXTERITY: 14
   REFLEX: 2
+  DAMAGE_REDUCTION: 0
   MOVE: 3
   MIN_RANGE: 2
   MAX_RANGE: 2
   _CURRENT_HP: 0
-  _DAMAGE_REDUCTION: 0
 --- !u!1001 &7800023651149863596
 PrefabInstance:
   m_ObjectHideFlags: 0

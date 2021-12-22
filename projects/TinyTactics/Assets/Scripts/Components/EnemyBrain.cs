@@ -67,7 +67,7 @@ public class EnemyBrain : MonoBehaviour
 					new DamagePackage(
 						potentialTarget, 
 						potentialNewPosition,
-						SimulateDamage(potentialTarget, potentialNewPosition)
+						SimulateDamageInflicted(potentialTarget, potentialNewPosition)
 					)
 				);
 			}
@@ -90,8 +90,19 @@ public class EnemyBrain : MonoBehaviour
 		}
 	}
 
-	private int SimulateDamage(PlayerUnit target, GridPosition fromPosition) {
-		return 10 - target.unitStats._DAMAGE_REDUCTION;
+	private int SimulateDamageInflicted(PlayerUnit target, GridPosition fromPosition) {
+		// NOTE: I hate that I'm doing this, but change thisUnit's gridPosition for the simulation
+		// THEN CHANGE IT BACK
+		GridPosition savedGridPosition = thisUnit.gridPosition;
+
+		thisUnit.gridPosition = fromPosition;
+		Engagement potentialEngagement = Engagement.Create(thisUnit, target);
+		Engagement.Stats finalStats = potentialEngagement.SimulateAttack();
+
+		thisUnit.gridPosition = savedGridPosition;
+		Debug.Assert(thisUnit.gridPosition == savedGridPosition);
+
+		return finalStats.damage;
 	}
 
 	private int PotentialDamage(DamagePackage dp) => dp.potentialDamage;
