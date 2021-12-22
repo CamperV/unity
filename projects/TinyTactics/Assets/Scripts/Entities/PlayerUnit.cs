@@ -124,6 +124,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             case PlayerUnitFSM.AttackSelection:
                 // disable enemy unit controller for a time
                 battleMap.ResetHighlight();
+                
+                UIManager.inst.DisableEngagementPreview();
                 break;
 
             case PlayerUnitFSM.Attacking:
@@ -284,11 +286,17 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 // when the mouse-on-grid changes:
                 if (battleMap.CurrentMouseGridPosition != _previousMouseOver) {
                     _previousMouseOver = battleMap.CurrentMouseGridPosition;
+
+                    // reset these
                     DisplayThreatRange();
+                    UIManager.inst.DisableEngagementPreview();
 
                     if (attackRange.ValidAttack(battleMap.CurrentMouseGridPosition) && EnemyAt(battleMap.CurrentMouseGridPosition) != null) {
                         EnemyUnit? enemy = EnemyAt(battleMap.CurrentMouseGridPosition);
                         battleMap.Highlight(battleMap.CurrentMouseGridPosition, Constants.threatColorYellow);
+
+                        // create and display EngagementPreviews here
+                        UIManager.inst.EnableEngagementPreview( Engagement.Create(this, enemy) );
                     }
                 }
                 break;

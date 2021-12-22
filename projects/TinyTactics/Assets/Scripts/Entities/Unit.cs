@@ -24,7 +24,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     [HideInInspector] protected UnitMap unitMap;
     [HideInInspector] protected BattleMap battleMap;
     [HideInInspector] public SpriteAnimator spriteAnimator;
-    [HideInInspector] protected SpriteRenderer spriteRenderer;
+    [HideInInspector] public SpriteRenderer spriteRenderer;
     [HideInInspector] protected UnitPathfinder mapPathfinder;
     [HideInInspector] public UnitStats unitStats;
     [HideInInspector] protected HoldTimer holdTimer;

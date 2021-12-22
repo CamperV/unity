@@ -3,15 +3,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerUnit))]
-public class MegaDamageTest : MonoBehaviour
+public class MegaDamageTest : Perk
 {
-    private PlayerUnit boundUnit;
-
-    void Awake() {
-        boundUnit = GetComponent<PlayerUnit>();
-    }
-
     void OnEnable() {
         boundUnit.OnAttack += MegaDamage;
     }

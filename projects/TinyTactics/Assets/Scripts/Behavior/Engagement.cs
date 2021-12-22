@@ -33,10 +33,12 @@ public class Engagement
         }
 
 		public Stats(Attack a, Defense d) {
-            damage   = a.damage   - d.damageReduction;
-            hitRate  = a.hitRate  - d.dodgeRate;
-            critRate = a.critRate - d.critDodgeRate;
+            damage   = (int)Mathf.Clamp((a.damage   - d.damageReduction), 0f, 999f);
+            hitRate  = (int)Mathf.Clamp((a.hitRate  - d.dodgeRate), 0f, 100f);
+            critRate = (int)Mathf.Clamp((a.critRate - d.critDodgeRate), 0f, 100f);
 		}
+
+        public bool Empty { get => damage == -1 && hitRate == -1 && critRate == -1; }
 	}
 
     public Engagement(Unit a, Unit b) {
@@ -106,7 +108,7 @@ public class Engagement
 
     public Stats SimulateCounterAttack() {
         if (counterAttack == null) {
-            return new Stats(0, 0, 0);
+            return new Stats(-1, -1, -1);
         } else {
             return new Stats(counterAttack.Value, counterDefense.Value);
         }
