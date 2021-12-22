@@ -149,11 +149,12 @@ public class Engagement
 		bool survived = true;
 		if (isHit) {
 			bool isCrit = diceRoll < finalStats.critRate;
+            int sufferedDamage = (isCrit) ? finalStats.damage*3 : finalStats.damage;
 
             // ouchies, play the animations for hurt
             B.TriggerHurtAnimation(isCritical: isCrit);
-			survived = B.SufferDamage( (isCrit) ? finalStats.damage*3 : finalStats.damage );
-			Debug.Log($"{B} was hit ({finalStats.hitRate}% to hit)");
+			survived = B.SufferDamage(sufferedDamage);
+			Debug.Log($"{B} was hit ({finalStats.hitRate}% to hit), dmg: {sufferedDamage}");
 
         // miss
 		} else {

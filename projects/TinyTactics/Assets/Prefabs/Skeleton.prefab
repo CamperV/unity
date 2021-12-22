@@ -56,11 +56,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de54ba498d272848aa4102bd1ebee66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VITALITY: 2
+  VITALITY: 50
   STRENGTH: 5
   DEXTERITY: 10
   REFLEX: 2
-  DAMAGE_REDUCTION: 1
+  DAMAGE_REDUCTION: 4
   MOVE: 15
   MIN_RANGE: 1
   MAX_RANGE: 1
