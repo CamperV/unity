@@ -85,7 +85,7 @@ public class EnemyBrain : MonoBehaviour
 	}
 
 	private IEnumerable<GridPosition> CanPathToThenAttack(GridPosition potentialTargetPosition) {
-		foreach (GridPosition withinRange in potentialTargetPosition.Radiate(thisUnit.unitStats.MAX_RANGE, min: thisUnit.unitStats.MIN_RANGE)) {	
+		foreach (GridPosition withinRange in potentialTargetPosition.Radiate(thisUnit.equippedWeapon.weaponStats.MAX_RANGE, min: thisUnit.equippedWeapon.weaponStats.MIN_RANGE)) {	
 			if (thisUnit.moveRange.ValidMoveTo(withinRange)) yield return withinRange;
 		}
 	}

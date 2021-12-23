@@ -411,7 +411,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     }
 
     private bool ValidAttackExistsFrom(GridPosition fromPosition) {
-        AttackRange standing = AttackRange.Standing(fromPosition, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+        AttackRange standing = AttackRange.Standing(fromPosition, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
         return enemyUnitController.activeUnits.Where(enemy => standing.ValidAttack(enemy.gridPosition)).Any();
     }
 

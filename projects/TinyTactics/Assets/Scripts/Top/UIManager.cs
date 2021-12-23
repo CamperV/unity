@@ -41,7 +41,10 @@ public sealed class UIManager : MonoBehaviour
 		// PLAYER-SIDE
 		Engagement.Stats playerPreviewStats = potentialEngagement.SimulateAttack();
 		playerEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.aggressor.spriteRenderer.sprite;
-		// playerEngagementPreviewPanel.weaponImage.sprite = ;
+		playerEngagementPreviewPanel.portraitImage.color = potentialEngagement.aggressor.spriteRenderer.color;
+		playerEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.aggressor.equippedWeapon.sprite;
+		playerEngagementPreviewPanel.weaponImage.color = potentialEngagement.aggressor.equippedWeapon.color;
+		//
 		playerEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.aggressor.unitStats._CURRENT_HP}");
 		playerEngagementPreviewPanel.dmgValue.SetText($"{playerPreviewStats.damage}");
 		playerEngagementPreviewPanel.hitValue.SetText($"{playerPreviewStats.hitRate}%");
@@ -50,13 +53,22 @@ public sealed class UIManager : MonoBehaviour
 		// ENEMY-SIDE
 		// only update this if you CAN counter-attack
 		Engagement.Stats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
-		if (!enemyPreviewStats.Empty) {
-			enemyEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.defender.spriteRenderer.sprite;
-			// enemyEngagementPreviewPanel.weaponImage.sprite = ;
+		enemyEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.defender.spriteRenderer.sprite;
+		enemyEngagementPreviewPanel.portraitImage.color = potentialEngagement.defender.spriteRenderer.color;
+		enemyEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.defender.equippedWeapon.sprite;
+		enemyEngagementPreviewPanel.weaponImage.color = potentialEngagement.defender.equippedWeapon.color;
+		//
+		enemyEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.defender.unitStats._CURRENT_HP}");
+
+		if (enemyPreviewStats.Empty) {
+			enemyEngagementPreviewPanel.dmgValue.SetText($"--");
+			enemyEngagementPreviewPanel.hitValue.SetText($"--%");
+			enemyEngagementPreviewPanel.critValue.SetText($"--%");
+		} else {
 			enemyEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.defender.unitStats._CURRENT_HP}");
 			enemyEngagementPreviewPanel.dmgValue.SetText($"{enemyPreviewStats.damage}");
 			enemyEngagementPreviewPanel.hitValue.SetText($"{enemyPreviewStats.hitRate}%");
-			enemyEngagementPreviewPanel.critValue.SetText($"{enemyPreviewStats.critRate}%");
+			enemyEngagementPreviewPanel.critValue.SetText($"{enemyPreviewStats.critRate}%");	
 		}
 	}
 

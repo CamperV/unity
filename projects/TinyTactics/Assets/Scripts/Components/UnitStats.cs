@@ -16,8 +16,6 @@ public class UnitStats : MonoBehaviour
     public int REFLEX;
     public int DAMAGE_REDUCTION;
     public int MOVE;
-    public int MIN_RANGE;
-    public int MAX_RANGE;
 
     public int _CURRENT_HP;
 

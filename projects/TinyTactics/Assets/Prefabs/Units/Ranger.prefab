@@ -16,7 +16,9 @@ MonoBehaviour:
     x: 0
     y: 0
   spriteAnimator: {fileID: 0}
+  spriteRenderer: {fileID: 0}
   unitStats: {fileID: 0}
+  equippedWeapon: {fileID: 7317941260927309738, guid: ae85c7a71f197d9458e6e0581ecee04d, type: 3}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
@@ -77,8 +79,6 @@ MonoBehaviour:
   REFLEX: 2
   DAMAGE_REDUCTION: 0
   MOVE: 3
-  MIN_RANGE: 2
-  MAX_RANGE: 2
   _CURRENT_HP: 0
 --- !u!1001 &7800023651149863596
 PrefabInstance:

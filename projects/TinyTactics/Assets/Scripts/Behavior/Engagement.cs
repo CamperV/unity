@@ -70,8 +70,8 @@ public class Engagement
     private static bool CounterAttackPossible(Unit agg, Unit def) {
         AttackRange defenderAttackRange = AttackRange.Standing(
             def.gridPosition,
-            def.unitStats.MIN_RANGE,
-            def.unitStats.MAX_RANGE
+            def.equippedWeapon.weaponStats.MIN_RANGE,
+            def.equippedWeapon.weaponStats.MAX_RANGE
         );
         return defenderAttackRange.ValidAttack(agg.gridPosition);
     }

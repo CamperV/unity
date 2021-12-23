@@ -37,6 +37,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public MoveRange moveRange;
     public AttackRange attackRange;
 
+    // Equipment
+    public Weapon equippedWeapon;
+
     // abstract
     public abstract void RevertTurn();
     protected abstract void DisplayThreatRange();
@@ -64,6 +67,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
         playerUnitController = _topBattleRef.GetComponentInChildren<PlayerUnitController>();
         enemyUnitController = _topBattleRef.GetComponentInChildren<EnemyUnitController>();
+
+        equippedWeapon = Instantiate(equippedWeapon, transform);
     }
 
     // we must take care to add certain functions to the MoveRange
@@ -76,7 +81,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
 
         if (attackAvailable) {
-            attackRange = new AttackRange(moveRange, unitStats.MIN_RANGE, unitStats.MAX_RANGE);
+            Debug.Log($"{this} has non null weapon? {equippedWeapon == null}/{equippedWeapon}");
+            attackRange = new AttackRange(moveRange, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
         } else {
             attackRange = AttackRange.Empty;
         }
