@@ -44,6 +44,9 @@ public sealed class EventManager : MonoBehaviour
 
         inputController.MainInteractButtonEvent += playerUnitController.ForceEndPlayerPhase;
 
+        // top!battle events
+        topBattleRef.BattleStartEvent += turnManager.Enable;
+
         // battlemap events
         battleMap.InteractEvent += playerUnitController.ContextualInteractAt;
         battleMap.InteractEvent += enemyUnitController.ContextualInteractAt;

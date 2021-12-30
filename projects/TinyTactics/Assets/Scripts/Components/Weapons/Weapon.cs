@@ -4,18 +4,36 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(WeaponStats))]
-public class Weapon : MonoBehaviour, IMutatorComponent
+public class Weapon : MonoBehaviour
 {
+    // set by equipping Unit
     public Unit boundUnit { get; set; }
 
     // assigned in inspector or otherwise
+    public string name;
     public Sprite sprite;
     public Color color;
     
     [HideInInspector] public WeaponStats weaponStats;
+    public List<string> tags;
 
     void Awake() {
-        boundUnit = GetComponent<Unit>();
         weaponStats = GetComponent<WeaponStats>();
+    }
+
+    public bool HasTagMatch(params string[] tagsToCheck) {
+        foreach (string tag in tagsToCheck) {
+            if (tags.Contains(tag))
+                return true;
+        }
+        return false;
+    }
+
+    public void Equip(Unit unit) {
+        boundUnit = unit;
+        
+        foreach (WeaponPerk wp in GetComponents<WeaponPerk>()) {
+            wp.OnEquip();
+        }
     }
 }

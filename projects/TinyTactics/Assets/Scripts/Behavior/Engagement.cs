@@ -67,13 +67,21 @@ public class Engagement
         return mutableEngagement;
     }
 
-    private static bool CounterAttackPossible(Unit agg, Unit def) {
+    public static bool CounterAttackPossible(Unit agg, Unit def) {
         AttackRange defenderAttackRange = AttackRange.Standing(
             def.gridPosition,
             def.equippedWeapon.weaponStats.MIN_RANGE,
             def.equippedWeapon.weaponStats.MAX_RANGE
         );
         return defenderAttackRange.ValidAttack(agg.gridPosition);
+    }
+    public static bool CounterAttackPossible(Unit agg, Unit def, GridPosition fromPosition) {
+        AttackRange defenderAttackRange = AttackRange.Standing(
+            def.gridPosition,
+            def.equippedWeapon.weaponStats.MIN_RANGE,
+            def.equippedWeapon.weaponStats.MAX_RANGE
+        );
+        return defenderAttackRange.ValidAttack(fromPosition);
     }
 
     public IEnumerator Resolve() {
@@ -115,6 +123,8 @@ public class Engagement
     }
 
     public Attack GenerateAttack(Unit generator, Unit target) {
+        int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
+
         MutableAttack mutableAttack = new MutableAttack(
             generator.unitStats.STRENGTH  + generator.equippedWeapon.weaponStats.MIGHT,         // damage
             generator.unitStats.DEXTERITY + generator.equippedWeapon.weaponStats.ACCURACY,      // hit rate
@@ -127,10 +137,12 @@ public class Engagement
     }
 
     public Defense GenerateDefense(Unit generator, Unit attacker) {
+        int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
+
         MutableDefense mutableDefense = new MutableDefense(
-            generator.unitStats.DAMAGE_REDUCTION, // reduce incoming damage
-            generator.unitStats.REFLEX,           // avoid rate
-            0                                     // crit avoid rate
+            generator.unitStats.DAMAGE_REDUCTION,                   // reduce incoming damage
+            generator.unitStats.REFLEX - weightPenalty,             // avoid rate
+            0                                                       // crit avoid rate
         );
 
         // THIS WILL MODIFY THE OUTGOING DEFENSE PACKAGE

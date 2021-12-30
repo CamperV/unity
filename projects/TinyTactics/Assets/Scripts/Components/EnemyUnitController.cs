@@ -60,7 +60,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
 
     public void InitialState() {
         ExitState(state);
-        EnterState(ControllerFSM.NoPreview);
+        EnterState(ControllerFSM.Inactive);
     }
 
     public void EnterState(ControllerFSM enteringState) {

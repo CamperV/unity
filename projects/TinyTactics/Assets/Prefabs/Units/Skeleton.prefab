@@ -58,12 +58,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de54ba498d272848aa4102bd1ebee66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VITALITY: 50
-  STRENGTH: 5
+  VITALITY: 13
+  STRENGTH: 8
   DEXTERITY: 10
-  REFLEX: 2
-  DAMAGE_REDUCTION: 4
-  MOVE: 15
+  REFLEX: 8
+  DAMAGE_REDUCTION: 0
+  MOVE: 3
   _CURRENT_HP: 0
 --- !u!114 &4070303141671970314
 MonoBehaviour:
@@ -79,6 +79,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainTiles: []
   _terrainCostOverrides: 
+--- !u!114 &5020557457684770152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6467957086888709650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59288c3556e52fa4e9fe4a8856776fcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &963213351486374029
 PrefabInstance:
   m_ObjectHideFlags: 0

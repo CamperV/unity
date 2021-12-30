@@ -54,7 +54,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     //
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
-    // public bool MouseHovering { get => battleMap.CurrentMouseGridPosition == gridPosition; }
     public bool MouseHovering => battleMap.CurrentMouseGridPosition == gridPosition;
 
     protected virtual void Awake() {
@@ -72,6 +71,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         enemyUnitController = _topBattleRef.GetComponentInChildren<EnemyUnitController>();
 
         equippedWeapon = Instantiate(equippedWeapon, transform);
+        equippedWeapon.Equip(this);
     }
 
     // we must take care to add certain functions to the MoveRange
@@ -84,7 +84,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
 
         if (attackAvailable) {
-            Debug.Log($"{this} has non null weapon? {equippedWeapon == null}/{equippedWeapon}");
             attackRange = new AttackRange(moveRange, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
         } else {
             attackRange = AttackRange.Empty;
@@ -164,6 +163,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
             gameObject.SetActive(false);
             DisableFSM();
             unitMap.ClearPosition(gridPosition);
+            FinishTurn();
 		}));
 	}
 

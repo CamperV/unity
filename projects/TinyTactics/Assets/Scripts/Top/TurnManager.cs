@@ -27,14 +27,14 @@ public class TurnManager : MonoBehaviour
     }
 
     // this will execute Enable() at the end of the Start frame
-    void Start() {
-        StartCoroutine( LateEnable() );
-    }
+    // void Start() {
+    //     StartCoroutine( LateEnable() );
+    // }
 
-	public IEnumerator LateEnable() {
-		yield return new WaitForEndOfFrame();
-		Enable();
-	}
+	// public IEnumerator LateEnable() {
+	// 	yield return new WaitForEndOfFrame();
+	// 	Enable();
+	// }
 
     public void Enable() {
         Debug.Log($"Starting turn manager {gameObject.name}");
@@ -61,7 +61,7 @@ public class TurnManager : MonoBehaviour
     private IEnumerator Loop() {
         while (enable) {
             turnCount++;
-            Debug.Log($"beginning {gameObject.name} Turn {turnCount}");
+            UIManager.inst.combatLog.AddEntry($"Beginning PURPLE@Turn PURPLE@{turnCount}.");
 
             NewTurnEvent(turnCount);
             yield return ExecutePhases(playerPhase, enemyPhase);
@@ -80,12 +80,15 @@ public class TurnManager : MonoBehaviour
                 yield return new WaitUntil(() => suspend == false);
             }
 
-            Debug.Log($"Triggering phase {phase.name}");
+            string phaseTag = (phase.name == "Player") ? "PLAYER_UNIT" : "ENEMY_UNIT";
+            UIManager.inst.combatLog.AddEntry($"Beginning {phaseTag}@{phase.name} KEYWORD@Phase.");
+
             currentPhase = phase;
             NewPhaseEvent(currentPhase);
             phase.TriggerStart();
 
             yield return new WaitUntil(() => phase.state == Phase.PhaseState.Complete);
+            UIManager.inst.combatLog.AddEntry($"Ended {phaseTag}@{phase.name} KEYWORD@Phase.");
 
             // post-phase delay
             yield return new WaitForSeconds(endPhaseDelay);

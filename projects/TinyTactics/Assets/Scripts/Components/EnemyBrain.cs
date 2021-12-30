@@ -9,20 +9,9 @@ using Extensions;
 [RequireComponent(typeof(EnemyUnit))]
 public class EnemyBrain : MonoBehaviour
 {
-	// General priorities:
-    // 1) in attack range
-    // 2) highest damage
-    // 3) longest range
-    // 4) best chance to hit
-    // 5) best chance to crit
-
 	private EnemyUnit thisUnit;
 	private List<PlayerUnit> targets;
 
-	// public struct Thoughts {
-	// 	bool willIAttackThisTurn = false;
-	// 	bool willIDieIfIAttack = false;
-	// }
 	public struct DamagePackage {
 		public PlayerUnit target;
 		public GridPosition fromPosition;
@@ -77,7 +66,8 @@ public class EnemyBrain : MonoBehaviour
 		// 		a) highest damage
 		//		b) closest target to current position
 		//		c) farthest potentialNewPosition from potentialTarget.gridPosition (i.e. an archer maximizing range)
-		foreach (DamagePackage dp in damagePackages.OrderByDescending(PotentialDamage)
+		foreach (DamagePackage dp in damagePackages.OrderBy(CounterAttackPossible)
+												   .ThenByDescending(PotentialDamage)
 												   .ThenBy(ClosestPosition)
 												   .ThenByDescending(FarthestRange)) {
 			yield return dp;
@@ -86,7 +76,8 @@ public class EnemyBrain : MonoBehaviour
 
 	private IEnumerable<GridPosition> CanPathToThenAttack(GridPosition potentialTargetPosition) {
 		foreach (GridPosition withinRange in potentialTargetPosition.Radiate(thisUnit.equippedWeapon.weaponStats.MAX_RANGE, min: thisUnit.equippedWeapon.weaponStats.MIN_RANGE)) {	
-			if (thisUnit.moveRange.ValidMoveTo(withinRange)) yield return withinRange;
+			if (thisUnit.moveRange.ValidMoveTo(withinRange))
+				yield return withinRange;
 		}
 	}
 
@@ -105,9 +96,10 @@ public class EnemyBrain : MonoBehaviour
 		return finalStats.damage;
 	}
 
-	private int PotentialDamage(DamagePackage dp) => dp.potentialDamage;
-	private int ClosestPosition(DamagePackage dp) => thisUnit.gridPosition.ManhattanDistance(dp.fromPosition);
-	private int FarthestRange(DamagePackage dp)   => dp.target.gridPosition.ManhattanDistance(dp.fromPosition);
+	private bool CounterAttackPossible(DamagePackage dp) => Engagement.CounterAttackPossible(thisUnit, dp.target, dp.fromPosition);
+	private int  PotentialDamage(DamagePackage dp)       => dp.potentialDamage;
+	private int  ClosestPosition(DamagePackage dp) 		 => thisUnit.gridPosition.ManhattanDistance(dp.fromPosition);
+	private int  FarthestRange(DamagePackage dp)   		 => dp.target.gridPosition.ManhattanDistance(dp.fromPosition);
 }
 
 

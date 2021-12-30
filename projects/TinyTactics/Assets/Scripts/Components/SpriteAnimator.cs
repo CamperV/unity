@@ -84,6 +84,7 @@ public class SpriteAnimator : MonoBehaviour
 		animationStack++;
 		//
 		SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+		CanvasGroup canvasGroup = GetComponentInChildren<CanvasGroup>();
 
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
@@ -91,6 +92,10 @@ public class SpriteAnimator : MonoBehaviour
 
 			foreach (var r in renderers) {
 				r.color = r.color.WithAlpha(1.0f - timeRatio);
+			}
+
+			if (canvasGroup != null) {
+				canvasGroup.alpha = (1.0f - timeRatio);
 			}
 			yield return null;
 		}

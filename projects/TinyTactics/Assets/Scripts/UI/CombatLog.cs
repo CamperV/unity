@@ -66,6 +66,9 @@ public class CombatLog : MonoBehaviour
                     case "PURPLE":
                         finalMessage += $"<color=purple><b>{content}</b></color>";
                         break;
+                    case "BLUE":
+                        finalMessage += $"<color=blue><b>{content}</b></color>";
+                        break;
                     default:
                         finalMessage += content;
                         break;

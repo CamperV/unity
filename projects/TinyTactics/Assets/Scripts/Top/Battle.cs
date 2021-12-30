@@ -8,6 +8,9 @@ using UnityEngine.Tilemaps;
 [RequireComponent(typeof(UnitMap), typeof(TurnManager))]
 public class Battle : MonoBehaviour
 {
+    public delegate void BattleEvent();
+    public event BattleEvent BattleStartEvent;
+
     private UnitMap unitMap;
     private TurnManager turnManager;
     
@@ -23,9 +26,7 @@ public class Battle : MonoBehaviour
     }
 
     public void StartBattle() {
-        // turnManager enables automatically
-        // all Units enter state automatically
-        // all events are ordered correctly
+        BattleStartEvent?.Invoke();
     }
 
     public void CheckVictoryConditions() {
