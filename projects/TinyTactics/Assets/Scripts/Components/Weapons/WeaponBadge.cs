@@ -20,7 +20,10 @@ public class WeaponBadge : MonoBehaviour
     }
 
     void Start() {
-        weaponBadgeVisualization.sprite = boundUnit.equippedWeapon.sprite;
+        // weaponBadgeVisualization.sprite = boundUnit.equippedWeapon.sprite;
+        
         weaponBadgeVisualization.color = boundUnit.equippedWeapon.color;
+        // weaponBadgeVisualization.color = boundUnit.equippedWeapon.color.WithSaturation(0.25f);
+        // weaponBadgeVisualization.color = Color.Lerp(boundUnit.spriteRenderer.color, boundUnit.equippedWeapon.color, 0.65f).WithAlpha(1f);
     }
 }

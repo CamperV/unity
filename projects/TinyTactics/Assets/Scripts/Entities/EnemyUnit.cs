@@ -74,6 +74,8 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             case EnemyUnitFSM.Preview:
                 UpdateThreatRange();
                 StartCoroutine( Utils.LateFrame(DisplayThreatRange) );
+                //
+                UIManager.inst.EnableUnitDetail(this);
                 break;
 
             case EnemyUnitFSM.Moving:
@@ -90,6 +92,8 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
             case EnemyUnitFSM.Preview:
                 battleMap.ResetHighlight();
+                //
+                UIManager.inst.DisableUnitDetail();
                 break;
 
             case EnemyUnitFSM.Moving:

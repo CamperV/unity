@@ -76,6 +76,9 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             case PlayerUnitFSM.MoveSelection:
                 UpdateThreatRange();
                 StartCoroutine( Utils.LateFrame(DisplayThreatRange) );
+
+                //
+                UIManager.inst.EnableUnitDetail(this);
                 break;
 
             case PlayerUnitFSM.Moving:
@@ -104,6 +107,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             case PlayerUnitFSM.MoveSelection:
                 battleMap.ResetHighlight();
                 battleMap.ClearDisplayPath();
+                //
+                UIManager.inst.DisableUnitDetail();
                 break;
 
             case PlayerUnitFSM.Moving:
@@ -296,7 +301,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         battleMap.Highlight(battleMap.CurrentMouseGridPosition, Constants.threatColorYellow);
 
                         // create and display EngagementPreviews here
-                        UIManager.inst.EnableEngagementPreview( Engagement.Create(this, enemy) );
+                        UIManager.inst.EnableEngagementPreview( Engagement.Create(this, enemy), enemy.transform.position.y );
                     }
                 }
                 break;

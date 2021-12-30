@@ -7,23 +7,23 @@ using UnityEngine;
 public struct Defense
 {
     public int damageReduction;
-    public int dodgeRate;
-    public int critDodgeRate;
+    public int avoidRate;
+    public int critAvoidRate;
 
     public Defense(int dr, int avoid, int critAvoid) {
         damageReduction = dr;
-        dodgeRate = avoid;
-        critDodgeRate = critAvoid;
+        avoidRate = avoid;
+        critAvoidRate = critAvoid;
     }
 
     public Defense(MutableDefense mutDef) {
         damageReduction = mutDef.damageReduction;
-        dodgeRate = mutDef.dodgeRate;
-        critDodgeRate = mutDef.critDodgeRate;  
+        avoidRate = mutDef.avoidRate;
+        critAvoidRate = mutDef.critAvoidRate;  
     }
 
     public string ToString() {
-        return $"Defense: {damageReduction}/{dodgeRate}/{critDodgeRate}";
+        return $"Defense: {damageReduction}/{avoidRate}/{critAvoidRate}";
     }
 }
 
@@ -32,12 +32,12 @@ public struct Defense
 public class MutableDefense
 {
     public int damageReduction;
-    public int dodgeRate;
-    public int critDodgeRate;
+    public int avoidRate;
+    public int critAvoidRate;
 
     public MutableDefense(int dr, int avoid, int critAvoid) {
         damageReduction = dr;
-        dodgeRate = avoid;
-        critDodgeRate = critAvoid;
+        avoidRate = avoid;
+        critAvoidRate = critAvoid;
     }
 }

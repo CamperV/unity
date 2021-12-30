@@ -10,9 +10,13 @@ public sealed class UIManager : MonoBehaviour
     [SerializeField] private Text currentTurnText;
 	[SerializeField] private Text currentPhaseText;
 
+	[SerializeField] private UnitDetailPanel unitDetailPanel;
+
 	[SerializeField] private GameObject engagementPreviewContainer;
 	[SerializeField] private EngagementPreviewPanel playerEngagementPreviewPanel;
 	[SerializeField] private EngagementPreviewPanel enemyEngagementPreviewPanel;
+
+	public CombatLog combatLog;
 	
     void Awake() {
         // only allow one UIManager to exist at any time
@@ -35,8 +39,43 @@ public sealed class UIManager : MonoBehaviour
 		currentPhaseText.text = $"Current Phase: {newPhase.name}"; 
 	}
 
-	public void EnableEngagementPreview(Engagement potentialEngagement) {
+	public void EnableUnitDetail(Unit unit) {
+		unitDetailPanel.gameObject.SetActive(true);
+
+	    unitDetailPanel.portraitImage.sprite = unit.spriteRenderer.sprite;
+		unitDetailPanel.portraitImage.color = unit.spriteRenderer.color;
+		// unitDetailPanel.nameText.SetText(unit.name);
+		unitDetailPanel.weaponImage.sprite = unit.equippedWeapon.sprite;
+		unitDetailPanel.weaponImage.color = unit.equippedWeapon.color;
+		unitDetailPanel.weaponNameText.SetText($"{unit.equippedWeapon.gameObject.name}");
+		
+		// attributes
+		unitDetailPanel.hpValue.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");
+		unitDetailPanel.drValue.SetText($"{unit.unitStats.DAMAGE_REDUCTION}");
+		//
+		unitDetailPanel.vitValue.SetText($"{unit.unitStats.VITALITY}");
+		unitDetailPanel.strValue.SetText($"{unit.unitStats.STRENGTH}");
+		unitDetailPanel.dexValue.SetText($"{unit.unitStats.DEXTERITY}");
+		unitDetailPanel.refValue.SetText($"{unit.unitStats.REFLEX}");
+		unitDetailPanel.movValue.SetText($"{unit.unitStats.MOVE}");
+
+		// derived
+		int atk = unit.unitStats.STRENGTH + unit.equippedWeapon.weaponStats.MIGHT;
+		int hit = unit.unitStats.DEXTERITY + unit.equippedWeapon.weaponStats.ACCURACY;
+		int avo = unit.unitStats.REFLEX;
+		unitDetailPanel.atkValue.SetText($"{atk}");
+		unitDetailPanel.hitValue.SetText($"{hit}");
+		unitDetailPanel.avoValue.SetText($"{avo}");
+	}
+
+	public void DisableUnitDetail() {
+		unitDetailPanel.gameObject.SetActive(false);
+	}
+
+	public void EnableEngagementPreview(Engagement potentialEngagement, float yAnchor) {
 		engagementPreviewContainer.SetActive(true);
+		playerEngagementPreviewPanel.GetComponent<UIBobber>().MoveAnchor(yAnchor);
+		enemyEngagementPreviewPanel.GetComponent<UIBobber>().MoveAnchor(yAnchor);
 
 		// PLAYER-SIDE
 		Engagement.Stats playerPreviewStats = potentialEngagement.SimulateAttack();

@@ -8,6 +8,8 @@ using UnityEngine;
 [RequireComponent(typeof(UnitStats))]
 public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 {
+    public readonly string name = "UNIT";
+
     [field: SerializeField] public GridPosition gridPosition { get; set; }
     protected GridPosition _reservedGridPosition; // this is for maintaining state while animating/moving
     protected GridPosition _startingGridPosition; // this is for maintaining a revertable state when prevewing Engagements, etc
@@ -52,7 +54,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     //
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
-    public bool MouseHovering { get => battleMap.CurrentMouseGridPosition == gridPosition; }
+    // public bool MouseHovering { get => battleMap.CurrentMouseGridPosition == gridPosition; }
+    public bool MouseHovering => battleMap.CurrentMouseGridPosition == gridPosition;
 
     protected virtual void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
@@ -121,6 +124,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage, unitStats.VITALITY);
 		bool survived = unitStats._CURRENT_HP > 0;
 
+        string unitTag = (GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
+        UIManager.inst.combatLog.AddEntry($"{unitTag}@{name} suffers YELLOW@{incomingDamage} damage.");
+
         if (!survived) {
             TriggerDeathAnimation();
             DeathCleanUp();
@@ -151,6 +157,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 	}
 
 	private void DeathCleanUp() {
+        string unitTag = (GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
+        UIManager.inst.combatLog.AddEntry($"{unitTag}@{name} is KEYWORD@destroyed.");
+
     	StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
             gameObject.SetActive(false);
             DisableFSM();

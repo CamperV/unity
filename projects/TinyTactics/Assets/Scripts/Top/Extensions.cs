@@ -292,6 +292,19 @@ namespace Extensions
             return new Color(tint, tint, tint, 1.0f);
         }
 
+        
+        public static Color WithBrightness(this Color c, float value) {
+            float H, S, V;
+            Color.RGBToHSV(c, out H, out S, out V);
+            return Color.HSVToRGB(H, S, value);
+        }
+
+        public static Color WithSaturation(this Color c, float sat) {
+            float H, S, V;
+            Color.RGBToHSV(c, out H, out S, out V);
+            return Color.HSVToRGB(H, sat, V);
+        }
+
         // Dict
         public static TValue GetValueOtherwise<TKey, TValue>(this Dictionary<TKey, TValue> d, TKey k, TValue tv) {
             if (d.ContainsKey(k)) {

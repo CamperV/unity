@@ -34,8 +34,8 @@ public class Engagement
 
 		public Stats(Attack a, Defense d) {
             damage   = (int)Mathf.Clamp((a.damage   - d.damageReduction), 0f, 999f);
-            hitRate  = (int)Mathf.Clamp((a.hitRate  - d.dodgeRate), 0f, 100f);
-            critRate = (int)Mathf.Clamp((a.critRate - d.critDodgeRate), 0f, 100f);
+            hitRate  = (int)Mathf.Clamp((a.hitRate  - d.avoidRate), 0f, 100f);
+            critRate = (int)Mathf.Clamp((a.critRate - d.critAvoidRate), 0f, 100f);
 		}
 
         public bool Empty { get => damage == -1 && hitRate == -1 && critRate == -1; }
@@ -84,7 +84,7 @@ public class Engagement
 
         // animate, then create a little pause before counterattacking
         // ReceiveAttack contains logic for animation processing
-        defenderSurvived = Process(aggressor, defender, attack, defense);
+        defenderSurvived = Process(aggressor, defender, attack, defense, "attack");
         yield return new WaitForSeconds(0.75f);
         ///
 
@@ -92,7 +92,7 @@ public class Engagement
         if (defenderSurvived && counterAttack != null) {
 
             // pause again to let the animation finish            
-            aggressorSurvived = Process(defender, aggressor, counterAttack.Value, counterDefense.Value);
+            aggressorSurvived = Process(defender, aggressor, counterAttack.Value, counterDefense.Value, "counter");
             yield return new WaitForSeconds(0.75f);
             ///
         }
@@ -116,9 +116,9 @@ public class Engagement
 
     public Attack GenerateAttack(Unit generator, Unit target) {
         MutableAttack mutableAttack = new MutableAttack(
-            generator.unitStats.STRENGTH,         // damage
-            generator.unitStats.DEXTERITY * 10,   // hit rate
-            0                                     // crit rate
+            generator.unitStats.STRENGTH  + generator.equippedWeapon.weaponStats.MIGHT,         // damage
+            generator.unitStats.DEXTERITY + generator.equippedWeapon.weaponStats.ACCURACY,      // hit rate
+            0                                                                                   // crit rate
         );
         
         // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
@@ -129,7 +129,7 @@ public class Engagement
     public Defense GenerateDefense(Unit generator, Unit attacker) {
         MutableDefense mutableDefense = new MutableDefense(
             generator.unitStats.DAMAGE_REDUCTION, // reduce incoming damage
-            generator.unitStats.REFLEX * 10,      // dodge rate
+            generator.unitStats.REFLEX,           // avoid rate
             0                                     // crit avoid rate
         );
 
@@ -138,10 +138,16 @@ public class Engagement
         return new Defense(mutableDefense);
     }
 
-    private bool Process(Unit A, Unit B, Attack _attack, Defense _defense) {
+    private bool Process(Unit A, Unit B, Attack _attack, Defense _defense, string attackType) {
         A.TriggerAttackAnimation(B.gridPosition);
-
         Stats finalStats = new Stats(_attack, _defense);
+
+        // log the Engagement
+        string ATag = (A.GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
+        string BTag = (B.GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
+        UIManager.inst.combatLog.AddEntry(
+            $"{ATag}@{A.name} {attackType}s: [ YELLOW@{finalStats.damage} ATK, YELLOW@{finalStats.hitRate} HIT, YELLOW@{finalStats.critRate} CRIT ]"
+        );
 
 		// calc hit/crit
 		int diceRoll = Random.Range(0, 100);
@@ -153,15 +159,19 @@ public class Engagement
 			bool isCrit = diceRoll < finalStats.critRate;
             int sufferedDamage = (isCrit) ? finalStats.damage*3 : finalStats.damage;
 
+            // hit/crit
+            if (isCrit) UIManager.inst.combatLog.AddEntry("YELLOW@Critical YELLOW@Hit!");          
+
             // ouchies, play the animations for hurt
             B.TriggerHurtAnimation(isCritical: isCrit);
 			survived = B.SufferDamage(sufferedDamage);
-			Debug.Log($"{B} was hit ({finalStats.hitRate}% to hit), dmg: {sufferedDamage}");
 
         // miss
 		} else {
             B.TriggerMissAnimation();
-			Debug.Log($"{B} dodged the attack! ({finalStats.hitRate}% to hit)");
+			UIManager.inst.combatLog.AddEntry(
+                $"{BTag}@{B.name} KEYWORD@avoided the attack."
+            );
 		}
 
 		return survived;
