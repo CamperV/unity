@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -9,17 +10,15 @@ public struct Attack
     public int damage;
     public int hitRate;
     public int critRate;
-
-    public Attack(int dmg, int hit, int crit) {
-        damage = dmg;
-        hitRate = hit;
-        critRate = crit;
-    }
+    //
+    public List<string> mutators;
 
     public Attack(MutableAttack mutAtt) {
         damage = mutAtt.damage;
         hitRate = mutAtt.hitRate;
-        critRate = mutAtt.critRate;  
+        critRate = mutAtt.critRate;
+        //
+        mutators = new List<string>(mutAtt.mutators);
     }
 
     public string ToString() {
@@ -34,10 +33,14 @@ public class MutableAttack
     public int damage;
     public int hitRate;
     public int critRate;
+    //
+    public List<string> mutators;
 
     public MutableAttack(int dmg, int hit, int crit) {
         damage = dmg;
         hitRate = hit;
         critRate = crit;
+        //
+        mutators = new List<string>();
     }
 }

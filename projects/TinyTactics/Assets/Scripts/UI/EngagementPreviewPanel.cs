@@ -14,4 +14,6 @@ public class EngagementPreviewPanel : MonoBehaviour
 	public TextMeshProUGUI dmgValue;
 	public TextMeshProUGUI hitValue;
 	public TextMeshProUGUI critValue;
+	//
+	public TextMeshProUGUI mutatorsValue;
 }

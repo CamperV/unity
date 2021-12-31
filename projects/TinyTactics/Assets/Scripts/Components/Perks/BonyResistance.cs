@@ -11,10 +11,14 @@ public class BonyResistance : Perk
 
     private void ConditionalDefense(ref MutableDefense mutDef, Unit target) {
         if (target.equippedWeapon.HasTagMatch("Slash", "Pierce")) {
-            mutDef.damageReduction += 2;
+            mutDef.damageReduction += 3;
+            //
+            mutDef.mutators.Add(this.GetType().Name);
         }
         if (target.equippedWeapon.HasTagMatch("Strike")) {
-            mutDef.damageReduction -= 2;
+            mutDef.damageReduction -= 3;
+            //
+            mutDef.mutators.Add(this.GetType().Name);
         }
     }
 }

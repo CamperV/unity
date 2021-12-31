@@ -18,6 +18,8 @@ public class AntiStrike : WeaponPerk
     private void OffensiveAdv(ref MutableAttack mutAtt, Unit target) {
         if (target.equippedWeapon.HasTagMatch("Strike")) {
             mutAtt.hitRate += 15;
+            //
+            mutAtt.mutators.Add(this.GetType().Name);
         }
     }
 
@@ -25,6 +27,8 @@ public class AntiStrike : WeaponPerk
         if (target.equippedWeapon.HasTagMatch("Strike")) {
             mutDef.avoidRate       += 15;
             mutDef.critAvoidRate   += 15;
+            //
+            mutDef.mutators.Add(this.GetType().Name);
         }
     }
 }

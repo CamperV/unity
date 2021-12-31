@@ -7,8 +7,8 @@ using Random = UnityEngine.Random;
 // this class is created for an acutal battle between two Units
 public class Engagement
 {
-    public delegate void EngagementCreation(ref Engagement e);
-    public static event EngagementCreation EngagementCreationEvent;
+    // public delegate void EngagementCreation(ref Engagement e);
+    // public static event EngagementCreation EngagementCreationEvent;
 
     public Unit aggressor;
     public Unit defender;
@@ -45,8 +45,6 @@ public class Engagement
         aggressor = a;
         defender = b;
 
-        // TODO in the future, the Attacker may have modifications based on current GridPosition or others
-        // or, send an Event trigger out with this new Engagement
         attack = GenerateAttack(aggressor, defender);
         defense = GenerateDefense(defender, aggressor);
         
@@ -122,7 +120,7 @@ public class Engagement
         }
     }
 
-    public Attack GenerateAttack(Unit generator, Unit target) {
+    private Attack GenerateAttack(Unit generator, Unit target) {
         int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
 
         MutableAttack mutableAttack = new MutableAttack(
@@ -136,7 +134,7 @@ public class Engagement
         return new Attack(mutableAttack);
     }
 
-    public Defense GenerateDefense(Unit generator, Unit attacker) {
+    private Defense GenerateDefense(Unit generator, Unit attacker) {
         int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
 
         MutableDefense mutableDefense = new MutableDefense(

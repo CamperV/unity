@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -89,6 +90,15 @@ public sealed class UIManager : MonoBehaviour
 		playerEngagementPreviewPanel.hitValue.SetText($"{playerPreviewStats.hitRate}%");
 		playerEngagementPreviewPanel.critValue.SetText($"{playerPreviewStats.critRate}%");
 
+		// list of perks that were relevant for this Attack & potentially, counterDefense
+		List<string> playerUnitMutators = new List<string>(potentialEngagement.attack.mutators);
+		if (potentialEngagement.counterDefense != null) {
+			playerUnitMutators = playerUnitMutators.Concat(potentialEngagement.counterDefense.Value.mutators).Distinct().ToList();
+		}
+		string playerUnitMutatorsText = string.Join("\n", playerUnitMutators);
+		playerEngagementPreviewPanel.mutatorsValue.SetText(playerUnitMutatorsText);
+
+
 		// ENEMY-SIDE
 		// only update this if you CAN counter-attack
 		Engagement.Stats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
@@ -109,6 +119,15 @@ public sealed class UIManager : MonoBehaviour
 			enemyEngagementPreviewPanel.hitValue.SetText($"{enemyPreviewStats.hitRate}%");
 			enemyEngagementPreviewPanel.critValue.SetText($"{enemyPreviewStats.critRate}%");	
 		}
+
+		
+		// list of perks that were relevant for this Defense & potentially, counterAttack
+		List<string> enemyUnitMutators = new List<string>(potentialEngagement.defense.mutators);
+		if (potentialEngagement.counterAttack != null) {
+			enemyUnitMutators = enemyUnitMutators.Concat(potentialEngagement.counterAttack.Value.mutators).Distinct().ToList();
+		}
+		string enemyUnitMutatorsText = string.Join("\n", enemyUnitMutators);
+		enemyEngagementPreviewPanel.mutatorsValue.SetText(enemyUnitMutatorsText);
 	}
 
 	public void DisableEngagementPreview() {

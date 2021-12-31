@@ -34,9 +34,7 @@ public class Battle : MonoBehaviour
         bool enemyUnitsAlive = enemyUnitController.activeUnits.Any();
 
         if (!enemyUnitsAlive) {
-            Debug.Log($"=====================");
-            Debug.Log($"====== VICTORY ======");
-            Debug.Log($"=====================");
+            UIManager.inst.combatLog.AddEntry($"GREEN@VICTORY!");
         }
     }
 
@@ -45,9 +43,7 @@ public class Battle : MonoBehaviour
         bool playerUnitsAlive = playerUnitController.activeUnits.Any();
 
         if (!playerUnitsAlive) {
-            Debug.Log($"====================");
-            Debug.Log($"====== DEFEAT ======");
-            Debug.Log($"====================");
+            UIManager.inst.combatLog.AddEntry($"RED@Y RED@O RED@U  RED@D RED@I RED@E RED@D");
         }
     }
 }

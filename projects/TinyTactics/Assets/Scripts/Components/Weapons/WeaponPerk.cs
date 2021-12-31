@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public abstract class WeaponPerk : MonoBehaviour
+public abstract class WeaponPerk : MonoBehaviour, IMutatorComponent
 {
+    public Unit boundUnit { get; set; }
     public Weapon boundWeapon { get; set; }
 
     void Awake() {
