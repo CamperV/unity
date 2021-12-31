@@ -177,6 +177,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
                         ChangeState(PlayerUnitFSM.Moving);
                         auxiliaryInteractFlag = auxiliaryInteract;
+
+                        FireOnMoveEvent(pathToMouseOver);
                     }
                 }
                 break;
@@ -356,16 +358,12 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     // there theoretically exists a period of time in which things snap around, as MoveUnit can move a Transform, like SpriteAnimator
     // however, the SmoothMovementGrid should override that. I don't know the order of operations vis-a-vis coroutines etc
     private void UndoMovement() {
-        // starts from gridPosition
-        // StartCoroutine(spriteAnimator.SmoothMovementGrid<GridPosition>(_startingGridPosition, battleMap, _fixedTime: 0.05f));
 
         // modifies gridPosition & updates threat range
         unitMap.MoveUnit(this, _startingGridPosition);
         _reservedGridPosition = gridPosition;
+        buffManager.RemoveAllMovementBuffs();
         RefreshInfo();
-
-        // re-aligns unit's transform without MoveUnit call
-        // StartCoroutine(spriteAnimator.ExecuteAfterMoving(() => unitMap.AlignUnit(this, _startingGridPosition) ));
     }
 
     // this needs to run at the end of the frame

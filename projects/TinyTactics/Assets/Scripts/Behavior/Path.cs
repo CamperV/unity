@@ -13,8 +13,9 @@ public class Path<T> where T : struct
 	// it also greatly simplifies the utility functions I have to write
 	protected LinkedList<T> path = new LinkedList<T>();
 	
-	public T start { get => path.First.Value; }
-	public T end { get => path.Last.Value; }
+	public T start => path.First.Value;
+	public T end => path.Last.Value;
+	public int Count => path.Count;
 	
 	public void AddFirst(T v) {
 		path.AddFirst(v);

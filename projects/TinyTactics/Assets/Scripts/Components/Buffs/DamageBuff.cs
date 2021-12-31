@@ -8,7 +8,7 @@ public class DamageBuff : Buff
     public int expireTimer = 1;
     public int buffDamage = 1;
 
-    public override string displayName => $"+{buffDamage} Damage";
+    public override string displayName => $"+{buffDamage} Damage ({provider})";
 
     public override void OnAcquire() {
         boundUnit.OnFinishTurn += TickExpire;
@@ -18,22 +18,22 @@ public class DamageBuff : Buff
     public override void OnExpire() {
         boundUnit.OnFinishTurn -= TickExpire;
         boundUnit.OnAttack -= BuffAttackDamage;
-
-        UIManager.inst.combatLog.AddEntry($"{boundUnit.logTag}@{boundUnit.name}'s <color=blue><b>{displayName}</b></color> expired.");
-        
-        Destroy(this);
     }
 
-    // what happens when a buff of the same type is added
-    public override void Increment() {
-        buffDamage++;
+    public void AddDamage(int dmg) {
+        buffDamage += dmg;
+    }
+
+    public void TakeBestTimer(int timer) {
+        expireTimer = Mathf.Max(expireTimer, timer);
     }
 
     private void TickExpire() {
         expireTimer--;
 
         if (expireTimer <= 0) {
-            OnExpire();
+            UIManager.inst.combatLog.AddEntry($"{boundUnit.logTag}@{boundUnit.name}'s <color=blue><b>{displayName}</b></color> expired.");
+            Destroy(this);
         }
     }
 

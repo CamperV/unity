@@ -24,7 +24,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     // simply used to signal when a unit has been hit, dodged. etc
     public delegate void OnAction();
     public event OnAction OnHurt;
-    public event OnAction OnAvoid;    
+    public event OnAction OnAvoid;
+
+    public delegate void Movement(Path<GridPosition> path);
+    public event Movement OnMove;
 
     public delegate void OnPhaseInfo();
     public event OnPhaseInfo OnFinishTurn;
@@ -205,6 +208,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
         OnAvoid?.Invoke();
     }
-
+    public void FireOnMoveEvent(Path<GridPosition> pathTaken) => OnMove?.Invoke(pathTaken);
     public void FireOnFinishTurnEvent() => OnFinishTurn?.Invoke();
 }

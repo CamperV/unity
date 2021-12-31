@@ -61,11 +61,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VITALITY: 13
-  STRENGTH: 8
+  STRENGTH: 4
   DEXTERITY: 7
   REFLEX: 8
   DAMAGE_REDUCTION: 0
-  MOVE: 3
+  MOVE: 4
   _CURRENT_HP: 0
 --- !u!114 &4070303141671970314
 MonoBehaviour:
@@ -81,7 +81,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainTiles: []
   _terrainCostOverrides: 
-  unitPassThroughOverride: 0
+  moveThroughEnemiesOverride: 0
 --- !u!114 &5020557457684770152
 MonoBehaviour:
   m_ObjectHideFlags: 0

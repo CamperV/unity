@@ -29,7 +29,7 @@ MonoBehaviour:
   DEXTERITY: 10
   REFLEX: 7
   DAMAGE_REDUCTION: 0
-  MOVE: 4
+  MOVE: 5
   _CURRENT_HP: 0
 --- !u!114 &3438271828728852110
 MonoBehaviour:
@@ -47,7 +47,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f7527a40b97512a439d82222db47c7ec, type: 2}
   - {fileID: 11400000, guid: 19b51b86749e43047abaf006598f9cfc, type: 2}
   _terrainCostOverrides: 0100000001000000
-  unitPassThroughOverride: 0
+  moveThroughEnemiesOverride: 0
+--- !u!114 &4418163416302305331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376406717668632979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aeee0543d50c444ea7aee72b189f464, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5862028537161239383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,23 +79,12 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
+  buffManager: {fileID: 0}
   equippedWeapon: {fileID: 6036265347430983969, guid: 969c965e06ee83b4d98ad896a444c4e7, type: 3}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
   cancelSignal: 0
---- !u!114 &4418163416302305331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1376406717668632979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0aeee0543d50c444ea7aee72b189f464, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &5153581823944763148
 PrefabInstance:
   m_ObjectHideFlags: 0

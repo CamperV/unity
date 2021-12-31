@@ -26,7 +26,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainTiles: []
   _terrainCostOverrides: 
-  unitPassThroughOverride: 0
+  moveThroughEnemiesOverride: 0
 --- !u!114 &2849386750176803327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,11 +77,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VITALITY: 10
-  STRENGTH: 5
+  STRENGTH: 8
   DEXTERITY: 8
   REFLEX: 2
   DAMAGE_REDUCTION: 15
-  MOVE: 3
+  MOVE: 4
   _CURRENT_HP: 0
 --- !u!1001 &7487578033757355667
 PrefabInstance:
@@ -108,7 +108,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
-      value: Heavy
+      value: Barbarian
       objectReference: {fileID: 0}
     - target: {fileID: 7419503456615491691, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_RootOrder

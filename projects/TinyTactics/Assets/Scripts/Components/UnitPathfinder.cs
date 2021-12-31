@@ -14,7 +14,7 @@ public class UnitPathfinder : MonoBehaviour
 	
     public Dictionary<TerrainTile, int> terrainCostOverrides;
 
-	public bool unitPassThroughOverride; // defaults to false
+	public bool moveThroughEnemiesOverride; // defaults to false
 
 	// get your own IPathable
 	void Awake(){
@@ -69,7 +69,7 @@ public class UnitPathfinder : MonoBehaviour
 				// This distinction is made in the moveRange.BFS pathfinder. Here, we simply  //
 				// add all GP to the field if they don't contain enemyUnits					  //
 				////////////////////////////////////////////////////////////////////////////////
-				if (!unitPassThroughOverride) {
+				if (!moveThroughEnemiesOverride) {
 					var otherUnit = unitMap.UnitAt(adjacent);
 					if (otherUnit != null) {
 						if (GetComponent<Unit>().GetType() != otherUnit.GetType()) // PlayerUnit != EnemyUnit

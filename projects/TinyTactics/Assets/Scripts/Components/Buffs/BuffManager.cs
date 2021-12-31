@@ -5,25 +5,76 @@ using UnityEngine;
 
 public class BuffManager : MonoBehaviour
 {
-    public string displayName { get; set; }
-
-    public List<string> activeBuffs;
+    public HashSet<string> movementBuffProviders;
 
     void Awake() {
-        activeBuffs = new List<string>();
+        movementBuffProviders = new HashSet<string>();
     }
 
-    public void AttachBuff<T>() where T : Buff {
-        var existingBuff = GetComponent<T>();
+    public void AddDamageBuff(string provider, int damageValue, int expireTimerValue) {
 
-        if (existingBuff != null) {
-            existingBuff.Increment();
+        // first, check if we need to create a new buff or not
+        if (HasBuffFromProvider<DamageBuff>(provider)) {
+            DamageBuff existingBuff = GetBuffFromProvider<DamageBuff>(provider);
+            Debug.Log($"Found existing buff from provider {provider}: {existingBuff}");
 
-        // else, if you're the first buff of this type:
+            existingBuff.AddDamage(damageValue);
+            existingBuff.TakeBestTimer(expireTimerValue);
+
+        // else, if you're the first DamageBuff from this provider
         } else {
-            gameObject.AddComponent<T>();
+            DamageBuff buff = AttachBuff<DamageBuff>(provider);
+            buff.buffDamage = damageValue;
+            buff.expireTimer = expireTimerValue;
+        }
+    }
+
+    public void RemoveAllBuffsFromProvider(string provider) {
+        foreach (Buff buff in GetComponents<Buff>()) {
+            if (buff.provider == provider) Destroy(buff);
+        }
+    }
+
+    public void RemoveAllMovementBuffs() {
+        foreach (string mProvider in movementBuffProviders) {
+            RemoveAllBuffsFromProvider(mProvider);
+        }
+    }
+
+    //
+    //
+    //
+    private T AttachBuff<T>(string provider) where T : Buff {
+        return gameObject.AddComponent<T>().WithProvider(provider) as T;
+    }
+
+    private bool HasBuffFromProvider<T>(string provider) where T : Buff {
+        bool hasBuff = false;
+
+        foreach (T buff in GetComponents<T>()) {
+            hasBuff |= buff.provider == provider;
+        }
+        return hasBuff;
+    }
+
+    private T GetBuffFromProvider<T>(string provider) where T : Buff {
+        foreach (T buff in GetComponents<T>()) {
+            if (buff.provider == provider) return buff;
         }
 
-        activeBuffs.Add( typeof(T).ToString() );
+        // if you can't find a provider that matches, get the first Buff you see regardless
+        // we should never get here
+        return GetComponent<T>();
+    }
+
+    private void RemoveAllBuffs() {
+        foreach (Buff buff in GetComponents<Buff>()) {
+            Destroy(buff);
+        }
+    }
+    private void RemoveAllBuffsOfType<T>() where T : Buff {
+        foreach (T buff in GetComponents<T>()) {
+            Destroy(buff);
+        }
     }
 }
