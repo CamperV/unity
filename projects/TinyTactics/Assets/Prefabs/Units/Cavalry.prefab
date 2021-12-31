@@ -68,7 +68,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainTiles:
   - {fileID: 11400000, guid: 19b51b86749e43047abaf006598f9cfc, type: 2}
-  _terrainCostOverrides: ffffffff
+  _terrainCostOverrides: 02000000
 --- !u!1001 &4793414429907703558
 PrefabInstance:
   m_ObjectHideFlags: 0

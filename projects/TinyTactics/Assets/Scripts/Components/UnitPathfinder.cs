@@ -14,6 +14,8 @@ public class UnitPathfinder : MonoBehaviour
 	
     public Dictionary<TerrainTile, int> terrainCostOverrides;
 
+	public bool unitPassThroughOverride; // defaults to false
+
 	// get your own IPathable
 	void Awake(){
 		Battle _topBattleRef = GetComponentInParent<Battle>();
@@ -67,11 +69,14 @@ public class UnitPathfinder : MonoBehaviour
 				// This distinction is made in the moveRange.BFS pathfinder. Here, we simply  //
 				// add all GP to the field if they don't contain enemyUnits					  //
 				////////////////////////////////////////////////////////////////////////////////
-				var otherUnit = unitMap.UnitAt(adjacent);
-				if (otherUnit != null) {
-					if (GetComponent<Unit>().GetType() != otherUnit.GetType()) // PlayerUnit != EnemyUnit
-						continue;
+				if (!unitPassThroughOverride) {
+					var otherUnit = unitMap.UnitAt(adjacent);
+					if (otherUnit != null) {
+						if (GetComponent<Unit>().GetType() != otherUnit.GetType()) // PlayerUnit != EnemyUnit
+							continue;
+					}
 				}
+
 				
 				// if you made it through the constraints gauntlet, save the best distance to this GP
 				// and enqueue the next search position

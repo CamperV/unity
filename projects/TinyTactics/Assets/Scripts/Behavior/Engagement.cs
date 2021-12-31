@@ -139,7 +139,7 @@ public class Engagement
 
         MutableDefense mutableDefense = new MutableDefense(
             generator.unitStats.DAMAGE_REDUCTION,                   // reduce incoming damage
-            generator.unitStats.REFLEX - weightPenalty,             // avoid rate
+            generator.unitStats.REFLEX*2 - weightPenalty,             // avoid rate
             0                                                       // crit avoid rate
         );
 
@@ -154,7 +154,6 @@ public class Engagement
 
         // log the Engagement
         string ATag = (A.GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
-        string BTag = (B.GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
         UIManager.inst.combatLog.AddEntry(
             $"{ATag}@{A.name} {attackType}s: [ YELLOW@{finalStats.damage} ATK, YELLOW@{finalStats.hitRate} HIT, YELLOW@{finalStats.critRate} CRIT ]"
         );
@@ -178,10 +177,7 @@ public class Engagement
 
         // miss
 		} else {
-            B.TriggerMissAnimation();
-			UIManager.inst.combatLog.AddEntry(
-                $"{BTag}@{B.name} KEYWORD@avoided the attack."
-            );
+            B.FireOnAvoidEvent();
 		}
 
 		return survived;

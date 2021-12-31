@@ -29,6 +29,7 @@ MonoBehaviour:
     y: 0
   spriteAnimator: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
   equippedWeapon: {fileID: 5250196175148631242, guid: 1cd08ecac22286a4f8416306b45458c8, type: 3}
   <turnActive>k__BackingField: 1
@@ -60,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VITALITY: 13
   STRENGTH: 8
-  DEXTERITY: 10
+  DEXTERITY: 1
   REFLEX: 8
   DAMAGE_REDUCTION: 0
   MOVE: 3
@@ -79,6 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainTiles: []
   _terrainCostOverrides: 
+  unitPassThroughOverride: 0
 --- !u!114 &5020557457684770152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,7 +93,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59288c3556e52fa4e9fe4a8856776fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <displayName>k__BackingField: Oops, all bones!
 --- !u!1001 &963213351486374029
 PrefabInstance:
   m_ObjectHideFlags: 0

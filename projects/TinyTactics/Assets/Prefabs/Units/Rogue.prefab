@@ -36,6 +36,7 @@ MonoBehaviour:
     y: 0
   spriteAnimator: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
   equippedWeapon: {fileID: 3179233669775410304, guid: fbddcfca5d5d89e45b1b1a78aa5e30f1, type: 3}
   <turnActive>k__BackingField: 1
@@ -68,6 +69,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainTiles: []
   _terrainCostOverrides: 
+  unitPassThroughOverride: 0
+--- !u!114 &4237057553454330425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7142497734743283761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1bfc6473f6472d4c967c81fc5c44a83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <displayName>k__BackingField: 
 --- !u!1001 &4000311493355460270
 PrefabInstance:
   m_ObjectHideFlags: 0

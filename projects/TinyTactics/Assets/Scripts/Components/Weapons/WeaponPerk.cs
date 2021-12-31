@@ -16,4 +16,6 @@ public abstract class WeaponPerk : MonoBehaviour, IMutatorComponent
 
     public abstract void OnEquip();
     public abstract void OnUnequip();
+
+    void OnDisable() => OnUnequip();
 }

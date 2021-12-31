@@ -20,6 +20,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     public delegate void DefenseGeneration(ref MutableDefense mutDef, Unit attacker);
     public event DefenseGeneration OnDefend;
+
+    // simply used to signal when a unit has dodged
+    public delegate void OnCondition();
+    public event OnCondition OnAvoid;
     //
 
     // necessary Component references
@@ -27,7 +31,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     [HideInInspector] protected BattleMap battleMap;
     [HideInInspector] public SpriteAnimator spriteAnimator;
     [HideInInspector] public SpriteRenderer spriteRenderer;
-    [HideInInspector] protected UnitPathfinder mapPathfinder;
+    [HideInInspector] public UnitPathfinder unitPathfinder;
     [HideInInspector] public UnitStats unitStats;
     [HideInInspector] protected HoldTimer holdTimer;
     
@@ -59,7 +63,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     protected virtual void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        mapPathfinder = GetComponent<UnitPathfinder>();
+        unitPathfinder = GetComponent<UnitPathfinder>();
         unitStats = GetComponent<UnitStats>();
         holdTimer = GetComponent<HoldTimer>();
 
@@ -74,13 +78,27 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         equippedWeapon.Equip(this);
     }
 
+    protected virtual void Start() {          
+        // acquire all perks
+        foreach (Perk p in GetComponents<Perk>()) {
+            p.OnAcquire();
+        }
+
+        // some init things that need to be taken care of
+        unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
+
+        originalColor = spriteRenderer.color;
+        moveRange = null;
+        attackRange = null;
+    }
+
     // we must take care to add certain functions to the MoveRange
     // The MoveRange field.Keys indicate what tiles can be pathed through
     // However, MoveRange doesn't know what tiles it cannot stand on
     // we pass it a UnitAt lambda to tell it you can't validly stand on occupied tiles
     public void UpdateThreatRange(bool standing = false) {
         int movement = (moveAvailable && standing == false) ? unitStats.MOVE : 0;
-        moveRange = mapPathfinder.GenerateFlowField<MoveRange>(gridPosition, range: movement);
+        moveRange = unitPathfinder.GenerateFlowField<MoveRange>(gridPosition, range: movement);
         moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
 
         if (attackAvailable) {
@@ -169,4 +187,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(ref mutAtt, target);
     public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(ref mutDef, attacker);
+
+    public void FireOnAvoidEvent() {
+        TriggerMissAnimation();
+
+        string tag = (GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
+		UIManager.inst.combatLog.AddEntry($"{tag}@{name} KEYWORD@avoided the attack.");
+
+        OnAvoid?.Invoke();
+    }
 }

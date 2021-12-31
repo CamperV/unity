@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1738846bd4eafe742b77a48660f5cae8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainTiles:
-  - {fileID: 11400000, guid: 19b51b86749e43047abaf006598f9cfc, type: 2}
-  _terrainCostOverrides: 01000000
+  terrainTiles: []
+  _terrainCostOverrides: 
 --- !u!114 &2849386750176803327
 MonoBehaviour:
   m_ObjectHideFlags: 0

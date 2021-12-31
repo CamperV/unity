@@ -29,18 +29,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     private GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
     private Path<GridPosition>? pathToMouseOver;
 
-
-    void Start() {
-               
-        // some init things that need to be taken care of
-        unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
-
-        originalColor = spriteRenderer.color;
-        moveRange = null;
-        attackRange = null;
-        EnterState(PlayerUnitFSM.Idle);
-    }
-
     void Update() => ContextualNoInteract();
 
     // IStateMachine<>
@@ -49,6 +37,11 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         
         ExitState(state);
         EnterState(newState);
+    }
+    
+    protected override void Start() {
+        base.Start();
+        InitialState();
     }
 
     // IStateMachine<>
@@ -205,6 +198,10 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
                         // if there's an enemy unit at that spot, create and execute an Engagement
                         ChangeState(PlayerUnitFSM.Attacking);
+
+                        // NOTE: when attacking normally, consume movement
+                        // Re-movement only granted with certain perks
+                        moveAvailable = false;
                         attackAvailable = false;
 
                         engagementResolveFlag = true;
@@ -220,10 +217,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                             })
                         );
                     }
-
-                    // default: you've clicked an invalid square
-                    // undoMovement as well
-                    // playerUnitController.ClearSelection();
                 }
                 break;
 
@@ -318,7 +311,14 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                     // just spin
 
                 } else {
-                    Wait();
+
+                    // if somehow you're able to attack without moving:
+                    // > Perk: AfterImage
+                    if (moveAvailable) {
+                        ChangeState(PlayerUnitFSM.MoveSelection);
+                    } else {
+                        Wait();
+                    }
                 }
                 break;
 
@@ -433,18 +433,35 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     }
     
     public void ContextualWait() {
-        if (turnActive && (moveAvailable || attackAvailable) ) {
-            switch (state) {
-                case PlayerUnitFSM.Moving:
-                case PlayerUnitFSM.Attacking:
-                case PlayerUnitFSM.Idle:
-                case PlayerUnitFSM.MoveSelection:
-                    break;
+        if (turnActive) {
+            if (attackAvailable || (moveAvailable && attackAvailable)) {
+                switch (state) {
+                    case PlayerUnitFSM.Moving:
+                    case PlayerUnitFSM.Attacking:
+                    case PlayerUnitFSM.Idle:
+                    case PlayerUnitFSM.MoveSelection:
+                        break;
 
-                // only start detecting the Wait signal if you're not animating, etc
-                case PlayerUnitFSM.AttackSelection:
-                    ChangeState(PlayerUnitFSM.PreWait);
-                    break;
+                    // only start detecting the Wait signal if you're not animating, etc
+                    case PlayerUnitFSM.AttackSelection:
+                        ChangeState(PlayerUnitFSM.PreWait);
+                        break;
+                }
+            } else if (moveAvailable && !attackAvailable) {
+                switch (state) {
+                    case PlayerUnitFSM.Moving:
+                    case PlayerUnitFSM.Attacking:
+                    case PlayerUnitFSM.Idle:
+                        break;
+
+                    // only start detecting the Wait signal if you're not animating, etc
+                    case PlayerUnitFSM.MoveSelection:
+                        ChangeState(PlayerUnitFSM.PreWait);
+                        break;
+
+                    case PlayerUnitFSM.AttackSelection:
+                        break;
+                }
             }
         }
     }
@@ -455,7 +472,12 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             
             // since you can only enter PreWait from AttackSelection, head back there
             // it will handle itself wrt going to Idle and checking attackAvailable
-            ChangeState(PlayerUnitFSM.AttackSelection);
+            if (moveAvailable) {
+                ChangeState(PlayerUnitFSM.MoveSelection);
+
+            } else {
+                ChangeState(PlayerUnitFSM.AttackSelection);
+            }
         }
     }
 

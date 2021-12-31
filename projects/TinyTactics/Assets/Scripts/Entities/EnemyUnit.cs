@@ -27,14 +27,9 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         brain = GetComponent<EnemyBrain>();
     }
 
-    void Start() {                
-        // some init things that need to be taken care of
-        unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
-
-        originalColor = spriteRenderer.color;
-        moveRange = null;
-        attackRange = null;
-        EnterState(EnemyUnitFSM.Idle);
+    protected override void Start() {
+        base.Start();
+        InitialState();
     }
 
     void Update() {

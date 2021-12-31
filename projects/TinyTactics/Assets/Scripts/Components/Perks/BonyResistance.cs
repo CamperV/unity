@@ -5,10 +5,14 @@ using UnityEngine;
 
 public class BonyResistance : Perk
 {
-    void OnEnable() {
+    public override void OnAcquire() {
         boundUnit.OnDefend += ConditionalDefense;
-        
+        //
         displayName = "Oops, All Bones";
+    }
+
+    public override void OnRemoval() {
+        boundUnit.OnDefend -= ConditionalDefense;
     }
 
     private void ConditionalDefense(ref MutableDefense mutDef, Unit target) {

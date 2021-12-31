@@ -63,7 +63,7 @@ public sealed class UIManager : MonoBehaviour
 		// derived
 		int atk = unit.unitStats.STRENGTH + unit.equippedWeapon.weaponStats.MIGHT;
 		int hit = unit.unitStats.DEXTERITY + unit.equippedWeapon.weaponStats.ACCURACY;
-		int avo = unit.unitStats.REFLEX - Mathf.Max(0, (unit.equippedWeapon.weaponStats.WEIGHT - unit.unitStats.STRENGTH));
+		int avo = unit.unitStats.REFLEX*2 - Mathf.Max(0, (unit.equippedWeapon.weaponStats.WEIGHT - unit.unitStats.STRENGTH));
 		unitDetailPanel.atkValue.SetText($"{atk}");
 		unitDetailPanel.hitValue.SetText($"{hit}");
 		unitDetailPanel.avoValue.SetText($"{avo}");
