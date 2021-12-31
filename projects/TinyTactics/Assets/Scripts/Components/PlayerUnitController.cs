@@ -111,7 +111,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void RefreshUnits() => activeUnits.ForEach(it => it.RefreshInfo());
 
-    public void ContextualInteractAt(GridPosition gp) {
+    public void ContextualInteractAt(GridPosition gp, bool auxiliaryInteract) {
         switch (state) {
             /////////////////////////////////////////////////////
             // When the Controller is inactive, we do nothing. //
@@ -126,7 +126,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             /////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.NoSelection:
                 currentSelection = MatchingUnitAt(gp);
-                currentSelection?.ContextualInteractAt(gp);
+                currentSelection?.ContextualInteractAt(gp, auxiliaryInteract);
                 break;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
                     currentSelection = unit;
                 }
 
-                currentSelection.ContextualInteractAt(gp);
+                currentSelection.ContextualInteractAt(gp, auxiliaryInteract);
                 break;
         }
     }

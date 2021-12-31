@@ -153,9 +153,9 @@ public class Engagement
         Stats finalStats = new Stats(_attack, _defense);
 
         // log the Engagement
-        string ATag = (A.GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
+        
         UIManager.inst.combatLog.AddEntry(
-            $"{ATag}@{A.name} {attackType}s: [ YELLOW@{finalStats.damage} ATK, YELLOW@{finalStats.hitRate} HIT, YELLOW@{finalStats.critRate} CRIT ]"
+            $"{A.logTag}@{A.name} {attackType}s: [ YELLOW@{finalStats.damage} ATK, YELLOW@{finalStats.hitRate} HIT, YELLOW@{finalStats.critRate} CRIT ]"
         );
 
 		// calc hit/crit

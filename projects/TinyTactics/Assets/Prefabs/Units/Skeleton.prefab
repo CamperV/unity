@@ -31,6 +31,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
+  buffManager: {fileID: 0}
   equippedWeapon: {fileID: 5250196175148631242, guid: 1cd08ecac22286a4f8416306b45458c8, type: 3}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
@@ -61,7 +62,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VITALITY: 13
   STRENGTH: 8
-  DEXTERITY: 1
+  DEXTERITY: 7
   REFLEX: 8
   DAMAGE_REDUCTION: 0
   MOVE: 3

@@ -21,9 +21,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public delegate void DefenseGeneration(ref MutableDefense mutDef, Unit attacker);
     public event DefenseGeneration OnDefend;
 
-    // simply used to signal when a unit has dodged
-    public delegate void OnCondition();
-    public event OnCondition OnAvoid;
+    // simply used to signal when a unit has been hit, dodged. etc
+    public delegate void OnAction();
+    public event OnAction OnHurt;
+    public event OnAction OnAvoid;    
+
+    public delegate void OnPhaseInfo();
+    public event OnPhaseInfo OnFinishTurn;
     //
 
     // necessary Component references
@@ -34,6 +38,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     [HideInInspector] public UnitPathfinder unitPathfinder;
     [HideInInspector] public UnitStats unitStats;
     [HideInInspector] protected HoldTimer holdTimer;
+    [HideInInspector] public BuffManager buffManager;
     
     // I don't love this, but it makes things much cleaner.
     protected PlayerUnitController playerUnitController;
@@ -59,6 +64,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
     public bool MouseHovering => battleMap.CurrentMouseGridPosition == gridPosition;
+    public string logTag => (GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
 
     protected virtual void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
@@ -66,6 +72,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         unitPathfinder = GetComponent<UnitPathfinder>();
         unitStats = GetComponent<UnitStats>();
         holdTimer = GetComponent<HoldTimer>();
+        buffManager = GetComponent<BuffManager>();
 
         Battle _topBattleRef = GetComponentInParent<Battle>();
         unitMap = _topBattleRef.GetComponent<UnitMap>();
@@ -80,8 +87,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     protected virtual void Start() {          
         // acquire all perks
-        foreach (Perk p in GetComponents<Perk>()) {
-            p.OnAcquire();
+        foreach (Perk perk in GetComponents<Perk>()) {
+            perk.OnAcquire();
         }
 
         // some init things that need to be taken care of
@@ -135,18 +142,23 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         moveAvailable = false;
         attackAvailable = false;
         spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
+
+        FireOnFinishTurnEvent();
     }
 
 	public bool SufferDamage(int incomingDamage) {
         unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage, unitStats.VITALITY);
 		bool survived = unitStats._CURRENT_HP > 0;
 
-        string unitTag = (GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
-        UIManager.inst.combatLog.AddEntry($"{unitTag}@{name} suffers YELLOW@{incomingDamage} damage.");
+        UIManager.inst.combatLog.AddEntry($"{logTag}@{name} suffers YELLOW@{incomingDamage} damage.");
 
         if (!survived) {
             TriggerDeathAnimation();
             DeathCleanUp();
+
+        // I've been hurt, but survived
+        } else {
+            FireOnHurtEvent();    
         }
 
         return survived;
@@ -174,8 +186,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 	}
 
 	private void DeathCleanUp() {
-        string unitTag = (GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
-        UIManager.inst.combatLog.AddEntry($"{unitTag}@{name} is KEYWORD@destroyed.");
+        UIManager.inst.combatLog.AddEntry($"{logTag}@{name} is KEYWORD@destroyed.");
 
     	StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
             gameObject.SetActive(false);
@@ -187,13 +198,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(ref mutAtt, target);
     public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(ref mutDef, attacker);
-
+    public void FireOnHurtEvent() => OnHurt?.Invoke();
     public void FireOnAvoidEvent() {
         TriggerMissAnimation();
-
-        string tag = (GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
-		UIManager.inst.combatLog.AddEntry($"{tag}@{name} KEYWORD@avoided the attack.");
+		UIManager.inst.combatLog.AddEntry($"{logTag}@{name} KEYWORD@avoided the attack.");
 
         OnAvoid?.Invoke();
     }
+
+    public void FireOnFinishTurnEvent() => OnFinishTurn?.Invoke();
 }

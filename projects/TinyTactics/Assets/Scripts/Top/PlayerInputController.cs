@@ -10,6 +10,7 @@ public class PlayerInputController : MonoBehaviour
 	public delegate void MouseClick(Vector3 screenPosition);
     public event MouseClick LeftMouseClickEvent;
 	public event MouseClick RightMouseClickEvent;
+	public event MouseClick MiddleMouseClickEvent;
 
 	public delegate void MouseHold(Vector3 screenPosition);
 	public event MouseHold LeftMouseHoldStartEvent;
@@ -43,6 +44,7 @@ public class PlayerInputController : MonoBehaviour
 		// register to InputActions
 		mouseInput.MouseActionMap.LeftMouseClick.performed += ctx => OnLeftMouseClick();
 		mouseInput.MouseActionMap.RightMouseClick.performed += ctx => OnRightMouseClick();
+		mouseInput.MouseActionMap.MiddleMouseClick.performed += ctx => OnMiddleMouseClick();
 
 		mouseInput.MouseActionMap.LeftMouseHold.performed += ctx => OnLeftMouseHoldStart();
 		mouseInput.MouseActionMap.LeftMouseHold.canceled += ctx => OnLeftMouseHoldEnd();
@@ -64,6 +66,11 @@ public class PlayerInputController : MonoBehaviour
 	public void OnRightMouseClick() {
 		Vector2 mousePosition = mouseInput.MouseActionMap.MousePosition.ReadValue<Vector2>();
 		RightMouseClickEvent?.Invoke(mousePosition);
+	}
+
+	public void OnMiddleMouseClick() {
+		Vector2 mousePosition = mouseInput.MouseActionMap.MousePosition.ReadValue<Vector2>();
+		MiddleMouseClickEvent?.Invoke(mousePosition);
 	}
 
 	public void OnLeftMouseHoldStart() {

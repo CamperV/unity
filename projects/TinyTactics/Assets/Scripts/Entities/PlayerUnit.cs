@@ -26,6 +26,9 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     // waiting until an Engagement is done animating and resolving casualties
     private bool engagementResolveFlag = false;
 
+    // if move selection is done with a middle-click, immediately Wait upon finish moving
+    private bool auxiliaryInteractFlag = false;
+
     private GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
     private Path<GridPosition>? pathToMouseOver;
 
@@ -135,7 +138,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         state = PlayerUnitFSM.Idle;
     }
 
-    public void ContextualInteractAt(GridPosition gp) {
+    public void ContextualInteractAt(GridPosition gp, bool auxiliaryInteract) {
         if (!turnActive) return;
 
         switch (state) {
@@ -173,8 +176,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         moveAvailable = false;
 
                         ChangeState(PlayerUnitFSM.Moving);
-                    } else {
-                        // playerUnitController.ClearSelection();
+                        auxiliaryInteractFlag = auxiliaryInteract;
                     }
                 }
                 break;
@@ -267,9 +269,14 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 // we've finished moving
                 } else {
 
+                    // if this interact was fired via Middle-Mouse, immediately wait
+                    if (auxiliaryInteractFlag) {
+                        auxiliaryInteractFlag = false;
+                        Wait();
+
                     // if there's an in-range enemy, go to AttackSelection
                     // if (attackAvailable && ValidAttackExistsFrom(_reservedGridPosition)) {
-                    if (attackAvailable) {
+                    } else if (attackAvailable) {
                         ChangeState(PlayerUnitFSM.AttackSelection);
 
                     // there's no one around to receive your attack, so just end turn
@@ -405,6 +412,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         attackAvailable = false;
         spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
 
+        FireOnFinishTurnEvent();
         playerUnitController.CheckEndPhase();
     }
 
@@ -413,6 +421,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         moveAvailable = false;
         attackAvailable = false;
         spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
+
+        FireOnFinishTurnEvent();
     }
 
     private bool ValidAttackExistsFrom(GridPosition fromPosition) {

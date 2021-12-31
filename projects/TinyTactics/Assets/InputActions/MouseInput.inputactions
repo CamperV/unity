@@ -22,6 +22,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "MiddleMouseClick",
+                    "type": "Button",
+                    "id": "b56c3fd9-a15b-4a22-b894-5c9920106e41",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "MousePosition",
                     "type": "Value",
                     "id": "88724fa8-c1be-4ac3-8b72-e24f19b6c585",
@@ -80,6 +88,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "LeftMouseHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "82514940-7f36-4866-af92-839b909effe5",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MiddleMouseClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

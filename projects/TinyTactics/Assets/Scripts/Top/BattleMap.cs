@@ -13,6 +13,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public event GridInteraction InteractEvent;
     public event GridInteraction AuxiliaryInteractEvent_0;
     public event GridInteraction AuxiliaryInteractEvent_1;
+    public event GridInteraction AuxiliaryInteractEvent_2;
     //
 
     [SerializeField] private Tile mouseOverOverlayTile;
@@ -95,6 +96,16 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     
     public void CheckRightMouseClick(Vector3 screenPosition) {
         Debug.Log($"BattleMap has seen that you right-clicked {screenPosition}");
+    }
+
+    public void CheckMiddleMouseClick(Vector3 screenPosition) {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+        GridPosition gridPosition = WorldToGrid(worldPosition);
+        Debug.Log($"BattleMap has seen that you middle-clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
+
+        if (IsInBounds(gridPosition)) {
+            AuxiliaryInteractEvent_2?.Invoke(gridPosition);
+        }
     }
 
     public void CheckMouseOver(Vector3 screenPosition) {

@@ -39,6 +39,8 @@ public sealed class EventManager : MonoBehaviour
         inputController.RightMouseClickEvent += _ => playerUnitController.ClearSelection();
         inputController.RightMouseClickEvent += _ => enemyUnitController.ClearPreview();
 
+        inputController.MiddleMouseClickEvent += battleMap.CheckMiddleMouseClick;
+
         inputController.LeftMouseHoldStartEvent += battleMap.CheckLeftMouseHoldStart;
         inputController.LeftMouseHoldEndEvent += battleMap.CheckLeftMouseHoldEnd;
 
@@ -48,11 +50,12 @@ public sealed class EventManager : MonoBehaviour
         topBattleRef.BattleStartEvent += turnManager.Enable;
 
         // battlemap events
-        battleMap.InteractEvent += playerUnitController.ContextualInteractAt;
+        battleMap.InteractEvent += gp => playerUnitController.ContextualInteractAt(gp, false);
         battleMap.InteractEvent += enemyUnitController.ContextualInteractAt;
 
         battleMap.AuxiliaryInteractEvent_0 += playerUnitController.CheckWaitAt; // hold down
         battleMap.AuxiliaryInteractEvent_1 += playerUnitController.CancelWait;  // release
+        battleMap.AuxiliaryInteractEvent_2 += gp => playerUnitController.ContextualInteractAt(gp, true);  // middle-click (special interact)
 
         // turn management events
         turnManager.playerPhase.StartEvent += playerUnitController.TriggerPhase;

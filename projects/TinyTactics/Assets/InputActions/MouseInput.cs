@@ -35,6 +35,14 @@ public class @MouseInput : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""MiddleMouseClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""b56c3fd9-a15b-4a22-b894-5c9920106e41"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""MousePosition"",
                     ""type"": ""Value"",
                     ""id"": ""88724fa8-c1be-4ac3-8b72-e24f19b6c585"",
@@ -95,6 +103,17 @@ public class @MouseInput : IInputActionCollection, IDisposable
                     ""action"": ""LeftMouseHold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""82514940-7f36-4866-af92-839b909effe5"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiddleMouseClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -105,6 +124,7 @@ public class @MouseInput : IInputActionCollection, IDisposable
         m_MouseActionMap = asset.FindActionMap("MouseActionMap", throwIfNotFound: true);
         m_MouseActionMap_LeftMouseClick = m_MouseActionMap.FindAction("LeftMouseClick", throwIfNotFound: true);
         m_MouseActionMap_RightMouseClick = m_MouseActionMap.FindAction("RightMouseClick", throwIfNotFound: true);
+        m_MouseActionMap_MiddleMouseClick = m_MouseActionMap.FindAction("MiddleMouseClick", throwIfNotFound: true);
         m_MouseActionMap_MousePosition = m_MouseActionMap.FindAction("MousePosition", throwIfNotFound: true);
         m_MouseActionMap_LeftMouseHold = m_MouseActionMap.FindAction("LeftMouseHold", throwIfNotFound: true);
     }
@@ -158,6 +178,7 @@ public class @MouseInput : IInputActionCollection, IDisposable
     private IMouseActionMapActions m_MouseActionMapActionsCallbackInterface;
     private readonly InputAction m_MouseActionMap_LeftMouseClick;
     private readonly InputAction m_MouseActionMap_RightMouseClick;
+    private readonly InputAction m_MouseActionMap_MiddleMouseClick;
     private readonly InputAction m_MouseActionMap_MousePosition;
     private readonly InputAction m_MouseActionMap_LeftMouseHold;
     public struct MouseActionMapActions
@@ -166,6 +187,7 @@ public class @MouseInput : IInputActionCollection, IDisposable
         public MouseActionMapActions(@MouseInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @LeftMouseClick => m_Wrapper.m_MouseActionMap_LeftMouseClick;
         public InputAction @RightMouseClick => m_Wrapper.m_MouseActionMap_RightMouseClick;
+        public InputAction @MiddleMouseClick => m_Wrapper.m_MouseActionMap_MiddleMouseClick;
         public InputAction @MousePosition => m_Wrapper.m_MouseActionMap_MousePosition;
         public InputAction @LeftMouseHold => m_Wrapper.m_MouseActionMap_LeftMouseHold;
         public InputActionMap Get() { return m_Wrapper.m_MouseActionMap; }
@@ -183,6 +205,9 @@ public class @MouseInput : IInputActionCollection, IDisposable
                 @RightMouseClick.started -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnRightMouseClick;
                 @RightMouseClick.performed -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnRightMouseClick;
                 @RightMouseClick.canceled -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnRightMouseClick;
+                @MiddleMouseClick.started -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMiddleMouseClick;
+                @MiddleMouseClick.performed -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMiddleMouseClick;
+                @MiddleMouseClick.canceled -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMiddleMouseClick;
                 @MousePosition.started -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMousePosition;
                 @MousePosition.performed -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMousePosition;
                 @MousePosition.canceled -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMousePosition;
@@ -199,6 +224,9 @@ public class @MouseInput : IInputActionCollection, IDisposable
                 @RightMouseClick.started += instance.OnRightMouseClick;
                 @RightMouseClick.performed += instance.OnRightMouseClick;
                 @RightMouseClick.canceled += instance.OnRightMouseClick;
+                @MiddleMouseClick.started += instance.OnMiddleMouseClick;
+                @MiddleMouseClick.performed += instance.OnMiddleMouseClick;
+                @MiddleMouseClick.canceled += instance.OnMiddleMouseClick;
                 @MousePosition.started += instance.OnMousePosition;
                 @MousePosition.performed += instance.OnMousePosition;
                 @MousePosition.canceled += instance.OnMousePosition;
@@ -213,6 +241,7 @@ public class @MouseInput : IInputActionCollection, IDisposable
     {
         void OnLeftMouseClick(InputAction.CallbackContext context);
         void OnRightMouseClick(InputAction.CallbackContext context);
+        void OnMiddleMouseClick(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
         void OnLeftMouseHold(InputAction.CallbackContext context);
     }

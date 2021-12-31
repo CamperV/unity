@@ -18,7 +18,6 @@ public class AfterImage : Perk
     private void RefreshMovement() {
         boundUnit.moveAvailable = true;
 
-        string unitTag = (boundUnit.GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
-        UIManager.inst.combatLog.AddEntry($"BLUE@{displayName} granted additional movement {unitTag}@{boundUnit.name}.");
+        UIManager.inst.combatLog.AddEntry($"BLUE@{displayName} granted additional movement {boundUnit.logTag}@{boundUnit.name}.");
     }
 }
