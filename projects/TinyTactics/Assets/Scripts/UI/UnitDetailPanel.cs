@@ -24,4 +24,7 @@ public class UnitDetailPanel : MonoBehaviour
 	public TextMeshProUGUI atkValue;
 	public TextMeshProUGUI hitValue;
 	public TextMeshProUGUI avoValue;
+
+	// perk listing
+	public TextMeshProUGUI unitPerksValue;
 }
