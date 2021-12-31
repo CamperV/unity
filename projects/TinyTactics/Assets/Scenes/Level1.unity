@@ -1185,7 +1185,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7896101071278884112, guid: c0a388b08c77f044dba50abeb5bd174d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.000030517578
+      value: 189.99997
       objectReference: {fileID: 0}
     - target: {fileID: 7896101071312426698, guid: c0a388b08c77f044dba50abeb5bd174d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -4197,6 +4197,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4765552332064880918, guid: 8677b5f3643256a489e0b3c28325dde1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943245269411451901, guid: 8677b5f3643256a489e0b3c28325dde1, type: 3}
+      propertyPath: freq
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943245269411451901, guid: 8677b5f3643256a489e0b3c28325dde1, type: 3}
+      propertyPath: xDamping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943245269411451901, guid: 8677b5f3643256a489e0b3c28325dde1, type: 3}
+      propertyPath: amplitude
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6385070276233390854, guid: 8677b5f3643256a489e0b3c28325dde1, type: 3}

@@ -43,4 +43,8 @@ public class MutableAttack
         //
         mutators = new List<string>();
     }
+
+    public void AddMutator(IMutatorComponent mc) {
+        mutators.Add(mc.displayName);
+    }
 }

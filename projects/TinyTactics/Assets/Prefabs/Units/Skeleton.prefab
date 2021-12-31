@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59288c3556e52fa4e9fe4a8856776fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <displayName>k__BackingField: Oops, all bones!
 --- !u!1001 &963213351486374029
 PrefabInstance:
   m_ObjectHideFlags: 0

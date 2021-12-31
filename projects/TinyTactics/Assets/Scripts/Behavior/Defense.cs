@@ -42,4 +42,8 @@ public class MutableDefense
         //
         mutators = new List<string>();
     }
+
+    public void AddMutator(IMutatorComponent mc) {
+        mutators.Add(mc.displayName);
+    }
 }

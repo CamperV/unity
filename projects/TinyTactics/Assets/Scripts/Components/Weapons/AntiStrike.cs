@@ -8,6 +8,8 @@ public class AntiStrike : WeaponPerk
     public override void OnEquip() {
         boundWeapon.boundUnit.OnAttack += OffensiveAdv;
         boundWeapon.boundUnit.OnDefend += DefensiveAdv;
+
+        displayName = "Weapon Advantage";
     }
 
     public override void OnUnequip() {
@@ -19,7 +21,7 @@ public class AntiStrike : WeaponPerk
         if (target.equippedWeapon.HasTagMatch("Strike")) {
             mutAtt.hitRate += 15;
             //
-            mutAtt.mutators.Add(this.GetType().Name);
+            mutAtt.AddMutator(this);
         }
     }
 
@@ -28,7 +30,7 @@ public class AntiStrike : WeaponPerk
             mutDef.avoidRate       += 15;
             mutDef.critAvoidRate   += 15;
             //
-            mutDef.mutators.Add(this.GetType().Name);
+            mutDef.AddMutator(this);
         }
     }
 }
