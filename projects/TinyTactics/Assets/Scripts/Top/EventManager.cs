@@ -11,6 +11,7 @@ public sealed class EventManager : MonoBehaviour
 
     public Battle topBattleRef;
     public PlayerInputController inputController;
+    public CameraManager cameraManager;
     public UIManager uiManager;
     public TurnManager turnManager;
     public UnitMap unitMap;
@@ -45,6 +46,7 @@ public sealed class EventManager : MonoBehaviour
         inputController.LeftMouseHoldEndEvent += battleMap.CheckLeftMouseHoldEnd;
 
         inputController.MainInteractButtonEvent += playerUnitController.ForceEndPlayerPhase;
+        inputController.DirectionalInputEvent += cameraManager.UpdateMovementVector;
 
         // top!battle events
         topBattleRef.BattleStartEvent += turnManager.Enable;

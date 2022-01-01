@@ -8,6 +8,9 @@ public class UIBobber : MonoBehaviour
 {
 	[HideInInspector] public Vector3 anchor;
 
+	[SerializeField] public float minBounds;
+	[SerializeField] public float maxBounds;
+
 	[SerializeField] private float freq;
 	[SerializeField] private float amplitude;
 	[SerializeField] private float phase;
@@ -25,7 +28,12 @@ public class UIBobber : MonoBehaviour
 		transform.position = Vector3.Lerp(transform.position, anchor + yComponent + xComponent, 10f*Time.deltaTime);
 	}
 
-	public void MoveAnchor(float yAnchor) {
-		anchor = new Vector3(transform.position.x, yAnchor, transform.position.z);
+	public void MoveAnchor(Vector3 screenSpaceAnchor) {
+		// Debug.Log($"Moving anchor to {yAnchor} (was {anchor}");
+		// float clampedAnchor = Mathf.Clamp(yAnchor, minBounds, maxBounds);
+		Vector3 worldAnchor = Camera.main.ScreenToWorldPoint(screenSpaceAnchor);
+		float clampedAnchor = worldAnchor.y;
+		Debug.Log($"Moving anchor to {clampedAnchor} (was {worldAnchor.y}, {screenSpaceAnchor.y})");
+		anchor = new Vector3(transform.position.x, clampedAnchor, transform.position.z);
 	}
 }

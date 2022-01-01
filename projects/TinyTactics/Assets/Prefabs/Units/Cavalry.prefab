@@ -41,7 +41,7 @@ MonoBehaviour:
   DEXTERITY: 8
   REFLEX: 2
   DAMAGE_REDUCTION: 1
-  MOVE: 6
+  MOVE: 15
   _CURRENT_HP: 0
 --- !u!114 &3180318577213809699
 MonoBehaviour:

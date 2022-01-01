@@ -81,10 +81,12 @@ public sealed class UIManager : MonoBehaviour
 		unitDetailPanel.gameObject.SetActive(false);
 	}
 
-	public void EnableEngagementPreview(Engagement potentialEngagement, float yAnchor) {
+	public void EnableEngagementPreview(Engagement potentialEngagement, Vector3 unitAnchor) {
 		engagementPreviewContainer.SetActive(true);
-		playerEngagementPreviewPanel.GetComponent<UIBobber>().MoveAnchor(yAnchor);
-		enemyEngagementPreviewPanel.GetComponent<UIBobber>().MoveAnchor(yAnchor);
+
+		Vector3 screenSpaceAnchor = Camera.main.WorldToScreenPoint(unitAnchor);
+		playerEngagementPreviewPanel.GetComponent<UIBobber>().MoveAnchor(screenSpaceAnchor);
+		enemyEngagementPreviewPanel.GetComponent<UIBobber>().MoveAnchor(screenSpaceAnchor);
 
 		// PLAYER-SIDE
 		Engagement.Stats playerPreviewStats = potentialEngagement.SimulateAttack();

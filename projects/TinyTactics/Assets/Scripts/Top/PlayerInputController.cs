@@ -21,6 +21,9 @@ public class PlayerInputController : MonoBehaviour
 
 	public delegate void ButtonDown();
 	public event ButtonDown MainInteractButtonEvent;
+
+	public delegate void DirectionalInput(Vector2 v);
+	public event DirectionalInput DirectionalInputEvent;
 	//
 
 	private MouseInput mouseInput;
@@ -50,6 +53,8 @@ public class PlayerInputController : MonoBehaviour
 		mouseInput.MouseActionMap.LeftMouseHold.canceled += ctx => OnLeftMouseHoldEnd();
 
 		keyboardInput.KeyboardActionMap.MainInteractButton.performed += ctx => OnMainInteractButton();
+		keyboardInput.KeyboardActionMap.Axis.performed += ctx => OnAxisMovement();
+		keyboardInput.KeyboardActionMap.Axis.canceled += ctx => OnAxisMovement();
 	}
 
 	// always update the position event for listeners
@@ -86,5 +91,11 @@ public class PlayerInputController : MonoBehaviour
 	// right now, this is Space
 	public void OnMainInteractButton() {
 		MainInteractButtonEvent?.Invoke();
+	}
+
+	public void OnAxisMovement() {
+		Debug.Log($"Got axis movement");
+		Vector2 inputVector = keyboardInput.KeyboardActionMap.Axis.ReadValue<Vector2>();
+		DirectionalInputEvent?.Invoke(inputVector);
 	}
 }

@@ -203,11 +203,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         // if there's an enemy unit at that spot, create and execute an Engagement
                         ChangeState(PlayerUnitFSM.Attacking);
 
-                        // NOTE: when attacking normally, consume movement
-                        // Re-movement only granted with certain perks
-                        moveAvailable = false;
-                        attackAvailable = false;
-
                         engagementResolveFlag = true;
                         Engagement engagement = Engagement.Create(this, enemy);
                         StartCoroutine( engagement.Resolve() );
@@ -220,6 +215,11 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                                 engagementResolveFlag = false;
                             })
                         );
+                        
+                        // NOTE: when attacking normally, consume movement
+                        // Re-movement only granted with certain perks
+                        moveAvailable = false;
+                        attackAvailable = false;
                     }
                 }
                 break;
@@ -303,7 +303,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         battleMap.Highlight(battleMap.CurrentMouseGridPosition, Constants.threatColorYellow);
 
                         // create and display EngagementPreviews here
-                        UIManager.inst.EnableEngagementPreview( Engagement.Create(this, enemy), enemy.transform.position.y );
+                        UIManager.inst.EnableEngagementPreview( Engagement.Create(this, enemy), enemy.transform.position );
                     }
                 }
                 break;
