@@ -303,7 +303,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         battleMap.Highlight(battleMap.CurrentMouseGridPosition, Constants.threatColorYellow);
 
                         // create and display EngagementPreviews here
-                        UIManager.inst.EnableEngagementPreview( Engagement.Create(this, enemy), enemy.transform.position );
+                        UIManager.inst.EnableEngagementPreview( Engagement.Create(this, enemy), enemy.transform );
                     }
                 }
                 break;

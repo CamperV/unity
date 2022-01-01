@@ -1,78 +1,84 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class CameraManager : MonoBehaviour
 {
-	// public float snappiness;
-
-	// private Camera assignedCamera => GetComponent<Camera>();
-
-	// private static Vector2 minBounds;
-	// private static Vector2 maxBounds;
-
-	// private Transform trackingTarget;
-	// private Vector3 trackingPosition {
-	// 	get {
-	// 		return (trackingTarget == null) ? transform.position : new Vector3(Mathf.Clamp(trackingTarget.position.x, minBounds.x, maxBounds.x),
-	// 						   												   Mathf.Clamp(trackingTarget.position.y, minBounds.y, maxBounds.y),
-	// 						   												   transform.position.z);
-	// 	}
-	// }
-	// private float trackingSize;
-
-	// void Start() {
-	// 	minBounds = new Vector2(0, 0);
-	// 	maxBounds = new Vector2(10, 10);
-	// 	RefitCamera(10);
-	// }
+	public Tilemap fitToTilemap;
+	private Vector3 minBounds;
+	private Vector3 maxBounds;
+	private readonly Vector3 fixedBoxOffset = new Vector3(2, 2, 0);
 
 	private Vector3 trackingPosition;
+	private Transform trackingTarget;
 
 	public Vector2 cameraSpeed;
 	private Vector3 movementVector = Vector3.zero;
 
 	void Start() {
 		trackingPosition = transform.position;
+		
+		// initial bounds calculation
+		SetDefaultBounds();
 	}
 
 	public void UpdateMovementVector(Vector2 directionalInput) {
 		movementVector = new Vector3(cameraSpeed.x*directionalInput.x, cameraSpeed.y*directionalInput.y, 0);
 	}
 
-	public void Update() {
+	public void LateUpdate() {
+
+		// if we have a tracking target, make a smaller box around it so that it is "focused"
+		// trackingTargets are acquired via Events + the UnitControllers
+		if (trackingTarget != null) {
+			SetDefaultBounds();
+
+			// Vector3 minTrackingBox = trackingTarget.position - 0.5f*fitToTilemap.localBounds.extents;
+			// Vector3 maxTrackingBox = trackingTarget.position + 0.5f*fitToTilemap.localBounds.extents;
+			Vector3 minTrackingBox = trackingTarget.position - fixedBoxOffset;
+			Vector3 maxTrackingBox = trackingTarget.position + fixedBoxOffset;
+
+			minBounds = new Vector3(
+				Mathf.Max(minTrackingBox.x, minBounds.x),
+				Mathf.Max(minTrackingBox.y, minBounds.x),
+				Mathf.Max(minTrackingBox.z, minBounds.z)
+			);
+			maxBounds = new Vector3(
+				Mathf.Min(maxTrackingBox.x, maxBounds.x),
+				Mathf.Min(maxTrackingBox.y, maxBounds.x),
+				Mathf.Min(maxTrackingBox.z, maxBounds.z)
+			);
+		}
+		
+		// move the tracking position based on movement and clamp it into bounds
 		trackingPosition += Time.deltaTime*movementVector;
+		trackingPosition = new Vector3(
+			Mathf.Clamp(trackingPosition.x, minBounds.x, maxBounds.x),
+			Mathf.Clamp(trackingPosition.y, minBounds.y, maxBounds.y),
+			transform.position.z
+		);
+
 		//
 		transform.position = Vector3.Lerp(transform.position, trackingPosition, Time.deltaTime*6f);
 	}
-		
-	// public void RefitCamera(int heightInTiles) {
-	// 	trackingSize = heightInTiles / 1.5f;
-	// 	assignedCamera.orthographicSize = trackingSize;
-	// }
-	
-	// public void SetTracking(Transform _trackingTarget) {
-	// 	trackingTarget = _trackingTarget;
-	// 	transform.position = trackingPosition;
-	// }
-	
-	// // performs constant tracking
-	// void LateUpdate() {
-	// 	float snapSpeed = Time.deltaTime*snappiness;
-	// 	float snapFactor = 0.01f;
-		
-	// 	if (Mathf.Abs(assignedCamera.orthographicSize - trackingSize) > snapFactor) {
-	// 		assignedCamera.orthographicSize = Mathf.Lerp(assignedCamera.orthographicSize, trackingSize, snapSpeed);
-	// 	} else {
-	// 		assignedCamera.orthographicSize = trackingSize;
-	// 	}
 
-	// 	// else, normal operation:
-	// 	// update tracking
-	// 	if (Vector3.Distance(transform.position, trackingPosition) > snapFactor) {
-	// 		transform.position = Vector3.Lerp(transform.position, trackingPosition, snapSpeed);
-	// 	} else {
-	// 		transform.position = trackingPosition;
-	// 	}
-	// }
+	public void AcquireTrackingTarget(Unit selection) {
+		// we update this every frame because the playerUnitController might 
+		// have a currentSelection, which we use to bound the camera additionally
+		// (such that the camera must be within a certain distance from the currentSelection)
+		if (selection != null) {
+			trackingTarget = selection.transform;
+
+		// use the assigned tilemap to find the bounds
+		} else {
+			SetDefaultBounds();
+			trackingTarget = null;
+		}
+	}
+
+	private void SetDefaultBounds() {
+		minBounds = fitToTilemap.LocalToWorld(fitToTilemap.localBounds.min) + fixedBoxOffset;
+		maxBounds = fitToTilemap.LocalToWorld(fitToTilemap.localBounds.max) - fixedBoxOffset;
+	}
 }

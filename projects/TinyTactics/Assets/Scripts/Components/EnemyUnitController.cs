@@ -7,6 +7,10 @@ using UnityEngine.UI;
 
 public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitController.ControllerFSM>, IUnitPhaseController
 {
+    // publicly acccessible events
+    public delegate void UnitSelection(Unit selection);
+    public event UnitSelection NewEnemyUnitControllerSelection;
+
     public static float timeBetweenUnitActions = 1.0f; // seconds
 
     // debug
@@ -25,18 +29,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
     [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
 
-    private EnemyUnit _currentPreview;
-    private EnemyUnit currentPreview {
-        get => _currentPreview;
-        set {
-            _currentPreview = value;
-            if (_currentPreview == null) {
-                ChangeState(ControllerFSM.NoPreview);
-            } else {
-                ChangeState(ControllerFSM.Preview);
-            }
-        }
-    }
+    private EnemyUnit currentPreview;
     private PlayerUnitController playerUnitController;
 
     void Awake() {
@@ -130,7 +123,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             // we attempt to make a selection.                                             //
             /////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.NoPreview:
-                currentPreview = MatchingUnitAt(gp);
+                SetCurrentPreview( MatchingUnitAt(gp) );
                 currentPreview?.ContextualInteractAt(gp);
                 break;
 
@@ -141,7 +134,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
                 // then REACQUIRE a currentPreview immediately afterwards
                 if (unit != null && unit != currentPreview) {
                     ClearPreview();
-                    currentPreview = unit;
+                    SetCurrentPreview(unit);
                 }
 
                 currentPreview.ContextualInteractAt(gp);
@@ -153,10 +146,22 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         }
     }
 
+    public void SetCurrentPreview(EnemyUnit selection) {
+        currentPreview = selection;
+
+        if (selection == null) {
+            ChangeState(ControllerFSM.NoPreview);
+        } else {
+            ChangeState(ControllerFSM.Preview);
+        }
+
+        NewEnemyUnitControllerSelection?.Invoke(selection);
+    }
+
     public void ClearPreview() {
         if (state == ControllerFSM.Preview) {
             currentPreview.RevertTurn();
-            currentPreview = null;
+            SetCurrentPreview(null);
         }
     }
 

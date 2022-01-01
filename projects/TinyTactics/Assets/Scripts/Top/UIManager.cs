@@ -81,11 +81,11 @@ public sealed class UIManager : MonoBehaviour
 		unitDetailPanel.gameObject.SetActive(false);
 	}
 
-	public void EnableEngagementPreview(Engagement potentialEngagement, Vector3 unitAnchor) {
+	public void EnableEngagementPreview(Engagement potentialEngagement, Transform anchoredTransform) {
 		engagementPreviewContainer.SetActive(true);
 
-		playerEngagementPreviewPanel.GetComponent<UIBobber>().MoveAnchor(unitAnchor);
-		enemyEngagementPreviewPanel.GetComponent<UIBobber>().MoveAnchor(unitAnchor);
+		playerEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(anchoredTransform);
+		enemyEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(anchoredTransform);
 
 		// PLAYER-SIDE
 		Engagement.Stats playerPreviewStats = potentialEngagement.SimulateAttack();
@@ -141,5 +141,8 @@ public sealed class UIManager : MonoBehaviour
 
 	public void DisableEngagementPreview() {
 		engagementPreviewContainer.SetActive(false);
+
+		playerEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(null);
+		enemyEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(null);
 	}
 }

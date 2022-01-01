@@ -59,6 +59,10 @@ public sealed class EventManager : MonoBehaviour
         battleMap.AuxiliaryInteractEvent_1 += playerUnitController.CancelWait;  // release
         battleMap.AuxiliaryInteractEvent_2 += gp => playerUnitController.ContextualInteractAt(gp, true);  // middle-click (special interact)
 
+        // unit controller events
+        playerUnitController.NewPlayerUnitControllerSelection += cameraManager.AcquireTrackingTarget;
+        enemyUnitController.NewEnemyUnitControllerSelection += cameraManager.AcquireTrackingTarget;
+
         // turn management events
         turnManager.playerPhase.StartEvent += playerUnitController.TriggerPhase;
         turnManager.playerPhase.EndEvent += playerUnitController.EndPhase;

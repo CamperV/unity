@@ -7,6 +7,10 @@ using UnityEngine.UI;
 
 public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitController.ControllerFSM>
 {
+    // publicly acccessible events
+    public delegate void UnitSelection(Unit selection);
+    public event UnitSelection NewPlayerUnitControllerSelection;
+
     // debug
     public Text debugStateLabel;
 
@@ -22,18 +26,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
     [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
 
-    private PlayerUnit _currentSelection;
-    private PlayerUnit currentSelection {
-        get => _currentSelection;
-        set {
-            _currentSelection = value;
-            if (_currentSelection == null) {
-                ChangeState(ControllerFSM.NoSelection);
-            } else {
-                ChangeState(ControllerFSM.Selection);
-            }
-        }
-    }
+    private PlayerUnit currentSelection;
     private EnemyUnitController enemyUnitController;
 
     void Awake() {
@@ -117,7 +110,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             // When the Controller is inactive, we do nothing. //
             /////////////////////////////////////////////////////
             case ControllerFSM.Inactive:
-                Debug.Log($"Sorry, I'm inactive");
                 break;
 
             /////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +117,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             // we attempt to make a selection.                                             //
             /////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.NoSelection:
-                currentSelection = MatchingUnitAt(gp);
+                SetCurrentSelection( MatchingUnitAt(gp) );
                 currentSelection?.ContextualInteractAt(gp, auxiliaryInteract);
                 break;
 
@@ -141,7 +133,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
                 // then REACQUIRE a currentSelection immediately afterwards
                 if (unit != null && unit != currentSelection) {
                     ClearSelection();
-                    currentSelection = unit;
+                    SetCurrentSelection(unit);
                 }
 
                 currentSelection.ContextualInteractAt(gp, auxiliaryInteract);
@@ -164,10 +156,22 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         }
     }
 
+    public void SetCurrentSelection(PlayerUnit selection) {
+        currentSelection = selection;
+
+        if (selection == null) {
+            ChangeState(ControllerFSM.NoSelection);
+        } else {
+            ChangeState(ControllerFSM.Selection);
+        }
+
+        NewPlayerUnitControllerSelection?.Invoke(selection);
+    }
+
     public void ClearSelection() {
         if (state == ControllerFSM.Selection) {
             if (currentSelection.turnActive) currentSelection.RevertTurn();
-            currentSelection = null;
+            SetCurrentSelection(null);
         }
     }
 

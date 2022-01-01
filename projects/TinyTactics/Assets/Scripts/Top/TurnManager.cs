@@ -26,35 +26,21 @@ public class TurnManager : MonoBehaviour
         enemyPhase = new Phase("Enemy");
     }
 
-    // this will execute Enable() at the end of the Start frame
-    // void Start() {
-    //     StartCoroutine( LateEnable() );
-    // }
-
-	// public IEnumerator LateEnable() {
-	// 	yield return new WaitForEndOfFrame();
-	// 	Enable();
-	// }
-
     public void Enable() {
-        Debug.Log($"Starting turn manager {gameObject.name}");
         enable = true;
         StartCoroutine( Loop() );
     }
 
     // by only touching the enable member, Loop will terminate itself after the current Turn is over
     public void Disable() {
-        Debug.Log($"Disabling turn manager {gameObject.name}");
         enable = false;
     }
 
     public void Suspend() {
-        Debug.Log($"Suspending turn manager {gameObject.name}");
         suspend = true;
     }
 
     public void Resume() {
-        Debug.Log($"Resuming turn manager {gameObject.name}");
         suspend = false;
     }
 
