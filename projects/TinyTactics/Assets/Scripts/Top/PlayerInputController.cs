@@ -94,7 +94,6 @@ public class PlayerInputController : MonoBehaviour
 	}
 
 	public void OnAxisMovement() {
-		Debug.Log($"Got axis movement");
 		Vector2 inputVector = keyboardInput.KeyboardActionMap.Axis.ReadValue<Vector2>();
 		DirectionalInputEvent?.Invoke(inputVector);
 	}

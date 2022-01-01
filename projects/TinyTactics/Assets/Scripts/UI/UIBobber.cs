@@ -6,10 +6,10 @@ using TMPro;
 
 public class UIBobber : MonoBehaviour
 {
-	[HideInInspector] public Vector3 anchor;
+	[HideInInspector] public Vector3 anchor; // this is in world-space
 
-	[SerializeField] public float minBounds;
-	[SerializeField] public float maxBounds;
+	[SerializeField] public float minViewportBound;
+	[SerializeField] public float maxViewportBound;
 
 	[SerializeField] private float freq;
 	[SerializeField] private float amplitude;
@@ -28,12 +28,11 @@ public class UIBobber : MonoBehaviour
 		transform.position = Vector3.Lerp(transform.position, anchor + yComponent + xComponent, 10f*Time.deltaTime);
 	}
 
-	public void MoveAnchor(Vector3 screenSpaceAnchor) {
-		// Debug.Log($"Moving anchor to {yAnchor} (was {anchor}");
-		// float clampedAnchor = Mathf.Clamp(yAnchor, minBounds, maxBounds);
-		Vector3 worldAnchor = Camera.main.ScreenToWorldPoint(screenSpaceAnchor);
-		float clampedAnchor = worldAnchor.y;
-		Debug.Log($"Moving anchor to {clampedAnchor} (was {worldAnchor.y}, {screenSpaceAnchor.y})");
-		anchor = new Vector3(transform.position.x, clampedAnchor, transform.position.z);
+	public void MoveAnchor(Vector3 inputWorldAnchor) {
+		Vector3 cameraSpaceAnchor = Camera.main.WorldToViewportPoint(inputWorldAnchor);
+		cameraSpaceAnchor.y = Mathf.Clamp(cameraSpaceAnchor.y, minViewportBound, maxViewportBound);
+		Vector3 worldSpaceAnchor = Camera.main.ViewportToWorldPoint(cameraSpaceAnchor);
+		
+		anchor = new Vector3(transform.position.x, worldSpaceAnchor.y, transform.position.z);
 	}
 }
