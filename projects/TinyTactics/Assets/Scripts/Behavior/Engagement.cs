@@ -160,7 +160,7 @@ public class Engagement
 
 		// calc hit/crit
 		int diceRoll = Random.Range(0, 100);
-		bool isHit = diceRoll < finalStats.hitRate;
+		bool isHit = diceRoll <= finalStats.hitRate;
 
 		// final retval
 		bool survived = true;

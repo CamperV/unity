@@ -55,6 +55,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     // Equipment
     public Weapon equippedWeapon;
 
+    // for effectiveness, such as "Flier"
+    public List<string> tags;
+
     // abstract
     public abstract void RevertTurn();
     protected abstract void DisplayThreatRange();
@@ -125,6 +128,14 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     public void LerpInactiveColor(float lerpValue) {
         spriteRenderer.color = Color.Lerp(originalColor, new Color(0.75f, 0.75f, 0.75f, 1f), lerpValue);
+    }
+
+    public bool HasTagMatch(params string[] tagsToCheck) {
+        foreach (string tag in tagsToCheck) {
+            if (tags.Contains(tag))
+                return true;
+        }
+        return false;
     }
 
     // IUnitPhaseInfo
