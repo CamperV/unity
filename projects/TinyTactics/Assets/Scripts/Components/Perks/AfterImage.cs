@@ -18,6 +18,6 @@ public class AfterImage : Perk
     private void RefreshMovement() {
         boundUnit.moveAvailable = true;
 
-        UIManager.inst.combatLog.AddEntry($"BLUE@{displayName} granted additional movement {boundUnit.logTag}@{boundUnit.name}.");
+        UIManager.inst.combatLog.AddEntry($"BLUE@[{displayName}] granted additional movement {boundUnit.logTag}@[{boundUnit.displayName}].");
     }
 }

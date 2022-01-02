@@ -20,7 +20,7 @@ public class UnitStats : MonoBehaviour
     public int _CURRENT_HP;
 
     public void UpdateHP(int newValue, int maxValue) {
-        _CURRENT_HP = Mathf.Max(0, newValue);
+        _CURRENT_HP = Mathf.Clamp(newValue, 0, maxValue);
         UpdateHPEvent(_CURRENT_HP, maxValue);
     }
 }

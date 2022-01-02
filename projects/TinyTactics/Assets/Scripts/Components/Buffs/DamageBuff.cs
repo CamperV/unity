@@ -28,11 +28,11 @@ public class DamageBuff : Buff
         expireTimer = Mathf.Max(expireTimer, timer);
     }
 
-    private void TickExpire() {
+    private void TickExpire(Unit target) {
         expireTimer--;
 
         if (expireTimer <= 0) {
-            UIManager.inst.combatLog.AddEntry($"{boundUnit.logTag}@{boundUnit.name}'s <color=blue><b>{displayName}</b></color> expired.");
+            UIManager.inst.combatLog.AddEntry($"{target.logTag}@[{target.displayName}]'s BLUE@[{displayName}] expired.");
             Destroy(this);
         }
     }

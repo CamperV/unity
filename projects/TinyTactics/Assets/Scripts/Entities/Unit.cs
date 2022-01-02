@@ -8,7 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(UnitStats))]
 public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 {
-    public readonly string name = "UNIT";
+    [SerializeField] public string displayName;
 
     [field: SerializeField] public GridPosition gridPosition { get; set; }
     protected GridPosition _reservedGridPosition; // this is for maintaining state while animating/moving
@@ -29,7 +29,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public delegate void Movement(Path<GridPosition> path);
     public event Movement OnMove;
 
-    public delegate void OnPhaseInfo();
+    public delegate void OnPhaseInfo(Unit thisUnit);
+    public event OnPhaseInfo OnStartTurn;
     public event OnPhaseInfo OnFinishTurn;
     //
 
@@ -133,10 +134,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         attackAvailable = true;
         RevertColor();  // to original
         UpdateThreatRange();
+    }
 
+    public void StartTurn() {
         // finally, store your starting location
         // this is relevant for RevertTurn calls
         _startingGridPosition = gridPosition;
+        FireOnStartTurnEvent();
     }
 
     // IUnitPhaseInfo
@@ -149,11 +153,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         FireOnFinishTurnEvent();
     }
 
-	public bool SufferDamage(int incomingDamage) {
+	public bool SufferDamage(int incomingDamage, bool isCritical = false) {
+        TriggerHurtAnimation(isCritical: isCritical);
+
         unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage, unitStats.VITALITY);
 		bool survived = unitStats._CURRENT_HP > 0;
 
-        UIManager.inst.combatLog.AddEntry($"{logTag}@{name} suffers YELLOW@{incomingDamage} damage.");
+        UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] suffers YELLOW@[{incomingDamage}] damage.");
 
         if (!survived) {
             TriggerDeathAnimation();
@@ -167,6 +173,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         return survived;
 	}
 
+    public void HealAmount(int healAmount) {
+        TriggerHealAnimation();
+
+        unitStats.UpdateHP(unitStats._CURRENT_HP + healAmount, unitStats.VITALITY);
+        UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] healed for GREEN@[{healAmount}].");
+    }
+
     public void TriggerAttackAnimation(GridPosition towards) {
         StartCoroutine(
             spriteAnimator.BumpTowards<GridPosition>(towards, battleMap, distanceScale: 7.0f)
@@ -176,6 +189,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public void TriggerHurtAnimation(bool isCritical = false) {
 		StartCoroutine( spriteAnimator.FlashColor(Constants.threatColorRed) );
 		StartCoroutine( spriteAnimator.Shake((isCritical) ? 0.15f : 0.075f) );
+    }
+
+    public void TriggerHealAnimation() {
+		StartCoroutine( spriteAnimator.FlashColor(Constants.healColorGreen) );
     }
 
     public void TriggerMissAnimation() {
@@ -189,7 +206,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 	}
 
 	private void DeathCleanUp() {
-        UIManager.inst.combatLog.AddEntry($"{logTag}@{name} is KEYWORD@destroyed.");
+        UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] is KEYWORD@[destroyed].");
 
     	StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
             gameObject.SetActive(false);
@@ -204,10 +221,12 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public void FireOnHurtEvent() => OnHurt?.Invoke();
     public void FireOnAvoidEvent() {
         TriggerMissAnimation();
-		UIManager.inst.combatLog.AddEntry($"{logTag}@{name} KEYWORD@avoided the attack.");
+		UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] KEYWORD@[avoided] the attack.");
 
         OnAvoid?.Invoke();
     }
     public void FireOnMoveEvent(Path<GridPosition> pathTaken) => OnMove?.Invoke(pathTaken);
-    public void FireOnFinishTurnEvent() => OnFinishTurn?.Invoke();
+
+    public void FireOnStartTurnEvent() => OnStartTurn?.Invoke(this);
+    public void FireOnFinishTurnEvent() => OnFinishTurn?.Invoke(this);
 }

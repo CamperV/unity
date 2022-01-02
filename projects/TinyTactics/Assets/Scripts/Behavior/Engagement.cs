@@ -155,7 +155,7 @@ public class Engagement
         // log the Engagement
         
         UIManager.inst.combatLog.AddEntry(
-            $"{A.logTag}@{A.name} {attackType}s: [ YELLOW@{finalStats.damage} ATK, YELLOW@{finalStats.hitRate} HIT, YELLOW@{finalStats.critRate} CRIT ]"
+            $"{A.logTag}@[{A.displayName}] {attackType}s: [ YELLOW@[{finalStats.damage}] ATK, YELLOW@[{finalStats.hitRate}] HIT, YELLOW@[{finalStats.critRate}] CRIT ]"
         );
 
 		// calc hit/crit
@@ -169,11 +169,10 @@ public class Engagement
             int sufferedDamage = (isCrit) ? finalStats.damage*3 : finalStats.damage;
 
             // hit/crit
-            if (isCrit) UIManager.inst.combatLog.AddEntry("YELLOW@Critical YELLOW@Hit!");          
+            if (isCrit) UIManager.inst.combatLog.AddEntry("YELLOW@[Critical Hit!]");          
 
             // ouchies, play the animations for hurt
-            B.TriggerHurtAnimation(isCritical: isCrit);
-			survived = B.SufferDamage(sufferedDamage);
+			survived = B.SufferDamage(sufferedDamage, isCritical: isCrit);
 
         // miss
 		} else {

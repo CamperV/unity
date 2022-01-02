@@ -96,6 +96,8 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
 
     public void TriggerPhase() {
+        activeUnits.ForEach(it => it.StartTurn() );
+
         ChangeState(ControllerFSM.TakeActions);
     }
 
@@ -190,6 +192,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             // wait until the unit says you can move on
             // generally this is until the unit's turn is over,
             // but if the unit is only moving (and not attacking), just execute the next unit's whole situation
+            yield return new WaitUntil(() => !unit.spriteAnimator.isAnimating);
             yield return unit.TakeActionFlowChart();
             yield return new WaitForSeconds(timeBetweenUnitActions);
         }

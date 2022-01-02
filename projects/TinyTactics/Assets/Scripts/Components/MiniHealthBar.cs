@@ -27,8 +27,6 @@ public class MiniHealthBar : MonoBehaviour
     SpriteRenderer backgroundRenderer;
     SpriteRenderer barRenderer;
     SpriteRenderer borderRenderer;
-	public float spriteWidth { get => backgroundRenderer.size.x; }
-	public float spriteHeight { get => backgroundRenderer.size.y; }
 
     public Unit boundUnit;
 
@@ -51,17 +49,19 @@ public class MiniHealthBar : MonoBehaviour
     }
 
     public void UpdateBar(int val, int max) {
+        bool healing = val > currVal;
+
         currVal = val;
         maxVal = max;
         healthRatio = (float)currVal/(float)maxVal;
         Vector3 toScale = new Vector3(healthRatio, 1.0f, 1.0f);
-        StartCoroutine(
-            AnimateBar(barLevel.transform.localScale, toScale, Color.red, 1.0f, 1.0f)
-        );
 
-        barLevel.transform.localScale = toScale;
-        barColor = HueSatLerp(color_0, color_1, healthRatio*healthRatio);
-        barRenderer.color = barColor;
+        StartCoroutine(
+            Utils.SerialCoroutines(
+                _UpdateBarVisual(toScale),
+                AnimateBar(barLevel.transform.localScale, toScale, Color.red, 1.0f, 1.0f)
+            )
+        );
 
         // debug
         GetComponentInChildren<TextMeshPro>().SetText($"{currVal}/{maxVal}");
@@ -90,8 +90,7 @@ public class MiniHealthBar : MonoBehaviour
         go.transform.localPosition = barLevel.localPosition;
         go.transform.localScale = fromScale;
 
-
-        // wait procedurally
+        // wait
         yield return new WaitForSeconds(delayTime);
 
         // ...then animate
@@ -104,5 +103,12 @@ public class MiniHealthBar : MonoBehaviour
 		}
 
         Destroy(go);
+    }
+
+    private IEnumerator _UpdateBarVisual(Vector3 toScale) {
+        barLevel.transform.localScale = toScale;
+        barColor = HueSatLerp(color_0, color_1, healthRatio*healthRatio);
+        barRenderer.color = barColor;
+        yield break;
     }
 }

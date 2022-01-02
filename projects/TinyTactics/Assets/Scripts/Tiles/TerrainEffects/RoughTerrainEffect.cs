@@ -27,12 +27,10 @@ public class RoughTerrainEffect : TerrainEffect
 #endif
 
     public override void OnEnterTerrain(Unit targetUnit) {
-        Debug.Log($"{targetUnit} entered Rough Tile");
         targetUnit.OnDefend += GrantAvoid;
     }
 
     public override void OnExitTerrain(Unit targetUnit) {
-        Debug.Log($"{targetUnit} left Rough Tile");
         targetUnit.OnDefend -= GrantAvoid;
     }
 

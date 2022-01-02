@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb1cb1c4ef25854096b14b492813d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: Barbarian
   <gridPosition>k__BackingField:
     x: 0
     y: 0
@@ -76,11 +77,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de54ba498d272848aa4102bd1ebee66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VITALITY: 10
+  VITALITY: 25
   STRENGTH: 8
   DEXTERITY: 8
   REFLEX: 2
-  DAMAGE_REDUCTION: 15
+  DAMAGE_REDUCTION: 5
   MOVE: 4
   _CURRENT_HP: 0
 --- !u!1001 &7487578033757355667
@@ -93,7 +94,7 @@ PrefabInstance:
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 566f244a3cbbd4a4a99f0c1ef03d1b76, type: 3}
+      objectReference: {fileID: 21300000, guid: 1a1664d1c747dfb42a301f99642d93bb, type: 3}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.b
       value: 0.48567107

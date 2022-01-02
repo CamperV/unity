@@ -25,7 +25,7 @@ public class SpriteAnimator : MonoBehaviour
 			_animationStack = value;
 		}
 	}
-	public bool isAnimating { get => animationStack > 0; }
+	public bool isAnimating => animationStack > 0;
 
 	protected int _movementStack;
 	public int movementStack {
@@ -35,7 +35,7 @@ public class SpriteAnimator : MonoBehaviour
 			_movementStack = value;
 		}
 	}
-	public bool isMoving { get => movementStack > 0; }
+	public bool isMoving => movementStack > 0;
 
 	void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
@@ -184,7 +184,7 @@ public class SpriteAnimator : MonoBehaviour
 			yield return null;
 		}
 		spriteRenderer.color = ogColor;
-
+		
 		//
 		animationStack--;
 	}

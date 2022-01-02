@@ -92,6 +92,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public void TriggerPhase() {
         ChangeState(ControllerFSM.NoSelection);
         enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
+
+        activeUnits.ForEach(it => it.StartTurn() );
     }
 
     // we refresh at the end of the phase,

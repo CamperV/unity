@@ -47,7 +47,7 @@ public class TurnManager : MonoBehaviour
     private IEnumerator Loop() {
         while (enable) {
             turnCount++;
-            UIManager.inst.combatLog.AddEntry($"Beginning PURPLE@Turn PURPLE@{turnCount}.");
+            UIManager.inst.combatLog.AddEntry($"Beginning PURPLE@[Turn {turnCount}].");
 
             NewTurnEvent(turnCount);
             yield return ExecutePhases(playerPhase, enemyPhase);
@@ -67,14 +67,14 @@ public class TurnManager : MonoBehaviour
             }
 
             string phaseTag = (phase.name == "Player") ? "PLAYER_UNIT" : "ENEMY_UNIT";
-            UIManager.inst.combatLog.AddEntry($"Beginning {phaseTag}@{phase.name} KEYWORD@Phase.");
+            UIManager.inst.combatLog.AddEntry($"Beginning {phaseTag}@[{phase.name}] KEYWORD@[Phase].");
 
             currentPhase = phase;
             NewPhaseEvent(currentPhase);
             phase.TriggerStart();
 
             yield return new WaitUntil(() => phase.state == Phase.PhaseState.Complete);
-            UIManager.inst.combatLog.AddEntry($"Ended {phaseTag}@{phase.name} KEYWORD@Phase.");
+            UIManager.inst.combatLog.AddEntry($"Ended {phaseTag}@[{phase.name}] KEYWORD@[Phase].");
 
             // post-phase delay
             yield return new WaitForSeconds(endPhaseDelay);

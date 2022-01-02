@@ -24,6 +24,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fb770a1ba7dfb348a13537312c00ff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: Skeleton Brute
   <gridPosition>k__BackingField:
     x: 0
     y: 0
@@ -62,7 +63,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VITALITY: 13
   STRENGTH: 4
-  DEXTERITY: 7
+  DEXTERITY: 14
   REFLEX: 8
   DAMAGE_REDUCTION: 0
   MOVE: 4

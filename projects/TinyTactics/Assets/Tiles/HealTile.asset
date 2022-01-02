@@ -35,3 +35,4 @@ MonoBehaviour:
   m_Flags: 1
   m_ColliderType: 1
   cost: 1
+  terrainEffect: {fileID: 11400000, guid: 1b5e8a8c6188d4a4ab0db90005b35c44, type: 2}

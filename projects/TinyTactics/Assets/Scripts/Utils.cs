@@ -32,4 +32,10 @@ public static class Utils
 		yield return new WaitForEndOfFrame();
 		VoidAction();
 	}
+
+	public static IEnumerator SerialCoroutines(params IEnumerator[] coroutines) {
+		foreach (IEnumerator crt in coroutines) {
+			yield return crt;
+		}
+	}
 }
