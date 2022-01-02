@@ -8,7 +8,7 @@ public class CameraManager : MonoBehaviour
 	public Tilemap fitToTilemap;
 	private Vector3 minBounds;
 	private Vector3 maxBounds;
-	private readonly Vector3 fixedBoxOffset = new Vector3(2, 2, 0);
+	private readonly Vector3 fixedBoxOffset = new Vector3(3, 3, 0);
 
 	private Vector3 trackingPosition;
 	private Transform trackingTarget;

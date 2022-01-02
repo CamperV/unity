@@ -11,5 +11,8 @@ using UnityEditor;
 public abstract class TerrainTile : Tile
 {
 	// returns an integer that signifies the cost of entering this tile
-	[SerializeField] public int cost;
+	public int cost;
+	public TerrainEffect terrainEffect;
+
+	public bool HasTerrainEffect => terrainEffect != null;
 }

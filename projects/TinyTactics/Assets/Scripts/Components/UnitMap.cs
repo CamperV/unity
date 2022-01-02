@@ -72,6 +72,13 @@ public class UnitMap : MonoBehaviour
 
             // since this was successful, trigger the new state event
             if (newBoardEvent) NewBoardStateEvent.Invoke();
+
+            // trigger relevant Tile Events/TerrainEffects
+            TerrainTile exitingTile = battleMap.TerrainAt(prevGridPosition);
+            TerrainTile enteringTile = battleMap.TerrainAt(unit.gridPosition);
+            if (exitingTile.HasTerrainEffect) exitingTile.terrainEffect.OnExitTerrain(unit);
+            if (enteringTile.HasTerrainEffect) enteringTile.terrainEffect.OnEnterTerrain(unit);
+
         } else {
             if (map[gp] == unit || reservations[gp] == unit) AlignUnit(unit, gp);
             else Debug.Log($"Failed to move {unit} into occupied GP {gp}");

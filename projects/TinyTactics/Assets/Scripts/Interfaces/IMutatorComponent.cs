@@ -5,6 +5,6 @@ using UnityEngine;
 
 public interface IMutatorComponent
 {
-	Unit boundUnit { get; set; }
+	// Unit boundUnit { get; set; }
 	string displayName { get; set; }
 }
