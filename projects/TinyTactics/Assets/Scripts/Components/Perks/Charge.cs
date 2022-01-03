@@ -21,7 +21,7 @@ public class Charge : Perk
     // adds a damage buff per square moved this turn
     private void GainDamageBuffPerMove(Path<GridPosition> pathTaken) {
         for (int i = 0; i < pathTaken.Count-1; i++) {
-            boundUnit.buffManager.AddDamageBuff("Charge", 1, 1);
+            boundUnit.buffManager.AddValueBuff<DamageBuff>("Charge", 1, 1);
         }
     }
 }

@@ -57,7 +57,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         state = enteringState;
         
         // debug
-        GetComponentInChildren<TextMeshPro>().SetText(state.ToString());
+        debugStateLabel.SetText(state.ToString());
 
         switch (enteringState) {
             // when you're entering Idle, it's from being selected

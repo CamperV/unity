@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de54ba498d272848aa4102bd1ebee66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VITALITY: 10
+  VITALITY: 99
   STRENGTH: 5
   DEXTERITY: 12
   REFLEX: 6
@@ -41,6 +41,8 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   buffManager: {fileID: 0}
   equippedWeapon: {fileID: 3179233669775410304, guid: fbddcfca5d5d89e45b1b1a78aa5e30f1, type: 3}
+  tags: []
+  debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1

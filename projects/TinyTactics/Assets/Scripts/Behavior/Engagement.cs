@@ -165,6 +165,8 @@ public class Engagement
 		// final retval
 		bool survived = true;
 		if (isHit) {
+            A.FireOnHitEvent(B);
+
 			bool isCrit = diceRoll < finalStats.critRate;
             int sufferedDamage = (isCrit) ? finalStats.damage*3 : finalStats.damage;
 

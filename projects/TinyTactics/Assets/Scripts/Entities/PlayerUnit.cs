@@ -60,7 +60,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         state = enteringState;
 
         // debug
-        GetComponentInChildren<TextMeshPro>().SetText(state.ToString());
+        debugStateLabel.SetText(state.ToString());
 
         switch (state) {
             // when you're entering Idle, it's from being selected

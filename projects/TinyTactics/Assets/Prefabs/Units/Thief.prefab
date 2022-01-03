@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fb770a1ba7dfb348a13537312c00ff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: Skeleton Thief
+  displayName: Thief
   <gridPosition>k__BackingField:
     x: 0
     y: 0
@@ -72,18 +72,6 @@ MonoBehaviour:
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
---- !u!114 &4952209373775972252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8766011918143702634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-2247782336020791823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,6 +84,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59288c3556e52fa4e9fe4a8856776fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4952209373775972252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8766011918143702634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3259454555497253109
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -106,10 +106,22 @@ PrefabInstance:
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 648a7b5f93dfaa64f9a1f9e5e4567463, type: 3}
+      objectReference: {fileID: 21300000, guid: c60eceac9d7d9524c907bf6e7d2cf450, type: 3}
+    - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_Color.b
+      value: 0.9245283
+      objectReference: {fileID: 0}
+    - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7195621
+      objectReference: {fileID: 0}
+    - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_Color.r
+      value: 0.78830564
+      objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
-      value: Skeleton Thief
+      value: Thief
       objectReference: {fileID: 0}
     - target: {fileID: 7419503456615491691, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_RootOrder

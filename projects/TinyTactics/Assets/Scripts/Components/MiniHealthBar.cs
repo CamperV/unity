@@ -30,6 +30,9 @@ public class MiniHealthBar : MonoBehaviour
 
     public Unit boundUnit;
 
+    // debug
+    public DebugStateLabel debugStateLabel;
+
 	void Awake() {
         // get all your own members
         barLevel = GetComponentsInChildren<Transform>()[2];
@@ -42,6 +45,9 @@ public class MiniHealthBar : MonoBehaviour
         // now, bind yourself to your parent Unit
         // just fail ungracefully if you don't have one, that shouldn't exist anyway
         boundUnit = GetComponentInParent<Unit>();
+
+        // debug
+        debugStateLabel = GetComponent<DebugStateLabel>();
     }
 
     void Start() {
@@ -64,7 +70,7 @@ public class MiniHealthBar : MonoBehaviour
         );
 
         // debug
-        GetComponentInChildren<TextMeshPro>().SetText($"{currVal}/{maxVal}");
+        debugStateLabel.SetText($"{currVal}/{maxVal}");
     }
 
     public static Color HueSatLerp(Color A, Color B, float ratio) {

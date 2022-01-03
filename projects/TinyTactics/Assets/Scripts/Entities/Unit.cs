@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using TMPro;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(SpriteAnimator))]
 [RequireComponent(typeof(UnitPathfinder))]
@@ -25,6 +26,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public delegate void OnAction();
     public event OnAction OnHurt;
     public event OnAction OnAvoid;
+
+    public delegate void OnTargetedAction(Unit target);
+    public event OnTargetedAction OnHit;
 
     public delegate void Movement(Path<GridPosition> path);
     public event Movement OnMove;
@@ -58,6 +62,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     // for effectiveness, such as "Flier"
     public List<string> tags;
 
+    // debug
+    public DebugStateLabel debugStateLabel;
+
     // abstract
     public abstract void RevertTurn();
     protected abstract void DisplayThreatRange();
@@ -80,6 +87,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         unitStats = GetComponent<UnitStats>();
         holdTimer = GetComponent<HoldTimer>();
         buffManager = GetComponent<BuffManager>();
+
+        // debug
+        debugStateLabel = GetComponent<DebugStateLabel>();
 
         Battle _topBattleRef = GetComponentInParent<Battle>();
         unitMap = _topBattleRef.GetComponent<UnitMap>();
@@ -236,6 +246,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
         OnAvoid?.Invoke();
     }
+    
+    // targeted versions
+    public void FireOnHitEvent(Unit target) => OnHit?.Invoke(target);
+
     public void FireOnMoveEvent(Path<GridPosition> pathTaken) => OnMove?.Invoke(pathTaken);
 
     public void FireOnStartTurnEvent() => OnStartTurn?.Invoke(this);

@@ -34,6 +34,8 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   buffManager: {fileID: 0}
   equippedWeapon: {fileID: 5250196175148631242, guid: 1cd08ecac22286a4f8416306b45458c8, type: 3}
+  tags: []
+  debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
@@ -65,7 +67,7 @@ MonoBehaviour:
   STRENGTH: 4
   DEXTERITY: 14
   REFLEX: 8
-  DAMAGE_REDUCTION: 0
+  DAMAGE_REDUCTION: 3
   MOVE: 4
   _CURRENT_HP: 0
 --- !u!114 &4070303141671970314
@@ -120,7 +122,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
-      value: Skeleton
+      value: Skeleton Brute
       objectReference: {fileID: 0}
     - target: {fileID: 7419503456615491691, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_RootOrder

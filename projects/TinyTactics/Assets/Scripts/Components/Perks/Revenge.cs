@@ -16,6 +16,6 @@ public class Revenge : Perk
     }
 
     private void GainDamageBuff() {
-        boundUnit.buffManager.AddDamageBuff("Revenge", 2, 1);
+        boundUnit.buffManager.AddValueBuff<DamageBuff>("Revenge", 2, 1);
     }
 }
