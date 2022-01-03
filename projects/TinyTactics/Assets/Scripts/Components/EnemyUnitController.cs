@@ -20,6 +20,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     public List<EnemyUnit> activeUnits {
         get => _activeUnits.Where(en => en.gameObject.activeInHierarchy).ToList();
     }
+    public List<EnemyUnit> disabledUnits => _activeUnits.Where(en => !en.gameObject.activeInHierarchy).ToList();
 
     public enum ControllerFSM {
         Inactive,
@@ -117,7 +118,6 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             // When the Controller is inactive, we do nothing. //
             /////////////////////////////////////////////////////
             case ControllerFSM.Inactive:
-                Debug.Log($"{this} is inactive, discarding input");
                 break;
 
             /////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,6 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
                 break;
 
             case ControllerFSM.TakeActions:
-                Debug.Log($"{this} is taking actions, discarding input");
                 break;
         }
     }

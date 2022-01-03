@@ -11,6 +11,7 @@ public class Battle : MonoBehaviour
     public delegate void BattleEvent();
     public event BattleEvent BattleStartEvent;
 
+    private EventManager eventManager;
     private UnitMap unitMap;
     private TurnManager turnManager;
     
@@ -18,6 +19,7 @@ public class Battle : MonoBehaviour
     private EnemyUnitController enemyUnitController;
 
     void Awake() {
+        eventManager = GetComponent<EventManager>();
         unitMap = GetComponent<UnitMap>();
         turnManager = GetComponent<TurnManager>();
 
@@ -26,7 +28,24 @@ public class Battle : MonoBehaviour
     }
 
     public void StartBattle() {
+        eventManager.EnablePlayerInput();
+        eventManager.RegisterEvents();
+        //
         BattleStartEvent?.Invoke();
+    }
+
+    public void EndBattle(bool playerVictorious) {
+        eventManager.DisablePlayerInput();
+
+        int enemiesDefeated = enemyUnitController.disabledUnits.Count;
+        int survivingUnits = playerUnitController.activeUnits.Count;
+        int turnsElapsed = turnManager.turnCount;
+
+        if (playerVictorious) {
+            UIManager.inst.CreateVictoryPanel(enemiesDefeated, survivingUnits, turnsElapsed);
+        } else {
+            UIManager.inst.CreateDefeatPanel(enemiesDefeated, survivingUnits, turnsElapsed);
+        }
     }
 
     public void CheckVictoryConditions() {
@@ -35,6 +54,7 @@ public class Battle : MonoBehaviour
 
         if (!enemyUnitsAlive) {
             UIManager.inst.combatLog.AddEntry($"GREEN@[VICTORY!]");
+            EndBattle(true);
         }
     }
 
@@ -44,6 +64,7 @@ public class Battle : MonoBehaviour
 
         if (!playerUnitsAlive) {
             UIManager.inst.combatLog.AddEntry($"RED@[Y O U  D I E D]");
+            EndBattle(false);
         }
     }
 }

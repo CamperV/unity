@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7735940079114252760}
   - component: {fileID: 4068651257775656614}
   m_Layer: 5
-  m_Name: MutatorsValue
+  m_Name: Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

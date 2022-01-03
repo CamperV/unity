@@ -24,7 +24,7 @@ public class UnitStats : MonoBehaviour
 
     public void UpdateHP(int newValue, int maxValue) {
         _CURRENT_HP = Mathf.Clamp(newValue, 0, maxValue);
-        UpdateHPEvent(_CURRENT_HP, maxValue);
+        UpdateHPEvent?.Invoke(_CURRENT_HP, maxValue);
     }
 
     public void UpdateReflex(int newValue) {

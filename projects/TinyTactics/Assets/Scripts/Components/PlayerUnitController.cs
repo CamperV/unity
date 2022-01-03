@@ -18,6 +18,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public List<PlayerUnit> activeUnits {
         get => _activeUnits.Where(en => en.gameObject.activeInHierarchy).ToList();
     }
+    public List<PlayerUnit> disabledUnits => _activeUnits.Where(en => !en.gameObject.activeInHierarchy).ToList();
 
     public enum ControllerFSM {
         Inactive,

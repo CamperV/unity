@@ -98,8 +98,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         playerUnitController = _topBattleRef.GetComponentInChildren<PlayerUnitController>();
         enemyUnitController = _topBattleRef.GetComponentInChildren<EnemyUnitController>();
 
+        moveRange = null;
+        attackRange = null;
+
         equippedWeapon = Instantiate(equippedWeapon, transform);
-        equippedWeapon.Equip(this);
     }
 
     protected virtual void Start() {          
@@ -108,12 +110,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
             perk.OnAcquire();
         }
 
+        // actually set up the Weapon
+        equippedWeapon.Equip(this);
+
         // some init things that need to be taken care of
         unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
 
         originalColor = spriteRenderer.color;
-        moveRange = null;
-        attackRange = null;
     }
 
     // we must take care to add certain functions to the MoveRange

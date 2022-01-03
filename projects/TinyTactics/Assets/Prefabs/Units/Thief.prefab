@@ -15,7 +15,7 @@ MonoBehaviour:
   VITALITY: 10
   STRENGTH: 7
   DEXTERITY: 10
-  REFLEX: 11
+  REFLEX: 0
   DAMAGE_REDUCTION: 0
   MOVE: 4
   _CURRENT_HP: 0
@@ -69,6 +69,7 @@ MonoBehaviour:
   buffManager: {fileID: 0}
   equippedWeapon: {fileID: 6036265347430983969, guid: 969c965e06ee83b4d98ad896a444c4e7, type: 3}
   tags: []
+  debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
@@ -109,15 +110,15 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: c60eceac9d7d9524c907bf6e7d2cf450, type: 3}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.b
-      value: 0.9245283
+      value: 0.9254902
       objectReference: {fileID: 0}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.g
-      value: 0.7195621
+      value: 0.7176471
       objectReference: {fileID: 0}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.r
-      value: 0.78830564
+      value: 0.7882353
       objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name

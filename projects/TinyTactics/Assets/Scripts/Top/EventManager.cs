@@ -7,8 +7,6 @@ using UnityEngine.Tilemaps;
 
 public sealed class EventManager : MonoBehaviour
 {
-    public static EventManager inst = null; // enforces singleton behavior
-
     public Battle topBattleRef;
     public PlayerInputController inputController;
     public CameraManager cameraManager;
@@ -19,18 +17,10 @@ public sealed class EventManager : MonoBehaviour
     public PlayerUnitController playerUnitController;
     public EnemyUnitController enemyUnitController;
 
-    void Awake() {
-        // only allow one EventManager to exist at any time
-        // & don't kill when reloading a Scene
-        if (inst == null) {
-            inst = this;
-        } else if (inst != this) {
-            Destroy(gameObject);
-        }
-        DontDestroyOnLoad(gameObject);
-    }
+    public void EnablePlayerInput() => inputController.gameObject.SetActive(true);
+    public void DisablePlayerInput() => inputController.gameObject.SetActive(false);
 
-    void Start() {
+    public void RegisterEvents() {
         // input events
         inputController.MousePositionEvent += battleMap.CheckMouseOver;
         

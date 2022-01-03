@@ -8,6 +8,8 @@ public sealed class UIManager : MonoBehaviour
 {
 	public static UIManager inst = null; // enforces singleton behavior
 
+	[SerializeField] private GameObject startBattleButtonContainer;
+
     [SerializeField] private Text currentTurnText;
 	[SerializeField] private Text currentPhaseText;
 
@@ -16,6 +18,9 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private GameObject engagementPreviewContainer;
 	[SerializeField] private EngagementPreviewPanel playerEngagementPreviewPanel;
 	[SerializeField] private EngagementPreviewPanel enemyEngagementPreviewPanel;
+
+	[SerializeField] private EndgameStatsPanel victoryPanel;
+	[SerializeField] private EndgameStatsPanel defeatPanel;
 
 	public CombatLog combatLog;
 	
@@ -27,8 +32,9 @@ public sealed class UIManager : MonoBehaviour
 		} else if (inst != this) {
 			Destroy(gameObject);
 		}
-		DontDestroyOnLoad(gameObject);
 
+		startBattleButtonContainer.SetActive(true);
+		unitDetailPanel.gameObject.SetActive(false);
 		engagementPreviewContainer.SetActive(false);
     }
 
@@ -146,5 +152,19 @@ public sealed class UIManager : MonoBehaviour
 
 		playerEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(null);
 		enemyEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(null);
+	}
+
+	public void CreateVictoryPanel(int enemiesDefeated, int survivingUnits, int turnsElapsed) {
+		victoryPanel.gameObject.SetActive(true);
+		victoryPanel.enemiesDefeatedValue.SetText($"{enemiesDefeated}");
+		victoryPanel.survivingUnitsValue.SetText($"{survivingUnits}");
+		victoryPanel.turnsElapsedValue.SetText($"{turnsElapsed}");
+	}
+
+	public void CreateDefeatPanel(int enemiesDefeated, int survivingUnits, int turnsElapsed) {
+		defeatPanel.gameObject.SetActive(true);
+		defeatPanel.enemiesDefeatedValue.SetText($"{enemiesDefeated}");
+		defeatPanel.survivingUnitsValue.SetText($"{survivingUnits}");
+		defeatPanel.turnsElapsedValue.SetText($"{turnsElapsed}");
 	}
 }

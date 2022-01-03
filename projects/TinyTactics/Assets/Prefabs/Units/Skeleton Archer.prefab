@@ -27,7 +27,7 @@ MonoBehaviour:
   VITALITY: 10
   STRENGTH: 5
   DEXTERITY: 11
-  REFLEX: 4
+  REFLEX: 0
   DAMAGE_REDUCTION: 0
   MOVE: 4
   _CURRENT_HP: 0
@@ -93,6 +93,7 @@ MonoBehaviour:
   buffManager: {fileID: 0}
   equippedWeapon: {fileID: 7317941260927309738, guid: ae85c7a71f197d9458e6e0581ecee04d, type: 3}
   tags: []
+  debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1

@@ -13,7 +13,6 @@ public class ReflexDebuff : Buff
         boundUnit.OnAttack += DisplayDebuffAttack;
         boundUnit.OnDefend += DisplayDebuffDefense;
 
-        Debug.Log($"Removed {buffValue} from {boundUnit.displayName}'s reflex of {boundUnit.unitStats.REFLEX}");
         boundUnit.unitStats.UpdateReflex(boundUnit.unitStats.REFLEX - buffValue);
     }
 
@@ -22,7 +21,6 @@ public class ReflexDebuff : Buff
         boundUnit.OnAttack -= DisplayDebuffAttack;
         boundUnit.OnDefend -= DisplayDebuffDefense;
 
-        Debug.Log($"Added {buffValue} to {boundUnit.displayName}'s reflex of {boundUnit.unitStats.REFLEX}");
         boundUnit.unitStats.UpdateReflex(boundUnit.unitStats.REFLEX + buffValue);
     }
 

@@ -64,9 +64,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VITALITY: 13
-  STRENGTH: 4
-  DEXTERITY: 14
-  REFLEX: 8
+  STRENGTH: 99
+  DEXTERITY: 99
+  REFLEX: 0
   DAMAGE_REDUCTION: 3
   MOVE: 4
   _CURRENT_HP: 0
