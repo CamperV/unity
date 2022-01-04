@@ -726,6 +726,18 @@ MonoBehaviour:
           m_StringArgument: Level1
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: -570594337494929392, guid: 48f9269489179dc45aa13a664f8b8c10, type: 3}
+        m_TargetAssemblyTypeName: ClickFX, Assembly-CSharp
+        m_MethodName: PlayClickFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1060014168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1366,6 +1378,18 @@ MonoBehaviour:
       - m_Target: {fileID: 5913555612217590385, guid: 45cce5aa76a7f944a891e96f9f79d764, type: 3}
         m_TargetAssemblyTypeName: LevelLoader, Assembly-CSharp
         m_MethodName: ExitToDesktop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: -570594337494929392, guid: 48f9269489179dc45aa13a664f8b8c10, type: 3}
+        m_TargetAssemblyTypeName: ClickFX, Assembly-CSharp
+        m_MethodName: PlayClickFX
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

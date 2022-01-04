@@ -55,6 +55,10 @@ PrefabInstance:
       propertyPath: MIN_RANGE
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2359464107157842327, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6257526213748417652, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -123,6 +127,10 @@ PrefabInstance:
       propertyPath: color.r
       value: 0.9607843
       objectReference: {fileID: 0}
+    - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
+      propertyPath: audioFXBundle
+      value: 
+      objectReference: {fileID: 11400000, guid: 8e0ed2b5c7c27544ba217af8d22c00d4, type: 2}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: tags.Array.size
       value: 1

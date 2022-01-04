@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80f890c6062d4ba48bf1edbb6b29baad, type: 3}
+  m_Name: InteractAudioFXBundle
+  m_EditorClassIdentifier: 
+  clipPool:
+  - {fileID: 8300000, guid: a2abf8e6b36ad9a4da28768a4ecfa509, type: 3}
+  - {fileID: 8300000, guid: 0b6469d54ddbec1469c824064f23c431, type: 3}
+  - {fileID: 8300000, guid: bdd4e6285161cb646b4154efb6526312, type: 3}
+  - {fileID: 8300000, guid: 32616c6d81208904ab5379c092bf0d81, type: 3}
+  - {fileID: 8300000, guid: ef959bb64a77c0d4390f31598748179c, type: 3}

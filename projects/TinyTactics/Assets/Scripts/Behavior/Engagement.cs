@@ -153,7 +153,6 @@ public class Engagement
         Stats finalStats = new Stats(_attack, _defense);
 
         // log the Engagement
-        
         UIManager.inst.combatLog.AddEntry(
             $"{A.logTag}@[{A.displayName}] {attackType}s: [ YELLOW@[{finalStats.damage}] ATK, YELLOW@[{finalStats.hitRate}] HIT, YELLOW@[{finalStats.critRate}] CRIT ]"
         );
@@ -166,6 +165,7 @@ public class Engagement
 		bool survived = true;
 		if (isHit) {
             A.FireOnHitEvent(B);
+            A.personalAudioFX.PlayWeaponAttackFX();
 
 			bool isCrit = diceRoll < finalStats.critRate;
             int sufferedDamage = (isCrit) ? finalStats.damage*3 : finalStats.damage;
@@ -179,6 +179,7 @@ public class Engagement
         // miss
 		} else {
             B.FireOnAvoidEvent();
+            B.personalAudioFX.PlayAvoidFX();
 		}
 
 		return survived;

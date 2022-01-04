@@ -47,6 +47,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     [HideInInspector] public UnitStats unitStats;
     [HideInInspector] protected HoldTimer holdTimer;
     [HideInInspector] public BuffManager buffManager;
+    [HideInInspector] public PersonalAudioFX personalAudioFX;
     
     // I don't love this, but it makes things much cleaner.
     protected PlayerUnitController playerUnitController;
@@ -87,6 +88,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         unitStats = GetComponent<UnitStats>();
         holdTimer = GetComponent<HoldTimer>();
         buffManager = GetComponent<BuffManager>();
+        personalAudioFX = GetComponent<PersonalAudioFX>();
 
         // debug
         debugStateLabel = GetComponent<DebugStateLabel>();
@@ -199,6 +201,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     public void HealAmount(int healAmount) {
         TriggerHealAnimation();
+        personalAudioFX.PlayHealFX();
 
         unitStats.UpdateHP(unitStats._CURRENT_HP + healAmount, unitStats.VITALITY);
         UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] healed for GREEN@[{healAmount}].");

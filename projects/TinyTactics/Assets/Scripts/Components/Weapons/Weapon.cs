@@ -17,6 +17,9 @@ public class Weapon : MonoBehaviour
     [HideInInspector] public WeaponStats weaponStats;
     public List<string> tags;
 
+    // experimental
+    [SerializeField] public AudioFXBundle audioFXBundle;
+
     void Awake() {
         weaponStats = GetComponent<WeaponStats>();
     }

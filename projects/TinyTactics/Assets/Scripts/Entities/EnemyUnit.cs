@@ -71,6 +71,9 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
                 StartCoroutine( Utils.LateFrame(DisplayThreatRange) );
                 //
                 UIManager.inst.EnableUnitDetail(this);
+
+                //
+                personalAudioFX.PlayInteractFX();
                 break;
 
             case EnemyUnitFSM.Moving:

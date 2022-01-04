@@ -61,6 +61,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eeb2031e17d4fd40909283d629e3887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  name: 
   sprite: {fileID: 21300000, guid: c61dc5a79d5c6c24a8f93fce8f90790f, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
   weaponStats: {fileID: 0}
+  tags: []
+  audioFXBundle: {fileID: 0}

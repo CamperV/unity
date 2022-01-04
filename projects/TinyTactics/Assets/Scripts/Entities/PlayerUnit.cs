@@ -89,7 +89,13 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 break;
 
             case PlayerUnitFSM.PreWait:
-                holdTimer.StartTimer(Wait, CancelWait);
+                holdTimer.StartTimer(
+                    () => {
+                        Wait();
+                        personalAudioFX.PlaySpecialInteractFX();
+                    },
+                    CancelWait
+                );
                 break;
         }
     }
@@ -151,6 +157,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                 } else if (attackAvailable) {
                     ChangeState(PlayerUnitFSM.AttackSelection);
                 }
+
+                if (moveAvailable || attackAvailable) personalAudioFX.PlayInteractFX();
                 break;
 
             ////////////////////////////////////////////////////////////////////////
@@ -158,7 +166,11 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
             ////////////////////////////////////////////////////////////////////////
             case PlayerUnitFSM.MoveSelection:
                 if (gp == gridPosition) {
-                    if (attackAvailable) ChangeState(PlayerUnitFSM.AttackSelection);
+                    if (attackAvailable) {
+                        ChangeState(PlayerUnitFSM.AttackSelection);
+                        //
+                        personalAudioFX.PlayInteractFX();
+                    }
 
                 // else if it's a valid movement to be had:
                 } else {
@@ -179,6 +191,9 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         auxiliaryInteractFlag = auxiliaryInteract;
 
                         FireOnMoveEvent(pathToMouseOver);
+
+                        //
+                        personalAudioFX.PlayInteractFX();
                     }
                 }
                 break;

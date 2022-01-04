@@ -120,6 +120,10 @@ PrefabInstance:
       value: 0.3915094
       objectReference: {fileID: 0}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
+      propertyPath: audioFXBundle
+      value: 
+      objectReference: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
+    - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: tags.Array.size
       value: 1
       objectReference: {fileID: 0}
