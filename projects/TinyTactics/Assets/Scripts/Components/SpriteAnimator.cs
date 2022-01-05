@@ -44,8 +44,6 @@ public class SpriteAnimator : MonoBehaviour
 		PositionUpdater = v => transform.position = v;
 	}
 
-	public List<Coroutine> movementCrtStack = new List<Coroutine>();
-
 	public void ClearStacks() {
 		_movementStack = 0;
 		_animationStack = 0;
@@ -160,7 +158,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			spriteRenderer.color = Color.Lerp(ogColor, color, timeRatio).WithAlpha(1.0f);
+			spriteRenderer.color = Color.Lerp(ogColor, color, timeRatio).WithAlpha(spriteRenderer.color.a);
 			yield return null;
 		}
 

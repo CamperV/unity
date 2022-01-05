@@ -64,8 +64,14 @@ public class MiniHealthBar : MonoBehaviour
         healthRatio = (float)currVal/(float)maxVal;
         Vector3 toScale = new Vector3(healthRatio, 1.0f, 1.0f);
 
+        // StartCoroutine(
+        //     Utils.SerialCoroutines(
+        //         _UpdateBarVisual(toScale),
+        //         AnimateBar(barLevel.transform.localScale, toScale, Color.red, 1.0f, 1.0f)
+        //     )
+        // );
         StartCoroutine(
-            Utils.SerialCoroutines(
+            Utils.QueueCoroutines(
                 _UpdateBarVisual(toScale),
                 AnimateBar(barLevel.transform.localScale, toScale, Color.red, 1.0f, 1.0f)
             )

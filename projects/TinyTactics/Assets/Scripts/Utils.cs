@@ -33,7 +33,7 @@ public static class Utils
 		VoidAction();
 	}
 
-	public static IEnumerator SerialCoroutines(params IEnumerator[] coroutines) {
+	public static IEnumerator QueueCoroutines(params IEnumerator[] coroutines) {
 		foreach (IEnumerator crt in coroutines) {
 			yield return crt;
 		}

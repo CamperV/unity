@@ -187,9 +187,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
         UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] suffers YELLOW@[{incomingDamage}] damage.");
 
+        // ded
         if (!survived) {
-            TriggerDeathAnimation();
-            DeathCleanUp();
+            TriggerDeath();
 
         // I've been hurt, but survived
         } else {
@@ -198,6 +198,25 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
         return survived;
 	}
+
+    public void TriggerDeath() {
+        StartCoroutine( SequentialDeath() );
+    }
+
+    private IEnumerator SequentialDeath() {
+        DisableFSM();
+        yield return new WaitUntil(() => spriteAnimator.isAnimating == false && spriteAnimator.isMoving == false);
+
+        // wait until you're ready to animate
+        personalAudioFX.PlayDeathFX();
+        yield return spriteAnimator.FadeDownAll(1.0f);
+
+        // after animating:
+        UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] is KEYWORD@[destroyed].");
+        FinishTurn();
+        unitMap.ClearPosition(gridPosition);
+        gameObject.SetActive(false);
+    }
 
     public void HealAmount(int healAmount) {
         TriggerHealAnimation();
@@ -218,30 +237,14 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 		StartCoroutine( spriteAnimator.Shake((isCritical) ? 0.15f : 0.075f) );
     }
 
-    public void TriggerHealAnimation() {
-		StartCoroutine( spriteAnimator.FlashColor(Constants.healColorGreen) );
-    }
-
     public void TriggerMissAnimation() {
 		StartCoroutine( spriteAnimator.FlashColor(Constants.selectColorWhite) );
         StartCoroutine( spriteAnimator.SmoothBumpRandom(0.10f) );
     }
 
-	private void TriggerDeathAnimation() {
-        // note that this will probably start during the "taking damage" animation
-		StartCoroutine( spriteAnimator.FadeDownAll(1.0f) );
-	}
-
-	private void DeathCleanUp() {
-        UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] is KEYWORD@[destroyed].");
-
-    	StartCoroutine( spriteAnimator.ExecuteAfterAnimating(() => {
-            gameObject.SetActive(false);
-            DisableFSM();
-            unitMap.ClearPosition(gridPosition);
-            FinishTurn();
-		}));
-	}
+    public void TriggerHealAnimation() {
+		StartCoroutine( spriteAnimator.FlashColor(Constants.healColorGreen) );
+    }
 
     public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(ref mutAtt, target);
     public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(ref mutDef, attacker);

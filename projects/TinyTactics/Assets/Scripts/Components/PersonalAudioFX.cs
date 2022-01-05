@@ -14,6 +14,7 @@ public class PersonalAudioFX : MonoBehaviour
     [HideInInspector] public AudioFXBundle weaponAudioFXBundle; // hidden because it comes from the boundUnit's weapon
     public AudioFXBundle avoidAudioFXBundle;
     public AudioFXBundle healAudioFXBundle;
+    public AudioFXBundle deathAudioFXBundle;
 
     void Awake() {
         boundUnit = GetComponent<Unit>();
@@ -42,5 +43,9 @@ public class PersonalAudioFX : MonoBehaviour
 
     public void PlayHealFX() {
         audioSource.PlayOneShot(healAudioFXBundle.RandomClip(), 1f);
+    }
+
+    public void PlayDeathFX() {
+        audioSource.PlayOneShot(deathAudioFXBundle.RandomClip(), 1f);
     }
 }
