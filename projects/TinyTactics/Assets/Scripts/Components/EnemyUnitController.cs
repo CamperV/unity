@@ -176,6 +176,9 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
 	private IEnumerator TakeActionAll() {
 
         foreach (EnemyUnit unit in activeUnits.OrderBy(unit => unit.Initiative)) {
+            // if you've been cancelled, say by the Battle ending/turnManager suspending
+            if (state != ControllerFSM.TakeActions) yield break;
+
             // Brain: get optimal target
             // Brain: find optimal position to attack target
             // two tiers: can reach (in MoveRange), can't reach

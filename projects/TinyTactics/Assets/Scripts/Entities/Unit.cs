@@ -204,18 +204,24 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     }
 
     private IEnumerator SequentialDeath() {
-        DisableFSM();
         yield return new WaitUntil(() => spriteAnimator.isAnimating == false && spriteAnimator.isMoving == false);
 
         // wait until you're ready to animate
         personalAudioFX.PlayDeathFX();
+
+        StartCoroutine( spriteAnimator.SmoothCosX(12f, 0.06f, 0f, 1.0f) );
         yield return spriteAnimator.FadeDownAll(1.0f);
 
         // after animating:
         UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] is KEYWORD@[destroyed].");
-        FinishTurn();
-        unitMap.ClearPosition(gridPosition);
         gameObject.SetActive(false);
+
+        // playerUnitController checks endPhase here
+        FinishTurn();
+        DisableFSM();
+
+        // Battle checks victory conditions here
+        unitMap.ClearPosition(gridPosition);
     }
 
     public void HealAmount(int healAmount) {

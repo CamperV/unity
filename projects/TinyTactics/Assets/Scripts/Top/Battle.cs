@@ -36,6 +36,12 @@ public class Battle : MonoBehaviour
 
     public void EndBattle(bool playerVictorious) {
         eventManager.DisablePlayerInput();
+        
+        turnManager.currentPhase.TriggerEnd();
+        turnManager.Disable();
+
+        // just in case...
+        BroadcastMessage("StopAllCoroutines");
 
         int enemiesDefeated = enemyUnitController.disabledUnits.Count;
         int survivingUnits = playerUnitController.activeUnits.Count;

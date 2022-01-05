@@ -505,9 +505,13 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     }
 
     private EnemyUnit? EnemyAt(GridPosition gp) {
+        if (!battleMap.IsInBounds(gp)) return null;
+
         Unit? unit = unitMap.UnitAt(gp);
-        if (unit != null && unit.GetType() == typeof(EnemyUnit))
-            return (unit as EnemyUnit);
-        else return null;
+        if (unit != null && unit.GetType() == typeof(EnemyUnit)) {
+            return unit as EnemyUnit;
+        } else {
+            return null;
+        }
     }
 }

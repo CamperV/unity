@@ -1787,7 +1787,7 @@ PrefabInstance:
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: -570594337494929392, guid: 48f9269489179dc45aa13a664f8b8c10, type: 3}
+      objectReference: {fileID: -7783578675662688728, guid: 25bc5de4403d8a84ebc188e7b3ae5eda, type: 3}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -1798,7 +1798,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: ClickFX, Assembly-CSharp
+      value: OmniSound, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName

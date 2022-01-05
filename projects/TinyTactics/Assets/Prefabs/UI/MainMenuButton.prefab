@@ -267,6 +267,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: -7783578675662688728, guid: 25bc5de4403d8a84ebc188e7b3ae5eda, type: 3}
+        m_TargetAssemblyTypeName: OmniSound, Assembly-CSharp
+        m_MethodName: PlayClickFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7910746269558728983
 GameObject:
   m_ObjectHideFlags: 0

@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
   clickFX: {fileID: 8300000, guid: ef959bb64a77c0d4390f31598748179c, type: 3}
+  confirmFX: {fileID: 8300000, guid: b190a8a5f59499f4f9204e64b9a04da9, type: 3}
 --- !u!82 &-5144111512935205278
 AudioSource:
   m_ObjectHideFlags: 0

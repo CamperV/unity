@@ -250,6 +250,44 @@ public class SpriteAnimator : MonoBehaviour
 		movementStack--;
 	}
 
+	public IEnumerator SmoothCosX(float freq, float amplitude, float phase, float fixedTime) {
+		animationStack++;
+        //
+
+		float timeStep = 0.0f;
+		Vector3 startPos = transform.position;
+
+		var childOgPositions = new List<Vector3>();
+		foreach (Transform child in transform) childOgPositions.Add(child.position);
+		int index;
+
+		while (timeStep < 1.0f) {
+			timeStep += (Time.deltaTime / fixedTime);
+			
+			Vector3 xComponent = amplitude*(1f-timeStep) * (Mathf.Cos( (freq*Time.time) + phase)) * Vector3.right;
+			PositionUpdater(Vector3.Lerp(transform.position, startPos + xComponent, timeStep));
+			
+			// reverse offset all children, so only the main Unit shakes
+			index = 0;
+			foreach (Transform child in transform) {
+				child.position = childOgPositions[index];
+				index++;
+			}
+
+			yield return null;
+		}
+		
+		// after the while loop is broken:
+		PositionUpdater(startPos);
+		index = 0;
+		foreach (Transform child in transform) {
+			child.position = childOgPositions[index];
+			index++;
+		}
+
+		animationStack--;
+	}
+
 	public IEnumerator SmoothMovementGrid<T>(T target, IGrid<T> surface, float _fixedTime = -1f) where T : struct {
 		Vector3 endpoint = surface.GridToWorld(target);
 

@@ -73,11 +73,15 @@ public class TurnManager : MonoBehaviour
             NewPhaseEvent(currentPhase);
             phase.TriggerStart();
 
-            yield return new WaitUntil(() => phase.state == Phase.PhaseState.Complete);
-            UIManager.inst.combatLog.AddEntry($"Ended {phaseTag}@[{phase.name}] KEYWORD@[Phase].");
+            // check for enable here, as you can be disabled when the battle ends
+            yield return new WaitUntil(() => phase.state == Phase.PhaseState.Complete || enable == false);
 
-            // post-phase delay
-            yield return new WaitForSeconds(endPhaseDelay);
+            if (enable) {
+                UIManager.inst.combatLog.AddEntry($"Ended {phaseTag}@[{phase.name}] KEYWORD@[Phase].");
+
+                // post-phase delay
+                yield return new WaitForSeconds(endPhaseDelay);
+            }
         }
     }
 }

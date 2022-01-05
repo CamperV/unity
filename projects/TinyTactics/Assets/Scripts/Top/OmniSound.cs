@@ -8,6 +8,7 @@ public class OmniSound : MonoBehaviour
 
     [HideInInspector] public AudioSource audioSource;
     public AudioClip clickFX;
+    public AudioClip confirmFX;
 
     void Awake() {
         audioSource = GetComponent<AudioSource>();
@@ -22,5 +23,8 @@ public class OmniSound : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void PlayClickFX() => audioSource.PlayOneShot(clickFX, 1.0f);
+    public static void PlayClickFX() => OmniSound.inst._PlayFX(OmniSound.inst.clickFX, 1.0f);
+    public static void PlayConfirmFX() => OmniSound.inst._PlayFX(OmniSound.inst.confirmFX, 1.0f);
+
+    private void _PlayFX(AudioClip fx, float vol) => audioSource.PlayOneShot(fx, vol);
 }
