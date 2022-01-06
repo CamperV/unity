@@ -76,7 +76,10 @@ public sealed class UIManager : MonoBehaviour
 
 		// perks
 		List<string> unitPerks = new List<string>();
-		foreach (IMutatorComponent mc in unit.GetComponents<IMutatorComponent>()) {
+		foreach (IMutatorComponent mc in unit.GetComponentsInChildren<IMutatorComponent>()) {
+			if (mc.displayName == "Weapon Advantage") continue;
+			if (mc.displayName == "Weapon Effectiveness") continue;
+			
 			unitPerks.Add(mc.displayName);
 		}
 		string unitPerksText = string.Join("\n", unitPerks);
