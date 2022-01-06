@@ -7,19 +7,24 @@ using TMPro;
 
 public class GlossaryPanel : MonoBehaviour
 {
+	public EventManager eventManager;
 	public TextMeshProUGUI glossaryText;
 
-	public void SetActiveGlossaryText() {
-		List<string> textLines = new List<string>();
+	public void OnEnable() {
+		eventManager.DisablePlayerInput();
+		UpdateActiveGlossaryText();
+	}
 
+	public void OnDisable() {
+		eventManager.EnablePlayerInput();
+	}
+
+	private void UpdateActiveGlossaryText() {
+		List<string> textLines = new List<string>();
 		foreach (IToolTip tt in FindObjectsOfType<MonoBehaviour>().OfType<IToolTip>()) {
-			textLines.Add($"<b>{tt.tooltipName}</b>: {tt.tooltip}");
+			textLines.Add($"<color=#FFDD70><b>{tt.tooltipName}</b></color>: {tt.tooltip}");
 		}
 
 		glossaryText.SetText( string.Join("\n\n", textLines.Distinct().OrderBy(it => it)) );
-	}
-
-	public void Update() {
-		SetActiveGlossaryText();
 	}
 }

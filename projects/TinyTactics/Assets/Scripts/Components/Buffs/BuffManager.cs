@@ -50,7 +50,7 @@ public class BuffManager : MonoBehaviour
         return gameObject.AddComponent<T>().WithProvider(provider) as T;
     }
 
-    private bool HasBuffFromProvider<T>(string provider) where T : Buff {
+    public bool HasBuffFromProvider<T>(string provider) where T : Buff {
         bool hasBuff = false;
 
         foreach (T buff in GetComponents<T>()) {

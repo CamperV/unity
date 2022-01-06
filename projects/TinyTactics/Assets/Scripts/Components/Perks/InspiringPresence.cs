@@ -29,8 +29,12 @@ public class InspiringPresence : Perk, IToolTip
             Unit? unit = boundUnit.unitMap.UnitAt(gp);
 
             if (unit != null && unit.GetType() == boundUnit.GetType()) {
+                // don't re-add the same buff a billion times
+                if (unit.buffManager.HasBuffFromProvider<ConditionalStrengthBuff>(displayName))
+                    continue;
+
                 unit.buffManager.AddConditionalBuff<ConditionalStrengthBuff>(
-                    "Inspiring Presence",
+                    displayName,
                     3,
                     () => unit.gridPosition.ManhattanDistance(boundUnit.gridPosition) == 1
                 ); 
