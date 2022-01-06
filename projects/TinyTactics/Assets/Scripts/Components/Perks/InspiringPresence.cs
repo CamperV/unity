@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class InspiringPresence : Perk
+public class InspiringPresence : Perk, IToolTip
 {
+    // IToolTip
+    public string tooltipName { get; set; } = "Inspiring Presence";
+    public string tooltip { get; set; } = "Grant 3 STR to adjacent allies.";
+
     public override void OnAcquire() {
         boundUnit.unitMap.NewBoardStateEvent += GrantBonusToAdjacentUnits;
         //

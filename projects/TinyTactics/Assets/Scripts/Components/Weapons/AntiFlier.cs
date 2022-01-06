@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class AntiFlier : WeaponPerk
+public class AntiFlier : WeaponPerk, IToolTip
 {
+    // IToolTip
+    public string tooltipName { get; set; } = "Weapon Effectiveness (Flier)";
+    public string tooltip { get; set; } = "+100 CRIT when attacking Flying units.";
+
     public override void OnEquip() {
         boundWeapon.boundUnit.OnAttack += OffensiveAdv;
 

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class AntiSlash : WeaponPerk
+public class AntiSlash : WeaponPerk, IToolTip
 {
+    public string tooltipName { get; set; } = "Weapon Advantage (Slash)";
+    public string tooltip { get; set; } = "+15 HIT, +15 AVOID, +15 CRITAVOID against Slash weapons.";
+
     public override void OnEquip() {
         boundWeapon.boundUnit.OnAttack += OffensiveAdv;
         boundWeapon.boundUnit.OnDefend += DefensiveAdv;

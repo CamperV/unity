@@ -7,8 +7,10 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class RoughTerrainEffect : TerrainEffect
+public class RoughTerrainEffect : TerrainEffect, IToolTip
 {
+    public string tooltipName { get; set; } = "Rough Terrain";
+    public string tooltip { get; set; } = "+15 AVOID.";
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/RoughTerrainEffect", false, 1)]

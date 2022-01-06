@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class Nimble : Perk
+public class Nimble : Perk, IToolTip
 {
+    // IToolTip
+    public string tooltipName { get; set; } = "Nimble";
+    public string tooltip { get; set; } = "Move through enemy-occupied spaces.";
+
     public override void OnAcquire() {
         boundUnit.unitPathfinder.moveThroughEnemiesOverride = true;
         //

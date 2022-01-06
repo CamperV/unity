@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class AntiStrike : WeaponPerk
+public class AntiStrike : WeaponPerk, IToolTip
 {
+    public string tooltipName { get; set; } = "Weapon Advantage (Strike)";
+    public string tooltip { get; set; } = "+15 HIT, +15 AVOID, +15 CRITAVOID against Strike weapons.";
+
     public override void OnEquip() {
         boundWeapon.boundUnit.OnAttack += OffensiveAdv;
         boundWeapon.boundUnit.OnDefend += DefensiveAdv;

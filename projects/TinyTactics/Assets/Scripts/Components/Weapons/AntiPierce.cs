@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class AntiPierce : WeaponPerk
+public class AntiPierce : WeaponPerk, IToolTip
 {
+    // IToolTip
+    public string tooltipName { get; set; } = "Weapon Advantage (Pierce)";
+    public string tooltip { get; set; } = "+15 HIT, +15 AVOID, +15 CRITAVOID against Pierce weapons.";
+
     public override void OnEquip() {
         boundWeapon.boundUnit.OnAttack += OffensiveAdv;
         boundWeapon.boundUnit.OnDefend += DefensiveAdv;

@@ -4,8 +4,11 @@ using System;
 using UnityEngine;
 
 
-public class WeaponDebuff : WeaponPerk
+public class WeaponDebuff : WeaponPerk, IToolTip
 {
+    public string tooltipName { get; set; } = "Debuff Reflex";
+    public string tooltip { get; set; } = "On hit, -5 Reflex until end of next turn.";
+
     public override void OnEquip() {
         boundWeapon.boundUnit.OnHit += ApplyDebuff;
         

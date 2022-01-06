@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class Charge : Perk
+public class Charge : Perk, IToolTip
 {
+    // IToolTip
+    public string tooltipName { get; set; } = "Charge";
+    public string tooltip { get; set; } = "Gain +1 DMG per space moved this turn.";
+
     public override void OnAcquire() {
         boundUnit.OnMove += GainDamageBuffPerMove;
 
