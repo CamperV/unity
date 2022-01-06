@@ -20,8 +20,17 @@ public class GlossaryPanel : MonoBehaviour
 	}
 
 	private void UpdateActiveGlossaryText() {
+		// for all IToolTip MBs
+		List<IToolTip> toolTippers = FindObjectsOfType<MonoBehaviour>().OfType<IToolTip>().ToList();
+
+		// for all IToolTip SOs
+		// TODO WOW this sucks
+		toolTippers.Add(ScriptableObject.CreateInstance<HealTerrainEffect>());
+		toolTippers.Add(ScriptableObject.CreateInstance<RoughTerrainEffect>());
+		
 		List<string> textLines = new List<string>();
-		foreach (IToolTip tt in FindObjectsOfType<MonoBehaviour>().OfType<IToolTip>()) {
+
+		foreach (IToolTip tt in toolTippers) {
 			textLines.Add($"<color=#FFDD70><b>{tt.tooltipName}</b></color>: {tt.tooltip}");
 		}
 
