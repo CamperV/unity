@@ -13,8 +13,6 @@ public class CombatLog : MonoBehaviour
     private List<string> messageHistory;
     private ScrollRect scrollRect;
 
-    private readonly string delim = "@";
-
     void Awake() {
         messageHistory = new List<string>();
         scrollRect = GetComponent<ScrollRect>();

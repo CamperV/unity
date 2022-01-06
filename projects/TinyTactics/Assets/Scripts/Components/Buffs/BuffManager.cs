@@ -11,39 +11,6 @@ public class BuffManager : MonoBehaviour
         movementBuffProviders = new HashSet<string>();
     }
 
-    // public void AddDamageBuff(string provider, int damageValue, int expireTimerValue) {
-
-    //     // first, check if we need to create a new buff or not
-    //     if (HasBuffFromProvider<DamageBuff>(provider)) {
-    //         DamageBuff existingBuff = GetBuffFromProvider<DamageBuff>(provider);
-
-    //         existingBuff.AddValue(damageValue);
-    //         existingBuff.TakeBestTimer(expireTimerValue);
-
-    //     // else, if you're the first DamageBuff from this provider
-    //     } else {
-    //         DamageBuff buff = AttachBuff<DamageBuff>(provider);
-    //         buff.buffValue = damageValue;
-    //         buff.expireTimer = expireTimerValue;
-    //     }
-    // }
-
-    // public void AddReflexDebuff(string provider, int debuffValue, int expireTimerValue) {
-
-    //     // first, check if we need to create a new buff or not
-    //     if (HasBuffFromProvider<ReflexDebuff>(provider)) {
-    //         ReflexDebuff existingBuff = GetBuffFromProvider<ReflexDebuff>(provider);
-
-    //         existingBuff.AddValue(debuffValue);
-    //         existingBuff.TakeBestTimer(expireTimerValue);
-
-    //     // else, if you're the first ReflexDebuff from this provider
-    //     } else {
-    //         ReflexDebuff buff = AttachBuff<ReflexDebuff>(provider);
-    //         buff.SetValuesAndReapply(debuffValue, expireTimerValue);
-    //     }
-    // }
-
     public void AddValueBuff<T>(string provider, int buffValue, int expireTimerValue) where T : Buff {
 
         // first, check if we need to create a new buff or not
@@ -56,6 +23,12 @@ public class BuffManager : MonoBehaviour
             T buff = AttachBuff<T>(provider);
             buff.SetValuesAndReapply(buffValue, expireTimerValue);
         }
+    }
+
+    public void AddConditionalBuff<T>(string provider, int buffValue, Func<bool> Condition) where T : ConditionalBuff {
+        // don't worry about stacking, just keep adding Components.
+        T buff = AttachBuff<T>(provider);
+        buff.ApplyValueAndCondition(buffValue, Condition);
     }
 
     public void RemoveAllBuffsFromProvider(string provider) {

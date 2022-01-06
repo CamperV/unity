@@ -12,6 +12,7 @@ public class UnitStats : MonoBehaviour
 
     public delegate void StatChange(int newValue);
     public event StatChange UpdateReflexEvent;
+    public event StatChange UpdateStrengthEvent;
 
     public int VITALITY;
     public int STRENGTH;
@@ -31,5 +32,10 @@ public class UnitStats : MonoBehaviour
         // REFLEX = Mathf.Clamp(newValue, 0, 99);
         REFLEX = newValue;
         UpdateReflexEvent?.Invoke(newValue);
+    }
+
+    public void UpdateStrength(int newValue) {
+        STRENGTH = newValue;
+        UpdateStrengthEvent?.Invoke(newValue);
     }
 }

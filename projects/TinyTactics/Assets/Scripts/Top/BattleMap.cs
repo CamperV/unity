@@ -87,7 +87,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public void CheckLeftMouseClick(Vector3 screenPosition) {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
-        Debug.Log($"BattleMap has seen that you clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
+        // Debug.Log($"BattleMap has seen that you clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
             InteractEvent?.Invoke(gridPosition);
@@ -95,13 +95,13 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
     
     public void CheckRightMouseClick(Vector3 screenPosition) {
-        Debug.Log($"BattleMap has seen that you right-clicked {screenPosition}");
+        // Debug.Log($"BattleMap has seen that you right-clicked {screenPosition}");
     }
 
     public void CheckMiddleMouseClick(Vector3 screenPosition) {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
-        Debug.Log($"BattleMap has seen that you middle-clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
+        // Debug.Log($"BattleMap has seen that you middle-clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
             AuxiliaryInteractEvent_2?.Invoke(gridPosition);
@@ -124,7 +124,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public void CheckLeftMouseHoldStart(Vector3 screenPosition) {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
-        Debug.Log($"BattleMap has seen that you started holding mouse @ {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
+        // Debug.Log($"BattleMap has seen that you started holding mouse @ {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
             AuxiliaryInteractEvent_0?.Invoke(gridPosition);
@@ -134,7 +134,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public void CheckLeftMouseHoldEnd(Vector3 screenPosition) {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
-        Debug.Log($"BattleMap has seen that you released mouse @ {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
+        // Debug.Log($"BattleMap has seen that you released mouse @ {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
             AuxiliaryInteractEvent_1?.Invoke(gridPosition);
