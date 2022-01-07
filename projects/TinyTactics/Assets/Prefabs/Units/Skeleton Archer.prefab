@@ -24,13 +24,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de54ba498d272848aa4102bd1ebee66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VITALITY: 10
-  STRENGTH: 5
-  DEXTERITY: 11
-  REFLEX: 0
-  DAMAGE_REDUCTION: 0
-  MOVE: 4
-  _CURRENT_HP: 0
+  VITALITY: -1
+  STRENGTH: -1
+  DEXTERITY: -1
+  REFLEX: -1
+  DEFENSE: -1
+  MOVE: -1
+  _CURRENT_HP: -1
+  baseStats:
+    VITALITY: 10
+    STRENGTH: 7
+    DEXTERITY: 12
+    REFLEX: 5
+    DEFENSE: 5
+    MOVE: 5
+  variance: 1
 --- !u!114 &-5551524322591222529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,11 +94,14 @@ MonoBehaviour:
   <gridPosition>k__BackingField:
     x: 0
     y: 0
+  unitMap: {fileID: 0}
+  battleMap: {fileID: 0}
   spriteAnimator: {fileID: 0}
   spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
   buffManager: {fileID: 0}
+  personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 7317941260927309738, guid: ae85c7a71f197d9458e6e0581ecee04d, type: 3}
   tags: []
   debugStateLabel: {fileID: 0}
@@ -110,11 +121,11 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: c8fb52d1d3c1a624bbdb605bde9f796c, type: 3}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.5921569
       objectReference: {fileID: 0}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0.4117647
       objectReference: {fileID: 0}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.r

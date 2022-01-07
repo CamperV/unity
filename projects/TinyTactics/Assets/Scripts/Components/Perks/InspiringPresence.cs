@@ -24,7 +24,7 @@ public class InspiringPresence : Perk, IToolTip
     private void GrantBonusToAdjacentUnits() {
 
         foreach (GridPosition gp in boundUnit.gridPosition.Radiate(1)) {
-            if (gp == boundUnit.gridPosition) continue;
+            if (gp == boundUnit.gridPosition || !boundUnit.battleMap.IsInBounds(gp)) continue;
 
             Unit? unit = boundUnit.unitMap.UnitAt(gp);
 

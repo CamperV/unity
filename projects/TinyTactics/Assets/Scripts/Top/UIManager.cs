@@ -58,7 +58,7 @@ public sealed class UIManager : MonoBehaviour
 		
 		// attributes
 		unitDetailPanel.hpValue.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");
-		unitDetailPanel.drValue.SetText($"{unit.unitStats.DAMAGE_REDUCTION}");
+		unitDetailPanel.drValue.SetText($"{unit.unitStats.DEFENSE}");
 		//
 		unitDetailPanel.vitValue.SetText($"{unit.unitStats.VITALITY}");
 		unitDetailPanel.strValue.SetText($"{unit.unitStats.STRENGTH}");

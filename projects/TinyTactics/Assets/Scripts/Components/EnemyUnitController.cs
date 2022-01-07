@@ -74,6 +74,9 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
                 break;
 
             case ControllerFSM.TakeActions:
+                // disable player unit controller for a time
+                playerUnitController.ChangeState(PlayerUnitController.ControllerFSM.Inactive);
+                
                 StartCoroutine( TakeActionAll() );
                 break;
         }
@@ -86,6 +89,10 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
                 break;
 
             case ControllerFSM.Preview:
+                // disable player unit controller for a time
+                playerUnitController.ChangeState(PlayerUnitController.ControllerFSM.NoSelection);
+                break;
+
             case ControllerFSM.TakeActions:
                 break;
         }

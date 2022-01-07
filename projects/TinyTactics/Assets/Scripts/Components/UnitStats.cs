@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class UnitStats : MonoBehaviour
 {
@@ -18,10 +19,31 @@ public class UnitStats : MonoBehaviour
     public int STRENGTH;
     public int DEXTERITY;
     public int REFLEX;
-    public int DAMAGE_REDUCTION;
+    public int DEFENSE;
     public int MOVE;
 
     public int _CURRENT_HP;
+
+    [Serializable]
+    public struct BaseStats {
+        public int VITALITY;
+        public int STRENGTH;
+        public int DEXTERITY;
+        public int REFLEX;
+        public int DEFENSE;
+        public int MOVE;
+    }
+    [SerializeField] private BaseStats baseStats;
+    [SerializeField] private int variance = 3;
+
+    void Awake() {
+        VITALITY  = baseStats.VITALITY  + Random.Range(-variance, variance);
+        STRENGTH  = baseStats.STRENGTH  + Random.Range(-variance, variance);
+        DEXTERITY = baseStats.DEXTERITY + Random.Range(-variance, variance);
+        REFLEX    = baseStats.REFLEX    + Random.Range(-variance, variance);
+        DEFENSE   = baseStats.DEFENSE   + Random.Range(-variance, variance);
+        MOVE      = baseStats.MOVE;
+    }
 
     public void UpdateHP(int newValue, int maxValue) {
         _CURRENT_HP = Mathf.Clamp(newValue, 0, maxValue);

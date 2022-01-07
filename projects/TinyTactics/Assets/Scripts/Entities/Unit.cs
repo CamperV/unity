@@ -40,7 +40,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     // necessary Component references
     [HideInInspector] public UnitMap unitMap;
-    [HideInInspector] protected BattleMap battleMap;
+    [HideInInspector] public BattleMap battleMap;
     [HideInInspector] public SpriteAnimator spriteAnimator;
     [HideInInspector] public SpriteRenderer spriteRenderer;
     [HideInInspector] public UnitPathfinder unitPathfinder;

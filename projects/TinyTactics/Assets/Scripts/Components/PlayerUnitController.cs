@@ -94,7 +94,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         // disable enemy unit controller for a time
         enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
         ChangeState(ControllerFSM.NoSelection);
-        
 
         activeUnits.ForEach(it => it.StartTurn() );
     }

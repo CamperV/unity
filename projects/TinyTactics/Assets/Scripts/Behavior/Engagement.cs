@@ -138,7 +138,7 @@ public class Engagement
         int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
 
         MutableDefense mutableDefense = new MutableDefense(
-            generator.unitStats.DAMAGE_REDUCTION,                   // reduce incoming damage
+            generator.unitStats.DEFENSE,                   // reduce incoming damage
             generator.unitStats.REFLEX*2 - weightPenalty,             // avoid rate
             0                                                       // crit avoid rate
         );
