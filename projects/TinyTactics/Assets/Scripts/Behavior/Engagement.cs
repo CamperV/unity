@@ -125,7 +125,7 @@ public class Engagement
 
         MutableAttack mutableAttack = new MutableAttack(
             generator.unitStats.STRENGTH  + generator.equippedWeapon.weaponStats.MIGHT,         // damage
-            generator.unitStats.DEXTERITY + generator.equippedWeapon.weaponStats.ACCURACY,      // hit rate
+            generator.unitStats.DEXTERITY*2 + generator.equippedWeapon.weaponStats.ACCURACY,      // hit rate
             0                                                                                   // crit rate
         );
         
@@ -135,12 +135,10 @@ public class Engagement
     }
 
     private Defense GenerateDefense(Unit generator, Unit attacker) {
-        int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
-
         MutableDefense mutableDefense = new MutableDefense(
-            generator.unitStats.DEFENSE,                   // reduce incoming damage
-            generator.unitStats.REFLEX*2 - weightPenalty,             // avoid rate
-            0                                                       // crit avoid rate
+            generator.unitStats.DEFENSE,          // reduce incoming damage
+            generator.unitStats._AVO,             // avoid rate
+            0                                     // crit avoid rate
         );
 
         // THIS WILL MODIFY THE OUTGOING DEFENSE PACKAGE

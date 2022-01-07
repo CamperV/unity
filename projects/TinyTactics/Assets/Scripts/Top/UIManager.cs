@@ -13,6 +13,8 @@ public sealed class UIManager : MonoBehaviour
     [SerializeField] private Text currentTurnText;
 	[SerializeField] private Text currentPhaseText;
 
+	[SerializeField] private TerrainEffectPanel terrainEffectPanel;
+
 	[SerializeField] private UnitDetailPanel unitDetailPanel;
 
 	[SerializeField] private GameObject engagementPreviewContainer;
@@ -46,6 +48,14 @@ public sealed class UIManager : MonoBehaviour
 		currentPhaseText.text = $"Current Phase: {newPhase.name}"; 
 	}
 
+	public void UpdateTerrainEffectPanel(TerrainTile terrainAt) {
+		if (terrainAt.HasTerrainEffect) {
+			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: {terrainAt.terrainEffect.shortDisplayName}");
+		} else {
+			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: No Terrain Effect");	
+		}
+	}
+
 	public void EnableUnitDetail(Unit unit) {
 		unitDetailPanel.gameObject.SetActive(true);
 
@@ -58,21 +68,18 @@ public sealed class UIManager : MonoBehaviour
 		
 		// attributes
 		unitDetailPanel.hpValue.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");
-		unitDetailPanel.drValue.SetText($"{unit.unitStats.DEFENSE}");
 		//
 		unitDetailPanel.vitValue.SetText($"{unit.unitStats.VITALITY}");
 		unitDetailPanel.strValue.SetText($"{unit.unitStats.STRENGTH}");
 		unitDetailPanel.dexValue.SetText($"{unit.unitStats.DEXTERITY}");
 		unitDetailPanel.refValue.SetText($"{unit.unitStats.REFLEX}");
+		unitDetailPanel.defValue.SetText($"{unit.unitStats.DEFENSE}");
 		unitDetailPanel.movValue.SetText($"{unit.unitStats.MOVE}");
 
 		// derived
-		int atk = unit.unitStats.STRENGTH + unit.equippedWeapon.weaponStats.MIGHT;
-		int hit = unit.unitStats.DEXTERITY + unit.equippedWeapon.weaponStats.ACCURACY;
-		int avo = unit.unitStats.REFLEX*2 - Mathf.Max(0, (unit.equippedWeapon.weaponStats.WEIGHT - unit.unitStats.STRENGTH));
-		unitDetailPanel.atkValue.SetText($"{atk}");
-		unitDetailPanel.hitValue.SetText($"{hit}");
-		unitDetailPanel.avoValue.SetText($"{avo}");
+		unitDetailPanel.atkValue.SetText($"{unit.unitStats._ATK}");
+		unitDetailPanel.hitValue.SetText($"{unit.unitStats._HIT}");
+		unitDetailPanel.avoValue.SetText($"{unit.unitStats._AVO}");
 
 		// perks
 		List<string> unitPerks = new List<string>();

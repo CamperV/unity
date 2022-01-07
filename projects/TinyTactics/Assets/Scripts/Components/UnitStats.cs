@@ -15,14 +15,19 @@ public class UnitStats : MonoBehaviour
     public event StatChange UpdateReflexEvent;
     public event StatChange UpdateStrengthEvent;
 
-    public int VITALITY;
-    public int STRENGTH;
-    public int DEXTERITY;
-    public int REFLEX;
-    public int DEFENSE;
-    public int MOVE;
+    private Unit boundUnit;
 
-    public int _CURRENT_HP;
+    [HideInInspector] public int VITALITY;
+    [HideInInspector] public int STRENGTH;
+    [HideInInspector] public int DEXTERITY;
+    [HideInInspector] public int REFLEX;
+    [HideInInspector] public int DEFENSE;
+    [HideInInspector] public int MOVE;
+
+    [HideInInspector] public int _CURRENT_HP;
+    [HideInInspector] public int _ATK => STRENGTH + boundUnit.equippedWeapon.weaponStats.MIGHT;
+    [HideInInspector] public int _HIT => DEXTERITY*2 + boundUnit.equippedWeapon.weaponStats.ACCURACY;
+    [HideInInspector] public int _AVO => REFLEX*2 - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
 
     [Serializable]
     public struct BaseStats {
@@ -34,7 +39,7 @@ public class UnitStats : MonoBehaviour
         public int MOVE;
     }
     [SerializeField] private BaseStats baseStats;
-    [SerializeField] private int variance = 3;
+    [SerializeField] private int variance = 2;
 
     void Awake() {
         VITALITY  = baseStats.VITALITY  + Random.Range(-variance, variance);
@@ -43,6 +48,8 @@ public class UnitStats : MonoBehaviour
         REFLEX    = baseStats.REFLEX    + Random.Range(-variance, variance);
         DEFENSE   = baseStats.DEFENSE   + Random.Range(-variance, variance);
         MOVE      = baseStats.MOVE;
+
+        boundUnit = GetComponent<Unit>();
     }
 
     public void UpdateHP(int newValue, int maxValue) {
@@ -51,7 +58,6 @@ public class UnitStats : MonoBehaviour
     }
 
     public void UpdateReflex(int newValue) {
-        // REFLEX = Mathf.Clamp(newValue, 0, 99);
         REFLEX = newValue;
         UpdateReflexEvent?.Invoke(newValue);
     }

@@ -12,6 +12,8 @@ public class HealTerrainEffect : TerrainEffect, IToolTip
     public string tooltipName { get; set; } = "Healing Terrain";
     public string tooltip { get; set; } = "On start of turn, heal 25% of Max HP.";
 
+    public override string shortDisplayName { get; set; } = "+25% HP";
+
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/HealTerrainEffect", false, 1)]
 	private static void Create() {

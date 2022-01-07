@@ -34,5 +34,6 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 1
-  cost: 4
+  cost: 5
   terrainEffect: {fileID: 11400000, guid: d53421eca4d65e34894179c8bc81803d, type: 2}
+  displayName: Water

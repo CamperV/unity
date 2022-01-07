@@ -13,11 +13,11 @@ public class UnitDetailPanel : MonoBehaviour
 	
 	// attributes
 	public TextMeshProUGUI hpValue;
-	public TextMeshProUGUI drValue;
 	public TextMeshProUGUI vitValue;
 	public TextMeshProUGUI strValue;
 	public TextMeshProUGUI dexValue;
 	public TextMeshProUGUI refValue;
+	public TextMeshProUGUI defValue;
 	public TextMeshProUGUI movValue;
 	
 	// derived

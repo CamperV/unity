@@ -28,6 +28,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
 
     private PlayerUnit currentSelection;
+    private PlayerUnit mostRecentlySelectedUnit;
     private EnemyUnitController enemyUnitController;
 
     void Awake() {
@@ -39,6 +40,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         // this accounts for all in-scene activeUnits, not instatiated prefabs
         foreach (PlayerUnit en in GetComponentsInChildren<PlayerUnit>()) {
             _activeUnits.Add(en);
+            mostRecentlySelectedUnit = en;
         }
 
         InitialState();
@@ -91,6 +93,9 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
 
     public void TriggerPhase() {
+        // re-focus the camera
+        NewPlayerUnitControllerSelection?.Invoke(mostRecentlySelectedUnit);
+
         // disable enemy unit controller for a time
         enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
         ChangeState(ControllerFSM.NoSelection);
@@ -166,6 +171,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         if (selection == null) {
             ChangeState(ControllerFSM.NoSelection);
         } else {
+            mostRecentlySelectedUnit = selection;
             ChangeState(ControllerFSM.Selection);
         }
 

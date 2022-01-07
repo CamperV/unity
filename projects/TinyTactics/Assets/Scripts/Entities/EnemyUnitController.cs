@@ -11,7 +11,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     public delegate void UnitSelection(Unit selection);
     public event UnitSelection NewEnemyUnitControllerSelection;
 
-    public static float timeBetweenUnitActions = 1.0f; // seconds
+    public static float timeBetweenUnitActions = 0.75f; // seconds
 
     // debug
     public Text debugStateLabel;
@@ -189,19 +189,33 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
             // two tiers: can reach (in MoveRange), can't reach
             // TODO improved AI: if you'll probably die when attacking "optimal target in move range",
             // switch to getting optimal target instead, even if not in the move range
-
-            // if moving without attacking, wait a short bit and execute the next unit's action
-            // if you're going to attack, let the entire thing play out before moving on
-            // try to batch these together!
-            // ie, move all "non-attackers" first, then play the deferred attackers
-            // aactually, do the attackers first, because a unit going down might affect how the next unit's turn works
             
             // wait until the unit says you can move on
             // generally this is until the unit's turn is over,
             // but if the unit is only moving (and not attacking), just execute the next unit's whole situation
             yield return new WaitUntil(() => !unit.spriteAnimator.isAnimating);
-            yield return unit.TakeActionFlowChart();
-            yield return new WaitForSeconds(timeBetweenUnitActions);
+
+            EnemyBrain.DamagePackage? selectedDmgPkg;
+            Path<GridPosition>? pathTo;
+            unit.SelectDamagePackage(out selectedDmgPkg, out pathTo);
+
+            // if the unit wants to end early, let them
+            // ie, unit can't actually execute the DamagePackage it wants to
+            if (selectedDmgPkg == null) {
+                NewEnemyUnitControllerSelection?.Invoke(unit);
+                unit.FinishTurn();
+                yield return new WaitForSeconds(timeBetweenUnitActions/5f);
+
+            // otherwise, if they want to take an action:
+            // focus on it (camera)
+            // execute the dang thing
+            // and wait the normal amount between turns
+            } else {
+                NewEnemyUnitControllerSelection?.Invoke(unit);
+                //
+                yield return unit.ExecuteDamagePackage(selectedDmgPkg.Value, pathTo);
+                yield return new WaitForSeconds(timeBetweenUnitActions);
+            }
         }
 
         GetComponentInParent<TurnManager>().enemyPhase.TriggerEnd();
