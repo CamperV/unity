@@ -10,12 +10,14 @@ public class BrainPod : MonoBehaviour
 {	
 	// set in inspector
 	public List<EnemyUnit> podmates;
-	public int Initiative => podmates.Min(unit => unit.Initiative);
+	public int Initiative => (podmates.Count > 0) ? podmates.Min(unit => unit.Initiative) : Int32.MaxValue;
 
 	public HashSet<GridPosition> sharedMoveRangeDimensions;
 	public HashSet<GridPosition> sharedAttackRangeDimensions;
 
 	void Awake() {
+		podmates = new List<EnemyUnit>();
+
 		foreach (EnemyUnit unit in GetComponentsInChildren<EnemyUnit>()) {
 			unit.assignedPod = this;
 			podmates.Add(unit);

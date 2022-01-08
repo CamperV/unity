@@ -7,9 +7,6 @@ using Random = UnityEngine.Random;
 // this class is created for an acutal battle between two Units
 public class Engagement
 {
-    // public delegate void EngagementCreation(ref Engagement e);
-    // public static event EngagementCreation EngagementCreationEvent;
-
     public Unit aggressor;
     public Unit defender;
 
@@ -59,7 +56,6 @@ public class Engagement
 
     public static Engagement Create(Unit a, Unit b) {
         Engagement mutableEngagement = new Engagement(a, b);
-        // EngagementCreationEvent(ref mutableEngagement);
 
         // only return after registered things have modified the Engagement
         return mutableEngagement;
@@ -124,9 +120,9 @@ public class Engagement
         int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
 
         MutableAttack mutableAttack = new MutableAttack(
-            generator.unitStats.STRENGTH  + generator.equippedWeapon.weaponStats.MIGHT,         // damage
-            generator.unitStats.DEXTERITY*2 + generator.equippedWeapon.weaponStats.ACCURACY,      // hit rate
-            0                                                                                   // crit rate
+            generator.unitStats._ATK,
+            generator.unitStats._HIT,
+            generator.unitStats._CRT
         );
         
         // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
@@ -169,7 +165,11 @@ public class Engagement
             int sufferedDamage = (isCrit) ? finalStats.damage*3 : finalStats.damage;
 
             // hit/crit
-            if (isCrit) UIManager.inst.combatLog.AddEntry("YELLOW@[Critical Hit!]");          
+            if (isCrit) {
+                A.FireOnCriticalEvent(B);
+                A.personalAudioFX.PlayCriticalFX();
+                UIManager.inst.combatLog.AddEntry("YELLOW@[Critical Hit!]");          
+            }
 
             // ouchies, play the animations for hurt
 			survived = B.SufferDamage(sufferedDamage, isCritical: isCrit);

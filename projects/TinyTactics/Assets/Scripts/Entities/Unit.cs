@@ -29,6 +29,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     public delegate void OnTargetedAction(Unit target);
     public event OnTargetedAction OnHit;
+    public event OnTargetedAction OnCritical;
 
     public delegate void Movement(Path<GridPosition> path);
     public event Movement OnMove;
@@ -275,6 +276,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     
     // targeted versions
     public void FireOnHitEvent(Unit target) => OnHit?.Invoke(target);
+    public void FireOnCriticalEvent(Unit target) => OnCritical?.Invoke(target);
 
     public void FireOnMoveEvent(Path<GridPosition> pathTaken) => OnMove?.Invoke(pathTaken);
 

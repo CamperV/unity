@@ -522,6 +522,7 @@ MonoBehaviour:
   avoidAudioFXBundle: {fileID: 11400000, guid: dcb3fd546c8d56d4383e0b1f7125b0a0, type: 2}
   healAudioFXBundle: {fileID: 11400000, guid: 32c2d2ded39b7d0428a75af78a002a82, type: 2}
   deathAudioFXBundle: {fileID: 11400000, guid: ade11ecc095911d429a6c983b6e7da03, type: 2}
+  criticalAudioFXBundle: {fileID: 11400000, guid: 175d5d976f9f3124ab3d1abd64b80022, type: 2}
 --- !u!1 &7090665412735883434
 GameObject:
   m_ObjectHideFlags: 0

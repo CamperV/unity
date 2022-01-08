@@ -245,7 +245,6 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     }
 
     public IEnumerator ExecuteDamagePackage(EnemyBrain.DamagePackage selectedDmgPkg, Path<GridPosition> pathTo) {
-        Debug.Log($"Executing dmgpkg with pathTo {pathTo} -> {pathTo.End}");
         //
         // execute movement portion
         StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
