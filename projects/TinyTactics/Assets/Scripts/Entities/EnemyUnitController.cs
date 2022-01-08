@@ -100,7 +100,17 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
 
     public void TriggerPhase() {
-        activeUnits.ForEach(it => it.StartTurn() );
+        foreach (EnemyUnit unit in activeUnits) {
+            unit.RefreshTargets();
+            unit.StartTurn();
+        }
+
+        // also, update the threat ranges of the pods
+        // we can't have this update every time a unit takes a turn
+        BrainPod[] pods = GetComponentsInChildren<BrainPod>();
+        foreach (BrainPod pod in pods) {
+            pod.UpdateSharedDetectionRange();
+        }
 
         // disable player unit controller for a time
         playerUnitController.ChangeState(PlayerUnitController.ControllerFSM.Inactive);
@@ -179,45 +189,58 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
 
 	private IEnumerator TakeActionAll() {
+        // first, try for any available Pods
+        // they take their turns together, then take the stragglers
+        BrainPod[] pods = GetComponentsInChildren<BrainPod>();
+        foreach (BrainPod pod in pods.OrderBy(pod => pod.Initiative)) {
 
-        foreach (EnemyUnit unit in activeUnits.OrderBy(unit => unit.Initiative)) {
+            foreach (EnemyUnit unit in pod.podmates.Where(it => it.turnActive).OrderBy(unit => unit.Initiative)) {
+                // if you've been cancelled, say by the Battle ending/turnManager suspending
+                if (state != ControllerFSM.TakeActions) yield break;
+
+                yield return TakeAction(unit);
+            }
+        }
+
+        // then, if the pods have gone, collect the stragglers (if their turn is still active)
+        foreach (EnemyUnit unit in activeUnits.Where(it => it.turnActive).OrderBy(unit => unit.Initiative)) {
             // if you've been cancelled, say by the Battle ending/turnManager suspending
             if (state != ControllerFSM.TakeActions) yield break;
 
-            // Brain: get optimal target
-            // Brain: find optimal position to attack target
-            // two tiers: can reach (in MoveRange), can't reach
-            // TODO improved AI: if you'll probably die when attacking "optimal target in move range",
-            // switch to getting optimal target instead, even if not in the move range
-            
-            // wait until the unit says you can move on
-            // generally this is until the unit's turn is over,
-            // but if the unit is only moving (and not attacking), just execute the next unit's whole situation
-            yield return new WaitUntil(() => !unit.spriteAnimator.isAnimating);
-
-            EnemyBrain.DamagePackage? selectedDmgPkg;
-            Path<GridPosition>? pathTo;
-            unit.SelectDamagePackage(out selectedDmgPkg, out pathTo);
-
-            // if the unit wants to end early, let them
-            // ie, unit can't actually execute the DamagePackage it wants to
-            if (selectedDmgPkg == null) {
-                NewEnemyUnitControllerSelection?.Invoke(unit);
-                unit.FinishTurn();
-                yield return new WaitForSeconds(timeBetweenUnitActions/5f);
-
-            // otherwise, if they want to take an action:
-            // focus on it (camera)
-            // execute the dang thing
-            // and wait the normal amount between turns
-            } else {
-                NewEnemyUnitControllerSelection?.Invoke(unit);
-                //
-                yield return unit.ExecuteDamagePackage(selectedDmgPkg.Value, pathTo);
-                yield return new WaitForSeconds(timeBetweenUnitActions);
-            }
+            yield return TakeAction(unit);
         }
 
         GetComponentInParent<TurnManager>().enemyPhase.TriggerEnd();
 	}
+
+    private IEnumerator TakeAction(EnemyUnit unit) {        
+        // wait until the unit says you can move on
+        // generally this is until the unit's turn is over,
+        // but if the unit is only moving (and not attacking), just execute the next unit's whole situation
+        yield return new WaitUntil(() => !unit.spriteAnimator.isAnimating);
+
+        EnemyBrain.DamagePackage? selectedDmgPkg;
+        Path<GridPosition>? pathTo;
+        unit.SelectDamagePackage(out selectedDmgPkg, out pathTo);
+
+        // if the unit wants to end early, let them
+        // ie, unit can't actually execute the DamagePackage it wants to
+        if (selectedDmgPkg == null) {
+            unit.FinishTurn();
+
+            // uncomment to focus the camera when they decide not to move            
+            // NewEnemyUnitControllerSelection?.Invoke(unit);
+            // yield return new WaitForSeconds(timeBetweenUnitActions/4f);
+
+        // otherwise, if they want to take an action:
+        // focus on it (camera)
+        // execute the dang thing
+        // and wait the normal amount between turns
+        } else {
+            NewEnemyUnitControllerSelection?.Invoke(unit);
+            //
+            yield return unit.ExecuteDamagePackage(selectedDmgPkg.Value, pathTo);
+            yield return new WaitForSeconds(timeBetweenUnitActions);
+        }
+    }
 }

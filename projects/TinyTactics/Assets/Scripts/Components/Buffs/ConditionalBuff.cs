@@ -15,7 +15,7 @@ public abstract class ConditionalBuff : Buff
     public void ApplyValueAndCondition(int val, Func<bool> Condition) {
         OnExpire();
         //
-        buffValue = val;
+        modifierValue = val;
         ConditionValid = Condition;
         //
         OnAcquire();

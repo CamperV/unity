@@ -46,7 +46,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     [HideInInspector] public UnitPathfinder unitPathfinder;
     [HideInInspector] public UnitStats unitStats;
     [HideInInspector] protected HoldTimer holdTimer;
-    [HideInInspector] public BuffManager buffManager;
+    [HideInInspector] public StatusManager statusManager;
     [HideInInspector] public PersonalAudioFX personalAudioFX;
     
     // I don't love this, but it makes things much cleaner.
@@ -87,7 +87,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         unitPathfinder = GetComponent<UnitPathfinder>();
         unitStats = GetComponent<UnitStats>();
         holdTimer = GetComponent<HoldTimer>();
-        buffManager = GetComponent<BuffManager>();
+        statusManager = GetComponent<StatusManager>();
         personalAudioFX = GetComponent<PersonalAudioFX>();
 
         // debug
@@ -151,6 +151,17 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
                 return true;
         }
         return false;
+    }
+
+    public IEnumerable<Unit> AlliesWithinRange(int range) {
+        foreach (GridPosition gp in gridPosition.Radiate(range)) {
+            if (gp == gridPosition || !battleMap.IsInBounds(gp)) continue;
+            Unit? unit = unitMap.UnitAt(gp);
+
+            if (unit != null && unit.GetType() == GetType()) {
+                yield return unit;
+            }
+        }
     }
 
     // IUnitPhaseInfo

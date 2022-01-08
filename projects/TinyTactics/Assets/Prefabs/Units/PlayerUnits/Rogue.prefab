@@ -20,11 +20,11 @@ MonoBehaviour:
   MOVE: -1
   _CURRENT_HP: 1
   baseStats:
-    VITALITY: 13
+    VITALITY: 16
     STRENGTH: 6
     DEXTERITY: 17
     REFLEX: 14
-    DEFENSE: 3
+    DEFENSE: 4
     MOVE: 5
   variance: 0
 --- !u!114 &2949853218493201630

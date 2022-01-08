@@ -377,7 +377,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         // modifies gridPosition & updates threat range
         unitMap.MoveUnit(this, _startingGridPosition);
         _reservedGridPosition = gridPosition;
-        buffManager.RemoveAllMovementBuffs();
+        statusManager.RemoveAllMovementBuffs();
         RefreshInfo();
     }
 

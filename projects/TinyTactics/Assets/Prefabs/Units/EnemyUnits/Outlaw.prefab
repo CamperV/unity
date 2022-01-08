@@ -21,7 +21,7 @@ MonoBehaviour:
   _CURRENT_HP: -1
   baseStats:
     VITALITY: 15
-    STRENGTH: 4
+    STRENGTH: 6
     DEXTERITY: 10
     REFLEX: 10
     DEFENSE: 3
@@ -121,7 +121,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
-      value: Thief
+      value: Outlaw
       objectReference: {fileID: 0}
     - target: {fileID: 7419503456615491691, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_RootOrder

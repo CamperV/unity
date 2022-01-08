@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class ConditionalStrengthBuff : ConditionalBuff
 {
-    public override string displayName => $"+{buffValue} Strength ({provider})";
+    public override string displayName => $"+{modifierValue} Strength ({provider})";
 
     public override void OnAcquire() {
         boundUnit.unitMap.NewBoardStateEvent += CheckCondition;
         boundUnit.OnAttack += DisplayBuffAttack;
         boundUnit.OnDefend += DisplayBuffDefense;
         
-        boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH + buffValue);
+        boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH + modifierValue);
     }
 
     public override void OnExpire() {
@@ -20,7 +20,7 @@ public class ConditionalStrengthBuff : ConditionalBuff
         boundUnit.OnAttack -= DisplayBuffAttack;
         boundUnit.OnDefend -= DisplayBuffDefense;
 
-        boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH - buffValue);
+        boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH - modifierValue);
     }
 
     private void DisplayBuffAttack(ref MutableAttack mutAtt, Unit target) {

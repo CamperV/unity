@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DamageBuff : Buff
 {
-    public override string displayName => $"+{buffValue} Damage ({provider})";
+    public override string displayName => $"+{modifierValue} Damage ({provider})";
 
     public override void OnAcquire() {
         boundUnit.OnFinishTurn += TickExpire;
@@ -18,7 +18,7 @@ public class DamageBuff : Buff
     }
 
     private void BuffAttackDamage(ref MutableAttack mutAtt, Unit target) {
-        mutAtt.damage += buffValue;
+        mutAtt.damage += modifierValue;
         mutAtt.AddMutator(this);
     }
 }

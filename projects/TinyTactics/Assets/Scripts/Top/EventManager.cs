@@ -69,6 +69,7 @@ public sealed class EventManager : MonoBehaviour
         // board state events
         unitMap.NewBoardStateEvent += () => playerUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
         unitMap.NewBoardStateEvent += () => enemyUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
+        unitMap.NewBoardStateEvent += () => enemyUnitController.activeUnits.ForEach(en => en.RefreshTargets());
         // unitMap.NewBoardStateEvent += battleMap.ResetHighlight;
 
         // all board state update events should make TopBattle check if it should end now

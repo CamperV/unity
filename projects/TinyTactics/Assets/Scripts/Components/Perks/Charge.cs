@@ -14,18 +14,18 @@ public class Charge : Perk, IToolTip
 
         //
         displayName = "Charge";
-        boundUnit.buffManager.movementBuffProviders.Add("Charge");
+        boundUnit.statusManager.movementBuffProviders.Add("Charge");
     }
 
     public override void OnRemoval() {
         boundUnit.OnMove -= GainDamageBuffPerMove;
-        boundUnit.buffManager.movementBuffProviders.Remove("Charge");
+        boundUnit.statusManager.movementBuffProviders.Remove("Charge");
     }
 
     // adds a damage buff per square moved this turn
     private void GainDamageBuffPerMove(Path<GridPosition> pathTaken) {
         for (int i = 0; i < pathTaken.Count-1; i++) {
-            boundUnit.buffManager.AddValueBuff<DamageBuff>("Charge", 1, 1);
+            boundUnit.statusManager.AddValuedStatus<DamageBuff>("Charge", 1, 1);
         }
     }
 }

@@ -13,18 +13,14 @@ public class Path<T> where T : struct
 	// it also greatly simplifies the utility functions I have to write
 	protected LinkedList<T> path = new LinkedList<T>();
 	
-	public T start => path.First.Value;
-	public T end => path.Last.Value;
+	public T Start => path.First.Value;
+	public T End => path.Last.Value;
 	public int Count => path.Count;
 	
-	public void AddFirst(T v) {
-		path.AddFirst(v);
-	}
+	public void AddFirst(T v) => path.AddFirst(v);
+	public void AddLast(T v) => path.AddLast(v);
+	public void Clear() => path.Clear();
 
-	public void Clear() {
-		path.Clear();
-	}
-	
 	public T GetNext(T position) {
 		return path.Find(position).Next.Value;
 	}
@@ -55,6 +51,19 @@ public class Path<T> where T : struct
 	
 	public bool IsEmpty() {
 		return path.Count == 0 || path == null;
+	}
+
+	public static Path<T> MaskWithinRange<T>(Path<T> inputPath, FlowField<T> flowField) where T : struct {
+		Path<T> newPath = new Path<T>();
+
+		foreach (T currentPos in inputPath.Unwind()) {
+			if (flowField.field.ContainsKey(currentPos)) {
+				newPath.AddLast(currentPos);
+			}
+		}
+
+		Debug.Log($"Created path which moves from {newPath.Start} to {newPath.End}");
+		return newPath;
 	}
 		
 	// public void Clip(MoveRange mRange) {

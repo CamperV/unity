@@ -12,8 +12,12 @@ public class UnitStats : MonoBehaviour
     public event StatRatioChange UpdateHPEvent;
 
     public delegate void StatChange(int newValue);
-    public event StatChange UpdateReflexEvent;
+    public event StatChange UpdateVitalityEvent;
     public event StatChange UpdateStrengthEvent;
+    public event StatChange UpdateDexterityEvent;
+    public event StatChange UpdateReflexEvent;
+    public event StatChange UpdateDefenseEvent;
+    public event StatChange UpdateMoveEvent;
 
     private Unit boundUnit;
 
@@ -57,13 +61,18 @@ public class UnitStats : MonoBehaviour
         UpdateHPEvent?.Invoke(_CURRENT_HP, maxValue);
     }
 
+    public void UpdateStrength(int newValue) {
+        STRENGTH = newValue;
+        UpdateStrengthEvent?.Invoke(newValue);
+    }
+
     public void UpdateReflex(int newValue) {
         REFLEX = newValue;
         UpdateReflexEvent?.Invoke(newValue);
     }
 
-    public void UpdateStrength(int newValue) {
-        STRENGTH = newValue;
-        UpdateStrengthEvent?.Invoke(newValue);
+    public void UpdateDefense(int newValue) {
+        DEFENSE = newValue;
+        UpdateDefenseEvent?.Invoke(newValue);
     }
 }

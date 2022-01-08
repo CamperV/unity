@@ -417,7 +417,7 @@ public class SpriteAnimator : MonoBehaviour
 
 	public IEnumerator SmoothMovementPath<T>(Path<T> path, IGrid<T> surface) where T : struct {
 		if (skipMovement) {
-			PositionUpdater(surface.GridToWorld(path.end));
+			PositionUpdater(surface.GridToWorld(path.End));
 			yield break;
 		}
 		movementStack++;

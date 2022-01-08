@@ -61,7 +61,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
-  buffManager: {fileID: 0}
+  statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 5250196175148631242, guid: 1cd08ecac22286a4f8416306b45458c8, type: 3}
   tags: []
@@ -94,7 +94,7 @@ MonoBehaviour:
     STRENGTH: 11
     DEXTERITY: 11
     REFLEX: 6
-    DEFENSE: 6
+    DEFENSE: 5
     MOVE: 5
   variance: 0
 --- !u!1001 &7487578033757355667

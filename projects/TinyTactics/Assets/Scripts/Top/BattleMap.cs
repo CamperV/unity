@@ -199,7 +199,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
 			overlayTilemap.SetTile(as_V, pathOverlayTile);
 		}
 
-        Vector3Int as_V2 = new Vector3Int(path.end.x, path.end.y, -1);
+        Vector3Int as_V2 = new Vector3Int(path.End.x, path.End.y, -1);
         overlayTilemap.SetTile(as_V2, pathEndOverlayTile);
 	}
 

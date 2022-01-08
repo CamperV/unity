@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class ReflexDebuff : Debuff
+public class DefenseDebuff : Debuff
 {
 
-    public override string displayName => $"-{modifierValue} Reflex ({provider})";
+    public override string displayName => $"-{modifierValue} Defense ({provider})";
 
     public override void OnAcquire() {
         boundUnit.OnFinishTurn += TickExpire;
         boundUnit.OnAttack += DisplayDebuffAttack;
         boundUnit.OnDefend += DisplayDebuffDefense;
 
-        boundUnit.unitStats.UpdateReflex(boundUnit.unitStats.REFLEX - modifierValue);
+        boundUnit.unitStats.UpdateDefense(boundUnit.unitStats.DEFENSE - modifierValue);
     }
 
     public override void OnExpire() {
@@ -21,7 +21,7 @@ public class ReflexDebuff : Debuff
         boundUnit.OnAttack -= DisplayDebuffAttack;
         boundUnit.OnDefend -= DisplayDebuffDefense;
 
-        boundUnit.unitStats.UpdateReflex(boundUnit.unitStats.REFLEX + modifierValue);
+        boundUnit.unitStats.UpdateDefense(boundUnit.unitStats.DEFENSE + modifierValue);
     }
 
     private void DisplayDebuffAttack(ref MutableAttack mutAtt, Unit target) {

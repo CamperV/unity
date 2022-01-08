@@ -15,6 +15,18 @@ MonoBehaviour:
   terrainTiles: []
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
+--- !u!114 &-6928319535874183525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6413890216109536961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8e8b084c5eb9c54db6f3008dfab67b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &-3374981158417172206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25,6 +37,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-398251424558835058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6413890216109536961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 108ca07b55ce4a045b26923a674037ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &3856673642594911070
@@ -49,8 +73,8 @@ MonoBehaviour:
   baseStats:
     VITALITY: 18
     STRENGTH: 5
-    DEXTERITY: 10
-    REFLEX: 10
+    DEXTERITY: 9
+    REFLEX: 9
     DEFENSE: 6
     MOVE: 5
   variance: 0
@@ -76,7 +100,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
-  buffManager: {fileID: 0}
+  statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 6617014558017446324, guid: 9b4576937d0c85346990259d06216c4a, type: 3}
   tags: []
@@ -85,18 +109,6 @@ MonoBehaviour:
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
   cancelSignal: 0
---- !u!114 &-398251424558835058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6413890216109536961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 108ca07b55ce4a045b26923a674037ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &981361305450805342
 PrefabInstance:
   m_ObjectHideFlags: 0

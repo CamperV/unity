@@ -20,6 +20,6 @@ public class Revenge : Perk, IToolTip
     }
 
     private void GainDamageBuff() {
-        boundUnit.buffManager.AddValueBuff<DamageBuff>("Revenge", 2, 1);
+        boundUnit.statusManager.AddValuedStatus<DamageBuff>("Revenge", 2, 1);
     }
 }

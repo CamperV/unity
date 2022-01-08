@@ -21,7 +21,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1289673114730921829}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dde0643c62992646aac39e48c6cdec9, type: 3}
+  m_Script: {fileID: 11500000, guid: 5be1f76fce37391459e9119e86c8d57c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &5316941345979173892
@@ -49,7 +49,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: MIGHT
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: WEIGHT

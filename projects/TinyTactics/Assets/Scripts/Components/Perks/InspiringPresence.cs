@@ -22,23 +22,16 @@ public class InspiringPresence : Perk, IToolTip
     // if the unit has not moved since last turn, significantly buff attack
     // grant only to allies
     private void GrantBonusToAdjacentUnits() {
+        foreach (Unit unit in boundUnit.AlliesWithinRange(1)) {
+            // don't re-add the same buff a billion times
+            if (unit.statusManager.HasStatusFromProvider<ConditionalStrengthBuff>(displayName))
+                continue;
 
-        foreach (GridPosition gp in boundUnit.gridPosition.Radiate(1)) {
-            if (gp == boundUnit.gridPosition || !boundUnit.battleMap.IsInBounds(gp)) continue;
-
-            Unit? unit = boundUnit.unitMap.UnitAt(gp);
-
-            if (unit != null && unit.GetType() == boundUnit.GetType()) {
-                // don't re-add the same buff a billion times
-                if (unit.buffManager.HasBuffFromProvider<ConditionalStrengthBuff>(displayName))
-                    continue;
-
-                unit.buffManager.AddConditionalBuff<ConditionalStrengthBuff>(
-                    displayName,
-                    3,
-                    () => unit.gridPosition.ManhattanDistance(boundUnit.gridPosition) == 1
-                ); 
-            }
+            unit.statusManager.AddConditionalBuff<ConditionalStrengthBuff>(
+                displayName,
+                3,
+                () => unit.gridPosition.ManhattanDistance(boundUnit.gridPosition) == 1
+            ); 
         }
     }
 }

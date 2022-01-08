@@ -46,6 +46,18 @@ public class AttackRange : FlowField<GridPosition>
 		return ar;
 	}
 
+	public static AttackRange OfDimension(GridPosition gp, ICollection<GridPosition> dimensions) {
+		AttackRange ar = new AttackRange();
+		ar.origin = gp;
+		ar.field = new Dictionary<GridPosition, int>();
+			
+		foreach (GridPosition d in dimensions) {	
+			ar.field[d] = -1;
+		}
+		return ar;
+	}
+
+
 	public bool ValidAttack(GridPosition gp) {
 		return gp != origin && field.ContainsKey(gp);
 	}

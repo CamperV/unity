@@ -1,0 +1,44 @@
+using System.Collections;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
+using Extensions;
+
+public class BrainPod : MonoBehaviour
+{	
+	// set in inspector
+	public List<EnemyUnit> podmates;
+	public int Initiative => podmates.Min(unit => unit.Initiative);
+
+	public HashSet<GridPosition> sharedMoveRangeDimensions;
+	public HashSet<GridPosition> sharedAttackRangeDimensions;
+
+	void Awake() {
+		foreach (EnemyUnit unit in GetComponentsInChildren<EnemyUnit>()) {
+			unit.assignedPod = this;
+			podmates.Add(unit);
+		}
+
+		sharedMoveRangeDimensions = new HashSet<GridPosition>();
+		sharedAttackRangeDimensions = new HashSet<GridPosition>();
+	}
+
+	public void UpdateSharedDetectionRange() {
+		sharedMoveRangeDimensions.Clear();
+		sharedAttackRangeDimensions.Clear();
+
+		foreach (EnemyUnit unit in podmates) {
+			foreach (GridPosition gp in unit.moveRange.field.Keys) {
+				sharedMoveRangeDimensions.Add(gp);
+			}
+			foreach (GridPosition gp in unit.attackRange.field.Keys) {
+				sharedAttackRangeDimensions.Add(gp);
+			}
+		}
+	}
+}
+
+
+

@@ -40,7 +40,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         // this accounts for all in-scene activeUnits, not instatiated prefabs
         foreach (PlayerUnit en in GetComponentsInChildren<PlayerUnit>()) {
             _activeUnits.Add(en);
-            mostRecentlySelectedUnit = en;
         }
 
         InitialState();
@@ -109,6 +108,9 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     // disable attackAvailable/moveAvailable etc
     public void EndPhase() {
         ChangeState(ControllerFSM.Inactive);
+
+        // if you end the phase, and you never selected anyone, choose the first just so the camera refocuses
+        if (mostRecentlySelectedUnit == null) mostRecentlySelectedUnit = activeUnits[0];
     }
 
     public void RefreshUnits() => activeUnits.ForEach(it => it.RefreshInfo());
