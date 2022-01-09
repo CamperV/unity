@@ -315,7 +315,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
                     if (attackRange.ValidAttack(battleMap.CurrentMouseGridPosition) && EnemyAt(battleMap.CurrentMouseGridPosition) != null) {
                         EnemyUnit? enemy = EnemyAt(battleMap.CurrentMouseGridPosition);
-                        battleMap.Highlight(battleMap.CurrentMouseGridPosition, Constants.threatColorYellow);
+                        battleMap.Highlight(battleMap.CurrentMouseGridPosition, Palette.threatColorYellow);
 
                         // create and display EngagementPreviews here
                         UIManager.inst.EnableEngagementPreview( Engagement.Create(this, enemy), enemy.transform );
@@ -394,16 +394,16 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
 
     	foreach (GridPosition gp in _ThreatenedRange()) {
 			if (moveRange.field.ContainsKey(gp)) {
-				battleMap.Highlight(gp, Constants.threatColorIndigo);
+				battleMap.Highlight(gp, Palette.threatColorIndigo);
 			}
 		}
         // foreach (GridPosition gp in moveRange.field.Keys) {
 		// 	if (unitMap.ReservedAt(gp)) {
-        //         battleMap.Highlight(gridPosition, Constants.reservedColorBlue);
+        //         battleMap.Highlight(gridPosition, Palette.reservedColorBlue);
         //     }
 		// }
 
-        battleMap.Highlight(gridPosition, Constants.selectColorWhite);
+        battleMap.Highlight(gridPosition, Palette.selectColorWhite);
     }
 
     private IEnumerable<GridPosition> _ThreatenedRange() {

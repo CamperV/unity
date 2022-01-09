@@ -37,11 +37,22 @@ public class SpriteAnimator : MonoBehaviour
 	}
 	public bool isMoving => movementStack > 0;
 
+	public Queue<Action> actionQueue = new Queue<Action>();
+	private Coroutine processActionQueue;
+	
+	// fashioned as Func<bool> for WaitUntil convenience
+	public bool DoneAnimating() => !isAnimating && !isMoving;
+	public bool EmptyQueue() => actionQueue.Count == 0 && processActionQueue == null;
+
 	void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 
 		// else if you don't have this component, construct a default Updater
 		PositionUpdater = v => transform.position = v;
+	}
+
+	void Update() {
+
 	}
 
 	public void ClearStacks() {
@@ -61,6 +72,28 @@ public class SpriteAnimator : MonoBehaviour
 			yield return null;
 		}
 		VoidAction();
+	}
+
+	public void QueueAction(Action VoidAction) {
+		actionQueue.Enqueue(VoidAction);
+
+		if (processActionQueue == null) {
+			processActionQueue = StartCoroutine( ProcessActionQueue() );
+		}
+	}
+
+	private IEnumerator ProcessActionQueue() {
+		while (actionQueue.Count > 0) {
+			yield return new WaitUntil(DoneAnimating);
+
+			// once you're finished with the current animation, perform:
+			Action Perform = actionQueue.Dequeue();
+			Perform();
+		}
+
+		// when you've exhausted the queue:
+		yield return new WaitUntil(DoneAnimating);
+		processActionQueue = null;
 	}
 
 	public IEnumerator FadeDown(float fixedTime) {

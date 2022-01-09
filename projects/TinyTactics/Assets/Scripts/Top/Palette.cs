@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // All global constants (const is already static)
-public struct Constants {
+public struct Palette {
 	public static readonly Color selectColorWhite  = new Color(1.00f, 1.00f, 1.00f, 0.45f);
 	public static readonly Color selectColorBlue   = new Color(0.00f, 0.30f, 0.75f, 0.75f);
 	// public static readonly Color reservedColorBlue = new Color(0.00f, 0.30f, 0.75f, 0.25f);

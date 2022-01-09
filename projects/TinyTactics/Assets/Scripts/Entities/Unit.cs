@@ -167,7 +167,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     // IUnitPhaseInfo
     public void RefreshInfo() {
-        turnActive = true;
+        // turnActive = true;
         moveAvailable = true;
         attackAvailable = true;
         RevertColor();  // to original
@@ -175,6 +175,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     }
 
     public void StartTurn() {
+        turnActive = true;
+
         // finally, store your starting location
         // this is relevant for RevertTurn calls
         _startingGridPosition = gridPosition;
@@ -251,7 +253,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     }
 
     public void TriggerHurtAnimation(bool isCritical = false) {
-		StartCoroutine( spriteAnimator.FlashColor(Constants.threatColorRed) );
+		StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorRed) );
 
         if (isCritical) {
             StartCoroutine( spriteAnimator.Shake(0.20f, 5) );
@@ -261,12 +263,26 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     }
 
     public void TriggerMissAnimation() {
-		StartCoroutine( spriteAnimator.FlashColor(Constants.selectColorWhite) );
+		StartCoroutine( spriteAnimator.FlashColor(Palette.selectColorWhite) );
         StartCoroutine( spriteAnimator.SmoothBumpRandom(0.10f) );
     }
 
     public void TriggerHealAnimation() {
-		StartCoroutine( spriteAnimator.FlashColor(Constants.healColorGreen) );
+		StartCoroutine( spriteAnimator.FlashColor(Palette.healColorGreen) );
+    }
+
+    public void TriggerDebuffAnimation(AudioClip playClip) {
+        personalAudioFX.PlayFX(playClip);
+
+        StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorIndigo) );
+        StartCoroutine( spriteAnimator.SmoothCosX(18f, 0.03f, 0f, 1.0f) );
+    }
+
+    public void TriggerBuffAnimation(AudioClip playClip) {
+        personalAudioFX.PlayFX(playClip);
+
+        StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorYellow) );
+        StartCoroutine( spriteAnimator.SmoothCosX(32f, 0.015f, 0f, 1.0f) );
     }
 
     public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(ref mutAtt, target);

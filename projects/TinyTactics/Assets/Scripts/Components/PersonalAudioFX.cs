@@ -26,6 +26,8 @@ public class PersonalAudioFX : MonoBehaviour
         weaponAudioFXBundle = boundUnit.equippedWeapon.audioFXBundle;
     }
 
+    public void PlayFX(AudioClip clip) => audioSource.PlayOneShot(clip, 1f);
+
     public void PlayInteractFX() {
         audioSource.PlayOneShot(interactAudioFXBundle.RandomClip(), 1f);
     }

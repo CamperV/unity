@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02707e8b9c32b3e4c820fdf7206f713a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
 --- !u!114 &2013079040181327314
 MonoBehaviour:
   m_ObjectHideFlags: 0

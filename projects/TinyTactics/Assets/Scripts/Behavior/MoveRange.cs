@@ -56,7 +56,7 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 
 	public void Display(IGrid<GridPosition> target) {
 		foreach (GridPosition tilePos in field.Keys) {
-			target.Highlight(tilePos, Constants.selectColorBlue);
+			target.Highlight(tilePos, Palette.selectColorBlue);
 		}
 	}
 

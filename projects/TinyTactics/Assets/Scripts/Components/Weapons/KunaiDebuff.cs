@@ -9,6 +9,8 @@ public class KunaiDebuff : WeaponPerk, IToolTip
     public string tooltipName { get; set; } = "Kunai Debuff";
     public string tooltip { get; set; } = "On hit, -3 DEF, -5 REF until end of next turn.";
 
+    public AudioFXBundle audioFXBundle;
+
     public override void OnEquip() {
         boundWeapon.boundUnit.OnHit += ApplyDebuff;
         
@@ -20,6 +22,11 @@ public class KunaiDebuff : WeaponPerk, IToolTip
     }
 
     private void ApplyDebuff(Unit target) {
+        // queue the sound and animation for after it is done animating the Hurt animation
+        target.spriteAnimator.QueueAction(
+            () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip())
+        );
+        
         target.statusManager.AddValuedStatus<DefenseDebuff>(displayName, 3, 2);
         target.statusManager.AddValuedStatus<ReflexDebuff>(displayName, 5, 2);
     }

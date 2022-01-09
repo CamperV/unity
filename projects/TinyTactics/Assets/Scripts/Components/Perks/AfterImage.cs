@@ -9,6 +9,8 @@ public class AfterImage : Perk, IToolTip
     public string tooltipName { get; set; } = "Afterimage";
     public string tooltip { get; set; } = "After avoiding an enemy attack, move again. (Player Phase)";
 
+    public AudioFXBundle audioFXBundle;
+
     public override void OnAcquire() {
         boundUnit.OnAvoid += RefreshMovement;
         //
@@ -20,8 +22,12 @@ public class AfterImage : Perk, IToolTip
     }
 
     private void RefreshMovement() {
-        boundUnit.moveAvailable = true;
+        if (boundUnit.turnActive) {
+            boundUnit.personalAudioFX.PlayFX( audioFXBundle.RandomClip() );
 
-        UIManager.inst.combatLog.AddEntry($"BLUE@[{displayName}] granted additional movement {boundUnit.logTag}@[{boundUnit.displayName}].");
+            boundUnit.moveAvailable = true;
+
+            UIManager.inst.combatLog.AddEntry($"BLUE@[{displayName}] granted additional movement {boundUnit.logTag}@[{boundUnit.displayName}].");
+        }
     }
 }

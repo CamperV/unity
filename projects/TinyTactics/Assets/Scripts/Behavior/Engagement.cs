@@ -87,7 +87,8 @@ public class Engagement
         // animate, then create a little pause before counterattacking
         // ReceiveAttack contains logic for animation processing
         defenderSurvived = Process(aggressor, defender, attack, defense, "attack");
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.65f);
+        yield return new WaitUntil(defender.spriteAnimator.EmptyQueue);
         ///
 
         // if we can counterattack:
@@ -95,13 +96,14 @@ public class Engagement
 
             // pause again to let the animation finish            
             aggressorSurvived = Process(defender, aggressor, counterAttack.Value, counterDefense.Value, "counter");
-            yield return new WaitForSeconds(0.75f);
             ///
         }
 
-        yield return new WaitUntil( () => !aggressor.spriteAnimator.isAnimating && !defender.spriteAnimator.isAnimating );
+        yield return new WaitUntil(AnimationFinished);
         resolvedFlag = true;
     }
+
+    private bool AnimationFinished() => aggressor.spriteAnimator.DoneAnimating() && defender.spriteAnimator.DoneAnimating();
 
     // this previews what will happen, to display, and not resolve
     public Stats SimulateAttack() {
@@ -117,7 +119,7 @@ public class Engagement
     }
 
     private Attack GenerateAttack(Unit generator, Unit target) {
-        int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
+        // int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
 
         MutableAttack mutableAttack = new MutableAttack(
             generator.unitStats._ATK,
@@ -158,7 +160,6 @@ public class Engagement
 		// final retval
 		bool survived = true;
 		if (isHit) {
-            A.FireOnHitEvent(B);
             A.personalAudioFX.PlayWeaponAttackFX();
 
 			bool isCrit = diceRoll < finalStats.critRate;
@@ -173,6 +174,9 @@ public class Engagement
 
             // ouchies, play the animations for hurt
 			survived = B.SufferDamage(sufferedDamage, isCritical: isCrit);
+            
+            // fire the event after suffering damage, so the animations are queued in the right order
+            A.FireOnHitEvent(B);
 
         // miss
 		} else {

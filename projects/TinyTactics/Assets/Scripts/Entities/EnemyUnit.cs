@@ -292,7 +292,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         if (moveRange == null || attackRange == null) UpdateThreatRange();
 
         attackRange.Display(battleMap);
-        moveRange.Display(battleMap, Constants.threatColorYellow);
-        battleMap.Highlight(gridPosition, Constants.selectColorWhite);
+        moveRange.Display(battleMap, Palette.threatColorYellow);
+        battleMap.Highlight(gridPosition, Palette.selectColorWhite);
     }
 }
