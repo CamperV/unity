@@ -21,7 +21,7 @@ MonoBehaviour:
   _CURRENT_HP: 1
   baseStats:
     VITALITY: 16
-    STRENGTH: 6
+    STRENGTH: 5
     DEXTERITY: 17
     REFLEX: 14
     DEFENSE: 4
@@ -49,7 +49,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
-  buffManager: {fileID: 0}
+  statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 3179233669775410304, guid: fbddcfca5d5d89e45b1b1a78aa5e30f1, type: 3}
   tags: []

@@ -393,8 +393,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37b13c8397a11344a8b555d298801e3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buffAudioFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
-  debuffAudioFXBundle: {fileID: 11400000, guid: 156b54777abab874a9704c6b814b11ff, type: 2}
 --- !u!114 &3229868326669507183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,6 +523,7 @@ MonoBehaviour:
   healAudioFXBundle: {fileID: 11400000, guid: 32c2d2ded39b7d0428a75af78a002a82, type: 2}
   deathAudioFXBundle: {fileID: 11400000, guid: ade11ecc095911d429a6c983b6e7da03, type: 2}
   criticalAudioFXBundle: {fileID: 11400000, guid: 175d5d976f9f3124ab3d1abd64b80022, type: 2}
+  blockAudioFXBundle: {fileID: 11400000, guid: 5e25c9bd91b0200409a7338e17a1b5f8, type: 2}
 --- !u!1 &7090665412735883434
 GameObject:
   m_ObjectHideFlags: 0

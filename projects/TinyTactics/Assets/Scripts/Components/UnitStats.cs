@@ -29,10 +29,11 @@ public class UnitStats : MonoBehaviour
     [HideInInspector] public int MOVE;
 
     [HideInInspector] public int _CURRENT_HP;
-    [HideInInspector] public int _ATK => STRENGTH + boundUnit.equippedWeapon.weaponStats.MIGHT;
-    [HideInInspector] public int _HIT => DEXTERITY*2 + boundUnit.equippedWeapon.weaponStats.ACCURACY;
-    [HideInInspector] public int _CRT => boundUnit.equippedWeapon.weaponStats.CRITICAL;
-    [HideInInspector] public int _AVO => REFLEX*2 - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
+    [HideInInspector] public int _ATK =>    STRENGTH + boundUnit.equippedWeapon.weaponStats.MIGHT;
+    [HideInInspector] public int _HIT =>    DEXTERITY*2 + boundUnit.equippedWeapon.weaponStats.ACCURACY;
+    [HideInInspector] public int _CRT =>    boundUnit.equippedWeapon.weaponStats.CRITICAL;
+    [HideInInspector] public int _AVO =>    REFLEX*2 - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
+    [HideInInspector] public int _CRTAVO => REFLEX - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
 
     [Serializable]
     public struct BaseStats {
@@ -75,5 +76,10 @@ public class UnitStats : MonoBehaviour
     public void UpdateDefense(int newValue) {
         DEFENSE = newValue;
         UpdateDefenseEvent?.Invoke(newValue);
+    }
+
+    public void UpdateMove(int newValue) {
+        MOVE = Mathf.Max(0, newValue);
+        UpdateMoveEvent?.Invoke(newValue);
     }
 }

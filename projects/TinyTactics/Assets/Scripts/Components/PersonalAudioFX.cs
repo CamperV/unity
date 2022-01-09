@@ -16,6 +16,7 @@ public class PersonalAudioFX : MonoBehaviour
     public AudioFXBundle healAudioFXBundle;
     public AudioFXBundle deathAudioFXBundle;
     public AudioFXBundle criticalAudioFXBundle;
+    public AudioFXBundle blockAudioFXBundle;
 
     void Awake() {
         boundUnit = GetComponent<Unit>();
@@ -54,5 +55,9 @@ public class PersonalAudioFX : MonoBehaviour
 
     public void PlayCriticalFX() {
         audioSource.PlayOneShot(criticalAudioFXBundle.RandomClip(), 1f);
+    }
+
+    public void PlayBlockFX() {
+        audioSource.PlayOneShot(blockAudioFXBundle.RandomClip(), 1f);
     }
 }

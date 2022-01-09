@@ -70,6 +70,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aeee0543d50c444ea7aee72b189f464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
 --- !u!114 &5862028537161239383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,7 +95,7 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
-  equippedWeapon: {fileID: 146772166050584365, guid: f8e8b537543ba874bb8e505e51644735, type: 3}
+  equippedWeapon: {fileID: 5311602426619238717, guid: 328d95379d47d69468be19c35cfe212b, type: 3}
   tags:
   - Flier
   debugStateLabel: {fileID: 0}

@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: MIGHT
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: WEIGHT
@@ -59,6 +59,10 @@ PrefabInstance:
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: ACCURACY
       value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
+      propertyPath: CRITICAL
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: MAX_RANGE

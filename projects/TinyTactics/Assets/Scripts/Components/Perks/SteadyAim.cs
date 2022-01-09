@@ -21,10 +21,10 @@ public class SteadyAim : Perk, IToolTip
 
     // if the unit has not moved since last turn, significantly buff attack
     private void ConditionalAttack(ref MutableAttack mutAtt, Unit target) {
-        if (boundUnit.moveAvailable) {
+        if (boundUnit.turnActive && boundUnit.moveAvailable) {
             mutAtt.damage += 3;
             mutAtt.hitRate += 50;
-            mutAtt.critRate += 25;
+            mutAtt.critRate += 35;
             //
             mutAtt.AddMutator(this);
         }

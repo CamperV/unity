@@ -23,11 +23,11 @@ public class AfterImage : Perk, IToolTip
 
     private void RefreshMovement() {
         if (boundUnit.turnActive) {
-            boundUnit.personalAudioFX.PlayFX( audioFXBundle.RandomClip() );
+            boundUnit.spriteAnimator.QueueAction(
+                () => boundUnit.TriggerBuffAnimation(audioFXBundle.RandomClip())
+            );
 
             boundUnit.moveAvailable = true;
-
-            UIManager.inst.combatLog.AddEntry($"BLUE@[{displayName}] granted additional movement {boundUnit.logTag}@[{boundUnit.displayName}].");
         }
     }
 }

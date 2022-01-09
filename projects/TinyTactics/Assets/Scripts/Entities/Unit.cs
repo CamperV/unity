@@ -73,9 +73,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     protected abstract void DisableFSM();
 
     // IUnitPhaseInfo
-    [field: SerializeField] public bool turnActive { get; set; } = true;
-    [field: SerializeField] public bool moveAvailable { get; set; } = true;
-    [field: SerializeField] public bool attackAvailable { get; set; } = true;
+    [field: SerializeField] public bool turnActive { get; set; } = false;
+    [field: SerializeField] public bool moveAvailable { get; set; } = false;
+    [field: SerializeField] public bool attackAvailable { get; set; } = false;
     //
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
@@ -194,7 +194,12 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     }
 
 	public bool SufferDamage(int incomingDamage, bool isCritical = false) {
-        TriggerHurtAnimation(isCritical: isCritical);
+        if (isCritical) {
+            TriggerVeryHurtAnimation();
+        } else {
+            if (incomingDamage > 0) TriggerHurtAnimation();
+            else TriggerNoDamageHurtAnimation();
+        }
 
         unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage, unitStats.VITALITY);
 		bool survived = unitStats._CURRENT_HP > 0;
@@ -252,14 +257,21 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         );
     }
 
-    public void TriggerHurtAnimation(bool isCritical = false) {
+    public void TriggerHurtAnimation() {
 		StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorRed) );
+        StartCoroutine( spriteAnimator.Shake(0.075f, 3) );
+    }
 
-        if (isCritical) {
-            StartCoroutine( spriteAnimator.Shake(0.20f, 5) );
-        } else {
-            StartCoroutine( spriteAnimator.Shake(0.075f, 3) );
-        }
+    // this is used for when no damage is taken, but a unit is hit
+    public void TriggerNoDamageHurtAnimation() {
+		StartCoroutine( spriteAnimator.FlashColor(Palette.selectColorWhite) );
+        StartCoroutine( spriteAnimator.Shake(0.05f, 3) );
+    }
+
+    // this is used for Crits
+    public void TriggerVeryHurtAnimation() {
+		StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorViolet) );
+        StartCoroutine( spriteAnimator.Shake(0.20f, 5) );
     }
 
     public void TriggerMissAnimation() {

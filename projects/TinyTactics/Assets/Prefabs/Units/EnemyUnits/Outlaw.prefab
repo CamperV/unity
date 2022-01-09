@@ -22,9 +22,9 @@ MonoBehaviour:
   baseStats:
     VITALITY: 15
     STRENGTH: 6
-    DEXTERITY: 10
-    REFLEX: 10
-    DEFENSE: 3
+    DEXTERITY: 11
+    REFLEX: 12
+    DEFENSE: 5
     MOVE: 5
   variance: 1
 --- !u!114 &-7000869566379372395
@@ -76,7 +76,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
-  buffManager: {fileID: 0}
+  statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 6036265347430983969, guid: 969c965e06ee83b4d98ad896a444c4e7, type: 3}
   tags: []
@@ -84,6 +84,7 @@ MonoBehaviour:
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
+  assignedPod: {fileID: 0}
 --- !u!114 &4952209373775972252
 MonoBehaviour:
   m_ObjectHideFlags: 0

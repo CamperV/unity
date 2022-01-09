@@ -136,7 +136,7 @@ public class Engagement
         MutableDefense mutableDefense = new MutableDefense(
             generator.unitStats.DEFENSE,          // reduce incoming damage
             generator.unitStats._AVO,             // avoid rate
-            0                                     // crit avoid rate
+            generator.unitStats._CRTAVO           // crit avoid rate
         );
 
         // THIS WILL MODIFY THE OUTGOING DEFENSE PACKAGE
@@ -164,6 +164,9 @@ public class Engagement
 
 			bool isCrit = diceRoll < finalStats.critRate;
             int sufferedDamage = (isCrit) ? finalStats.damage*3 : finalStats.damage;
+
+            // if the hit is... unimpressive, play a clang or something
+            if (sufferedDamage <= 0) A.personalAudioFX.PlayBlockFX();
 
             // hit/crit
             if (isCrit) {
