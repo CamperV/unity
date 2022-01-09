@@ -8,5 +8,4 @@ using UnityEngine;
 // but Destroy themselves after conditions are met
 public abstract class Buff : ValuedStatus
 {
-
 }

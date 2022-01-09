@@ -252,7 +252,12 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     public void TriggerHurtAnimation(bool isCritical = false) {
 		StartCoroutine( spriteAnimator.FlashColor(Constants.threatColorRed) );
-		StartCoroutine( spriteAnimator.Shake((isCritical) ? 0.15f : 0.075f) );
+
+        if (isCritical) {
+            StartCoroutine( spriteAnimator.Shake(0.20f, 5) );
+        } else {
+            StartCoroutine( spriteAnimator.Shake(0.075f, 3) );
+        }
     }
 
     public void TriggerMissAnimation() {

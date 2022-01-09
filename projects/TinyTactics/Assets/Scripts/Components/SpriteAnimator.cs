@@ -189,7 +189,7 @@ public class SpriteAnimator : MonoBehaviour
 	}
 
 	// not relative to time: shake only 3 times, wait a static amt of time
-	public IEnumerator Shake(float radius) {
+	public IEnumerator Shake(float radius, int numberOfShakes) {
 		animationStack++;
 		movementStack++;
 		//
@@ -202,7 +202,7 @@ public class SpriteAnimator : MonoBehaviour
 		foreach (Transform child in transform) childOgPositions.Add(child.position);
 		int index;
 
-		for (int i=0; i<3; i++) {
+		for (int i = 0; i < numberOfShakes; i++) {
 			Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
 			transform.position = ogPosition + offset;
 

@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class StatusManager : MonoBehaviour
 {
+    public AudioFXBundle buffAudioFXBundle;
+    public AudioFXBundle debuffAudioFXBundle;
+
     public HashSet<string> movementBuffProviders;
 
     void Awake() {
@@ -22,6 +26,15 @@ public class StatusManager : MonoBehaviour
         } else {
             T buff = AttachStatus<T>(provider);
             buff.SetValuesAndReapply(modifierValue, expireTimerValue);
+        }
+
+        // the just-added status
+        T valuedStatus = GetStatusFromProvider<T>(provider);
+        if (typeof(T).IsSubclassOf(typeof(Buff))) {
+            GetComponent<AudioSource>().PlayOneShot(buffAudioFXBundle.RandomClip(), 0.5f);
+
+        } else if (typeof(T).IsSubclassOf(typeof(Debuff))) {
+            GetComponent<AudioSource>().PlayOneShot(debuffAudioFXBundle.RandomClip(), 0.5f);
         }
     }
 

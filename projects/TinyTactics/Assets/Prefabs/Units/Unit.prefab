@@ -393,6 +393,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37b13c8397a11344a8b555d298801e3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buffAudioFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
+  debuffAudioFXBundle: {fileID: 11400000, guid: 156b54777abab874a9704c6b814b11ff, type: 2}
 --- !u!114 &3229868326669507183
 MonoBehaviour:
   m_ObjectHideFlags: 0

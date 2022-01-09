@@ -18,6 +18,8 @@ public class Battle : MonoBehaviour
     private PlayerUnitController playerUnitController;
     private EnemyUnitController enemyUnitController;
 
+    [SerializeField] private BattleJukeBox jukeBox;
+
     void Awake() {
         eventManager = GetComponent<EventManager>();
         unitMap = GetComponent<UnitMap>();
@@ -48,8 +50,10 @@ public class Battle : MonoBehaviour
         int turnsElapsed = turnManager.turnCount;
 
         if (playerVictorious) {
+            jukeBox.SwitchToVictoryTrack(0.25f);
             UIManager.inst.CreateVictoryPanel(enemiesDefeated, survivingUnits, turnsElapsed);
         } else {
+            jukeBox.SwitchToDefeatTrack(0.25f);
             UIManager.inst.CreateDefeatPanel(enemiesDefeated, survivingUnits, turnsElapsed);
         }
     }
