@@ -7,6 +7,10 @@ using Random = UnityEngine.Random;
 
 public static class Utils
 {
+	public static IEnumerator Delay(float delay) {
+		yield return new WaitForSeconds(delay);
+	}
+	
 	public static IEnumerator DelayedExecute(float delay, Action VoidAction) {
 		yield return new WaitForSeconds(delay);
 		VoidAction();

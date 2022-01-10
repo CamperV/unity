@@ -21,6 +21,8 @@ public class TurnManager : MonoBehaviour
     public event NewTurn NewTurnEvent;
     public event NewPhase NewPhaseEvent;
 
+    public PhaseAnnouncement phaseAnnouncementPanel;
+
     void Awake() {
         playerPhase = new Phase("Player");
         enemyPhase = new Phase("Enemy");
@@ -32,17 +34,9 @@ public class TurnManager : MonoBehaviour
     }
 
     // by only touching the enable member, Loop will terminate itself after the current Turn is over
-    public void Disable() {
-        enable = false;
-    }
-
-    public void Suspend() {
-        suspend = true;
-    }
-
-    public void Resume() {
-        suspend = false;
-    }
+    public void Disable() => enable = false;
+    public void Suspend() => suspend = true;
+    public void Resume() => suspend = false;
 
     private IEnumerator Loop() {
         while (enable) {
@@ -62,15 +56,17 @@ public class TurnManager : MonoBehaviour
             // first, check the suspension signal
             // this is different than disabling, which lets all phases play out
             // this will suspend and allow resumption
-            if (suspend) {
-                yield return new WaitUntil(() => suspend == false);
-            }
+            if (suspend) yield return new WaitUntil(() => suspend == false);
 
             string phaseTag = (phase.name == "Player") ? "PLAYER_UNIT" : "ENEMY_UNIT";
             UIManager.inst.combatLog.AddEntry($"Beginning {phaseTag}@[{phase.name}] KEYWORD@[Phase].");
 
             currentPhase = phase;
             NewPhaseEvent(currentPhase);
+
+            // allow the PhaseAnnouncement banner tot block here,
+            yield return AnnounceNewPhase(currentPhase);
+
             phase.TriggerStart();
 
             // check for enable here, as you can be disabled when the battle ends
@@ -84,4 +80,19 @@ public class TurnManager : MonoBehaviour
             }
         }
     }
+
+	private IEnumerator AnnounceNewPhase(Phase newPhase) {
+		phaseAnnouncementPanel.gameObject.SetActive(true);
+		
+		// OnEnable will also play the sound
+		string colorString = (newPhase.name == "Player") ? "#6FD66E" : "#FF6D6D";
+		phaseAnnouncementPanel.announcementValue.SetText($"<color={colorString}>{newPhase.name} Phase Start</color>");
+
+		// fade yourself down later
+		// this will also resume the attached TurnManager
+		yield return new WaitForSeconds(1f);
+		yield return phaseAnnouncementPanel.FadeDown(1f);
+
+        phaseAnnouncementPanel.gameObject.SetActive(false);
+	}
 }

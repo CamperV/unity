@@ -111,7 +111,6 @@ public class SpriteAnimator : MonoBehaviour
 		animationStack--;
 	}
 
-	// TODO: This references after destruction??
 	public IEnumerator FadeDownAll(float fixedTime) {
 		animationStack++;
 		//
