@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ade116a2643cce34cb93f28b9628a12c, type: 3}
+  m_Script: {fileID: 11500000, guid: d103368d169aa4a4f8ccd45c66e9a103, type: 3}
   m_Name: VoidTile
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: 71b50b648b15d14419e9690878d9fdcb, type: 3}
