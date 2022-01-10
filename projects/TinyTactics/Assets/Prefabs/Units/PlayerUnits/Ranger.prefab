@@ -22,7 +22,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
-  buffManager: {fileID: 0}
+  statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 7317941260927309738, guid: ae85c7a71f197d9458e6e0581ecee04d, type: 3}
   tags: []
@@ -55,8 +55,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1738846bd4eafe742b77a48660f5cae8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainTiles: []
-  _terrainCostOverrides: 
+  terrainTiles:
+  - {fileID: 11400000, guid: 19b51b86749e43047abaf006598f9cfc, type: 2}
+  - {fileID: 11400000, guid: defea9025a1c4eb4b84cf8b169d28217, type: 2}
+  _terrainCostOverrides: 0100000001000000
   moveThroughEnemiesOverride: 0
 --- !u!114 &4402678211108455800
 MonoBehaviour:

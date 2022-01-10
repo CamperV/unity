@@ -88,17 +88,17 @@ public class Engagement
         // ReceiveAttack contains logic for animation processing
         defenderSurvived = Process(aggressor, defender, attack, defense, "attack");
         yield return new WaitForSeconds(0.65f);
-        yield return new WaitUntil(defender.spriteAnimator.EmptyQueue);
         ///
 
         // if we can counterattack:
         if (defenderSurvived && counterAttack != null) {
+            yield return new WaitUntil(defender.spriteAnimator.EmptyQueue);
 
             // pause again to let the animation finish            
             aggressorSurvived = Process(defender, aggressor, counterAttack.Value, counterDefense.Value, "counter");
             ///
         }
-
+        
         yield return new WaitUntil(AnimationFinished);
         resolvedFlag = true;
     }
@@ -179,6 +179,7 @@ public class Engagement
 			survived = B.SufferDamage(sufferedDamage, isCritical: isCrit);
             
             // fire the event after suffering damage, so the animations are queued in the right order
+            // this also means you will not be debuffed or anything if you die
             A.FireOnHitEvent(B);
 
         // miss

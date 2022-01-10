@@ -22,13 +22,16 @@ public class CripplingStrike : Perk, IToolTip
     }
 
     private void ApplyDebuff(Unit target) {
-        // queue the sound and animation for after it is done animating the Hurt animation
-        target.spriteAnimator.QueueAction(
-            () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip())
-        );
-        
-        float halfMove = target.unitStats.MOVE/2f;
-        int roundedValue = (int)Mathf.Floor(halfMove);
-        target.statusManager.AddValuedStatus<MoveDebuff>(displayName, roundedValue, 1);
+        if (target.gameObject.activeInHierarchy) {
+            // queue the sound and animation for after it is done animating the Hurt animation
+            target.spriteAnimator.QueueAction(
+                () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip())
+            );
+            
+            float halfMove = target.unitStats.MOVE/2f;
+            int roundedValue = (int)Mathf.Floor(halfMove);
+            target.statusManager.AddValuedStatus<MoveDebuff>(displayName, roundedValue, 1);
+        }
+
     }
 }

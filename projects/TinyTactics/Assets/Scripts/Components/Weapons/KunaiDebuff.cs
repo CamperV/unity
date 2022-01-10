@@ -22,12 +22,14 @@ public class KunaiDebuff : WeaponPerk, IToolTip
     }
 
     private void ApplyDebuff(Unit target) {
-        // queue the sound and animation for after it is done animating the Hurt animation
-        target.spriteAnimator.QueueAction(
-            () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip())
-        );
-        
-        target.statusManager.AddValuedStatus<DefenseDebuff>(displayName, 3, 2);
-        target.statusManager.AddValuedStatus<ReflexDebuff>(displayName, 5, 2);
+        if (target.gameObject.activeInHierarchy) {
+            // queue the sound and animation for after it is done animating the Hurt animation
+            target.spriteAnimator.QueueAction(
+                () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip())
+            );
+            
+            target.statusManager.AddValuedStatus<DefenseDebuff>(displayName, 3, 2);
+            target.statusManager.AddValuedStatus<ReflexDebuff>(displayName, 5, 2);
+        }
     }
 }

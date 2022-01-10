@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BridgeLevel.unity
     guid: 8b927d9b41e2daf42a0d3486bcedb06c
+  - enabled: 1
+    path: Assets/Scenes/RoadLevel.unity
+    guid: ed30e34ca8e1efd4d9871c17c56e06e6
+  - enabled: 1
+    path: Assets/Scenes/ShrineLevel.unity
+    guid: 50d9e75426f7ed742a554264d890ffd9
   m_configObjects: {}
