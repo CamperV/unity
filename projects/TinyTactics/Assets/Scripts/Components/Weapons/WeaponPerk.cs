@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class WeaponPerk : MonoBehaviour, IMutatorComponent
 {
-    public string displayName { get; set; }
+    public abstract string displayName { get; set; }
 
     public Weapon boundWeapon { get; set; }
 

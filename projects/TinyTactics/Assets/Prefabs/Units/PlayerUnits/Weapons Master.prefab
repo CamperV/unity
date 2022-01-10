@@ -1,18 +1,33 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6298609689542499589
+--- !u!114 &-3837010893492167245
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
+  m_GameObject: {fileID: 454204177510149547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1738846bd4eafe742b77a48660f5cae8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrainTiles: []
+  _terrainCostOverrides: 
+  moveThroughEnemiesOverride: 0
+--- !u!114 &-3762863333675113830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454204177510149547}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: adb1cb1c4ef25854096b14b492813d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: Knight
+  displayName: Weapons Master
   <gridPosition>k__BackingField:
     x: 0
     y: 0
@@ -24,47 +39,20 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
-  equippedWeapon: {fileID: 146772166050584365, guid: f8e8b537543ba874bb8e505e51644735, type: 3}
+  equippedWeapon: {fileID: 6036265347430983969, guid: 969c965e06ee83b4d98ad896a444c4e7, type: 3}
   tags: []
   debugStateLabel: {fileID: 0}
-  <turnActive>k__BackingField: 1
-  <moveAvailable>k__BackingField: 1
-  <attackAvailable>k__BackingField: 1
+  <turnActive>k__BackingField: 0
+  <moveAvailable>k__BackingField: 0
+  <attackAvailable>k__BackingField: 0
   cancelSignal: 0
---- !u!114 &4500984153433666963
+--- !u!114 &3491973760064547779
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5601688061393873781
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1738846bd4eafe742b77a48660f5cae8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  terrainTiles: []
-  _terrainCostOverrides: 
-  moveThroughEnemiesOverride: 0
---- !u!114 &6814056913412341801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
+  m_GameObject: {fileID: 454204177510149547}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2de54ba498d272848aa4102bd1ebee66, type: 3}
@@ -78,27 +66,38 @@ MonoBehaviour:
   MOVE: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 20
-    STRENGTH: 6
-    DEXTERITY: 15
-    REFLEX: 3
-    DEFENSE: 11
-    MOVE: 4
+    VITALITY: 18
+    STRENGTH: 10
+    DEXTERITY: 12
+    REFLEX: 12
+    DEFENSE: 5
+    MOVE: 5
   variance: 0
---- !u!114 &8716532729623620610
+--- !u!114 &7771746637800861151
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
+  m_GameObject: {fileID: 454204177510149547}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82f12df4b3b80e2478b7aed7b74b105c, type: 3}
+  m_Script: {fileID: 11500000, guid: 987aba40c7de945438099e16ccff9289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioFXBundle: {fileID: 11400000, guid: 156b54777abab874a9704c6b814b11ff, type: 2}
---- !u!1001 &1063781761081437082
+--- !u!114 &8662550338145159247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454204177510149547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &5967658225766966068
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -108,22 +107,18 @@ PrefabInstance:
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 183c4a2f9b5272f49bc0495f2d583d63, type: 3}
-    - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
-      propertyPath: m_Color.b
-      value: 0.8490566
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 21300000, guid: 8f2b49e730410c84ba079f4da6e7d45c, type: 3}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.g
-      value: 0.8490566
+      value: 0.57254905
       objectReference: {fileID: 0}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.r
-      value: 0.8490566
+      value: 0.7137255
       objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
-      value: Knight
+      value: Weapons Master
       objectReference: {fileID: 0}
     - target: {fileID: 7419503456615491691, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_RootOrder
@@ -171,8 +166,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
---- !u!1 &6512071071417951493 stripped
+--- !u!1 &454204177510149547 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
-  m_PrefabInstance: {fileID: 1063781761081437082}
+  m_PrefabInstance: {fileID: 5967658225766966068}
   m_PrefabAsset: {fileID: 0}

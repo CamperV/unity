@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class SteadyAim : Perk, IToolTip
 {
+    public override string displayName { get; set; } = "Steady Aim";
+
     // IToolTip
     public string tooltipName { get; set; } = "Steady Aim";
     public string tooltip { get; set; } = "If this unit has not moved since last turn, significantly increase DMG, HIT, and CRIT. (Player Phase)";
 
     public override void OnAcquire() {
         boundUnit.OnAttack += ConditionalAttack;
-        //
-        displayName = "Steady Aim";
     }
 
     public override void OnRemoval() {

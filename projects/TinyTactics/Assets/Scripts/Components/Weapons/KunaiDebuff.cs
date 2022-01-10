@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class KunaiDebuff : WeaponPerk, IToolTip
 {
+    public override string displayName { get; set; } = "Kunai Debuff";
+    
     public string tooltipName { get; set; } = "Kunai Debuff";
     public string tooltip { get; set; } = "On hit, -3 DEF, -5 REF until end of next turn.";
 
@@ -13,8 +15,6 @@ public class KunaiDebuff : WeaponPerk, IToolTip
 
     public override void OnEquip() {
         boundWeapon.boundUnit.OnHit += ApplyDebuff;
-        
-        displayName = "Kunai Debuff";
     }
 
     public override void OnUnequip() {

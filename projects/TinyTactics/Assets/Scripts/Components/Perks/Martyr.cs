@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class Martyr : Perk, IToolTip
 {
+    public override string displayName { get; set; } = "Martyr";
+
     // IToolTip
     public string tooltipName { get; set; } = "Martyr";
     public string tooltip { get; set; } = "After being attacked, heal adjacent allies for 25% of their VITALITY.";
 
     public override void OnAcquire() {
         boundUnit.OnHurt += HealAdjacent;
-        //
-        displayName = "Martyr";
     }
 
     public override void OnRemoval() {

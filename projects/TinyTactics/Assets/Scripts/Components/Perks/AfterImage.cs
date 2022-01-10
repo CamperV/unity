@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class AfterImage : Perk, IToolTip
 {
+    public override string displayName { get; set; } = "Afterimage";
+
     // IToolTip
     public string tooltipName { get; set; } = "Afterimage";
     public string tooltip { get; set; } = "After avoiding an enemy attack, move again. (Player Phase)";
@@ -13,8 +15,6 @@ public class AfterImage : Perk, IToolTip
 
     public override void OnAcquire() {
         boundUnit.OnAvoid += RefreshMovement;
-        //
-        displayName = "Afterimage";
     }
 
     public override void OnRemoval() {

@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class BonyResistance : Perk, IToolTip
 {
+    public override string displayName { get; set; } = "Oops, All Bones";
+
     // IToolTip
     public string tooltipName { get; set; } = "Oops, All Bones";
     public string tooltip { get; set; } = "Add 3 DEF against Slashing and Piercing weapons, but -3 DEF against Striking weapons.";
 
     public override void OnAcquire() {
         boundUnit.OnDefend += ConditionalDefense;
-        //
-        displayName = "Oops, All Bones";
     }
 
     public override void OnRemoval() {

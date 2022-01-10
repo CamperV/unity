@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class InspiringPresence : Perk, IToolTip
 {
+    public override string displayName { get; set; } = "Inspiring Presence";
+
     // IToolTip
     public string tooltipName { get; set; } = "Inspiring Presence";
     public string tooltip { get; set; } = "Grant 3 STR to adjacent allies.";
 
     public override void OnAcquire() {
         boundUnit.unitMap.NewBoardStateEvent += GrantBonusToAdjacentUnits;
-        //
-        displayName = "Inspiring Presence";
     }
 
     public override void OnRemoval() {

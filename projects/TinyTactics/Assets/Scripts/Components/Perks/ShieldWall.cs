@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class ShieldWall : Perk, IToolTip
 {
+    public override string displayName { get; set; } = "Shield Wall";
+
     // IToolTip
     public string tooltipName { get; set; } = "Shield Wall";
     public string tooltip { get; set; } = "Grant 3 DEF to adjacent allies.";
 
     public override void OnAcquire() {
         boundUnit.unitMap.NewBoardStateEvent += GrantBonusToAdjacentUnits;
-        //
-        displayName = "Shield Wall";
     }
 
     public override void OnRemoval() {

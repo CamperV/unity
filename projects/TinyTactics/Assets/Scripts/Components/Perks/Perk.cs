@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class Perk : MonoBehaviour, IMutatorComponent
 {
     public Unit boundUnit { get; set; }
-    public string displayName { get; set; }
+    public abstract string displayName { get; set; }
 
     void Awake() {
         boundUnit = GetComponent<Unit>();

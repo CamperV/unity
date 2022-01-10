@@ -5,15 +5,19 @@ using UnityEngine;
 
 public class AntiPierce : WeaponPerk, IToolTip
 {
+    public override string displayName { get; set; } = "Weapon Advantage";
+
+    public int dmgModRate = 1;
+    public int hitModRate = 15;
+    public int critModRate = 5;
+
     // IToolTip
     public string tooltipName { get; set; } = "Weapon Advantage (Pierce)";
-    public string tooltip { get; set; } = "+15 HIT, +15 AVOID, +15 CRITAVOID against Pierce weapons.";
+    public string tooltip => $"+{dmgModRate} ATK/DEF, +{hitModRate} HIT/AVO, +{critModRate} CRIT/CRITAVO against Pierce weapons.";
 
     public override void OnEquip() {
         boundWeapon.boundUnit.OnAttack += OffensiveAdv;
         boundWeapon.boundUnit.OnDefend += DefensiveAdv;
-
-        displayName = "Weapon Advantage";
     }
 
     public override void OnUnequip() {
@@ -23,7 +27,9 @@ public class AntiPierce : WeaponPerk, IToolTip
 
     private void OffensiveAdv(ref MutableAttack mutAtt, Unit target) {
         if (target.equippedWeapon.HasTagMatch("Pierce")) {
-            mutAtt.hitRate += 15;
+            mutAtt.damage += dmgModRate;
+            mutAtt.hitRate += hitModRate;
+            mutAtt.critRate += critModRate;
             //
             mutAtt.AddMutator(this);
         }
@@ -31,8 +37,9 @@ public class AntiPierce : WeaponPerk, IToolTip
 
     private void DefensiveAdv(ref MutableDefense mutDef, Unit target) {
         if (target.equippedWeapon.HasTagMatch("Pierce")) {
-            mutDef.avoidRate       += 15;
-            mutDef.critAvoidRate   += 15;
+            mutDef.damageReduction += dmgModRate;
+            mutDef.avoidRate += hitModRate;
+            mutDef.critAvoidRate += critModRate;
             //
             mutDef.AddMutator(this);
         }

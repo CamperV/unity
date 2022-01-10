@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Charge : Perk, IToolTip
 {
+    public override string displayName { get; set; } = "Charge";
+
     // IToolTip
     public string tooltipName { get; set; } = "Charge";
     public string tooltip { get; set; } = "Gain +1 DMG per space moved this turn.";
@@ -13,7 +15,6 @@ public class Charge : Perk, IToolTip
         boundUnit.OnMove += GainDamageBuffPerMove;
 
         //
-        displayName = "Charge";
         boundUnit.statusManager.movementBuffProviders.Add("Charge");
     }
 

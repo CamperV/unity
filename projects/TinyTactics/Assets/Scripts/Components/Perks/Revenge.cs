@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class Revenge : Perk, IToolTip
 {
+    public override string displayName { get; set; } = "Revenge";
+
     // IToolTip
     public string tooltipName { get; set; } = "Revenge";
-    public string tooltip { get; set; } = "After being attacked, gain +2 DMG (stacking) until the end of next turn.";
+    public string tooltip { get; set; } = "After being attacked, gain +3 DMG (stacking) until the end of next turn.";
 
     public AudioFXBundle audioFXBundle;
 
     public override void OnAcquire() {
         boundUnit.OnHurt += GainDamageBuff;
-        //
-        displayName = "Revenge";
     }
 
     public override void OnRemoval() {
@@ -27,6 +27,6 @@ public class Revenge : Perk, IToolTip
             () => boundUnit.TriggerBuffAnimation(audioFXBundle.RandomClip())
         );
         //
-        boundUnit.statusManager.AddValuedStatus<DamageBuff>("Revenge", 2, 1);
+        boundUnit.statusManager.AddValuedStatus<DamageBuff>("Revenge", 3, 1);
     }
 }

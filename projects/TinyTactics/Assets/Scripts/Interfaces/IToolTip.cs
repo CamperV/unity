@@ -5,6 +5,6 @@ using UnityEngine;
 
 public interface IToolTip
 {
-	string tooltipName { get; set; }
-	string tooltip { get; set; }
+	string tooltipName { get; }
+	string tooltip { get; }
 }
