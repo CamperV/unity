@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class SteadyAim : Perk, IToolTip
+public class Entrenched : Perk, IToolTip
 {
-    public override string displayName { get; set; } = "Steady Aim";
+    public override string displayName { get; set; } = "Entrenched";
 
     // IToolTip
-    public string tooltipName { get; set; } = "Steady Aim";
-    public string tooltip { get; set; } = "If this unit has not moved since last turn, increase DMG, HIT, and CRIT. (Player Phase)";
+    public string tooltipName { get; set; } = "Entrenched";
+    public string tooltip { get; set; } = "If this unit has not moved since last turn, increase DMG, HIT, and CRIT.";
 
     public override void OnAcquire() {
         boundUnit.OnAttack += ConditionalAttack;
@@ -21,10 +21,10 @@ public class SteadyAim : Perk, IToolTip
 
     // if the unit has not moved since last turn, significantly buff attack
     private void ConditionalAttack(ref MutableAttack mutAtt, Unit target) {
-        if (boundUnit.turnActive && boundUnit.moveAvailable) {
+        if (boundUnit.moveAvailable) {
             mutAtt.damage += 3;
-            mutAtt.hitRate += 50;
-            mutAtt.critRate += 35;
+            mutAtt.hitRate += 25;
+            mutAtt.critRate += 15;
             //
             mutAtt.AddMutator(this);
         }

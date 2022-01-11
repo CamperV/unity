@@ -24,7 +24,7 @@ MonoBehaviour:
     STRENGTH: 6
     DEXTERITY: 11
     REFLEX: 12
-    DEFENSE: 5
+    DEFENSE: 4
     MOVE: 5
   variance: 1
 --- !u!114 &-7000869566379372395

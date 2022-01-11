@@ -68,6 +68,11 @@ public class UnitStats : MonoBehaviour
         UpdateStrengthEvent?.Invoke(newValue);
     }
 
+    public void UpdateDexterity(int newValue) {
+        DEXTERITY = newValue;
+        UpdateDexterityEvent?.Invoke(newValue);
+    }
+
     public void UpdateReflex(int newValue) {
         REFLEX = newValue;
         UpdateReflexEvent?.Invoke(newValue);

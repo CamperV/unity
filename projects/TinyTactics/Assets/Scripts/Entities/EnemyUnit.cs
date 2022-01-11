@@ -247,11 +247,12 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     public IEnumerator ExecuteDamagePackage(EnemyBrain.DamagePackage selectedDmgPkg, Path<GridPosition> pathTo) {
         //
         // execute movement portion
+        FireOnMoveEvent(pathTo);
         StartCoroutine( spriteAnimator.SmoothMovementPath<GridPosition>(pathTo, battleMap) );
 
         unitMap.ReservePosition(this, pathTo.End);
         _reservedGridPosition = pathTo.End;  // save for ContextualNoInteract to move via unitMap
-        moveAvailable = false;
+        if (pathTo.End != gridPosition) moveAvailable = false;
         ChangeState(EnemyUnitFSM.Moving);
 
         // WAIT FOR MOVEMENT TO COMPLETE
