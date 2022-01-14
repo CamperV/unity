@@ -255,7 +255,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5913555612217590385, guid: 45cce5aa76a7f944a891e96f9f79d764, type: 3}
+      - m_Target: {fileID: -7143353908046899235, guid: 45cce5aa76a7f944a891e96f9f79d764, type: 3}
         m_TargetAssemblyTypeName: LevelLoader, Assembly-CSharp
         m_MethodName: ReturnToMainMenu
         m_Mode: 1
@@ -269,7 +269,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: -7783578675662688728, guid: 25bc5de4403d8a84ebc188e7b3ae5eda, type: 3}
         m_TargetAssemblyTypeName: OmniSound, Assembly-CSharp
-        m_MethodName: PlayClickFX
+        m_MethodName: PlayConfirmFX
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

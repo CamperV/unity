@@ -30081,20 +30081,36 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: -7143353908046899235, guid: 45cce5aa76a7f944a891e96f9f79d764, type: 3}
+    - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: -7783578675662688728, guid: 25bc5de4403d8a84ebc188e7b3ae5eda, type: 3}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReturnToMainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: PlayClickFX
+      value: PlayConfirmFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LevelLoader, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
