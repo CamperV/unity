@@ -14,6 +14,9 @@ public class LevelLoader : MonoBehaviour
     }
 
     public void ReturnToMainMenu() {
+        CampaignBootstrapper cb = GetComponent<CampaignBootstrapper>();
+        if (cb != null) cb.DestroyCampaign();
+        //
         SceneManager.LoadScene("MainMenu");
     }
 
