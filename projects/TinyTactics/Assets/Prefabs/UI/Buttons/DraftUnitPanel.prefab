@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8193940454204459577}
   - component: {fileID: 8868930158395371189}
   - component: {fileID: 638969699643248174}
+  - component: {fileID: 3285462761241630777}
   m_Layer: 5
   m_Name: DraftButton
   m_TagString: Untagged
@@ -120,19 +121,24 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8868930158395371189}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: -7783578675662688728, guid: 25bc5de4403d8a84ebc188e7b3ae5eda, type: 3}
-        m_TargetAssemblyTypeName: OmniSound, Assembly-CSharp
-        m_MethodName: PlayConfirmFX
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &3285462761241630777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609748404873272903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958a217e0f6ccc646acc6235704fc503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  clickFX: 0
+  confirmFX: 0
+  backFX: 0
+  specialFX: 1
 --- !u!1 &4860336950280380226
 GameObject:
   m_ObjectHideFlags: 0

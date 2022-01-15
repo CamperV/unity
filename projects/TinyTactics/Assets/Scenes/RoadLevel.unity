@@ -527,6 +527,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 560102701152948181, guid: 25bc5de4403d8a84ebc188e7b3ae5eda, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2403763318736449111, guid: 25bc5de4403d8a84ebc188e7b3ae5eda, type: 3}
       propertyPath: m_Name
       value: OmniSound
@@ -3981,8 +3985,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a927d62ac29b7854f9678b92279dac5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMap: []
-  currentRes: []
 --- !u!114 &881456445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38913,7 +38915,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7910746269232058387, guid: 2693ae4048acceb47b7f15441ee6c606, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode

@@ -10,6 +10,9 @@ public class Battle : MonoBehaviour
 {
     public delegate void BattleEvent();
     public event BattleEvent BattleStartEvent;
+    
+    public delegate void BattleEndEvent(bool playerVictorious);
+    public event BattleEndEvent ConditionalBattleEndEvent;
 
     private EventManager eventManager;
     private UnitMap unitMap;
@@ -56,6 +59,9 @@ public class Battle : MonoBehaviour
             jukeBox.SwitchToDefeatTrack(0.25f);
             UIManager.inst.CreateDefeatPanel(enemiesDefeated, survivingUnits, turnsElapsed);
         }
+
+        //
+        ConditionalBattleEndEvent?.Invoke(playerVictorious);
     }
 
     public void CheckVictoryConditions() {
@@ -75,6 +81,25 @@ public class Battle : MonoBehaviour
         if (!playerUnitsAlive) {
             UIManager.inst.combatLog.AddEntry($"RED@[Y O U  D I E D]");
             EndBattle(false);
+        }
+    }
+
+    public void ImportCampaignData(ICollection<PlayerUnit> serializedUnits) {
+        List<PlayerUnit> instantiatedUnits = new List<PlayerUnit>();
+
+        foreach (PlayerUnit unit in serializedUnits) {
+            PlayerUnit clonedUnit = Instantiate(unit, playerUnitController.transform);
+            playerUnitController.RegisterUnit(clonedUnit);
+            //
+            instantiatedUnits.Add(clonedUnit);
+        }
+
+        // get them into the unitMap
+		unitMap.InsertUnitsAtSpawnMarkers(instantiatedUnits);
+
+        // after using them, get rid of those pesky things
+        foreach (SpawnMarker sm in playerUnitController.GetComponentsInChildren<SpawnMarker>()) {
+            Destroy(sm.gameObject);
         }
     }
 }

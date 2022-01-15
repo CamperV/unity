@@ -8,40 +8,43 @@ using UnityEngine.UI;
 // this is the thing that will hold information such as "Current Units" and their states
 public sealed class Campaign : MonoBehaviour
 {
-	public static Campaign active = null;
+	public static bool isActive => CampaignManager.inst != null;
+	public static Campaign active => isActive ? CampaignManager.inst.activeCampaign : null;
 
     public List<PlayerUnit> unitRoster;
-
 	public string[] levelSequence;	// set in inspector via prefab flow
 
 	void Awake() {
-		// only allow one Campaign to exist at any time
-		// & don't kill when reloading a Scene
- 		if (active == null) {
-			active = this;
-		} else if (active != this) {
-			Destroy(gameObject);
-		}
-		//
-        DontDestroyOnLoad(gameObject);
+		DontDestroyOnLoad(gameObject);
 
-		
 		unitRoster = new List<PlayerUnit>();
 	}
 
 	public void EnlistUnit(PlayerUnit unit) => unitRoster.Add(unit);
 
-	public void InsertUnitsInBattle() {}
+	public void BeginLevelSequence() => StartCoroutine( LevelSequence() );
 
-	public void BeginLevelSequence() => StartCoroutine(_BeginLevelSequence());
-
-	private bool doneFlag = false;
-	private IEnumerator _BeginLevelSequence() {
+	private IEnumerator LevelSequence() {
 		foreach (string levelName in levelSequence) {
-			LevelLoader.inst.LoadLevel(levelName);
+			// this will spin until the LevelLoader is finished
+			yield return GetComponent<LevelLoader>().LoadLevelAsync(levelName);
 
-			
-			yield return new WaitUntil(() => doneFlag == true);
+			// now that we've loaded:
+			Battle currentBattleInScene = GameObject.Find("Battle").GetComponent<Battle>();
+			//
+			currentBattleInScene.ImportCampaignData(unitRoster);
+			currentBattleInScene.BattleStartEvent += () => Debug.Log("woo");
+
+			bool battleOverFlag = false;
+			bool victoryClosure = false;
+			currentBattleInScene.ConditionalBattleEndEvent += pv => {
+				battleOverFlag = true;
+				victoryClosure = pv;
+			};
+			yield return new WaitUntil(() => battleOverFlag == true);
+
+			Debug.Log($"Campaign {this} has seen the battle end. Victoriously? {victoryClosure}");
+			while (true) yield return null;
 		}
 	}
 }

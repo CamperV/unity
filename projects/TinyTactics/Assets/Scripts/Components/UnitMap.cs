@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Extensions;
 
 public class UnitMap : MonoBehaviour
 {
@@ -17,8 +18,8 @@ public class UnitMap : MonoBehaviour
     private Dictionary<GridPosition, Unit> map;
     private Dictionary<GridPosition, Unit> reservations;
 
-    public List<GridPosition> currentMap = new List<GridPosition>();
-    public List<GridPosition> currentRes = new List<GridPosition>();
+    // public List<GridPosition> currentMap = new List<GridPosition>();
+    // public List<GridPosition> currentRes = new List<GridPosition>();
 
     void Awake() {
         battleMap = GetComponentInChildren<BattleMap>();
@@ -40,9 +41,24 @@ public class UnitMap : MonoBehaviour
         }
     }
 
-    void Update() {
-        currentMap = map.Keys.Where(k => map[k] != null).ToList();
-        currentRes = reservations.Keys.Where(k => reservations[k] != null).ToList();
+    public void InsertUnitsAtSpawnMarkers(ICollection<PlayerUnit> units) {        
+        List<GridPosition> spawnMarkers = new List<GridPosition>();
+        foreach (SpawnMarker sm in GetComponentsInChildren<SpawnMarker>()) {
+            spawnMarkers.Add( battleMap.ClosestGridPosition(sm.transform.position) );
+        }
+
+        Debug.Assert(units.Count <= spawnMarkers.Count);
+
+        foreach (PlayerUnit unit in units) {
+            if (spawnMarkers.Count > 0) {
+                GridPosition startingPos = spawnMarkers.PopAt<GridPosition>(0);
+                MoveUnit(unit, startingPos, newBoardEvent: false);
+
+            // this shouldn't be reachable
+            } else {
+                Debug.Log($"You dont have enough spawnMarkers to spawn all Units properly");
+            }
+        }
     }
 
     public Unit? UnitAt(GridPosition gp) {

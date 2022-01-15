@@ -38,16 +38,27 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     void Start() {
         // this accounts for all in-scene activeUnits, not instatiated prefabs
+        // useful for Demo content
         foreach (PlayerUnit en in GetComponentsInChildren<PlayerUnit>()) {
-            _activeUnits.Add(en);
+            if (Campaign.active == null) {
+                _activeUnits.Add(en);
+            } else {
+                Destroy(en.gameObject);
+            }
+        }
+
+        if (Campaign.active == null) {
+            foreach (SpawnMarker sm in GetComponentsInChildren<SpawnMarker>()) {
+                Destroy(sm.gameObject);
+            }
         }
 
         InitialState();
     }
 
-    void Update() {
-        ContextualNoInteract();
-    }
+    public void RegisterUnit(PlayerUnit unit) => _activeUnits.Add(unit);
+
+    void Update() => ContextualNoInteract();
 
     public void ChangeState(ControllerFSM newState) {
         ExitState(state);

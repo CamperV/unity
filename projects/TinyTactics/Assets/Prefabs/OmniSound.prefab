@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2403763318736449111
+--- !u!1 &8610734237504952873
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8275841297369583030}
-  - component: {fileID: -7783578675662688728}
-  - component: {fileID: -5144111512935205278}
+  - component: {fileID: 560102701152948181}
+  - component: {fileID: 6031240633926670352}
+  - component: {fileID: 8595033590449707769}
   m_Layer: 0
   m_Name: OmniSound
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8275841297369583030
+--- !u!4 &560102701152948181
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2403763318736449111}
+  m_GameObject: {fileID: 8610734237504952873}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,13 +32,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-7783578675662688728
+--- !u!114 &6031240633926670352
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2403763318736449111}
+  m_GameObject: {fileID: 8610734237504952873}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 569587eba386940469c3313119fd41b2, type: 3}
@@ -47,13 +47,16 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   clickFX: {fileID: 8300000, guid: ef959bb64a77c0d4390f31598748179c, type: 3}
   confirmFX: {fileID: 8300000, guid: b190a8a5f59499f4f9204e64b9a04da9, type: 3}
---- !u!82 &-5144111512935205278
+  backFX: {fileID: 8300000, guid: a2abf8e6b36ad9a4da28768a4ecfa509, type: 3}
+  specialFX: {fileID: 8300000, guid: e700f412104b0bc46aefdd8f0755db58, type: 3}
+  superSpecialFX: {fileID: 8300000, guid: 8f78b82c1e93694428090094e71eacff, type: 3}
+--- !u!82 &8595033590449707769
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2403763318736449111}
+  m_GameObject: {fileID: 8610734237504952873}
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}

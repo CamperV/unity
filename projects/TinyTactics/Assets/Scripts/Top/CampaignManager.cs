@@ -4,13 +4,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class GameManager : MonoBehaviour
+public sealed class CampaignManager : MonoBehaviour
 {
-	public static GameManager inst = null; // enforces singleton behavior
+	public static CampaignManager inst = null; // enforces singleton behavior
 	public Campaign activeCampaign;
 	
     void Awake() {
-        // only allow one GameManager to exist at any time
+        // only allow one CampaignManager to exist at any time
 		// & don't kill when reloading a Scene
  		if (inst == null) {
 			inst = this;
