@@ -101,8 +101,8 @@ MonoBehaviour:
   tags:
   - Flier
   archetypes:
-  - Quick
-  - Cunning
+  - {fileID: 11400000, guid: 123d5550d9da4f64a956378cca72b9f7, type: 2}
+  - {fileID: 11400000, guid: bd1f6bc81392c5941a31841069a9684d, type: 2}
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1

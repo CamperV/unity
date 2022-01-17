@@ -94,7 +94,7 @@ public class CampaignUnitDrafter : MonoBehaviour
 
     private void DraftUnit(CampaignUnitGenerator.CampaignUnitPackage unitPackage) {
         DraftedUnitListing listing = Instantiate(draftedUnitListingPrefab, draftedUnitsDisplay.transform);
-        listing.SetUnitInfo(unitPackage);
+        listing.SetUnitInfo(unitPackage.unitData);
 
         draftedUnits.Add(unitPackage);
     }

@@ -9,7 +9,7 @@ public class Entrenched : Perk, IToolTip
 
     // IToolTip
     public string tooltipName { get; set; } = "Entrenched";
-    public string tooltip { get; set; } = "If this unit has not moved since last turn, increase DMG, HIT, and CRIT.";
+    public string tooltip { get; set; } = "When counterattacking, increase DMG, HIT, and CRIT.";
 
     public override void OnAcquire() {
         boundUnit.OnAttack += ConditionalAttack;

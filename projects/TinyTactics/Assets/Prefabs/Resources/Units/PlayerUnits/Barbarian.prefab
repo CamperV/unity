@@ -67,7 +67,7 @@ MonoBehaviour:
   equippedWeapon: {fileID: 5250196175148631242, guid: 1cd08ecac22286a4f8416306b45458c8, type: 3}
   tags: []
   archetypes:
-  - Assault
+  - {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1

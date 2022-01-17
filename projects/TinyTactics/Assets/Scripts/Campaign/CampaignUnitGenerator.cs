@@ -43,10 +43,11 @@ public class CampaignUnitGenerator
 	public struct CampaignUnitData {
 		// generation-time only
 		public Guid ID;
-		public string prefabID;			// loadable Prefab located in Assets/Prefabs/Resources/Units/PlayerUnits/*.prefab
-		public NatureData nature;		// in-built stat mods to differentiate units between classes
-		public string[] archetypes;		// archetypes from which the unit can draw Perks (Assault, Defender, Support, Cunning, Quick)
-		public string signaturePerk;	// gotten from the prefab
+		public string unitName; 			// Generated randomly
+		public string className;			// loadable Prefab located in Assets/Prefabs/Resources/Units/PlayerUnits/*.prefab
+		public NatureData nature;			// in-built stat mods to differentiate units between classes
+		public ArchetypeData[] archetypes;	// archetypes from which the unit can draw Perks (Assault, Defender, Support, Cunning, Quick)
+		public string signaturePerkTypeName;		// gotten from the prefab
 		
 		// below are modified during Campaign play
 		public string[] perks;
@@ -55,9 +56,11 @@ public class CampaignUnitGenerator
 		public CampaignUnitData(PlayerUnit unitPrefab) {
 			ID = new Guid();
 
+			unitName = NameDB.GetRandomName();
+
 			// from prefab
-			prefabID = unitPrefab.gameObject.name;
-			signaturePerk = unitPrefab.GetComponent<Perk>().name;	// should only be one
+			className = unitPrefab.gameObject.name;
+			signaturePerkTypeName = unitPrefab.GetComponent<Perk>().GetType().Name;	// should only be one
 			archetypes = unitPrefab.archetypes;
 
 			// randomly selection
@@ -80,7 +83,7 @@ public class CampaignUnitGenerator
 
 	public static IEnumerable<PlayerUnit> DeserializeUnits(ICollection<CampaignUnitData> serializedUnits) {
 		foreach (CampaignUnitData unitData in serializedUnits) {
-            PlayerUnit loadedPrefab = Resources.Load<PlayerUnit>($"Units/PlayerUnits/{unitData.prefabID}");
+            PlayerUnit loadedPrefab = Resources.Load<PlayerUnit>($"Units/PlayerUnits/{unitData.className}");
 			loadedPrefab.GetComponent<UnitStats>().ApplyNature(unitData.nature);
 
 			yield return loadedPrefab;

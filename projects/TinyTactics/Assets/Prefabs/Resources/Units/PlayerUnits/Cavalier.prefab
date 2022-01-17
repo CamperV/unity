@@ -91,8 +91,8 @@ MonoBehaviour:
   tags:
   - Mounted
   archetypes:
-  - Assault
-  - Quick
+  - {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
+  - {fileID: 11400000, guid: 123d5550d9da4f64a956378cca72b9f7, type: 2}
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1

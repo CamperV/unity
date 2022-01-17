@@ -9,7 +9,7 @@ public class SteadyAim : Perk, IToolTip
 
     // IToolTip
     public string tooltipName { get; set; } = "Steady Aim";
-    public string tooltip { get; set; } = "If this unit has not moved since last turn, increase DMG, HIT, and CRIT. (Player Phase)";
+    public string tooltip { get; set; } = "If this unit has not moved, increase DMG, HIT, and CRIT. (Player Phase)";
 
     public override void OnAcquire() {
         boundUnit.OnAttack += ConditionalAttack;

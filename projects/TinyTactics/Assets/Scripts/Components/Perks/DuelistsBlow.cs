@@ -9,7 +9,7 @@ public class DuelistsBlow : Perk, IToolTip
 
     // IToolTip
     public string tooltipName { get; set; } = "Duelist's Blow";
-    public string tooltip { get; set; } = "When initiating combat, +15 AVOID. (Player Phase)";
+    public string tooltip { get; set; } = "When initiating combat, +15 AVOID.";
 
     public override void OnAcquire() {
         boundUnit.OnDefend += ConditionalDefense;
