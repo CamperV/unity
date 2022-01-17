@@ -1,55 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6298609689542499589
+--- !u!114 &-8656718462187346284
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adb1cb1c4ef25854096b14b492813d6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  displayName: Knight
-  <gridPosition>k__BackingField:
-    x: 0
-    y: 0
-  unitMap: {fileID: 0}
-  battleMap: {fileID: 0}
-  spriteAnimator: {fileID: 0}
-  spriteRenderer: {fileID: 0}
-  unitPathfinder: {fileID: 0}
-  unitStats: {fileID: 0}
-  statusManager: {fileID: 0}
-  personalAudioFX: {fileID: 0}
-  equippedWeapon: {fileID: 146772166050584365, guid: f8e8b537543ba874bb8e505e51644735, type: 3}
-  tags: []
-  debugStateLabel: {fileID: 0}
-  <turnActive>k__BackingField: 1
-  <moveAvailable>k__BackingField: 1
-  <attackAvailable>k__BackingField: 1
-  cancelSignal: 0
---- !u!114 &4500984153433666963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5601688061393873781
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
+  m_GameObject: {fileID: 6413890216109536961}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1738846bd4eafe742b77a48660f5cae8, type: 3}
@@ -58,13 +15,49 @@ MonoBehaviour:
   terrainTiles: []
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
---- !u!114 &6814056913412341801
+--- !u!114 &-6928319535874183525
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
+  m_GameObject: {fileID: 6413890216109536961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8e8b084c5eb9c54db6f3008dfab67b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-3374981158417172206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6413890216109536961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-1606346700593475077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6413890216109536961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a4e9655f5946c04c9798561b4b8b6ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3856673642594911070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6413890216109536961}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2de54ba498d272848aa4102bd1ebee66, type: 3}
@@ -78,27 +71,48 @@ MonoBehaviour:
   MOVE: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 20
-    STRENGTH: 6
-    DEXTERITY: 15
-    REFLEX: 3
-    DEFENSE: 11
-    MOVE: 4
+    VITALITY: 18
+    STRENGTH: 5
+    DEXTERITY: 9
+    REFLEX: 9
+    DEFENSE: 6
+    MOVE: 5
   variance: 0
---- !u!114 &8716532729623620610
+--- !u!114 &8425697781094188379
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512071071417951493}
+  m_GameObject: {fileID: 6413890216109536961}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82f12df4b3b80e2478b7aed7b74b105c, type: 3}
+  m_Script: {fileID: 11500000, guid: adb1cb1c4ef25854096b14b492813d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioFXBundle: {fileID: 11400000, guid: 156b54777abab874a9704c6b814b11ff, type: 2}
---- !u!1001 &1063781761081437082
+  displayName: War Cleric
+  <gridPosition>k__BackingField:
+    x: 0
+    y: 0
+  unitMap: {fileID: 0}
+  battleMap: {fileID: 0}
+  spriteAnimator: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  unitPathfinder: {fileID: 0}
+  unitStats: {fileID: 0}
+  statusManager: {fileID: 0}
+  personalAudioFX: {fileID: 0}
+  equippedWeapon: {fileID: 6617014558017446324, guid: 9b4576937d0c85346990259d06216c4a, type: 3}
+  tags: []
+  archetypes:
+  - Support
+  - Defender
+  debugStateLabel: {fileID: 0}
+  <turnActive>k__BackingField: 1
+  <moveAvailable>k__BackingField: 1
+  <attackAvailable>k__BackingField: 1
+  cancelSignal: 0
+--- !u!1001 &981361305450805342
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -108,22 +122,22 @@ PrefabInstance:
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 183c4a2f9b5272f49bc0495f2d583d63, type: 3}
+      objectReference: {fileID: 21300000, guid: 566f244a3cbbd4a4a99f0c1ef03d1b76, type: 3}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.5803922
       objectReference: {fileID: 0}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.g
-      value: 0.67058825
+      value: 0.91764706
       objectReference: {fileID: 0}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.r
-      value: 0.57254905
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
-      value: Knight
+      value: War Cleric
       objectReference: {fileID: 0}
     - target: {fileID: 7419503456615491691, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_RootOrder
@@ -171,8 +185,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
---- !u!1 &6512071071417951493 stripped
+--- !u!1 &6413890216109536961 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
-  m_PrefabInstance: {fileID: 1063781761081437082}
+  m_PrefabInstance: {fileID: 981361305450805342}
   m_PrefabAsset: {fileID: 0}

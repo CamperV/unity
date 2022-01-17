@@ -41,6 +41,9 @@ MonoBehaviour:
   personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 6036265347430983969, guid: 969c965e06ee83b4d98ad896a444c4e7, type: 3}
   tags: []
+  archetypes:
+  - Assault
+  - Cunning
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0

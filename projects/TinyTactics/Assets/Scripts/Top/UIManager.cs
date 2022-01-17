@@ -64,7 +64,7 @@ public sealed class UIManager : MonoBehaviour
 		unitDetailPanel.nameText.SetText(unit.displayName);
 		unitDetailPanel.weaponImage.sprite = unit.equippedWeapon.sprite;
 		unitDetailPanel.weaponImage.color = unit.equippedWeapon.color;
-		unitDetailPanel.weaponNameText.SetText($"{unit.equippedWeapon.name}");
+		unitDetailPanel.weaponNameText.SetText($"{unit.equippedWeapon.displayName}");
 		
 		// attributes
 		unitDetailPanel.hpValue.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");

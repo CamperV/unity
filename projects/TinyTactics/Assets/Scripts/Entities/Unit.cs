@@ -64,6 +64,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     // for effectiveness, such as "Flier"
     public List<string> tags;
 
+    // for knowing which bag of perks to grab from
+    public string[] archetypes;
+
     // debug
     public DebugStateLabel debugStateLabel;
 
@@ -105,6 +108,11 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         attackRange = null;
 
         equippedWeapon = Instantiate(equippedWeapon, transform);
+
+        // Ensure that there are no bad archetypes here
+        foreach (string archetype in archetypes) {
+            Debug.Assert(Perk.ValidArchetypes.Contains(archetype));
+        }
     }
 
     protected virtual void Start() {          

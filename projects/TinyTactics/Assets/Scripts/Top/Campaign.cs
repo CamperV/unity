@@ -11,9 +11,13 @@ public sealed class Campaign : MonoBehaviour
 {
 	public static Campaign active = null;
 
-    public List<PlayerUnit> unitRoster;
+    public List<CampaignUnitGenerator.CampaignUnitData> unitRoster;
 	public string[] levelSequence;	// set in inspector via prefab flow
 	public bool waitForBootstrapper = false;
+
+
+	// private Dictionary<Guid, UnitState> barracks = new Dictionary<Guid, UnitState>();	
+	// Guid _ID = Guid.NewGuid();
 
 	void Awake() {
         // only allow one Campaign to exist at any time
@@ -27,10 +31,10 @@ public sealed class Campaign : MonoBehaviour
         //
 		DontDestroyOnLoad(gameObject);
 
-		unitRoster = new List<PlayerUnit>();
+		unitRoster = new List<CampaignUnitGenerator.CampaignUnitData>();
 	}
 
-	public void EnlistUnit(PlayerUnit unit) => unitRoster.Add(unit);
+	public void EnlistUnit(CampaignUnitGenerator.CampaignUnitData unitData) => unitRoster.Add(unitData);
 
 	public void BeginLevelSequence() {
 		StartCoroutine( LevelSequence() );

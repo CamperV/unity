@@ -10,7 +10,7 @@ public class Weapon : MonoBehaviour
     public Unit boundUnit { get; set; }
 
     // assigned in inspector or otherwise
-    public string name;
+    public string displayName;
     public Sprite sprite;
     public Color color;
     

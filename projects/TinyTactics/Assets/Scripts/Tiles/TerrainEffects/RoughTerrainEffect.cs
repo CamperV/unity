@@ -31,11 +31,11 @@ public class RoughTerrainEffect : TerrainEffect, IToolTip
 #endif
 
     public override void OnEnterTerrain(Unit targetUnit) {
-        targetUnit.OnDefend += GrantAvoid;
+        if (!targetUnit.tags.Contains("Flier")) targetUnit.OnDefend += GrantAvoid;
     }
 
     public override void OnExitTerrain(Unit targetUnit) {
-        targetUnit.OnDefend -= GrantAvoid;
+        if (!targetUnit.tags.Contains("Flier")) targetUnit.OnDefend -= GrantAvoid;
     }
 
     private void GrantAvoid(ref MutableDefense mutDef, Unit target) {

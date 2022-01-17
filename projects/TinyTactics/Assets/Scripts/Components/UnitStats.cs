@@ -58,6 +58,15 @@ public class UnitStats : MonoBehaviour
         boundUnit = GetComponent<Unit>();
     }
 
+    public void ApplyNature(CampaignUnitGenerator.NatureData natureStats) {
+        baseStats.VITALITY  += natureStats.m_VITALITY;
+        baseStats.STRENGTH  += natureStats.m_STRENGTH;
+        baseStats.DEXTERITY += natureStats.m_DEXTERITY;
+        baseStats.REFLEX    += natureStats.m_REFLEX;
+        baseStats.DEFENSE   += natureStats.m_DEFENSE;
+        baseStats.MOVE      += natureStats.m_MOVE;
+    }
+
     public void UpdateHP(int newValue, int maxValue) {
         _CURRENT_HP = Mathf.Clamp(newValue, 0, maxValue);
         UpdateHPEvent?.Invoke(_CURRENT_HP, maxValue);

@@ -1,18 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-4223778761546178498
+--- !u!114 &6543879199005268142
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4607831616718941384}
+  m_GameObject: {fileID: 7363215371571255889}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46cecef1a66fff047b878290b11c7595, type: 3}
+  m_Script: {fileID: 11500000, guid: 001ac06adcfb56641ae13d3b0f8046cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &7484429902521687977
+  dmgModRate: 1
+  hitModRate: 15
+  critModRate: 5
+--- !u!1001 &4468453158073805104
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -22,14 +25,18 @@ PrefabInstance:
     - target: {fileID: -8612500631510671304, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: dfbe786875d2d9e49ba99a2758a422ca, type: 3}
+      objectReference: {fileID: 21300000, guid: 0a73d8740c1e5d4488f8e8f9bf411a05, type: 3}
+    - target: {fileID: -8612500631510671304, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
+      propertyPath: m_Color.b
+      value: 0.5058824
+      objectReference: {fileID: 0}
     - target: {fileID: -8612500631510671304, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: m_Color.g
-      value: 0.7019608
+      value: 0.83137256
       objectReference: {fileID: 0}
     - target: {fileID: -8612500631510671304, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: m_Color.r
-      value: 0.57254905
+      value: 0.6666667
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: MIGHT
@@ -37,15 +44,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: WEIGHT
-      value: 10
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: ACCURACY
-      value: 65
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: CRITICAL
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: MAX_RANGE
@@ -101,44 +108,48 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6353531406022701921, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: m_Name
-      value: Spear
+      value: Mace
       objectReference: {fileID: 0}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: name
-      value: Basic Spear
+      value: Mace
       objectReference: {fileID: 0}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 3c3bbecfa5e68ed428498a2abf63b5d0, type: 3}
+      objectReference: {fileID: 21300000, guid: 0a73d8740c1e5d4488f8e8f9bf411a05, type: 3}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: color.b
-      value: 1
+      value: 0.5058824
       objectReference: {fileID: 0}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: color.g
-      value: 0.6051265
+      value: 0.83137256
       objectReference: {fileID: 0}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: color.r
-      value: 0.3915094
+      value: 0.6666667
+      objectReference: {fileID: 0}
+    - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
+      propertyPath: displayName
+      value: Mace
       objectReference: {fileID: 0}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: audioFXBundle
       value: 
-      objectReference: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
+      objectReference: {fileID: 11400000, guid: e93ded6ccafb0d9439347f4c3beeaaf6, type: 2}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: tags.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7338468079770388612, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: tags.Array.data[0]
-      value: Pierce
+      value: Strike
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
---- !u!1 &4607831616718941384 stripped
+--- !u!1 &7363215371571255889 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6353531406022701921, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
-  m_PrefabInstance: {fileID: 7484429902521687977}
+  m_PrefabInstance: {fileID: 4468453158073805104}
   m_PrefabAsset: {fileID: 0}

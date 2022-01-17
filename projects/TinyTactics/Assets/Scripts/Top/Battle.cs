@@ -84,13 +84,15 @@ public class Battle : MonoBehaviour
         }
     }
 
-    public void ImportCampaignData(ICollection<PlayerUnit> serializedUnits) {
+    public void ImportCampaignData(ICollection<CampaignUnitGenerator.CampaignUnitData> serializedUnits) {
         List<PlayerUnit> instantiatedUnits = new List<PlayerUnit>();
 
-        foreach (PlayerUnit unit in serializedUnits) {
-            PlayerUnit clonedUnit = Instantiate(unit, playerUnitController.transform);
-            playerUnitController.RegisterUnit(clonedUnit);
+        // load all specified Prefabs from Resources.
+        // the Campaign will track anything you need: only load prefabs to actually give a base GameObject to work upon
+        foreach (PlayerUnit loadedPrefab in CampaignUnitGenerator.DeserializeUnits(serializedUnits)) {
+            PlayerUnit clonedUnit = Instantiate(loadedPrefab, playerUnitController.transform);
             //
+            playerUnitController.RegisterUnit(clonedUnit);
             instantiatedUnits.Add(clonedUnit);
         }
 

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Extensions;
 
-public class UnitDrafter : MonoBehaviour
+public class CampaignUnitDrafter : MonoBehaviour
 {
     [SerializeField] Campaign draftIntoCampaign;
 
@@ -16,16 +16,20 @@ public class UnitDrafter : MonoBehaviour
     [SerializeField] private GameObject draftedUnitsDisplay;
     [SerializeField] private DraftedUnitListing draftedUnitListingPrefab;
 
+    [SerializeField] private TextMeshProUGUI draftTableLabel;
     [SerializeField] private GameObject draftTable;
-    [SerializeField] private List<PlayerUnit> draftPool;    // set in inspector
+    [SerializeField] private PlayerUnit[] draftPrefabPool;
     [SerializeField] private DraftUnitPanel draftUnitPanelPrefab;
 
     [SerializeField] private GameObject[] chainedGameObjects;
 
-    private List<PlayerUnit> draftedUnits;
+    private List<CampaignUnitGenerator.CampaignUnitPackage> draftedUnits;
 
     void Awake() {
-        draftedUnits = new List<PlayerUnit>();
+        draftedUnits = new List<CampaignUnitGenerator.CampaignUnitPackage>();
+
+        // populate the drafting pool
+        draftPrefabPool = Resources.LoadAll<PlayerUnit>("Units/PlayerUnits");
     }
 
     public void BeginDraft() => StartCoroutine(_BeginDraft());
@@ -37,7 +41,9 @@ public class UnitDrafter : MonoBehaviour
         yield return InteractiveDraft();
 
         Debug.Assert(draftedUnits.Count == maxUnits);
-        draftedUnits.ForEach(u => draftIntoCampaign.EnlistUnit(u));
+        foreach (var unitPackage in draftedUnits) {
+            draftIntoCampaign.EnlistUnit(unitPackage.unitData);
+        }
 
         //
         gameObject.SetActive(false);
@@ -53,19 +59,25 @@ public class UnitDrafter : MonoBehaviour
 
         // draft this many times
         for (int u = 0; u < maxUnits; u++) {
+            draftTableLabel.SetText($"Choose One ({u+1} of {maxUnits})");
             buttonClickedFlag = false;
 
             // instantiate all possible panels for this draft
             List<DraftUnitPanel> panelsToDestroy = new List<DraftUnitPanel>();
 
-            foreach (PlayerUnit unit in draftPool.RandomSelections<PlayerUnit>(unitsOnOffer)) {
+            foreach (PlayerUnit unitPrefab in draftPrefabPool.RandomSelections<PlayerUnit>(unitsOnOffer)) {
+                ////////////////////////////////////////////
+                // CREATE UNIT DATA HERE FOR THE CAMPAIGN //
+                ////////////////////////////////////////////
+                var unitPackage = new CampaignUnitGenerator.CampaignUnitPackage(unitPrefab);
+
                 DraftUnitPanel unitPanel = Instantiate(draftUnitPanelPrefab, draftTable.transform);
-                unitPanel.SetUnitInfo(unit);
+                unitPanel.SetUnitInfo(unitPackage);
                 //
                 panelsToDestroy.Add(unitPanel);
 
                 unitPanel.draftButton.onClick.AddListener(() => {
-                    DraftUnit(unit);
+                    DraftUnit(unitPackage);
                     buttonClickedFlag = true;
                 });
             }
@@ -80,10 +92,10 @@ public class UnitDrafter : MonoBehaviour
         }
     }
 
-    private void DraftUnit(PlayerUnit unit) {
+    private void DraftUnit(CampaignUnitGenerator.CampaignUnitPackage unitPackage) {
         DraftedUnitListing listing = Instantiate(draftedUnitListingPrefab, draftedUnitsDisplay.transform);
-        listing.nameValue.SetText($"{unit.displayName}");
+        listing.SetUnitInfo(unitPackage);
 
-        draftedUnits.Add(unit);
+        draftedUnits.Add(unitPackage);
     }
 }

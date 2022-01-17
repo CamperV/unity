@@ -240,6 +240,34 @@ namespace Extensions
             return r;
         }
 
+        // [] version?
+        public static T[] RandomSelections<T>(this T[] l, int numSelections) {
+            List<T> retVal = new List<T>();
+            List<int> available = Enumerable.Range(0, l.Length).ToList();
+            
+            while (retVal.Count < numSelections) {
+                var avaIndex = Random.Range(0, available.Count);
+                var selIndex = available[avaIndex];
+                
+                retVal.Add(l[selIndex]);
+                available.Remove(selIndex);
+            }
+            return retVal.ToArray();
+        }
+
+        // [] version?
+        public static T SelectRandom<T>(this T[] a) {
+            int rand = Random.Range(0, a.Length);
+            return a[rand];
+        }
+
+        // Dict
+        public static KeyValuePair<T, U> SelectRandomEntry<T, U>(this Dictionary<T, U> d) {
+            int rand = Random.Range(0, d.Keys.Count);
+            T randKey = d.Keys.ToList()[rand];
+            return new KeyValuePair<T, U>(randKey, d[randKey]);
+        }
+
         // Color
         public static Color WithAlpha(this Color c, float alpha) {
             return new Color(c.r, c.g, c.b, alpha);

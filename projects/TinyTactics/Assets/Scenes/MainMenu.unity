@@ -5049,8 +5049,32 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1827631415}
     - target: {fileID: 8530703933876192545, guid: d71bed1e2864c6c408436a503fe343f0, type: 3}
+      propertyPath: draftPrefabPool.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8530703933876192545, guid: d71bed1e2864c6c408436a503fe343f0, type: 3}
       propertyPath: chainedGameObjects.Array.size
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8530703933876192545, guid: d71bed1e2864c6c408436a503fe343f0, type: 3}
+      propertyPath: draftPrefabPool.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8530703933876192545, guid: d71bed1e2864c6c408436a503fe343f0, type: 3}
+      propertyPath: draftPrefabPool.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8530703933876192545, guid: d71bed1e2864c6c408436a503fe343f0, type: 3}
+      propertyPath: draftPrefabPool.Array.data[2]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8530703933876192545, guid: d71bed1e2864c6c408436a503fe343f0, type: 3}
+      propertyPath: draftPrefabPool.Array.data[3]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8530703933876192545, guid: d71bed1e2864c6c408436a503fe343f0, type: 3}
+      propertyPath: draftPrefabPool.Array.data[4]
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8530703933876192545, guid: d71bed1e2864c6c408436a503fe343f0, type: 3}
       propertyPath: chainedGameObjects.Array.data[0]
