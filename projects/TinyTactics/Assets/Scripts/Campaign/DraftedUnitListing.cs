@@ -6,11 +6,14 @@ using TMPro;
 
 public class DraftedUnitListing : MonoBehaviour
 {
+    [HideInInspector] public CampaignUnitGenerator.CampaignUnitData listedUnitData;
     public TextMeshProUGUI nameValue;
     public TextMeshProUGUI classValue;
     public GameObject archetypeDisplay;
 
     public void SetUnitInfo(CampaignUnitGenerator.CampaignUnitData unitData) {
+        listedUnitData = unitData;
+
         // NAME + CLASS DATA
         nameValue.SetText($"{unitData.unitName}");
         classValue.SetText($"{unitData.className}");

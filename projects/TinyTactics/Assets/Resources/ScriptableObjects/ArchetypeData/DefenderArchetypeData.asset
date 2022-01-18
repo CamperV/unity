@@ -9,8 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5743d689d1082f54c90c6e6f85d321b3, type: 3}
+  m_Script: {fileID: 11500000, guid: c80f3fc844557444491a5ccbf4d4c0c1, type: 3}
   m_Name: DefenderArchetypeData
   m_EditorClassIdentifier: 
   archetypeName: Defender
   color: {r: 0.57254905, g: 0.67058825, b: 1, a: 1}
+  perkPool:
+  - {fileID: 11400000, guid: d37f2079dde51c640a48c330ca91e610, type: 2}
+  - {fileID: 11400000, guid: a2a0cfb4eca7a6c44b27209c928dab64, type: 2}
+  - {fileID: 11400000, guid: 9ccb6b1178a99b44b861319ace66c7d2, type: 2}

@@ -20,7 +20,15 @@ public class CampaignUnitGenerator
 
 		public NatureData(string n, string theGood, string theBad, int v=0, int s=0, int dex=0, int r=0, int def=0, int m=0) {
 			name = n;
-			description = $"<b>{name}</b>: <color=#AAD481>{theGood}</color>, <color=#F57C7C>{theBad}</color>";
+			if (theGood != "" && theBad != "") {
+				description = $"<b>{name}</b>: <color=#AAD481>{theGood}</color>, <color=#F57C7C>{theBad}</color>";
+			} else if (theGood != "" && theBad == "") {
+				description = $"<b>{name}</b>: <color=#AAD481>{theGood}</color>";
+			} else if (theGood == "" && theBad != "") {
+				description = $"<b>{name}</b>: <color=#F57C7C>{theBad}</color>";
+			} else {
+				description = $"<b>{name}</b>";
+			}
 			//
 			m_VITALITY = v;
 			m_STRENGTH = s;
@@ -33,10 +41,10 @@ public class CampaignUnitGenerator
 
 	// for random generation
 	public static NatureData[] NatureTypes = new NatureData[]{
-		new NatureData("Normie", "n/a",  "n/a"),
+		new NatureData("Normie", "",  ""),
 		new NatureData("Bulky",  "+VIT", "-REF", v: 5, r: -3),
 		new NatureData("Noodly", "+MOV", "-STR", s: -3, m: 1),
-		new NatureData("Godly",  "+ALL", "n/a", v: 50, s: 50, dex: 50, m: 10)
+		new NatureData("Godly",  "+ALL", "", v: 50, s: 50, dex: 50, m: 10)
 	};
 
 	[System.Serializable]
@@ -50,11 +58,11 @@ public class CampaignUnitGenerator
 		public string signaturePerkTypeName;		// gotten from the prefab
 		
 		// below are modified during Campaign play
-		public string[] perks;
+		public PerkData[] perks;
 		public string[] wounds;
 
 		public CampaignUnitData(PlayerUnit unitPrefab) {
-			ID = new Guid();
+			ID = Guid.NewGuid();
 
 			unitName = NameDB.GetRandomName();
 
@@ -66,8 +74,21 @@ public class CampaignUnitGenerator
 			// randomly selection
 			nature = NatureTypes.SelectRandom<NatureData>();
 
-			perks = new string[0];
+			perks = new PerkData[0];
 			wounds = new string[0];
+		}
+
+		// copy-constructor
+		public CampaignUnitData(CampaignUnitData otherData) {
+			ID = otherData.ID;
+			unitName = otherData.unitName;
+			className = otherData.className;
+			signaturePerkTypeName = otherData.signaturePerkTypeName;
+			archetypes = otherData.archetypes;
+			nature = otherData.nature;
+			//
+			perks = otherData.perks;
+			wounds = otherData.wounds;			
 		}
 	}
 
@@ -84,8 +105,6 @@ public class CampaignUnitGenerator
 	public static IEnumerable<PlayerUnit> DeserializeUnits(ICollection<CampaignUnitData> serializedUnits) {
 		foreach (CampaignUnitData unitData in serializedUnits) {
             PlayerUnit loadedPrefab = Resources.Load<PlayerUnit>($"Units/PlayerUnits/{unitData.className}");
-			loadedPrefab.GetComponent<UnitStats>().ApplyNature(unitData.nature);
-
 			yield return loadedPrefab;
 		}
 	}

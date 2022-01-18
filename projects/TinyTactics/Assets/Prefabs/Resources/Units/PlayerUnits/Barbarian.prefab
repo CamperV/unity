@@ -100,18 +100,6 @@ MonoBehaviour:
     DEFENSE: 5
     MOVE: 5
   variance: 0
---- !u!114 &8542665934237945476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3708135186360528908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3712ff771357317449fd2a81670bf001, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &7487578033757355667
 PrefabInstance:
   m_ObjectHideFlags: 0

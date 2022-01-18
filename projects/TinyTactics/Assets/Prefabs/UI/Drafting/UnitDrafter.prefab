@@ -738,7 +738,7 @@ GameObject:
   - component: {fileID: 8530703933876192546}
   - component: {fileID: 8530703933876192551}
   - component: {fileID: 8530703933876192544}
-  - component: {fileID: 8530703933876192545}
+  - component: {fileID: 2368219587655935071}
   m_Layer: 5
   m_Name: UnitDrafter
   m_TagString: Untagged
@@ -807,7 +807,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8530703933876192545
+--- !u!114 &2368219587655935071
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -816,7 +816,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8530703933876192547}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fef18dc6f4433648a75d470642131bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 846f2b9d44095a143b81c11f26a94bfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   draftIntoCampaign: {fileID: 0}

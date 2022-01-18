@@ -33,18 +33,6 @@ MonoBehaviour:
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
   cancelSignal: 0
---- !u!114 &-3725737520135642223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4081257334139278387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df77688eeb1ce724782aa9e6a2e74942, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2057809623227539322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,6 +50,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: defea9025a1c4eb4b84cf8b169d28217, type: 2}
   _terrainCostOverrides: 0100000001000000
   moveThroughEnemiesOverride: 0
+--- !u!114 &-3725737520135642223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4081257334139278387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df77688eeb1ce724782aa9e6a2e74942, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4402678211108455800
 MonoBehaviour:
   m_ObjectHideFlags: 0

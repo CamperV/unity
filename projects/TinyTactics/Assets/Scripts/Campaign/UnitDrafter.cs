@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Extensions;
 
-public class CampaignUnitDrafter : MonoBehaviour
+public class UnitDrafter : MonoBehaviour
 {
     [SerializeField] Campaign draftIntoCampaign;
 

@@ -9,8 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5743d689d1082f54c90c6e6f85d321b3, type: 3}
+  m_Script: {fileID: 11500000, guid: c80f3fc844557444491a5ccbf4d4c0c1, type: 3}
   m_Name: QuickArchetypeData
   m_EditorClassIdentifier: 
   archetypeName: Quick
   color: {r: 0.6666667, g: 0.83137256, b: 0.5058824, a: 1}
+  perkPool:
+  - {fileID: 11400000, guid: c2a6a1ebd46d04d4f8314bd662274e8d, type: 2}
+  - {fileID: 11400000, guid: 6ec9910c180452a48a05de41c28316d5, type: 2}
+  - {fileID: 11400000, guid: ab029287a332cb9488579bdc6d3384aa, type: 2}
+  - {fileID: 11400000, guid: b9d7e9cf9aa06d043a4b22a94d5f8aa7, type: 2}

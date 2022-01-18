@@ -89,8 +89,17 @@ public class Battle : MonoBehaviour
 
         // load all specified Prefabs from Resources.
         // the Campaign will track anything you need: only load prefabs to actually give a base GameObject to work upon
-        foreach (PlayerUnit loadedPrefab in CampaignUnitGenerator.DeserializeUnits(serializedUnits)) {
+        foreach (CampaignUnitGenerator.CampaignUnitData unitData in serializedUnits) {
+            PlayerUnit loadedPrefab = Resources.Load<PlayerUnit>($"Units/PlayerUnits/{unitData.className}");
             PlayerUnit clonedUnit = Instantiate(loadedPrefab, playerUnitController.transform);
+
+			clonedUnit.unitStats.ApplyNature(unitData.nature);
+
+			foreach (PerkData perkData in unitData.perks) {
+				Type perkType = Type.GetType(perkData.typeName);
+				clonedUnit.gameObject.AddComponent(perkType);
+			}
+
             //
             playerUnitController.RegisterUnit(clonedUnit);
             instantiatedUnits.Add(clonedUnit);

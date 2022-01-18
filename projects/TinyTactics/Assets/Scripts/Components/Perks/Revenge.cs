@@ -9,7 +9,7 @@ public class Revenge : Perk, IToolTip
 
     // IToolTip
     public string tooltipName { get; set; } = "Revenge";
-    public string tooltip { get; set; } = "After being attacked, gain +3 DMG until the end of next turn.";
+    public string tooltip { get; set; } = "After being hit, gain +3 DMG until the end of next turn.";
 
     public AudioFXBundle audioFXBundle;
 

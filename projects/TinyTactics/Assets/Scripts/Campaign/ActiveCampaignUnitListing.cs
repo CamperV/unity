@@ -8,7 +8,7 @@ public class ActiveCampaignUnitListing : MonoBehaviour
     [SerializeField] private DraftedUnitListing draftedUnitListingPrefab;
 
     void OnEnable() {
-        foreach (CampaignUnitGenerator.CampaignUnitData unit in Campaign.active.unitRoster) {
+        foreach (CampaignUnitGenerator.CampaignUnitData unit in Campaign.active.Units) {
             DraftedUnitListing listing = Instantiate(draftedUnitListingPrefab, unitListingDisplay.transform);
             listing.SetUnitInfo(unit);
         }

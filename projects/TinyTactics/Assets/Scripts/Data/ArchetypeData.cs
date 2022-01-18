@@ -11,6 +11,7 @@ public class ArchetypeData : ScriptableObject
     // assign this in the inspector
     public string archetypeName;
     public Color color;
+	public PerkData[] perkPool;
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/ArchetypeData", false, 1)]

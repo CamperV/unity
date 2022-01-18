@@ -59,12 +59,12 @@ public class UnitStats : MonoBehaviour
     }
 
     public void ApplyNature(CampaignUnitGenerator.NatureData natureStats) {
-        baseStats.VITALITY  += natureStats.m_VITALITY;
-        baseStats.STRENGTH  += natureStats.m_STRENGTH;
-        baseStats.DEXTERITY += natureStats.m_DEXTERITY;
-        baseStats.REFLEX    += natureStats.m_REFLEX;
-        baseStats.DEFENSE   += natureStats.m_DEFENSE;
-        baseStats.MOVE      += natureStats.m_MOVE;
+        VITALITY  += natureStats.m_VITALITY;
+        STRENGTH  += natureStats.m_STRENGTH;
+        DEXTERITY += natureStats.m_DEXTERITY;
+        REFLEX    += natureStats.m_REFLEX;
+        DEFENSE   += natureStats.m_DEFENSE;
+        MOVE      += natureStats.m_MOVE;
     }
 
     public void UpdateHP(int newValue, int maxValue) {

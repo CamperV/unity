@@ -9,8 +9,8 @@ public class UIBobber : MonoBehaviour
 	[HideInInspector] public Vector3 anchor; // this is in world-space
 	private Transform anchoredTransform;
 
-	[SerializeField] public float minViewportBound;
-	[SerializeField] public float maxViewportBound;
+	[SerializeField] public float minViewportBound = 0f;
+	[SerializeField] public float maxViewportBound = 1f;
 
 	[SerializeField] private float freq;
 	[SerializeField] private float amplitude;
@@ -18,6 +18,8 @@ public class UIBobber : MonoBehaviour
 
 	[Range(-1f, 1f)]
 	[SerializeField] private float xDamping;
+
+	public bool lockOntoX;
 
 	void Start() {
 		anchor = transform.position;
@@ -29,7 +31,11 @@ public class UIBobber : MonoBehaviour
 			cameraSpaceAnchor.y = Mathf.Clamp(cameraSpaceAnchor.y, minViewportBound, maxViewportBound);
 			Vector3 worldSpaceAnchor = Camera.main.ViewportToWorldPoint(cameraSpaceAnchor);
 			
-			anchor = new Vector3(transform.position.x, worldSpaceAnchor.y, transform.position.z);
+			if (lockOntoX) {
+				anchor = new Vector3(worldSpaceAnchor.x, worldSpaceAnchor.y, transform.position.z);	
+			} else {
+				anchor = new Vector3(transform.position.x, worldSpaceAnchor.y, transform.position.z);
+			}
 		}
 
 		Vector3 yComponent = amplitude * (Mathf.Sin( (freq*Time.time) + phase)) * Vector3.up;
@@ -42,7 +48,23 @@ public class UIBobber : MonoBehaviour
 		cameraSpaceAnchor.y = Mathf.Clamp(cameraSpaceAnchor.y, minViewportBound, maxViewportBound);
 		Vector3 worldSpaceAnchor = Camera.main.ViewportToWorldPoint(cameraSpaceAnchor);
 		
-		anchor = new Vector3(transform.position.x, worldSpaceAnchor.y, transform.position.z);
+		if (lockOntoX) {
+			anchor = new Vector3(worldSpaceAnchor.x, worldSpaceAnchor.y, transform.position.z);	
+		} else {
+			anchor = new Vector3(transform.position.x, worldSpaceAnchor.y, transform.position.z);
+		}
+	}
+
+	public void MoveAnchorOffset(Vector3 inputWorldAnchor, Vector3 offset) {
+		Vector3 cameraSpaceAnchor = Camera.main.WorldToViewportPoint(inputWorldAnchor);
+		cameraSpaceAnchor.y = Mathf.Clamp(cameraSpaceAnchor.y, minViewportBound, maxViewportBound);
+		Vector3 worldSpaceAnchor = Camera.main.ViewportToWorldPoint(cameraSpaceAnchor);
+		
+		if (lockOntoX) {
+			anchor = new Vector3(worldSpaceAnchor.x, worldSpaceAnchor.y, transform.position.z) + offset;	
+		} else {
+			anchor = new Vector3(transform.position.x, worldSpaceAnchor.y, transform.position.z) + offset;
+		}
 	}
 
 	public void TrackAnchor(Transform _anchoredTransform) {

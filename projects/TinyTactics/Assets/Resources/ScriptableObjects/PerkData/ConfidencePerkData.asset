@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c087a20e5a53eb6489e93529b3acbfbe, type: 3}
+  m_Name: ConfidencePerkData
+  m_EditorClassIdentifier: 
+  perkName: Confidence
+  typeName: Confidence
+  description: +15 HIT, +15 CRIT when there are no allies within 2 spaces.
+  belongsToArchetype: {fileID: 11400000, guid: 123d5550d9da4f64a956378cca72b9f7, type: 2}
