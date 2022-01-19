@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class Entrenched : Perk, IToolTip
+public class StrongCounter : Perk, IToolTip
 {
-    public override string displayName { get; set; } = "Entrenched";
+    public override string displayName { get; set; } = "Strong Counter";
 
     // IToolTip
-    public string tooltipName { get; set; } = "Entrenched";
-    public string tooltip { get; set; } = "When counterattacking, increase DMG, HIT, and CRIT.";
+    public string tooltipName { get; set; } = "Strong Counter";
+    public string tooltip { get; set; } = "When counterattacking, increase DMG and HIT.";
 
     public override void OnAcquire() {
         boundUnit.OnAttack += ConditionalAttack;
@@ -23,8 +23,7 @@ public class Entrenched : Perk, IToolTip
     private void ConditionalAttack(ref MutableAttack mutAtt, Unit target) {
         if (boundUnit.moveAvailable) {
             mutAtt.damage += 3;
-            mutAtt.hitRate += 25;
-            mutAtt.critRate += 15;
+            mutAtt.hitRate += 15;
             //
             mutAtt.AddMutator(this);
         }

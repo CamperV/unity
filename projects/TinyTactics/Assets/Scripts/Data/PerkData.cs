@@ -16,6 +16,7 @@ public class PerkData : ScriptableObject
 	public Sprite sprite;
 	//
 	public ArchetypeData belongsToArchetype;
+	public bool isSignaturePerk;
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/PerkData", false, 1)]

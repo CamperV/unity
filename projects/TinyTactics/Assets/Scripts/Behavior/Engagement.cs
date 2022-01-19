@@ -118,17 +118,16 @@ public class Engagement
         }
     }
 
-    private Attack GenerateAttack(Unit generator, Unit target) {
-        // int weightPenalty = Mathf.Max(0, generator.equippedWeapon.weaponStats.WEIGHT - generator.unitStats.STRENGTH);
-
+    private Attack GenerateAttack(Unit generator, Unit defender) {
         MutableAttack mutableAttack = new MutableAttack(
             generator.unitStats._ATK,
             generator.unitStats._HIT,
-            generator.unitStats._CRT
+            generator.unitStats._CRT,
+            defender.gridPosition.ManhattanDistance(generator.gridPosition) == 1
         );
         
         // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
-        generator.FireOnAttackEvent(ref mutableAttack, target);
+        generator.FireOnAttackEvent(ref mutableAttack, defender);
         return new Attack(mutableAttack);
     }
 
@@ -136,7 +135,8 @@ public class Engagement
         MutableDefense mutableDefense = new MutableDefense(
             generator.unitStats.DEFENSE,          // reduce incoming damage
             generator.unitStats._AVO,             // avoid rate
-            generator.unitStats._CRTAVO           // crit avoid rate
+            generator.unitStats._CRTAVO,           // crit avoid rate
+            attacker.gridPosition.ManhattanDistance(generator.gridPosition) == 1
         );
 
         // THIS WILL MODIFY THE OUTGOING DEFENSE PACKAGE

@@ -26,7 +26,7 @@ public class AntiPierce : WeaponPerk, IToolTip
     }
 
     private void OffensiveAdv(ref MutableAttack mutAtt, Unit target) {
-        if (target.equippedWeapon.HasTagMatch("Pierce")) {
+        if (mutAtt.inMeleeRange && target.equippedWeapon.HasTagMatch("Pierce")) {
             mutAtt.damage += dmgModRate;
             mutAtt.hitRate += hitModRate;
             mutAtt.critRate += critModRate;
@@ -36,7 +36,7 @@ public class AntiPierce : WeaponPerk, IToolTip
     }
 
     private void DefensiveAdv(ref MutableDefense mutDef, Unit target) {
-        if (target.equippedWeapon.HasTagMatch("Pierce")) {
+        if (mutDef.inMeleeRange && target.equippedWeapon.HasTagMatch("Pierce")) {
             mutDef.damageReduction += dmgModRate;
             mutDef.avoidRate += hitModRate;
             mutDef.critAvoidRate += critModRate;

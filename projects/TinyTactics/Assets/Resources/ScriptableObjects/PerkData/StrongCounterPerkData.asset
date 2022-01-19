@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c087a20e5a53eb6489e93529b3acbfbe, type: 3}
-  m_Name: EntrenchedPerkData
+  m_Name: StrongCounterPerkData
   m_EditorClassIdentifier: 
-  perkName: Entrenched
-  typeName: Entrenched
+  perkName: Strong Counter
+  typeName: StrongCounter
   description: When counterattacking, increase DMG, HIT, and CRIT.
   sprite: {fileID: 21300000, guid: 8daddeb323196244fa8bcfd27b62c19d, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: fd4cd4e8a8eca4d4e929fa363144de76, type: 2}
+  isSignaturePerk: 0

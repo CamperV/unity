@@ -232,6 +232,22 @@ namespace Extensions
             return retVal;
         }
 
+        public static List<T> RandomSelectionsUpTo<T>(this List<T> l, int numSelections) {
+            List<T> retVal = new List<T>();
+            List<int> available = Enumerable.Range(0, l.Count).ToList();
+            
+            int numActual = Mathf.Min(available.Count, numSelections);
+            //
+            while (retVal.Count < numActual) {
+                var avaIndex = Random.Range(0, available.Count);
+                var selIndex = available[avaIndex];
+                
+                retVal.Add(l[selIndex]);
+                available.Remove(selIndex);
+            }
+            return retVal;
+        }
+
         // List
         public static T PopRandom<T>(this List<T> list) {
             int rand = Random.Range(0, list.Count);
@@ -246,6 +262,23 @@ namespace Extensions
             List<int> available = Enumerable.Range(0, l.Length).ToList();
             
             while (retVal.Count < numSelections) {
+                var avaIndex = Random.Range(0, available.Count);
+                var selIndex = available[avaIndex];
+                
+                retVal.Add(l[selIndex]);
+                available.Remove(selIndex);
+            }
+            return retVal.ToArray();
+        }
+
+        // [] version?
+        public static T[] RandomSelectionsUpTo<T>(this T[] l, int numSelections) {
+            List<T> retVal = new List<T>();
+            List<int> available = Enumerable.Range(0, l.Length).ToList();
+            
+            int numActual = Mathf.Min(available.Count, numSelections);
+            //
+            while (retVal.Count < numActual) {
                 var avaIndex = Random.Range(0, available.Count);
                 var selIndex = available[avaIndex];
                 

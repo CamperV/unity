@@ -9,6 +9,7 @@ public class DraftPerkPanel : MonoBehaviour
 {
     public TextMeshProUGUI nameValue;
     public Image perkImage;
+    public Image perkImageMatte;
     public TextMeshProUGUI descriptionValue;
 
     public Image matteImage;
@@ -27,5 +28,6 @@ public class DraftPerkPanel : MonoBehaviour
         //
         matteImage.color = perkData.belongsToArchetype.color;
         backgroundImage.color = (0.35f*perkData.belongsToArchetype.color).WithAlpha(1f);
+        perkImageMatte.color = (0.25f*perkData.belongsToArchetype.color).WithAlpha(1f);
     }
 }

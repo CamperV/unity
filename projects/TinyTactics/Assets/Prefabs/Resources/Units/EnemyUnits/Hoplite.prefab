@@ -1,17 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8040119210922428412
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5017226353260258860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35d98f5844b49c7489bc23d5828833c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-2501221417900690745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,11 +92,24 @@ MonoBehaviour:
   personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 146772166050584365, guid: f8e8b537543ba874bb8e505e51644735, type: 3}
   tags: []
+  archetypes: []
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
   <attackAvailable>k__BackingField: 0
   assignedPod: {fileID: 0}
+--- !u!114 &9142057719387342827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5017226353260258860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1539e08b81ab3bf44ade62de54b4e6f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1241881934384392371
 PrefabInstance:
   m_ObjectHideFlags: 0

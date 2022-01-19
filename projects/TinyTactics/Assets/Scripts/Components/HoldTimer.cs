@@ -10,7 +10,7 @@ using TMPro;
 
 public class HoldTimer : MonoBehaviour
 {
-    private readonly float fixedHoldTime = 0.75f;
+    private readonly float fixedHoldTime = 0.50f;
     private float holdTimeElapsed = 0f;
 
     private Coroutine holdCoroutine;
@@ -55,7 +55,10 @@ public class HoldTimer : MonoBehaviour
                 holdTimeElapsed += Time.deltaTime;
 
                 float percentComplete = holdTimeElapsed / maxTime;
-                holdTimerVisualization.fillAmount = 1.5f*percentComplete;
+
+                // holdTimerVisualization.fillAmount = 1.5f*percentComplete;    this makes the animation appear to end early
+                holdTimerVisualization.fillAmount = percentComplete;
+
                 holdTimerVisualization.color = Color.Lerp(new Color(0.75f, 0.75f, 0.75f, 1f).WithAlpha(0.25f), originalHoldTimerColor.WithAlpha(1f), 1.5f*percentComplete);
 
                 boundUnit.LerpInactiveColor(percentComplete);

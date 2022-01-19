@@ -17,3 +17,4 @@ MonoBehaviour:
   description: After being attacked, heal adjacent allies for 25% of their VITALITY.
   sprite: {fileID: 21300000, guid: e69050511b617ba499beb70b9a426f2a, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: e3d85aa16bc314245b699ac65182ffc3, type: 2}
+  isSignaturePerk: 1

@@ -17,3 +17,4 @@ MonoBehaviour:
   description: After being hit, gain +3 DMG until the end of next turn.
   sprite: {fileID: 21300000, guid: 2cd55e2e2edd2844cb4f448af82e6496, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
+  isSignaturePerk: 1

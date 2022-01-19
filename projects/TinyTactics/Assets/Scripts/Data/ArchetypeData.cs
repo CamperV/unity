@@ -8,10 +8,11 @@ using UnityEditor;
 
 public class ArchetypeData : ScriptableObject
 {
+	private List<PerkData> _perkPoolCache = new List<PerkData>();
+
     // assign this in the inspector
     public string archetypeName;
     public Color color;
-	public PerkData[] perkPool;
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/ArchetypeData", false, 1)]
@@ -27,5 +28,18 @@ public class ArchetypeData : ScriptableObject
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
 	}
-#endif 
+#endif
+
+	public IEnumerable<PerkData> GetPerkPool() {
+		if (_perkPoolCache.Count == 0) {
+			Debug.Log($"Needed to loaded these guys {this}");
+			foreach (PerkData loadedData in Resources.LoadAll<PerkData>("ScriptableObjects/PerkData")) {
+				if (loadedData.belongsToArchetype == this && loadedData.isSignaturePerk == false) {
+					_perkPoolCache.Add(loadedData);
+				}
+			}
+		}
+
+		foreach (PerkData perkData in _perkPoolCache) yield return perkData;
+	}
 }

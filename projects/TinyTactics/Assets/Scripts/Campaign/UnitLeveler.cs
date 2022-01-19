@@ -75,12 +75,12 @@ public class UnitLeveler : MonoBehaviour
             List<PerkData> potentialPerkPool = new List<PerkData>();
 
             foreach (ArchetypeData ad in unitData.archetypes) {
-                foreach (PerkData draftablePerk in ad.perkPool) {
+                foreach (PerkData draftablePerk in ad.GetPerkPool()) {
                     potentialPerkPool.Add(draftablePerk);
                 }
             }
             //
-            unitPerkOfferings[unitData.ID] = potentialPerkPool.RandomSelections<PerkData>(perksOnOffer).ToList();
+            unitPerkOfferings[unitData.ID] = potentialPerkPool.RandomSelectionsUpTo<PerkData>(perksOnOffer).ToList();
         }
         List<PerkData> perkPool = unitPerkOfferings[unitData.ID];
 

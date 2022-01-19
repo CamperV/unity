@@ -11,12 +11,16 @@ public struct Attack
     public int hitRate;
     public int critRate;
     //
+    public bool inMeleeRange;
+    //
     public List<string> mutators;
 
     public Attack(MutableAttack mutAtt) {
         damage = mutAtt.damage;
         hitRate = mutAtt.hitRate;
         critRate = mutAtt.critRate;
+        //
+        inMeleeRange = mutAtt.inMeleeRange;
         //
         mutators = new List<string>(mutAtt.mutators);
     }
@@ -34,12 +38,16 @@ public class MutableAttack
     public int hitRate;
     public int critRate;
     //
+    public bool inMeleeRange;
+    //
     public List<string> mutators;
 
-    public MutableAttack(int dmg, int hit, int crit) {
+    public MutableAttack(int dmg, int hit, int crit, bool withinOne) {
         damage = dmg;
         hitRate = hit;
         critRate = crit;
+        //
+        inMeleeRange = withinOne;
         //
         mutators = new List<string>();
     }

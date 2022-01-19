@@ -26,7 +26,7 @@ public class AntiSlash : WeaponPerk, IToolTip
     }
 
     private void OffensiveAdv(ref MutableAttack mutAtt, Unit target) {
-        if (target.equippedWeapon.HasTagMatch("Slash")) {
+        if (mutAtt.inMeleeRange && target.equippedWeapon.HasTagMatch("Slash")) {
             mutAtt.damage += dmgModRate;
             mutAtt.hitRate += hitModRate;
             mutAtt.critRate += critModRate;
@@ -36,7 +36,7 @@ public class AntiSlash : WeaponPerk, IToolTip
     }
 
     private void DefensiveAdv(ref MutableDefense mutDef, Unit target) {
-        if (target.equippedWeapon.HasTagMatch("Slash")) {
+        if (mutDef.inMeleeRange && target.equippedWeapon.HasTagMatch("Slash")) {
             mutDef.damageReduction += dmgModRate;
             mutDef.avoidRate += hitModRate;
             mutDef.critAvoidRate += critModRate;
