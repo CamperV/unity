@@ -10,6 +10,8 @@ public class UnitTab : MonoBehaviour
     [SerializeField] private GameObject untouchedIndicator;
     //
     [SerializeField] private Button selectButton;
+
+    // not a child
     public UnitLevelUpPanel linkedPanel;
 
     [HideInInspector] public UnitLeveler parentUnitLeveler;
@@ -48,4 +50,8 @@ public class UnitTab : MonoBehaviour
 
     private void WakeUpTab() => GetComponentInChildren<CanvasGroup>().alpha = 1f;
     private void DimTab() => GetComponentInChildren<CanvasGroup>().alpha = 0.33f;
+
+    void OnDestroy() {
+        Destroy(linkedPanel.gameObject);
+    }
 }

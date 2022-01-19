@@ -13,6 +13,7 @@ public class PerkData : ScriptableObject
     public string perkName;
 	public string typeName;
 	public string description;
+	public Sprite sprite;
 	//
 	public ArchetypeData belongsToArchetype;
 

@@ -15,4 +15,5 @@ MonoBehaviour:
   perkName: Guiding Presence
   typeName: GuidingPresence
   description: Grant +5 DEX to allies within 2 spaces.
+  sprite: {fileID: 21300000, guid: 071f421dc4e2450419722fed2b29391f, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: e3d85aa16bc314245b699ac65182ffc3, type: 2}

@@ -15,4 +15,5 @@ MonoBehaviour:
   perkName: Duelist's Blow
   typeName: DuelistsBlow
   description: When initiating combat, +15 AVOID.
+  sprite: {fileID: 21300000, guid: 2f2801d5a7de24f479b3b818f9ff0f08, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: 123d5550d9da4f64a956378cca72b9f7, type: 2}

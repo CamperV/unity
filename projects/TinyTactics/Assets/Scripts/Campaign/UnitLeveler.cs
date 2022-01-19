@@ -101,17 +101,16 @@ public class UnitLeveler : MonoBehaviour
                 //
                 buttonClickedFlag = true;
 
-                if (unitTabs.Count > 0) SelectTab(unitTabs[0]);
-                else Destroy(gameObject);
+                if (unitTabs.Count > 0) {
+                    SelectTab(unitTabs[0]);
+                } else {
+                    Destroy(gameObject);
+                }
             });
         }
 
         // now wait until a unit is actually selected
         yield return new WaitUntil(() => buttonClickedFlag == true);
-
-        foreach (var panel in GetComponentsInChildren<DraftPerkPanel>()) {
-            Destroy(panel.gameObject);
-        }
     }
 
     private void AddPerkToUnit(CampaignUnitGenerator.CampaignUnitData unitData, PerkData draftablePerk) {

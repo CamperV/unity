@@ -15,4 +15,5 @@ MonoBehaviour:
   perkName: Confidence
   typeName: Confidence
   description: +15 HIT, +15 CRIT when there are no allies within 2 spaces.
+  sprite: {fileID: 21300000, guid: 90d648f1624836d4396ecd9d2c45612a, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: 123d5550d9da4f64a956378cca72b9f7, type: 2}

@@ -15,4 +15,5 @@ MonoBehaviour:
   perkName: Inspiring Presence
   typeName: InspiringPresence
   description: Grant 3 STR to adjacent allies.
+  sprite: {fileID: 21300000, guid: 9517fe858c8c72942b76270509fb01cd, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: e3d85aa16bc314245b699ac65182ffc3, type: 2}

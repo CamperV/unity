@@ -60,7 +60,7 @@ public sealed class Campaign : MonoBehaviour
 			waitForBootstrapper = false;
 
 			// if you're the last level, skip this step. Otherwise, go to the level up panel!
-			yield return levelLoader.LoadLevelAsync("Interstitial");
+			yield return levelLoader.LoadLevelAsync("LevelUp");
 
 			// loading the next level is signaled by CampaignBoostrapper
 			yield return new WaitUntil(() => waitForBootstrapper == true);

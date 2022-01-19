@@ -15,4 +15,5 @@ MonoBehaviour:
   perkName: Crippling Strike
   typeName: CripplingStrike
   description: On hit, -50% MOV debuff until end of next turn.
+  sprite: {fileID: 21300000, guid: 4af4327727d12f546aa25769de230653, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: fd4cd4e8a8eca4d4e929fa363144de76, type: 2}
