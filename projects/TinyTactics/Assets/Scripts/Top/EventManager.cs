@@ -9,6 +9,7 @@ public sealed class EventManager : MonoBehaviour
 {
     public Battle topBattleRef;
     public PlayerInputController inputController;
+    public PlayerInputController menuInputController;
     public CameraManager cameraManager;
     public UIManager uiManager;
     public TurnManager turnManager;
@@ -19,6 +20,9 @@ public sealed class EventManager : MonoBehaviour
 
     public void EnablePlayerInput() => inputController.gameObject.SetActive(true);
     public void DisablePlayerInput() => inputController.gameObject.SetActive(false);
+    //
+    public void EnableMenuInput() => menuInputController.gameObject.SetActive(true);
+    public void DisableMenuInput() => menuInputController.gameObject.SetActive(false);
 
     public void RegisterEvents() {
         // input events

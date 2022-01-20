@@ -4515,7 +4515,7 @@ Transform:
   - {fileID: 1470600145}
   - {fileID: 1111963513}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &881456442
 MonoBehaviour:
@@ -4572,6 +4572,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topBattleRef: {fileID: 881456443}
   inputController: {fileID: 1490333195}
+  menuInputController: {fileID: 1662291106}
   cameraManager: {fileID: 6235734}
   uiManager: {fileID: 1357693838}
   turnManager: {fileID: 881456442}
@@ -12118,7 +12119,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1357693833
 GameObject:
@@ -13149,6 +13150,49 @@ MonoBehaviour:
   mouseOverOverlayTile: {fileID: 11400000, guid: 01177eb059494154180915b486ee222d, type: 2}
   pathOverlayTile: {fileID: 11400000, guid: 193509ecb5f9ba24aa4ab12fb0acbd34, type: 2}
   pathEndOverlayTile: {fileID: 11400000, guid: 2709adfa129e7df4c8200f929ae6d02d, type: 2}
+--- !u!1 &1662291105
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1662291107}
+  - component: {fileID: 1662291106}
+  m_Layer: 0
+  m_Name: MenuInputController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1662291106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662291105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0eb8b5beafb2a94c83a0f5d947f7314, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1662291107
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662291105}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1662749397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19837,7 +19881,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7457664596235385471, guid: f31c3eea19ac82942874c73ba309f5c6, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7457664596235385471, guid: f31c3eea19ac82942874c73ba309f5c6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -44988,6 +45032,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1357693837}
     m_Modifications:
+    - target: {fileID: 8114953136844479457, guid: 4c01675ddf8fe1a49b224651350a6502, type: 3}
+      propertyPath: toggleObject
+      value: 
+      objectReference: {fileID: 1462813121}
     - target: {fileID: 8157621458254822890, guid: 4c01675ddf8fe1a49b224651350a6502, type: 3}
       propertyPath: m_Name
       value: GlossaryButton
