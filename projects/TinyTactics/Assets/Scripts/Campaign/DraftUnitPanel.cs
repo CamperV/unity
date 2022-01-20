@@ -11,9 +11,7 @@ public class DraftUnitPanel : MonoBehaviour
     public TextMeshProUGUI classValue;
     public Image portraitValue;
 
-    public TextMeshProUGUI weaponName;
-    public Image weaponNameBackground;
-    public TextMeshProUGUI weaponType;
+    public WeaponListing weaponListing;
 
     public GameObject archetypeDisplay;
     public TextMeshProUGUI natureDescription;
@@ -60,11 +58,7 @@ public class DraftUnitPanel : MonoBehaviour
     
 
         // SET WEAPON DATA
-        weaponName.SetText(unitPackage.unitPrefab.equippedWeapon.displayName);
-
-        string weaponTagString = string.Join(" + ", unitPackage.unitPrefab.equippedWeapon.tags);
-        weaponType.SetText(weaponTagString);
-        weaponType.color = unitPackage.unitPrefab.equippedWeapon.color;
+        weaponListing.SetWeaponInfo(unitPackage.unitPrefab.equippedWeapon);
     
         // SET NATURE DATA
         natureDescription.SetText(unitPackage.unitData.nature.description);

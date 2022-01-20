@@ -20,9 +20,12 @@ public class UIBobber : MonoBehaviour
 	[SerializeField] private float xDamping;
 
 	public bool lockOntoX;
+	public bool randomPhaseSalt;
 
 	void Start() {
 		anchor = transform.position;
+
+		if (randomPhaseSalt) phase += Random.Range(0, 10);
 	}
 
 	void Update() {
