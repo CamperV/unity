@@ -154,15 +154,23 @@ public class Engagement
         );
 
 		// calc hit/crit
-		int diceRoll = Random.Range(0, 100);
-		bool isHit = diceRoll <= finalStats.hitRate;
+		int RN1 = Random.Range(0, 100);
+		
+        // 1 RN
+        // bool isHit = RN1 <= finalStats.hitRate;
+
+        // "True Hit"
+        // 2RN
+        int RN2 = Random.Range(0, 100);
+        int trueHitRN = (int)((RN1 + RN2)/2f);
+        bool isHit =  trueHitRN <= finalStats.hitRate;
 
 		// final retval
 		bool survived = true;
 		if (isHit) {
             A.personalAudioFX.PlayWeaponAttackFX();
 
-			bool isCrit = diceRoll < finalStats.critRate;
+			bool isCrit = RN1 < finalStats.critRate;
             int sufferedDamage = (isCrit) ? finalStats.damage*3 : finalStats.damage;
 
             // if the hit is... unimpressive, play a clang or something
