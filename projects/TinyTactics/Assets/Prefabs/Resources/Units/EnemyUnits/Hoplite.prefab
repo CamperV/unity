@@ -110,6 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1539e08b81ab3bf44ade62de54b4e6f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <PerkData>k__BackingField: {fileID: 11400000, guid: a2a0cfb4eca7a6c44b27209c928dab64, type: 2}
 --- !u!1001 &1241881934384392371
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -92,13 +92,7 @@ public class Battle : MonoBehaviour
         foreach (CampaignUnitGenerator.CampaignUnitData unitData in serializedUnits) {
             PlayerUnit loadedPrefab = Resources.Load<PlayerUnit>($"Units/PlayerUnits/{unitData.className}");
             PlayerUnit clonedUnit = Instantiate(loadedPrefab, playerUnitController.transform);
-
-			clonedUnit.unitStats.ApplyNature(unitData.nature);
-
-			foreach (PerkData perkData in unitData.perks) {
-				Type perkType = Type.GetType(perkData.typeName);
-				clonedUnit.gameObject.AddComponent(perkType);
-			}
+            clonedUnit.ImportData(unitData);
 
             //
             playerUnitController.RegisterUnit(clonedUnit);

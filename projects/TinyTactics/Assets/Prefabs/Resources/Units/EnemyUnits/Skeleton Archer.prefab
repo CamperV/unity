@@ -78,6 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59288c3556e52fa4e9fe4a8856776fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <PerkData>k__BackingField: {fileID: 11400000, guid: b72db5cdb4c98b1469cca96f85bec809, type: 2}
 --- !u!114 &4745207060358894923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,6 +105,7 @@ MonoBehaviour:
   personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 7317941260927309738, guid: ae85c7a71f197d9458e6e0581ecee04d, type: 3}
   tags: []
+  archetypes: []
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1

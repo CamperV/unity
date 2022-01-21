@@ -88,6 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 987aba40c7de945438099e16ccff9289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <PerkData>k__BackingField: {fileID: 11400000, guid: fe9e140c9f1fcce4ab0ea098a0bd178f, type: 2}
 --- !u!114 &8662550338145159247
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -24,6 +24,8 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private EndgameStatsPanel victoryPanel;
 	[SerializeField] private EndgameStatsPanel defeatPanel;
 
+	[SerializeField] private GameObject menuButtons;
+
 	public CombatLog combatLog;
 	
     void Awake() {
@@ -57,43 +59,15 @@ public sealed class UIManager : MonoBehaviour
 	}
 
 	public void EnableUnitDetail(Unit unit) {
-		unitDetailPanel.gameObject.SetActive(true);
-
-	    unitDetailPanel.portraitImage.sprite = unit.spriteRenderer.sprite;
-		unitDetailPanel.portraitImage.color = unit.spriteRenderer.color;
-		unitDetailPanel.nameText.SetText(unit.displayName);
-		unitDetailPanel.weaponImage.sprite = unit.equippedWeapon.sprite;
-		unitDetailPanel.weaponImage.color = unit.equippedWeapon.color;
-		unitDetailPanel.weaponNameText.SetText($"{unit.equippedWeapon.displayName}");
-		
-		// attributes
-		unitDetailPanel.hpValue.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");
+		menuButtons.SetActive(false);
 		//
-		unitDetailPanel.vitValue.SetText($"{unit.unitStats.VITALITY}");
-		unitDetailPanel.strValue.SetText($"{unit.unitStats.STRENGTH}");
-		unitDetailPanel.dexValue.SetText($"{unit.unitStats.DEXTERITY}");
-		unitDetailPanel.refValue.SetText($"{unit.unitStats.REFLEX}");
-		unitDetailPanel.defValue.SetText($"{unit.unitStats.DEFENSE}");
-		unitDetailPanel.movValue.SetText($"{unit.unitStats.MOVE}");
-
-		// derived
-		unitDetailPanel.atkValue.SetText($"{unit.unitStats._ATK}");
-		unitDetailPanel.hitValue.SetText($"{unit.unitStats._HIT}");
-		unitDetailPanel.avoValue.SetText($"{unit.unitStats._AVO}");
-
-		// perks
-		List<string> unitPerks = new List<string>();
-		foreach (IMutatorComponent mc in unit.GetComponentsInChildren<IMutatorComponent>()) {
-			if (mc.displayName == "Weapon Advantage") continue;
-			if (mc.displayName == "Weapon Effectiveness") continue;
-			
-			unitPerks.Add(mc.displayName);
-		}
-		string unitPerksText = string.Join("\n", unitPerks);
-		unitDetailPanel.unitPerksValue.SetText(unitPerksText);
+		unitDetailPanel.gameObject.SetActive(true);
+		unitDetailPanel.SetUnitInfo(unit);
 	}
 
 	public void DisableUnitDetail() {
+		menuButtons.SetActive(true);
+		//
 		unitDetailPanel.gameObject.SetActive(false);
 	}
 

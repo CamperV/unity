@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8157621458254822900}
   - component: {fileID: 8114953136844479457}
   - component: {fileID: 1219309808385877208}
+  - component: {fileID: 4847104262536930239}
   m_Layer: 5
   m_Name: GlossaryButton
   m_TagString: Untagged
@@ -155,6 +156,22 @@ MonoBehaviour:
   backFX: 0
   specialFX: 0
   superSpecialFX: 0
+--- !u!114 &4847104262536930239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8157621458254822890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f412222e822c54a98d33fa37363fa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  image: {fileID: 0}
+  swapSprite: {fileID: 21300000, guid: 2c956c2f5a7d25642b7a66de78038b39, type: 3}
+  swapColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &8157621458331780336
 GameObject:
   m_ObjectHideFlags: 0

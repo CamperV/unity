@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82f12df4b3b80e2478b7aed7b74b105c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <PerkData>k__BackingField: {fileID: 11400000, guid: d37f2079dde51c640a48c330ca91e610, type: 2}
   audioFXBundle: {fileID: 11400000, guid: 156b54777abab874a9704c6b814b11ff, type: 2}
 --- !u!1001 &1063781761081437082
 PrefabInstance:

@@ -8,6 +8,11 @@ public abstract class Perk : MonoBehaviour, IMutatorComponent
     public Unit boundUnit { get; set; }
     public abstract string displayName { get; set; }
 
+    // set in inspector
+    // OR
+    // set by Instantiator
+    [field: SerializeField] public PerkData PerkData { get; set; }
+
     void Awake() {
         boundUnit = GetComponent<Unit>();
     }
@@ -16,4 +21,8 @@ public abstract class Perk : MonoBehaviour, IMutatorComponent
     public abstract void OnRemoval();
 
     void OnDisable() => OnRemoval();
+
+    // public PerkData LoadPerkData() {
+    //     return Resources.Load<PerkData>("ScriptableObjects/PerkData/{}");
+    // }
 }

@@ -13,8 +13,6 @@ public class GlossaryPanel : MonoBehaviour
 	public void OnEnable() {
 		eventManager.DisablePlayerInput();
 		eventManager.EnableMenuInput();
-
-        // eventManager.menuInputController.LeftMouseClickEvent += AnywhereDismiss;
         eventManager.menuInputController.RightMouseClickEvent += AnywhereDismiss;
 
 		UpdateActiveGlossaryText();
@@ -22,8 +20,6 @@ public class GlossaryPanel : MonoBehaviour
 
 	public void OnDisable() {
 		eventManager.EnablePlayerInput();
-
-	    // eventManager.menuInputController.LeftMouseClickEvent -= AnywhereDismiss;
         eventManager.menuInputController.RightMouseClickEvent -= AnywhereDismiss;
 
 		eventManager.DisableMenuInput();
@@ -47,5 +43,7 @@ public class GlossaryPanel : MonoBehaviour
 		glossaryText.SetText( string.Join("\n\n", textLines.Distinct().OrderBy(it => it)) );
 	}
 
-	private void AnywhereDismiss(Vector3 pos) => gameObject.SetActive(false);
+	private void AnywhereDismiss(Vector3 pos) {
+		gameObject.SetActive(false);
+	}
 }

@@ -32,7 +32,20 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     private GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
     private Path<GridPosition>? pathToMouseOver;
 
+    public Guid CampaignID { get; private set; }
+
     void Update() => ContextualNoInteract();
+
+    public void ImportData(CampaignUnitGenerator.CampaignUnitData unitData) {
+        CampaignID = unitData.ID;
+        unitStats.ApplyNature(unitData.nature);
+
+        foreach (PerkData perkData in unitData.perks) {
+            Type perkType = Type.GetType(perkData.typeName);
+            Perk addedPerk = gameObject.AddComponent(perkType) as Perk;
+            addedPerk.PerkData = perkData;
+        }
+    }
 
     // IStateMachine<>
     public void ChangeState(PlayerUnitFSM newState) {
