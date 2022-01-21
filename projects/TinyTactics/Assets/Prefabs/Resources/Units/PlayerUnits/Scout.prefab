@@ -12,6 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-8228011075696433100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376406717668632979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27bc60bd3d5cde14099b44f6bd8f4477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <PerkData>k__BackingField: {fileID: 11400000, guid: 401ba1fc68a37fd4da9fc095b045e965, type: 2}
 --- !u!114 &-3105306990146655651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,6 +73,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: defea9025a1c4eb4b84cf8b169d28217, type: 2}
   _terrainCostOverrides: 010000000100000001000000010000000100000001000000
   moveThroughEnemiesOverride: 0
+  moveThroughTerrainOverride: 0
 --- !u!114 &4418163416302305331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,8 +113,7 @@ MonoBehaviour:
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   equippedWeapon: {fileID: 5311602426619238717, guid: 328d95379d47d69468be19c35cfe212b, type: 3}
-  tags:
-  - Flier
+  tags: []
   archetypes:
   - {fileID: 11400000, guid: 123d5550d9da4f64a956378cca72b9f7, type: 2}
   - {fileID: 11400000, guid: bd1f6bc81392c5941a31841069a9684d, type: 2}
