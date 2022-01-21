@@ -30,7 +30,7 @@ public class InspiringPresence : Perk, IToolTip
             unit.statusManager.AddConditionalBuff<ConditionalStrengthBuff>(
                 displayName,
                 3,
-                () => unit.gridPosition.ManhattanDistance(boundUnit.gridPosition) == 1
+                () => boundUnit.gameObject.activeInHierarchy && unit.gridPosition.ManhattanDistance(boundUnit.gridPosition) == 1
             ); 
         }
     }

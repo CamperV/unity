@@ -21,8 +21,4 @@ public abstract class Perk : MonoBehaviour, IMutatorComponent
     public abstract void OnRemoval();
 
     void OnDisable() => OnRemoval();
-
-    // public PerkData LoadPerkData() {
-    //     return Resources.Load<PerkData>("ScriptableObjects/PerkData/{}");
-    // }
 }

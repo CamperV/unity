@@ -30,7 +30,7 @@ public class GuidingPresence : Perk, IToolTip
             unit.statusManager.AddConditionalBuff<ConditionalDexterityBuff>(
                 displayName,
                 5,
-                () => unit.gridPosition.ManhattanDistance(boundUnit.gridPosition) <= 2
+                () => boundUnit.gameObject.activeInHierarchy && unit.gridPosition.ManhattanDistance(boundUnit.gridPosition) <= 2
             ); 
         }
     }

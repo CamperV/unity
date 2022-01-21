@@ -258,11 +258,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     }
 
     public void HealAmount(int healAmount) {
-        TriggerHealAnimation();
-        personalAudioFX.PlayHealFX();
+        if (unitStats._CURRENT_HP < unitStats.VITALITY) {
+            TriggerHealAnimation();
+            personalAudioFX.PlayHealFX();
 
-        unitStats.UpdateHP(unitStats._CURRENT_HP + healAmount, unitStats.VITALITY);
-        UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] healed for GREEN@[{healAmount}].");
+            unitStats.UpdateHP(unitStats._CURRENT_HP + healAmount, unitStats.VITALITY);
+            UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] healed for GREEN@[{healAmount}].");
+        }
     }
 
     public void TriggerAttackAnimation(GridPosition towards) {
