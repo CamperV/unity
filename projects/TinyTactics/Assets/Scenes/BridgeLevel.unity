@@ -349,7 +349,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fitToTilemap: {fileID: 894047360}
-  cameraSpeed: {x: 5, y: 5}
+  cameraSpeed: {x: 7, y: 7}
+  zoomSpeed: 7
+  minOrthographicSize: 4
+  maxOrthographicSize: 8
 --- !u!1001 &29842467
 PrefabInstance:
   m_ObjectHideFlags: 0

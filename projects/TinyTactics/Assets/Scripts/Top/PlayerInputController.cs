@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {	
@@ -18,6 +19,9 @@ public class PlayerInputController : MonoBehaviour
 
 	public delegate void MousePosition(Vector3 screenPosition);
 	public event MousePosition MousePositionEvent;
+
+	public delegate void MouseScroll(Vector2 scrollAxis);
+	public event MouseScroll MouseScrollEvent;
 
 	public delegate void ButtonDown();
 	public event ButtonDown MainInteractButtonEvent;
@@ -51,6 +55,8 @@ public class PlayerInputController : MonoBehaviour
 
 		mouseInput.MouseActionMap.LeftMouseHold.performed += ctx => OnLeftMouseHoldStart();
 		mouseInput.MouseActionMap.LeftMouseHold.canceled += ctx => OnLeftMouseHoldEnd();
+
+		mouseInput.MouseActionMap.MouseScroll.performed += OnMouseScroll;
 
 		keyboardInput.KeyboardActionMap.MainInteractButton.performed += ctx => OnMainInteractButton();
 		keyboardInput.KeyboardActionMap.Axis.performed += ctx => OnAxisMovement();
@@ -86,6 +92,12 @@ public class PlayerInputController : MonoBehaviour
 	public void OnLeftMouseHoldEnd() {
 		Vector2 mousePosition = mouseInput.MouseActionMap.MousePosition.ReadValue<Vector2>();
 		LeftMouseHoldEndEvent?.Invoke(mousePosition);
+	}
+
+	public void OnMouseScroll(InputAction.CallbackContext context) {
+		Vector2 scrollVec = context.ReadValue<Vector2>();
+		Debug.Log($"received new mousescrollinput {scrollVec}");
+		MouseScrollEvent?.Invoke(scrollVec);
 	}
 
 	// right now, this is Space

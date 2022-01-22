@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class DamageBuff : ValuedStatus
+public class OneTimeDamageBuff : ValuedStatus
 {
     public override string displayName => $"+{modifierValue} Damage ({provider})";
 
     public override void OnAcquire() {
-        boundUnit.OnFinishTurn += TickExpire;
+        boundUnit.OnFinishTurn += ExpireImmediately;
         boundUnit.OnAttack += BuffAttackDamage;
     }
 
     public override void OnExpire() {
-        boundUnit.OnFinishTurn -= TickExpire;
+        boundUnit.OnFinishTurn -= ExpireImmediately;
         boundUnit.OnAttack -= BuffAttackDamage;
     }
 

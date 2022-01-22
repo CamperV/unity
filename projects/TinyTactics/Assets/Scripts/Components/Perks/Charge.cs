@@ -26,7 +26,7 @@ public class Charge : Perk, IToolTip
     // adds a damage buff per square moved this turn
     private void GainDamageBuffPerMove(Path<GridPosition> pathTaken) {
         for (int i = 0; i < pathTaken.Count-1; i++) {
-            boundUnit.statusManager.AddValuedStatus<DamageBuff>("Charge", 1, 1);
+            boundUnit.statusManager.AddValuedStatus<OneTimeDamageBuff>("Charge", 1);
         }
     }
 }

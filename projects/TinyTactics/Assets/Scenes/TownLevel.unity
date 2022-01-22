@@ -349,7 +349,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fitToTilemap: {fileID: 894047360}
-  cameraSpeed: {x: 5, y: 5}
+  cameraSpeed: {x: 7, y: 7}
+  zoomSpeed: 7
+  minOrthographicSize: 4
+  maxOrthographicSize: 8
 --- !u!1001 &19882181
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -425,7 +428,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5050716536496728386, guid: 7e7a8bcf0b1798d458cae9cec5bb1507, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8393629127323144118, guid: 7e7a8bcf0b1798d458cae9cec5bb1507, type: 3}
       propertyPath: m_RootOrder
@@ -1854,7 +1857,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4452928616098293201, guid: 4ff096c543bcef84c834a8f927077a1d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ff096c543bcef84c834a8f927077a1d, type: 3}
@@ -6636,7 +6639,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4452928616098293201, guid: 4ff096c543bcef84c834a8f927077a1d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ff096c543bcef84c834a8f927077a1d, type: 3}
@@ -8114,7 +8117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5050716536496728386, guid: 7e7a8bcf0b1798d458cae9cec5bb1507, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8393629127323144118, guid: 7e7a8bcf0b1798d458cae9cec5bb1507, type: 3}
       propertyPath: m_RootOrder

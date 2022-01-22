@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class StrengthDebuff : Debuff
+public class StrengthDebuff : ValuedStatus
 {
-
-    public override string displayName => $"-{modifierValue} Strength ({provider})";
+    public override string displayName => $"{modifierValue} Strength ({provider})";
+    public override string affectedStat => "STRENGTH";
 
     public override void OnAcquire() {
         boundUnit.OnFinishTurn += TickExpire;
         boundUnit.OnAttack += DisplayDebuffAttack;
         boundUnit.OnDefend += DisplayDebuffDefense;
 
-        boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH - modifierValue);
+        boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH + modifierValue);
     }
 
     public override void OnExpire() {
@@ -21,7 +21,7 @@ public class StrengthDebuff : Debuff
         boundUnit.OnAttack -= DisplayDebuffAttack;
         boundUnit.OnDefend -= DisplayDebuffDefense;
 
-        boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH + modifierValue);
+        boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH - modifierValue);
     }
 
     private void DisplayDebuffAttack(ref MutableAttack mutAtt, Unit target) {

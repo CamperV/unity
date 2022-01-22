@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class MoveDebuff : Debuff
+public class MoveDebuff : ValuedStatus
 {
-
-    public override string displayName => $"-{modifierValue} Move ({provider})";
+    public override string displayName => $"{modifierValue} Move ({provider})";
+    public override string affectedStat => "MOVE";
 
     public override void OnAcquire() {
         boundUnit.OnFinishTurn += TickExpire;
         boundUnit.OnAttack += DisplayDebuffAttack;
         boundUnit.OnDefend += DisplayDebuffDefense;
 
-        boundUnit.unitStats.UpdateMove(boundUnit.unitStats.MOVE - modifierValue);
+        boundUnit.unitStats.UpdateMove(boundUnit.unitStats.MOVE + modifierValue);
     }
 
     public override void OnExpire() {
@@ -21,7 +21,7 @@ public class MoveDebuff : Debuff
         boundUnit.OnAttack -= DisplayDebuffAttack;
         boundUnit.OnDefend -= DisplayDebuffDefense;
 
-        boundUnit.unitStats.UpdateMove(boundUnit.unitStats.MOVE + modifierValue);
+        boundUnit.unitStats.UpdateMove(boundUnit.unitStats.MOVE - modifierValue);
     }
 
     private void DisplayDebuffAttack(ref MutableAttack mutAtt, Unit target) {

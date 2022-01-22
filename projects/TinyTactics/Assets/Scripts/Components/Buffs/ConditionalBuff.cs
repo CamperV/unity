@@ -4,12 +4,12 @@ using System;
 using UnityEngine;
 
 
-public abstract class ConditionalBuff : Buff
+public abstract class ConditionalBuff : ValuedStatus
 {
     public Func<bool> ConditionValid;
 
     protected void CheckCondition() {
-        if (!ConditionValid()) TickExpire(boundUnit);
+        if (!ConditionValid()) ExpireImmediately(boundUnit);
     }
 
     public void ApplyValueAndCondition(int val, Func<bool> Condition) {

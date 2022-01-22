@@ -46,6 +46,7 @@ public class UnitStats : MonoBehaviour
     }
     [SerializeField] private BaseStats baseStats;
     [SerializeField] private int variance = 2;
+    [SerializeField] private readonly int MAX_STAT_VALUE = 99;
 
     void Awake() {
         VITALITY  = baseStats.VITALITY  + Random.Range(-variance, variance);
@@ -73,27 +74,27 @@ public class UnitStats : MonoBehaviour
     }
 
     public void UpdateStrength(int newValue) {
-        STRENGTH = newValue;
+        STRENGTH = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
         UpdateStrengthEvent?.Invoke(newValue);
     }
 
     public void UpdateDexterity(int newValue) {
-        DEXTERITY = newValue;
+        DEXTERITY = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
         UpdateDexterityEvent?.Invoke(newValue);
     }
 
     public void UpdateReflex(int newValue) {
-        REFLEX = newValue;
+        REFLEX = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
         UpdateReflexEvent?.Invoke(newValue);
     }
 
     public void UpdateDefense(int newValue) {
-        DEFENSE = newValue;
+        DEFENSE = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
         UpdateDefenseEvent?.Invoke(newValue);
     }
 
     public void UpdateMove(int newValue) {
-        MOVE = Mathf.Max(0, newValue);
+        MOVE = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
         UpdateMoveEvent?.Invoke(newValue);
     }
 }

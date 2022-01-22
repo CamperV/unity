@@ -41,6 +41,7 @@ public sealed class EventManager : MonoBehaviour
 
         inputController.MainInteractButtonEvent += playerUnitController.ForceEndPlayerPhase;
         inputController.DirectionalInputEvent += cameraManager.UpdateMovementVector;
+        inputController.MouseScrollEvent += cameraManager.UpdateZoomLevel;
 
         // top!battle events
         topBattleRef.BattleStartEvent += turnManager.Enable;

@@ -16,5 +16,5 @@ MonoBehaviour:
   typeName: Flight
   description: Fly over impassable and rough terrain. Cannot utilize terrain bonuses.
   sprite: {fileID: 21300000, guid: ecf7b1e7354d53d4e9c647956a0f2cb6, type: 3}
-  belongsToArchetype: {fileID: 11400000, guid: 123d5550d9da4f64a956378cca72b9f7, type: 2}
+  belongsToArchetype: {fileID: 11400000, guid: e68fbebc0b3dfa04ba2c64886dc1ee8c, type: 2}
   isSignaturePerk: 1

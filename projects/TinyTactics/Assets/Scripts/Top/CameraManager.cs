@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.InputSystem;
 
 public class CameraManager : MonoBehaviour
 {
 	public Tilemap fitToTilemap;
 	private Vector3 minBounds;
 	private Vector3 maxBounds;
-	private readonly Vector3 fixedBoxOffset = new Vector3(3, 3, 0);
+
+	// THIS NEEDS TO BE SCALED TO ORTHOGRAPHIC SIZE
+	// private readonly Vector3 fixedBoxOffset = new Vector3(3, 3, 0);
+	private Vector3 fixedBoxOffset => new Vector3(-2 + camera.orthographicSize, -2 + camera.orthographicSize, 0);
 
 	private Vector3 trackingPosition;
 	private Transform trackingTarget;
@@ -16,18 +20,47 @@ public class CameraManager : MonoBehaviour
 	public Vector2 cameraSpeed;
 	private Vector3 movementVector = Vector3.zero;
 
+	private Camera camera;
+	private float zoomLevel;
+	public float zoomSpeed;
+
+	public float minOrthographicSize;
+	public float maxOrthographicSize;
+
+	// ZOOM WHEEL HARDWARE SPECIFIC
+	private readonly float scrollTick = 120f;
+
+	void Awake() {
+		camera = GetComponent<Camera>();
+	}
+
 	void Start() {
 		trackingPosition = transform.position;
 		
 		// initial bounds calculation
 		SetDefaultBounds();
+
+		// init for scrolling
+		zoomLevel = camera.orthographicSize;
 	}
 
 	public void UpdateMovementVector(Vector2 directionalInput) {
 		movementVector = new Vector3(cameraSpeed.x*directionalInput.x, cameraSpeed.y*directionalInput.y, 0);
 	}
 
+	public void UpdateZoomLevel(Vector2 mouseScrollInput) {
+		float newZoom = mouseScrollInput.y / scrollTick;
+		zoomLevel = Mathf.Clamp(camera.orthographicSize - newZoom, minOrthographicSize, maxOrthographicSize);
+	}
+
 	public void LateUpdate() {
+		// MOUSEINPUT FOR SCROLLING SEEMS TO BE BROKEN IN UNITY
+		// use this in the meantime:
+		Vector2 zoomVec = Mouse.current.scroll.ReadValue();
+		if (zoomVec.y != 0) UpdateZoomLevel(zoomVec);
+
+		// update this each frame, but don't update the input each frame
+		camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, zoomLevel, Time.deltaTime*zoomSpeed);
 
 		// if we have a tracking target, make a smaller box around it so that it is "focused"
 		// trackingTargets are acquired via Events + the UnitControllers
@@ -60,7 +93,7 @@ public class CameraManager : MonoBehaviour
 		);
 
 		//
-		transform.position = Vector3.Lerp(transform.position, trackingPosition, Time.deltaTime*6f);
+		transform.position = Vector3.Lerp(transform.position, trackingPosition, Time.deltaTime*7f);
 	}
 
 	public void AcquireTrackingTarget(Unit selection) {

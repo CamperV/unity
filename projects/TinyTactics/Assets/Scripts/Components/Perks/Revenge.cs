@@ -27,6 +27,6 @@ public class Revenge : Perk, IToolTip
             () => boundUnit.TriggerBuffAnimation(audioFXBundle.RandomClip())
         );
         //
-        boundUnit.statusManager.AddValuedStatus<DamageBuff>("Revenge", 3, 1);
+        boundUnit.statusManager.AddValuedStatus<StrengthBuff>("Revenge", 3);
     }
 }

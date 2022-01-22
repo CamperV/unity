@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class ConditionalStrengthBuff : ConditionalBuff
+public class StrengthBuff : ValuedStatus
 {
     public override string displayName => $"+{modifierValue} Strength ({provider})";
     public override string affectedStat => "STRENGTH";
 
     public override void OnAcquire() {
-        boundUnit.unitMap.NewBoardStateEvent += CheckCondition;
+        boundUnit.OnFinishTurn += TickExpire;
         boundUnit.OnAttack += DisplayBuffAttack;
         boundUnit.OnDefend += DisplayBuffDefense;
-        
+
         boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH + modifierValue);
     }
 
     public override void OnExpire() {
-        boundUnit.unitMap.NewBoardStateEvent -= CheckCondition;
+        boundUnit.OnFinishTurn -= TickExpire;
         boundUnit.OnAttack -= DisplayBuffAttack;
         boundUnit.OnDefend -= DisplayBuffDefense;
 
@@ -25,10 +25,10 @@ public class ConditionalStrengthBuff : ConditionalBuff
     }
 
     private void DisplayBuffAttack(ref MutableAttack mutAtt, Unit target) {
-        if (ConditionValid()) mutAtt.AddMutator(this);
+        mutAtt.AddMutator(this);
     }
 
     private void DisplayBuffDefense(ref MutableDefense mutDef, Unit target) {
-        if (ConditionValid()) mutDef.AddMutator(this);
+        mutDef.AddMutator(this);
     }
 }

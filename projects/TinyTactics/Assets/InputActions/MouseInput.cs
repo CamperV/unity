@@ -57,6 +57,14 @@ public class @MouseInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Hold""
+                },
+                {
+                    ""name"": ""MouseScroll"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""547b00c7-1bdb-48c1-bab9-828619ae3937"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold""
                 }
             ],
             ""bindings"": [
@@ -114,6 +122,17 @@ public class @MouseInput : IInputActionCollection, IDisposable
                     ""action"": ""MiddleMouseClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fd6d921e-32a6-48f9-af99-3899ba80f8e8"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseScroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -127,6 +146,7 @@ public class @MouseInput : IInputActionCollection, IDisposable
         m_MouseActionMap_MiddleMouseClick = m_MouseActionMap.FindAction("MiddleMouseClick", throwIfNotFound: true);
         m_MouseActionMap_MousePosition = m_MouseActionMap.FindAction("MousePosition", throwIfNotFound: true);
         m_MouseActionMap_LeftMouseHold = m_MouseActionMap.FindAction("LeftMouseHold", throwIfNotFound: true);
+        m_MouseActionMap_MouseScroll = m_MouseActionMap.FindAction("MouseScroll", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -181,6 +201,7 @@ public class @MouseInput : IInputActionCollection, IDisposable
     private readonly InputAction m_MouseActionMap_MiddleMouseClick;
     private readonly InputAction m_MouseActionMap_MousePosition;
     private readonly InputAction m_MouseActionMap_LeftMouseHold;
+    private readonly InputAction m_MouseActionMap_MouseScroll;
     public struct MouseActionMapActions
     {
         private @MouseInput m_Wrapper;
@@ -190,6 +211,7 @@ public class @MouseInput : IInputActionCollection, IDisposable
         public InputAction @MiddleMouseClick => m_Wrapper.m_MouseActionMap_MiddleMouseClick;
         public InputAction @MousePosition => m_Wrapper.m_MouseActionMap_MousePosition;
         public InputAction @LeftMouseHold => m_Wrapper.m_MouseActionMap_LeftMouseHold;
+        public InputAction @MouseScroll => m_Wrapper.m_MouseActionMap_MouseScroll;
         public InputActionMap Get() { return m_Wrapper.m_MouseActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -214,6 +236,9 @@ public class @MouseInput : IInputActionCollection, IDisposable
                 @LeftMouseHold.started -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnLeftMouseHold;
                 @LeftMouseHold.performed -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnLeftMouseHold;
                 @LeftMouseHold.canceled -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnLeftMouseHold;
+                @MouseScroll.started -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMouseScroll;
+                @MouseScroll.performed -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMouseScroll;
+                @MouseScroll.canceled -= m_Wrapper.m_MouseActionMapActionsCallbackInterface.OnMouseScroll;
             }
             m_Wrapper.m_MouseActionMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -233,6 +258,9 @@ public class @MouseInput : IInputActionCollection, IDisposable
                 @LeftMouseHold.started += instance.OnLeftMouseHold;
                 @LeftMouseHold.performed += instance.OnLeftMouseHold;
                 @LeftMouseHold.canceled += instance.OnLeftMouseHold;
+                @MouseScroll.started += instance.OnMouseScroll;
+                @MouseScroll.performed += instance.OnMouseScroll;
+                @MouseScroll.canceled += instance.OnMouseScroll;
             }
         }
     }
@@ -244,5 +272,6 @@ public class @MouseInput : IInputActionCollection, IDisposable
         void OnMiddleMouseClick(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
         void OnLeftMouseHold(InputAction.CallbackContext context);
+        void OnMouseScroll(InputAction.CallbackContext context);
     }
 }

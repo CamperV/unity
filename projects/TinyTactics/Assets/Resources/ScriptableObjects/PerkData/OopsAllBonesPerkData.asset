@@ -17,4 +17,5 @@ MonoBehaviour:
   description: Add 3 DEF against Slashing and Piercing weapons, but -3 DEF against
     Striking weapons.
   sprite: {fileID: 21300000, guid: a463ea773d117f248b763f43b56d91c3, type: 3}
-  belongsToArchetype: {fileID: 0}
+  belongsToArchetype: {fileID: 11400000, guid: 2a23f4a759bdc6a42b4355cb5b5cd665, type: 2}
+  isSignaturePerk: 0

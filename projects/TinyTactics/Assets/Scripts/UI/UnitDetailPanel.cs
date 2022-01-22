@@ -52,7 +52,7 @@ public class UnitDetailPanel : MonoBehaviour
 		weaponListing.SetWeaponInfo(unit.equippedWeapon);
 		
 		// attributes
-		hpValue.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");
+		hpValue.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");		
 		//
 		vitValue.SetText($"{unit.unitStats.VITALITY}");
 		strValue.SetText($"{unit.unitStats.STRENGTH}");
@@ -66,6 +66,35 @@ public class UnitDetailPanel : MonoBehaviour
 		hitValue.SetText($"{unit.unitStats._HIT}");
 		avoValue.SetText($"{unit.unitStats._AVO}");
 
+		// handle buffs/debuffs after stats, so basically re-write them
+		foreach (ValuedStatus vs in unit.GetComponentsInChildren<ValuedStatus>()) {		
+			string redHex = "#FF6D6D";
+			string greenHex = "#6FD66E";
+			string _color = (vs.modifierValue > 0) ? greenHex : redHex;
+
+			switch (vs.affectedStat) {
+				case "VITALITY":
+					vitValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.VITALITY}</color>");
+					break;
+				case "STRENGTH":
+					strValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.STRENGTH}</color>");				
+					break;	
+				case "DEXTERITY":
+					dexValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.DEXTERITY}</color>");
+					break;
+				case "REFLEX":
+					refValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.REFLEX}</color>");
+					break;
+				case "DEFENSE":
+					defValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.DEFENSE}</color>");
+					break;
+				case "MOVE":
+					movValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.MOVE}</color>");
+					break;
+			}
+		}
+
+
 		// perks (was IMutatorComponent)
 		foreach (PerkListing previousListing in GetComponentsInChildren<PerkListing>()) {
 			Destroy(previousListing.gameObject);
@@ -77,8 +106,5 @@ public class UnitDetailPanel : MonoBehaviour
 			PerkListing pl = Instantiate(perkListingPrefab, perksPanel.transform);
 			pl.SetPerkInfo(mc.PerkData);
 		}
-		
-
-		// handle separately: buffs/debuffs?
 	}
 }

@@ -12,17 +12,17 @@ public class StatusManager : MonoBehaviour
         movementBuffProviders = new HashSet<string>();
     }
 
-    public void AddValuedStatus<T>(string provider, int modifierValue, int expireTimerValue) where T : ValuedStatus {
+    public void AddValuedStatus<T>(string provider, int modifierValue) where T : ValuedStatus {
 
         // first, check if we need to create a new buff or not
         if (HasStatusFromProvider<T>(provider)) {
             T existingBuff = GetStatusFromProvider<T>(provider);
-            existingBuff.AddValuesAndReapply(modifierValue, expireTimerValue);
+            existingBuff.AddValuesAndReapply(modifierValue);
 
         // else, if you're the first T from this provider
         } else {
             T buff = AttachStatus<T>(provider);
-            buff.SetValuesAndReapply(modifierValue, expireTimerValue);
+            buff.SetValuesAndReapply(modifierValue);
         }
     }
 
