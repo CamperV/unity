@@ -16,6 +16,7 @@ public class CameraManager : MonoBehaviour
 
 	private Vector3 trackingPosition;
 	private Transform trackingTarget;
+	public bool cameraLock = true;
 
 	public Vector2 cameraSpeed;
 	private Vector3 movementVector = Vector3.zero;
@@ -32,6 +33,7 @@ public class CameraManager : MonoBehaviour
 
 	void Awake() {
 		camera = GetComponent<Camera>();
+		cameraLock = true;
 	}
 
 	void Start() {
@@ -56,15 +58,18 @@ public class CameraManager : MonoBehaviour
 	public void LateUpdate() {
 		// MOUSEINPUT FOR SCROLLING SEEMS TO BE BROKEN IN UNITY
 		// use this in the meantime:
-		Vector2 zoomVec = Mouse.current.scroll.ReadValue();
-		if (zoomVec.y != 0) UpdateZoomLevel(zoomVec);
+		if (GameObject.Find("Battle").GetComponent<EventManager>().inputController.gameObject.activeInHierarchy) {
+			Vector2 zoomVec = Mouse.current.scroll.ReadValue();
+			if (zoomVec.y != 0) UpdateZoomLevel(zoomVec);
+		}
+
 
 		// update this each frame, but don't update the input each frame
 		camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, zoomLevel, Time.deltaTime*zoomSpeed);
 
 		// if we have a tracking target, make a smaller box around it so that it is "focused"
 		// trackingTargets are acquired via Events + the UnitControllers
-		if (trackingTarget != null) {
+		if (trackingTarget != null && cameraLock) {
 			SetDefaultBounds();
 
 			// Vector3 minTrackingBox = trackingTarget.position - 0.5f*fitToTilemap.localBounds.extents;
@@ -108,6 +113,13 @@ public class CameraManager : MonoBehaviour
 			SetDefaultBounds();
 			trackingTarget = null;
 		}
+	}
+
+	public void ToggleCameraLock() {
+		SetDefaultBounds();
+		// trackingTarget = null;
+		//
+		cameraLock = !cameraLock;
 	}
 
 	private void SetDefaultBounds() {

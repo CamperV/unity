@@ -10,11 +10,7 @@ public sealed class UIManager : MonoBehaviour
 
 	[SerializeField] private GameObject startBattleButtonContainer;
 
-    [SerializeField] private Text currentTurnText;
-	[SerializeField] private Text currentPhaseText;
-
 	[SerializeField] private TerrainEffectPanel terrainEffectPanel;
-
 	[SerializeField] private UnitDetailPanel unitDetailPanel;
 
 	[SerializeField] private GameObject engagementPreviewContainer;
@@ -42,14 +38,6 @@ public sealed class UIManager : MonoBehaviour
 		engagementPreviewContainer.SetActive(false);
     }
 
-	public void UpdateTurn(int newTurn) {
-		currentTurnText.text = $"Turn {newTurn}";
-	}
-
-	public void UpdatePhase(Phase newPhase) {
-		currentPhaseText.text = $"Current Phase: {newPhase.name}"; 
-	}
-
 	public void UpdateTerrainEffectPanel(TerrainTile terrainAt) {
 		if (terrainAt.HasTerrainEffect) {
 			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: {terrainAt.terrainEffect.shortDisplayName}");
@@ -59,14 +47,14 @@ public sealed class UIManager : MonoBehaviour
 	}
 
 	public void EnableUnitDetail(Unit unit) {
-		menuButtons.SetActive(false);
+		// menuButtons.SetActive(false);
 		//
 		unitDetailPanel.gameObject.SetActive(true);
 		unitDetailPanel.SetUnitInfo(unit);
 	}
 
 	public void DisableUnitDetail() {
-		menuButtons.SetActive(true);
+		// menuButtons.SetActive(true);
 		//
 		unitDetailPanel.gameObject.SetActive(false);
 	}

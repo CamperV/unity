@@ -43,7 +43,7 @@ public class TurnManager : MonoBehaviour
             turnCount++;
             UIManager.inst.combatLog.AddEntry($"Beginning PURPLE@[Turn {turnCount}].");
 
-            NewTurnEvent(turnCount);
+            NewTurnEvent?.Invoke(turnCount);
             yield return ExecutePhases(playerPhase, enemyPhase);
 
             // between turn things happen here

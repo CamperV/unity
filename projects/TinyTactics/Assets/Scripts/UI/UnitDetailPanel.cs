@@ -66,30 +66,35 @@ public class UnitDetailPanel : MonoBehaviour
 		hitValue.SetText($"{unit.unitStats._HIT}");
 		avoValue.SetText($"{unit.unitStats._AVO}");
 
+		string redHex = "#FF6D6D";
+		string greenHex = "#6FD66E";
+		string grayHex = "#808080";
+		string yellowHex = "#FFEA94";
+
 		// handle buffs/debuffs after stats, so basically re-write them
 		foreach (ValuedStatus vs in unit.GetComponentsInChildren<ValuedStatus>()) {		
-			string redHex = "#FF6D6D";
-			string greenHex = "#6FD66E";
+
 			string _color = (vs.modifierValue > 0) ? greenHex : redHex;
+			string _visual = (vs.modifierValue > 0) ? $"(+{vs.modifierValue})" : $"({vs.modifierValue})";
 
 			switch (vs.affectedStat) {
 				case "VITALITY":
-					vitValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.VITALITY}</color>");
+					vitValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.VITALITY}</color></b>");
 					break;
 				case "STRENGTH":
-					strValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.STRENGTH}</color>");				
+					strValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.STRENGTH}</color></b>");				
 					break;	
 				case "DEXTERITY":
-					dexValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.DEXTERITY}</color>");
+					dexValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.DEXTERITY}</color></b>");
 					break;
 				case "REFLEX":
-					refValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.REFLEX}</color>");
+					refValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.REFLEX}</color></b>");
 					break;
 				case "DEFENSE":
-					defValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.DEFENSE}</color>");
+					defValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.DEFENSE}</color></b>");
 					break;
 				case "MOVE":
-					movValue.SetText($"<color=#808080>{vs.modifierValue}</color>   <color={_color}>{unit.unitStats.MOVE}</color>");
+					movValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.MOVE}</color></b>");
 					break;
 			}
 		}

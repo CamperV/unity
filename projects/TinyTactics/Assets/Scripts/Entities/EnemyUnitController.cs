@@ -13,9 +13,6 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
 
     public static float timeBetweenUnitActions = 0.75f; // seconds
 
-    // debug
-    public Text debugStateLabel;
-
     [SerializeField] private List<EnemyUnit> _activeUnits;
     public List<EnemyUnit> activeUnits {
         get => _activeUnits.Where(en => en.gameObject.activeInHierarchy).ToList();
@@ -59,9 +56,6 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
 
     public void EnterState(ControllerFSM enteringState) {
         state = enteringState;
-
-        // debug
-        debugStateLabel.text = $"EnemyUnitController: {state.ToString()}";
 
         switch (state) {
             case ControllerFSM.Inactive:

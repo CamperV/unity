@@ -66,8 +66,6 @@ public sealed class EventManager : MonoBehaviour
         turnManager.enemyPhase.StartEvent += enemyUnitController.TriggerPhase;
         turnManager.enemyPhase.EndEvent += enemyUnitController.EndPhase;
 
-        turnManager.NewTurnEvent += uiManager.UpdateTurn;
-        turnManager.NewPhaseEvent += uiManager.UpdatePhase;
         turnManager.NewPhaseEvent += _ => playerUnitController.RefreshUnits();
         turnManager.NewPhaseEvent += _ => enemyUnitController.RefreshUnits();
 

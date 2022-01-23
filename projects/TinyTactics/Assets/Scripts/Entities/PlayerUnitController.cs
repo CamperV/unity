@@ -11,9 +11,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public delegate void UnitSelection(Unit selection);
     public event UnitSelection NewPlayerUnitControllerSelection;
 
-    // debug
-    public Text debugStateLabel;
-
     [SerializeField] private List<PlayerUnit> _activeUnits;
     public List<PlayerUnit> activeUnits {
         get => _activeUnits.Where(en => en.gameObject.activeInHierarchy).ToList();
@@ -87,9 +84,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public void EnterState(ControllerFSM enteringState) {
         state = enteringState;
     
-        // debug
-        debugStateLabel.text = $"PlayerUnitController: {state.ToString()}";
-
         switch (state) {
             case ControllerFSM.Inactive:
             case ControllerFSM.NoSelection:

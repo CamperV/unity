@@ -33,16 +33,20 @@ public class LaunchesConfirmDialog : MonoBehaviour
     private void OnDialogEnable() {
         eventManager.DisablePlayerInput();
         eventManager.EnableMenuInput();
-        eventManager.menuInputController.RightMouseClickEvent += _ => {
-            Destroy(dialog.gameObject);
-            OnDialogDestroy();
-        };
+        //
+        eventManager.menuInputController.RightMouseClickEvent += DestroyDialogViaRightClick;
     }
 
-    private void OnDialogDestroy() {
+    private void DestroyDialog() {
+        eventManager.menuInputController.RightMouseClickEvent -= DestroyDialogViaRightClick;
+
+        Destroy(dialog.gameObject);
+
         eventManager.EnablePlayerInput();
         eventManager.DisableMenuInput();
     }
+
+    private void DestroyDialogViaRightClick(Vector3 _) => DestroyDialog();
 
     private void LaunchConfirm() => StartCoroutine( ConfirmListener() );
 
@@ -62,7 +66,6 @@ public class LaunchesConfirmDialog : MonoBehaviour
         }
 
         // either way:
-        Destroy(dialog.gameObject);
-        OnDialogDestroy();
+        DestroyDialog();
     }
 }
