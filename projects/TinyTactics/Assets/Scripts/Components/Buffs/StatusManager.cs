@@ -24,6 +24,11 @@ public class StatusManager : MonoBehaviour
             T buff = AttachStatus<T>(provider);
             buff.SetValuesAndReapply(modifierValue);
         }
+
+        //
+        Unit thisUnit = GetComponent<Unit>();
+        string sign = (modifierValue > 0) ? "+" : "";
+        UIManager.inst.combatLog.AddEntry($"BLUE@[{provider}] applied a YELLOW@[{sign}{modifierValue} {typeof(T).Name}] to {thisUnit.logTag}@[{thisUnit.displayName}].");
     }
 
     public void AddConditionalBuff<T>(string provider, int modifierValue, Func<bool> Condition) where T : ConditionalBuff {

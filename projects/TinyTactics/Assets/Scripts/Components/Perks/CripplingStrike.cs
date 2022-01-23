@@ -30,8 +30,5 @@ public class CripplingStrike : Perk, IToolTip
         float halfMove = target.unitStats.MOVE/2f;
         int roundedValue = (int)Mathf.Ceil(halfMove);
         target.statusManager.AddValuedStatus<MoveDebuff>(displayName, -roundedValue);
-
-        // log it for now
-        UIManager.inst.combatLog.AddEntry($"BLUE@[{displayName}] applied -50% MOVE debuff to {target.logTag}@[{target.displayName}].");
     }
 }

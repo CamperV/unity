@@ -28,7 +28,5 @@ public class Revenge : Perk, IToolTip
         );
         //
         boundUnit.statusManager.AddValuedStatus<StrengthBuff>("Revenge", 3);
-
-        UIManager.inst.combatLog.AddEntry($"{boundUnit.logTag}@[{boundUnit.displayName}]'s BLUE@[Revenge] applied a +3 STRENGTH buff.");
     }
 }
