@@ -32,12 +32,15 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     private GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
     private Path<GridPosition>? pathToMouseOver;
 
+    // imported from Campaign
     public Guid CampaignID { get; private set; }
+    public string UnitName { get; private set; }
 
     void Update() => ContextualNoInteract();
 
     public void ImportData(CampaignUnitGenerator.CampaignUnitData unitData) {
         CampaignID = unitData.ID;
+        UnitName = unitData.unitName;
         unitStats.ApplyNature(unitData.nature);
 
         foreach (PerkData perkData in unitData.perks) {

@@ -46,6 +46,8 @@ public class CameraManager : MonoBehaviour
 		zoomLevel = camera.orthographicSize;
 	}
 
+	public static void FocusActiveCameraOn(Vector3 focalPoint) => Camera.main.GetComponent<CameraManager>().trackingPosition = focalPoint;
+
 	public void UpdateMovementVector(Vector2 directionalInput) {
 		movementVector = new Vector3(cameraSpeed.x*directionalInput.x, cameraSpeed.y*directionalInput.y, 0);
 	}

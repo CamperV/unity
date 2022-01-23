@@ -44,6 +44,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             }
         }
 
+        // if you're not in an active Campaign, ie Demo, destroy all spawnMarkers
         if (Campaign.active == null) {
             foreach (SpawnMarker sm in GetComponentsInChildren<SpawnMarker>()) {
                 Destroy(sm.gameObject);
@@ -97,8 +98,9 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
 
     public void TriggerPhase() {
-        // re-focus the camera
-        NewPlayerUnitControllerSelection?.Invoke(mostRecentlySelectedUnit);
+        // re-focus the camera on the centroid of your units
+        Vector3[] unitPositions = activeUnits.Select(u => u.transform.position).ToArray();
+        CameraManager.FocusActiveCameraOn( VectorUtils.Centroid(unitPositions) );
 
         // disable enemy unit controller for a time
         enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);

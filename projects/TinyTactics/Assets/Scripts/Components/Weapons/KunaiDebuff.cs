@@ -30,6 +30,8 @@ public class KunaiDebuff : WeaponPerk, IToolTip
             
             target.statusManager.AddValuedStatus<DefenseDebuff>(displayName, -3);
             target.statusManager.AddValuedStatus<ReflexDebuff>(displayName, -5);
+
+            UIManager.inst.combatLog.AddEntry($"{boundWeapon.boundUnit.logTag}@[{boundWeapon.boundUnit.displayName}] applied a -3 DEF/-5 REF debuff to {target.logTag}@[{target.displayName}].");
         }
     }
 }

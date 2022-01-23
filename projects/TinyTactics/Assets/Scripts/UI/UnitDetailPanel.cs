@@ -54,12 +54,12 @@ public class UnitDetailPanel : MonoBehaviour
 		// attributes
 		hpValue.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");		
 		//
-		vitValue.SetText($"{unit.unitStats.VITALITY}");
-		strValue.SetText($"{unit.unitStats.STRENGTH}");
-		dexValue.SetText($"{unit.unitStats.DEXTERITY}");
-		refValue.SetText($"{unit.unitStats.REFLEX}");
-		defValue.SetText($"{unit.unitStats.DEFENSE}");
-		movValue.SetText($"{unit.unitStats.MOVE}");
+		vitValue.SetText($"<b>{unit.unitStats.VITALITY}</b>");
+		strValue.SetText($"<b>{unit.unitStats.STRENGTH}</b>");
+		dexValue.SetText($"<b>{unit.unitStats.DEXTERITY}</b>");
+		refValue.SetText($"<b>{unit.unitStats.REFLEX}</b>");
+		defValue.SetText($"<b>{unit.unitStats.DEFENSE}</b>");
+		movValue.SetText($"<b>{unit.unitStats.MOVE}</b>");
 
 		// derived
 		atkValue.SetText($"{unit.unitStats._ATK}");

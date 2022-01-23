@@ -66,6 +66,7 @@ MonoBehaviour:
   terrainTiles: []
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
+  moveThroughTerrainOverride: 0
 --- !u!114 &687917766784680460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +122,7 @@ PrefabInstance:
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: c8fb52d1d3c1a624bbdb605bde9f796c, type: 3}
+      objectReference: {fileID: 21300000, guid: f99e66b28496362499a2f5947ee9b288, type: 3}
     - target: {fileID: -9116924587232957335, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Color.b
       value: 0.5921569
