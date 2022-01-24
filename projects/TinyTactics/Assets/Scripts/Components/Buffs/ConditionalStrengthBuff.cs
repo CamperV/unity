@@ -6,7 +6,7 @@ using UnityEngine;
 public class ConditionalStrengthBuff : ConditionalBuff
 {
     public override string displayName => $"+{modifierValue} Strength ({provider})";
-    public override string affectedStat => "STRENGTH";
+    public override string affectedStat => "STR";
 
     public override void OnAcquire() {
         boundUnit.unitMap.NewBoardStateEvent += CheckCondition;

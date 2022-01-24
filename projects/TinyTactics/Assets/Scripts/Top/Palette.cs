@@ -16,4 +16,7 @@ public struct Palette {
 
 	public static readonly Color healColorGreen    = new Color(0.00f, 0.75f, 0.30f, 0.75f);
 	public static readonly Color hideColorBlack    = new Color(0.15f, 0.15f, 0.15f, 1.00f);
+
+	public static readonly Color normalRed 		   = new Color(0.75f, 0.20f, 0.20f, 1.00f);
+	public static readonly Color enemyRedPinkColor = new Color(1.00f, 0.41f, 0.59f, 1.00f);
 }

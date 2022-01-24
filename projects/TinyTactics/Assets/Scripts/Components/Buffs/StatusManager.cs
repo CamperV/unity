@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
+
 public class StatusManager : MonoBehaviour
 {
     public HashSet<string> movementBuffProviders;
@@ -25,10 +25,19 @@ public class StatusManager : MonoBehaviour
             buff.SetValuesAndReapply(modifierValue);
         }
 
+        // TODO: there's a much better way to do all of this...
         //
         Unit thisUnit = GetComponent<Unit>();
-        string sign = (modifierValue > 0) ? "+" : "";
-        UIManager.inst.combatLog.AddEntry($"BLUE@[{provider}] applied a YELLOW@[{sign}{modifierValue} {typeof(T).Name}] to {thisUnit.logTag}@[{thisUnit.displayName}].");
+        // T mutatorComp = GetComponent<T>();
+
+        if (modifierValue > 0) {
+            UIManager.inst.combatLog.AddEntry($"BLUE@[{provider}] applied a YELLOW@[+{modifierValue} {typeof(T).Name}] to {thisUnit.logTag}@[{thisUnit.displayName}].");
+            // thisUnit.messageEmitter.Emit(MessageEmitter.MessageType.Buff, $"+{mutatorComp.affectedStat}");
+
+        } else {
+            UIManager.inst.combatLog.AddEntry($"BLUE@[{provider}] applied a YELLOW@[{modifierValue} {typeof(T).Name}] to {thisUnit.logTag}@[{thisUnit.displayName}].");
+            // thisUnit.messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"-{mutatorComp.affectedStat}");
+        }
     }
 
     public void AddConditionalBuff<T>(string provider, int modifierValue, Func<bool> Condition) where T : ConditionalBuff {

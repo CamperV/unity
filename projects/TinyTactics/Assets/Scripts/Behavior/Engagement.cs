@@ -192,6 +192,9 @@ public class Engagement
 
         // miss
 		} else {
+            // this is emitted here, because OnAvoid doesn't carry state like "toHit" as it exists here
+            B.messageEmitter.Emit(MessageEmitter.MessageType.Miss, $"{finalStats.hitRate}%");
+
             B.FireOnAvoidEvent();
             B.personalAudioFX.PlayAvoidFX();
 		}

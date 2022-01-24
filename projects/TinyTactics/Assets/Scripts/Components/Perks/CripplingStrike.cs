@@ -24,7 +24,7 @@ public class CripplingStrike : Perk, IToolTip
     private void ApplyDebuff(Unit target) {
         // queue the sound and animation for after it is done animating the Hurt animation
         target.spriteAnimator.QueueAction(
-            () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip())
+            () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip(), "MOV")
         );
         
         float halfMove = target.unitStats.MOVE/2f;

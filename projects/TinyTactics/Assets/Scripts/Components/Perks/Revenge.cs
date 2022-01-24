@@ -24,7 +24,7 @@ public class Revenge : Perk, IToolTip
     private void GainDamageBuff() {
         // queue the sound and animation for after it is done animating the Hurt animation
         boundUnit.spriteAnimator.QueueAction(
-            () => boundUnit.TriggerBuffAnimation(audioFXBundle.RandomClip())
+            () => boundUnit.TriggerBuffAnimation(audioFXBundle.RandomClip(), "STR")
         );
         //
         boundUnit.statusManager.AddValuedStatus<StrengthBuff>("Revenge", 3);

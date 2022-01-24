@@ -6,7 +6,7 @@ using UnityEngine;
 public class DefenseDebuff : ValuedStatus
 {
     public override string displayName => $"{modifierValue} Defense ({provider})";
-    public override string affectedStat => "DEFENSE";
+    public override string affectedStat => "DEF";
 
     public override void OnAcquire() {
         boundUnit.OnFinishTurn += TickExpire;

@@ -6,7 +6,7 @@ using UnityEngine;
 public class ConditionalDexterityBuff : ConditionalBuff
 {
     public override string displayName => $"+{modifierValue} Dexterity ({provider})";
-    public override string affectedStat => "DEXTERITY";
+    public override string affectedStat => "DEX";
 
     public override void OnAcquire() {
         boundUnit.unitMap.NewBoardStateEvent += CheckCondition;

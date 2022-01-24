@@ -6,6 +6,7 @@ using UnityEngine;
 public class OneTimeDamageBuff : ValuedStatus
 {
     public override string displayName => $"+{modifierValue} Damage ({provider})";
+    public override string affectedStat => "STR";
 
     public override void OnAcquire() {
         boundUnit.OnFinishTurn += ExpireImmediately;

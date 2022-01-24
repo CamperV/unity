@@ -6,7 +6,7 @@ using UnityEngine;
 public class ReflexDebuff : ValuedStatus
 {
     public override string displayName => $"{modifierValue} Reflex ({provider})";
-    public override string affectedStat => "REFLEX";
+    public override string affectedStat => "REF";
 
     public override void OnAcquire() {
         boundUnit.OnFinishTurn += TickExpire;

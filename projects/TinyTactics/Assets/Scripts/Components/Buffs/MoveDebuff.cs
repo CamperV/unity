@@ -6,7 +6,7 @@ using UnityEngine;
 public class MoveDebuff : ValuedStatus
 {
     public override string displayName => $"{modifierValue} Move ({provider})";
-    public override string affectedStat => "MOVE";
+    public override string affectedStat => "MOV";
 
     public override void OnAcquire() {
         boundUnit.OnFinishTurn += TickExpire;

@@ -6,7 +6,7 @@ using UnityEngine;
 public class ConditionalDefenseBuff : ConditionalBuff
 {
     public override string displayName => $"+{modifierValue} Defense ({provider})";
-    public override string affectedStat => "DEFENSE";
+    public override string affectedStat => "DEF";
 
     public override void OnAcquire() {
         boundUnit.unitMap.NewBoardStateEvent += CheckCondition;

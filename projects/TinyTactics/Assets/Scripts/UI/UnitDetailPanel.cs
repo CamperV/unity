@@ -78,22 +78,22 @@ public class UnitDetailPanel : MonoBehaviour
 			string _visual = (vs.modifierValue > 0) ? $"(+{vs.modifierValue})" : $"({vs.modifierValue})";
 
 			switch (vs.affectedStat) {
-				case "VITALITY":
+				case "VIT":
 					vitValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.VITALITY}</color></b>");
 					break;
-				case "STRENGTH":
+				case "STR":
 					strValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.STRENGTH}</color></b>");				
 					break;	
-				case "DEXTERITY":
+				case "DEX":
 					dexValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.DEXTERITY}</color></b>");
 					break;
-				case "REFLEX":
+				case "REF":
 					refValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.REFLEX}</color></b>");
 					break;
-				case "DEFENSE":
+				case "DEF":
 					defValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.DEFENSE}</color></b>");
 					break;
-				case "MOVE":
+				case "MOV":
 					movValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.MOVE}</color></b>");
 					break;
 			}

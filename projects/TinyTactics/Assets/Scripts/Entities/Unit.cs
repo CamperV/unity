@@ -7,6 +7,7 @@ using TMPro;
 [RequireComponent(typeof(SpriteRenderer), typeof(SpriteAnimator))]
 [RequireComponent(typeof(UnitPathfinder))]
 [RequireComponent(typeof(UnitStats))]
+[RequireComponent(typeof(MessageEmitter))]
 public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 {
     [SerializeField] public string displayName;
@@ -49,6 +50,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     [HideInInspector] protected HoldTimer holdTimer;
     [HideInInspector] public StatusManager statusManager;
     [HideInInspector] public PersonalAudioFX personalAudioFX;
+    [HideInInspector] public MessageEmitter messageEmitter;
     
     // I don't love this, but it makes things much cleaner.
     protected PlayerUnitController playerUnitController;
@@ -93,6 +95,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         holdTimer = GetComponent<HoldTimer>();
         statusManager = GetComponent<StatusManager>();
         personalAudioFX = GetComponent<PersonalAudioFX>();
+        messageEmitter = GetComponent<MessageEmitter>();
 
         // debug
         debugStateLabel = GetComponent<DebugStateLabel>();
@@ -209,10 +212,21 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
 	public bool SufferDamage(int incomingDamage, bool isCritical = false) {
         if (isCritical) {
+            messageEmitter.Emit(MessageEmitter.MessageType.CritDamage, $"{incomingDamage}!");
+
             TriggerVeryHurtAnimation();
+
         } else {
-            if (incomingDamage > 0) TriggerHurtAnimation();
-            else TriggerNoDamageHurtAnimation();
+            if (incomingDamage > 0) {
+                messageEmitter.Emit(MessageEmitter.MessageType.Damage, $"{incomingDamage}");
+
+                TriggerHurtAnimation();
+
+            } else {
+                messageEmitter.Emit(MessageEmitter.MessageType.NoDamage, $"{incomingDamage}");
+
+                TriggerNoDamageHurtAnimation();
+            }
         }
 
         unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage, unitStats.VITALITY);
@@ -259,6 +273,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     public void HealAmount(int healAmount) {
         if (unitStats._CURRENT_HP < unitStats.VITALITY) {
+            messageEmitter.Emit(MessageEmitter.MessageType.Heal, $"+{healAmount}");
+
             TriggerHealAnimation();
             personalAudioFX.PlayHealFX();
 
@@ -299,15 +315,23 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 		StartCoroutine( spriteAnimator.FlashColor(Palette.healColorGreen) );
     }
 
-    public void TriggerDebuffAnimation(AudioClip playClip) {
+    public void TriggerDebuffAnimation(AudioClip playClip, params string[] affectedStats) {
         personalAudioFX.PlayFX(playClip);
+
+        foreach (string affectedStat in affectedStats) {
+            messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"-{affectedStat}");
+        }
 
         StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorIndigo) );
         StartCoroutine( spriteAnimator.SmoothCosX(18f, 0.03f, 0f, 1.0f) );
     }
 
-    public void TriggerBuffAnimation(AudioClip playClip) {
+    public void TriggerBuffAnimation(AudioClip playClip, params string[] affectedStats) {
         personalAudioFX.PlayFX(playClip);
+
+        foreach (string affectedStat in affectedStats) {
+            messageEmitter.Emit(MessageEmitter.MessageType.Buff, $"+{affectedStat}");
+        }
 
         StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorYellow) );
         StartCoroutine( spriteAnimator.SmoothCosX(32f, 0.015f, 0f, 1.0f) );

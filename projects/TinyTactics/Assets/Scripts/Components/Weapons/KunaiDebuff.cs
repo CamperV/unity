@@ -25,7 +25,7 @@ public class KunaiDebuff : WeaponPerk, IToolTip
         if (target.gameObject.activeInHierarchy) {
             // queue the sound and animation for after it is done animating the Hurt animation
             target.spriteAnimator.QueueAction(
-                () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip())
+                () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip(), "DEF", "REF")
             );
             
             target.statusManager.AddValuedStatus<DefenseDebuff>(displayName, -3);

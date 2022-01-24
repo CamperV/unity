@@ -24,7 +24,7 @@ public class AfterImage : Perk, IToolTip
     private void RefreshMovement() {
         if (boundUnit.turnActive) {
             boundUnit.spriteAnimator.QueueAction(
-                () => boundUnit.TriggerBuffAnimation(audioFXBundle.RandomClip())
+                () => boundUnit.TriggerBuffAnimation(audioFXBundle.RandomClip(), "MOV")
             );
 
             boundUnit.moveAvailable = true;
