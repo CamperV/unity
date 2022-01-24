@@ -42,9 +42,17 @@ public class CampaignUnitGenerator
 	// for random generation
 	public static NatureData[] NatureTypes = new NatureData[]{
 		new NatureData("Normie", "",  ""),
-		new NatureData("Bulky",  "+VIT", "-REF", v: 5, r: -3),
-		new NatureData("Noodly", "+MOV", "-STR", s: -3, m: 1),
-		new NatureData("Godly",  "+ALL", "", v: 50, s: 50, dex: 50, m: 10)
+		//
+		new NatureData("Absolute Unit", "+VIT",  "-MOV", v: 12, m: -1),
+		new NatureData("Bulky",  "+VIT", "-REF", v: 6, r: -3),
+		new NatureData("Brickish", "+DEF", "-REF", def: 3, r: -6),
+		new NatureData("Cautious", "+DEF", "-DEX", def: 2, dex: -3),
+		new NatureData("Glass Cannon", "+STR", "-VIT, -REF, -DEF", s: 6, v: -6, r: -3, def: -3),
+		new NatureData("Hasty", "+STR", "-DEF", s: 2, def: -2),
+		new NatureData("Precise", "+DEX", "-VIT", dex: 6, v: -6),
+		new NatureData("Sprinter", "+MOV", "-STR", m: 1, s: -2),
+		new NatureData("Wily", "+REF", "-STR", r: 6, s: -2),
+		new NatureData("Whiplike", "+DEX, +REF", "-STR", dex: 6, r: 6, s: -3)
 	};
 
 	[System.Serializable]

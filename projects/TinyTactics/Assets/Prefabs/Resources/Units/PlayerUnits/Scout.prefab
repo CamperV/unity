@@ -12,19 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-8228011075696433100
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1376406717668632979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27bc60bd3d5cde14099b44f6bd8f4477, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <PerkData>k__BackingField: {fileID: 11400000, guid: 401ba1fc68a37fd4da9fc095b045e965, type: 2}
 --- !u!114 &-3105306990146655651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,6 +99,7 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
+  messageEmitter: {fileID: 0}
   equippedWeapon: {fileID: 5311602426619238717, guid: 328d95379d47d69468be19c35cfe212b, type: 3}
   tags: []
   archetypes:
@@ -122,6 +110,19 @@ MonoBehaviour:
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
   cancelSignal: 0
+--- !u!114 &8201584870351740652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376406717668632979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27bc60bd3d5cde14099b44f6bd8f4477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <PerkData>k__BackingField: {fileID: 11400000, guid: 401ba1fc68a37fd4da9fc095b045e965, type: 2}
 --- !u!1001 &5153581823944763148
 PrefabInstance:
   m_ObjectHideFlags: 0
