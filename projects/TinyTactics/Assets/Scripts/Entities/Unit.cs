@@ -27,6 +27,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public delegate void OnAction();
     public event OnAction OnHurt;
     public event OnAction OnAvoid;
+    public event OnAction OnWait;
 
     public delegate void OnTargetedAction(Unit target);
     public event OnTargetedAction OnHit;
@@ -346,6 +347,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
         OnAvoid?.Invoke();
     }
+    public void FireOnWaitEvent() => OnWait?.Invoke();
     
     // targeted versions
     public void FireOnHitEvent(Unit target) => OnHit?.Invoke(target);

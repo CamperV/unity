@@ -36,7 +36,8 @@ public abstract class ValuedStatus : Status
     }
 
     protected void TickExpire(Unit target) {
-        modifierValue = (int)Mathf.MoveTowards(modifierValue, 0f, 1f);
+        int nextIncr = (int)Mathf.MoveTowards(modifierValue, 0f, 1f);
+        SetValuesAndReapply(nextIncr);
 
         if (modifierValue == 0) {
             UIManager.inst.combatLog.AddEntry($"{target.logTag}@[{target.displayName}]'s BLUE@[{displayName}] expired.");

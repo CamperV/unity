@@ -73,6 +73,13 @@ public class UnitStats : MonoBehaviour
         UpdateHPEvent?.Invoke(_CURRENT_HP, maxValue);
     }
 
+    public void UpdateVitality(int newValue) {
+        VITALITY = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        UpdateVitalityEvent?.Invoke(newValue);
+        //
+        UpdateHP(_CURRENT_HP, VITALITY);
+    }
+
     public void UpdateStrength(int newValue) {
         STRENGTH = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
         UpdateStrengthEvent?.Invoke(newValue);

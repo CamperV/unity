@@ -44,6 +44,8 @@ public sealed class Campaign : MonoBehaviour
 	}
 
 	private IEnumerator LevelSequence() {
+		string finalLevelName = levelSequence[levelSequence.Length-1];
+
 		foreach (string levelName in levelSequence) {
 			// this will spin until the LevelLoader is finished
 			yield return levelLoader.LoadLevelAsync(levelName);
@@ -60,13 +62,17 @@ public sealed class Campaign : MonoBehaviour
 			waitForBootstrapper = false;
 
 			// if you're the last level, skip this step. Otherwise, go to the level up panel!
-			yield return levelLoader.LoadLevelAsync("LevelUp");
+			if (levelName == finalLevelName) {
+				yield return levelLoader.LoadLevelAsync("FinalScreen");
+				Debug.Log($"You've finished the campaign! Show global stats");
+			} else {
+				yield return levelLoader.LoadLevelAsync("LevelUp");
+			}
 
 			// loading the next level is signaled by CampaignBoostrapper
 			yield return new WaitUntil(() => waitForBootstrapper == true);
 		}
 
-		Debug.Log($"You've finished the campaign! Show global stats");
 		levelLoader.ReturnToMainMenu();
 		Destroy(gameObject);
 	}

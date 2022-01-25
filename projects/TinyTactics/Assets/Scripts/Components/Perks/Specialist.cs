@@ -5,81 +5,43 @@ using UnityEngine;
 
 public class Specialist : Perk, IToolTip
 {
-    public override string displayName { get; set; } = "Weapon Advantage+ (Specialist)";
+    public override string displayName { get; set; } = "Specialist";
 
     // IToolTip
     public string tooltipName { get; set; } = "Specialist";
-    public string tooltip => "Double all Weapon Advantage bonuses.";
-
-    private int multiplier = 2;
+    public string tooltip => "Gain Weapon Advantage against enemies using the same Weapon Type.";
 
     public override void OnAcquire() {
-        // boundUnit.OnAttack += DisplayAttack;
-        // boundUnit.OnDefend += DisplayDefense;
-
-        AntiPierce api = boundUnit.equippedWeapon.GetComponent<AntiPierce>();
-        if (api != null) {
-            api.dmgModRate *= multiplier;
-            api.hitModRate *= multiplier;
-            api.critModRate *= multiplier;
-            //
-            api.displayName = displayName;
-        }
-
-        AntiStrike ast = boundUnit.equippedWeapon.GetComponent<AntiStrike>();
-        if (ast != null) {
-            ast.dmgModRate *= multiplier;
-            ast.hitModRate *= multiplier;
-            ast.critModRate *= multiplier;
-            //
-            ast.displayName = displayName;
-        }
-
-        AntiSlash  asl = boundUnit.equippedWeapon.GetComponent<AntiSlash>();
-        if (asl != null) {
-            asl.dmgModRate *= multiplier;
-            asl.hitModRate *= multiplier;
-            asl.critModRate *= multiplier;
-            //
-            asl.displayName = displayName;
-        }
+        boundUnit.OnAttack += OffensiveAdv;
+        boundUnit.OnDefend += DefensiveAdv;
     }
 
     public override void OnRemoval() {
-        // boundUnit.OnAttack -= DisplayAttack;
-        // boundUnit.OnDefend -= DisplayDefense;
+        boundUnit.OnAttack -= OffensiveAdv;
+        boundUnit.OnDefend -= DefensiveAdv;
+    }
 
-        AntiPierce api = boundUnit.equippedWeapon.GetComponent<AntiPierce>();
-        if (api != null) {
-            api.dmgModRate /= multiplier;
-            api.hitModRate /= multiplier;
-            api.critModRate /= multiplier;
-        }
-
-        AntiStrike ast = boundUnit.equippedWeapon.GetComponent<AntiStrike>();
-        if (ast != null) {
-            ast.dmgModRate /= multiplier;
-            ast.hitModRate /= multiplier;
-            ast.critModRate /= multiplier;
-        }
-
-        AntiSlash  asl = boundUnit.equippedWeapon.GetComponent<AntiSlash>();
-        if (asl != null) {
-            asl.dmgModRate /= multiplier;
-            asl.hitModRate /= multiplier;
-            asl.critModRate /= multiplier;
+    private void OffensiveAdv(ref MutableAttack mutAtt, Unit target) {
+        foreach (string tag in boundUnit.equippedWeapon.tags) {
+            if (mutAtt.inMeleeRange && target.equippedWeapon.HasTagMatch(tag)) {
+                mutAtt.damage += 1;
+                mutAtt.hitRate += 15;
+                mutAtt.critRate += 15;
+                //
+                mutAtt.AddMutator(this);
+            }
         }
     }
 
-    // private void DisplayAttack(ref MutableAttack mutAtt, Unit target) {
-    //     if (mutAtt.mutators.Contains("Weapon Advantage")) {
-    //         mutAtt.AddMutator(this);
-    //     }
-    // }
-
-    // private void DisplayDefense(ref MutableDefense mutDef, Unit target) {
-    //     if (mutDef.mutators.Contains("Weapon Advantage")) {
-    //         mutDef.AddMutator(this);
-    //     }
-    // }
+    private void DefensiveAdv(ref MutableDefense mutDef, Unit target) {
+        foreach (string tag in boundUnit.equippedWeapon.tags) {
+            if (mutDef.inMeleeRange && target.equippedWeapon.HasTagMatch(tag)) {
+                mutDef.damageReduction += 1;
+                mutDef.avoidRate += 15;
+                mutDef.critAvoidRate += 15;
+                //
+                mutDef.AddMutator(this);
+            }
+        }
+    }
 }

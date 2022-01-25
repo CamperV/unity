@@ -41,7 +41,7 @@ public class CampaignUnitGenerator
 
 	// for random generation
 	public static NatureData[] NatureTypes = new NatureData[]{
-		new NatureData("Normie", "",  ""),
+		new NatureData("Normie", "", ""),
 		//
 		new NatureData("Absolute Unit", "+VIT",  "-MOV", v: 12, m: -1),
 		new NatureData("Bulky",  "+VIT", "-REF", v: 6, r: -3),

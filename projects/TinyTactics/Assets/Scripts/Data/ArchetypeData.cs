@@ -32,9 +32,8 @@ public class ArchetypeData : ScriptableObject
 
 	public IEnumerable<PerkData> GetPerkPool() {
 		if (_perkPoolCache.Count == 0) {
-			Debug.Log($"Needed to loaded these guys {this}");
 			foreach (PerkData loadedData in Resources.LoadAll<PerkData>("ScriptableObjects/PerkData")) {
-				if (loadedData.belongsToArchetype == this && loadedData.isSignaturePerk == false) {
+				if (loadedData.belongsToArchetype == this/* && loadedData.isSignaturePerk == false*/) {
 					_perkPoolCache.Add(loadedData);
 				}
 			}

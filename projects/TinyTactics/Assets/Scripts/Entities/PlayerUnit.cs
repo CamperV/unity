@@ -462,6 +462,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     // this is an Action which finishes the unit turn early,
     // / but does so in a way that requires some weird clean up
     public void Wait() {
+        FireOnWaitEvent();
+        //
         FinishTurn();
         ChangeState(PlayerUnitFSM.Idle);
     }

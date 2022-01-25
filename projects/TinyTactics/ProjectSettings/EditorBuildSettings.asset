@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelUp.unity
     guid: ae090b867d3c65941bc0d59202de2edb
+  - enabled: 1
+    path: Assets/Scenes/FinalScreen.unity
+    guid: 495be213507c1244285ef3c9c3312539
   m_configObjects: {}
