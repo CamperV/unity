@@ -29,9 +29,8 @@ public class MiniHealthBar : MonoBehaviour
     SpriteRenderer borderRenderer;
 
     public Unit boundUnit;
+    public TextMeshPro textValue;
 
-    // debug
-    public DebugStateLabel debugStateLabel;
 
 	void Awake() {
         // get all your own members
@@ -45,9 +44,6 @@ public class MiniHealthBar : MonoBehaviour
         // now, bind yourself to your parent Unit
         // just fail ungracefully if you don't have one, that shouldn't exist anyway
         boundUnit = GetComponentInParent<Unit>();
-
-        // debug
-        debugStateLabel = GetComponent<DebugStateLabel>();
     }
 
     void Start() {
@@ -64,12 +60,6 @@ public class MiniHealthBar : MonoBehaviour
         healthRatio = (float)currVal/(float)maxVal;
         Vector3 toScale = new Vector3(healthRatio, 1.0f, 1.0f);
 
-        // StartCoroutine(
-        //     Utils.SerialCoroutines(
-        //         _UpdateBarVisual(toScale),
-        //         AnimateBar(barLevel.transform.localScale, toScale, Color.red, 1.0f, 1.0f)
-        //     )
-        // );
         StartCoroutine(
             Utils.QueueCoroutines(
                 _UpdateBarVisual(toScale),
@@ -77,8 +67,8 @@ public class MiniHealthBar : MonoBehaviour
             )
         );
 
-        // debug
-        debugStateLabel.SetText($"{currVal}/{maxVal}");
+        // textValue.SetText($"{currVal}/{maxVal}");
+        textValue.SetText($"{currVal}");
     }
 
     public static Color HueSatLerp(Color A, Color B, float ratio) {

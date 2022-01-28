@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class MoveDebuff : ValuedStatus
+public class OneTimeMoveDebuff : ValuedStatus
 {
-    public override string displayName => $"{modifierValue} Move ({provider})";
+    public override string displayName => $"{modifierValue} Damage ({provider})";
     public override string affectedStat => "MOV";
 
     public override void OnAcquire() {
-        boundUnit.OnFinishTurn += TickExpire;
+        boundUnit.OnFinishTurn += ExpireImmediately;
 
         boundUnit.unitStats.UpdateMove(boundUnit.unitStats.MOVE + modifierValue);
     }
 
     public override void OnExpire() {
-        boundUnit.OnFinishTurn -= TickExpire;
+        boundUnit.OnFinishTurn -= ExpireImmediately;
 
         boundUnit.unitStats.UpdateMove(boundUnit.unitStats.MOVE - modifierValue);
     }

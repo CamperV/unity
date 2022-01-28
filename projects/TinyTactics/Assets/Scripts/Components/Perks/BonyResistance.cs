@@ -9,7 +9,7 @@ public class BonyResistance : Perk, IToolTip
 
     // IToolTip
     public string tooltipName { get; set; } = "Oops, All Bones";
-    public string tooltip { get; set; } = "Add 3 DEF against Slashing and Piercing weapons, but -3 DEF against Striking weapons.";
+    public string tooltip { get; set; } = "Add 2 DEF against Slashing and Piercing weapons, but -4 DEF against Striking weapons.";
 
     public override void OnAcquire() {
         boundUnit.OnDefend += ConditionalDefense;
@@ -21,12 +21,12 @@ public class BonyResistance : Perk, IToolTip
 
     private void ConditionalDefense(ref MutableDefense mutDef, Unit target) {
         if (target.equippedWeapon.HasTagMatch("Slash", "Pierce")) {
-            mutDef.damageReduction += 3;
+            mutDef.damageReduction += 2;
             //
             mutDef.AddMutator(this);
         }
         if (target.equippedWeapon.HasTagMatch("Strike")) {
-            mutDef.damageReduction -= 3;
+            mutDef.damageReduction -= 4;
             //
             mutDef.AddMutator(this);
         }

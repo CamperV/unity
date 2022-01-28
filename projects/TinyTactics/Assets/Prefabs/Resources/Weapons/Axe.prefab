@@ -33,7 +33,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: ACCURACY
-      value: 60
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: -2662964667337997005, guid: b4c6fbcec401490429ca03ec2022f988, type: 3}
       propertyPath: CRITICAL

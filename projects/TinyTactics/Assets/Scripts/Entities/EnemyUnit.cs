@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Extensions;
 
 [RequireComponent(typeof(EnemyBrain))]
 public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
@@ -292,6 +293,15 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     protected override void DisplayThreatRange() {
         if (moveRange == null || attackRange == null) UpdateThreatRange();
 
+        // make a fake movementRange for displaying
+        MoveRange fakeMoveRange = unitPathfinder.GenerateFakeFlowField<MoveRange>(gridPosition, range: unitStats.MOVE);
+        AttackRange fakeAttackRange = new AttackRange(fakeMoveRange, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
+
+        fakeAttackRange.Display(battleMap, Palette.enemyRedPinkColor);
+        fakeMoveRange.Display(battleMap, Palette.threatColorViolet);
+        // fakeAttackRange.Display(battleMap, Palette.threatColorRed.WithAlpha(0.5f));
+        // fakeMoveRange.Display(battleMap, Palette.threatColorYellow.WithAlpha(0.5f));
+  
         attackRange.Display(battleMap);
         moveRange.Display(battleMap, Palette.threatColorYellow);
         battleMap.Highlight(gridPosition, Palette.selectColorWhite);

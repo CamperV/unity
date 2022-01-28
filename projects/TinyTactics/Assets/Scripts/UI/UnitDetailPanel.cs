@@ -72,12 +72,21 @@ public class UnitDetailPanel : MonoBehaviour
 		string yellowHex = "#FFEA94";
 
 		// handle buffs/debuffs after stats, so basically re-write them
-		foreach (ValuedStatus vs in unit.GetComponentsInChildren<ValuedStatus>()) {		
+		Dictionary<string, int> statVSMap = new Dictionary<string, int>();
 
-			string _color = (vs.modifierValue > 0) ? greenHex : redHex;
-			string _visual = (vs.modifierValue > 0) ? $"(+{vs.modifierValue})" : $"({vs.modifierValue})";
+		foreach (ValuedStatus vs in unit.GetComponentsInChildren<ValuedStatus>()) {
+			if (!statVSMap.ContainsKey(vs.affectedStat)) statVSMap[vs.affectedStat] = 0;
+			statVSMap[vs.affectedStat] += vs.modifierValue;
+		}
 
-			switch (vs.affectedStat) {
+		foreach (string affectedStat in statVSMap.Keys) {
+			int modifierValue = statVSMap[affectedStat];
+			if (modifierValue == 0) continue;
+		
+			string _color = (modifierValue > 0) ? greenHex : redHex;
+			string _visual = (modifierValue > 0) ? $"(+{modifierValue})" : $"({modifierValue})";
+
+			switch (affectedStat) {
 				case "VIT":
 					vitValue.SetText($"<color={yellowHex}>{_visual, -5}</color>   <b><color={_color}>{unit.unitStats.VITALITY}</color></b>");
 					break;
@@ -98,7 +107,6 @@ public class UnitDetailPanel : MonoBehaviour
 					break;
 			}
 		}
-
 
 		// perks (was IMutatorComponent)
 		foreach (PerkListing previousListing in GetComponentsInChildren<PerkListing>()) {

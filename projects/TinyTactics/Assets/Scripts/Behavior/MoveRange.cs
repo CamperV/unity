@@ -66,6 +66,12 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 		}
 	}
 
+	public void Display(IGrid<GridPosition> target, float alpha) {
+		foreach (GridPosition tilePos in field.Keys) {
+			target.Highlight(tilePos, Palette.selectColorBlue.WithAlpha(alpha));
+		}
+	}
+
     public Path<GridPosition>? BFS(GridPosition startPosition, GridPosition targetPosition) {
         // we can short-circuit easily - if the MoveRange doesn't have the key, don't even try
         if (!ValidMoveTo(targetPosition)) {

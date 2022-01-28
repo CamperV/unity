@@ -18,6 +18,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: defea9025a1c4eb4b84cf8b169d28217, type: 2}
   _terrainCostOverrides: ffffffffffffffffffffffff
   moveThroughEnemiesOverride: 0
+  moveThroughTerrainOverride: 0
 --- !u!114 &-5000688696877130681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39,10 +40,10 @@ MonoBehaviour:
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 20
-    STRENGTH: 6
+    STRENGTH: 8
     DEXTERITY: 8
     REFLEX: 8
-    DEFENSE: 7
+    DEFENSE: 5
     MOVE: 7
   variance: 2
 --- !u!114 &-4779402659870022588
@@ -106,6 +107,7 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
+  messageEmitter: {fileID: 0}
   equippedWeapon: {fileID: 146772166050584365, guid: f8e8b537543ba874bb8e505e51644735, type: 3}
   tags: []
   archetypes: []

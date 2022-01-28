@@ -55,7 +55,7 @@ MonoBehaviour:
   baseStats:
     VITALITY: 23
     STRENGTH: 8
-    DEXTERITY: 7
+    DEXTERITY: 4
     REFLEX: 6
     DEFENSE: 4
     MOVE: 5

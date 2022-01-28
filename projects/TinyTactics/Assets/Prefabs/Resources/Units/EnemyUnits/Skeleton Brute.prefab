@@ -100,7 +100,7 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
---- !u!114 &5020557457684770152
+--- !u!114 &5294632743662004930
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,10 +109,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6467957086888709650}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59288c3556e52fa4e9fe4a8856776fcb, type: 3}
+  m_Script: {fileID: 11500000, guid: 74c883efb0d1b0c4abf3eb5a9e17233c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <PerkData>k__BackingField: {fileID: 11400000, guid: b72db5cdb4c98b1469cca96f85bec809, type: 2}
+  <PerkData>k__BackingField: {fileID: 11400000, guid: 96c34e0df6f294344b658aead4baa657, type: 2}
 --- !u!1001 &963213351486374029
 PrefabInstance:
   m_ObjectHideFlags: 0

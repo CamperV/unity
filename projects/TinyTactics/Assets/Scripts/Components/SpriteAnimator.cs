@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Extensions;
+using TMPro;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class SpriteAnimator : MonoBehaviour
@@ -44,15 +45,16 @@ public class SpriteAnimator : MonoBehaviour
 	public bool DoneAnimating() => !isAnimating && !isMoving;
 	public bool EmptyQueue() => actionQueue.Count == 0 && processActionQueue == null;
 
+	private Color originalColor;
+
 	void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 
 		// else if you don't have this component, construct a default Updater
 		PositionUpdater = v => transform.position = v;
-	}
 
-	void Update() {
-
+		// store this at the beginning and use throughout
+		originalColor = spriteRenderer.color;
 	}
 
 	public void ClearStacks() {
@@ -115,14 +117,25 @@ public class SpriteAnimator : MonoBehaviour
 		animationStack++;
 		//
 		SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+		TextMeshPro[] textMeshes = GetComponentsInChildren<TextMeshPro>();
 		CanvasGroup canvasGroup = GetComponentInChildren<CanvasGroup>();
+
+		float[] rendererOriginalAlphas = new float[renderers.Length];
+		for (int r = 0; r < rendererOriginalAlphas.Length; r++) {
+			rendererOriginalAlphas[r] = renderers[r].color.a;
+		}
 
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
 
-			foreach (var r in renderers) {
-				r.color = r.color.WithAlpha(1.0f - timeRatio);
+			for (int rr = 0; rr < renderers.Length; rr++) {
+				float alpha = rendererOriginalAlphas[rr] * (1.0f - timeRatio);
+				renderers[rr].color = renderers[rr].color.WithAlpha(alpha);
+			}
+
+			foreach (var tm in textMeshes) {
+				tm.color = tm.color.WithAlpha(1.0f - timeRatio);
 			}
 
 			if (canvasGroup != null) {
@@ -185,12 +198,11 @@ public class SpriteAnimator : MonoBehaviour
 	public IEnumerator TweenColor(Color color, float fixedTime) {
 		animationStack++;
 		//
-		var ogColor = spriteRenderer.color;
 
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			spriteRenderer.color = Color.Lerp(ogColor, color, timeRatio).WithAlpha(spriteRenderer.color.a);
+			spriteRenderer.color = Color.Lerp(originalColor, color, timeRatio).WithAlpha(spriteRenderer.color.a);
 			yield return null;
 		}
 
@@ -201,20 +213,18 @@ public class SpriteAnimator : MonoBehaviour
 	public IEnumerator FlashColor(Color color) {
 		animationStack++;
 		//
-		var ogColor = spriteRenderer.color;
-
 		float fixedTime = 1.0f;
 		float timeRatio = 0.0f;
 		
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
 
-			var colorDiff = ogColor - ((1.0f - timeRatio) * (ogColor - color));
+			var colorDiff = originalColor - ((1.0f - timeRatio) * (originalColor - color));
 			spriteRenderer.color = colorDiff.WithAlpha(1.0f);
 
 			yield return null;
 		}
-		spriteRenderer.color = ogColor;
+		spriteRenderer.color = originalColor;
 		
 		//
 		animationStack--;

@@ -67,4 +67,16 @@ public class AttackRange : FlowField<GridPosition>
 			target.Highlight(tilePos, Palette.threatColorRed);
 		}
 	}
+
+	public void Display(IGrid<GridPosition> target, Color color) {
+		foreach (GridPosition tilePos in field.Keys) {
+			target.Highlight(tilePos, color);
+		}
+	}
+
+	public void Display(IGrid<GridPosition> target, float alpha) {
+		foreach (GridPosition tilePos in field.Keys) {
+			target.Highlight(tilePos, Palette.threatColorRed.WithAlpha(alpha));
+		}
+	}
 }

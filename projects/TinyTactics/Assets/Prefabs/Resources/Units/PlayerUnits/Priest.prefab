@@ -15,6 +15,7 @@ MonoBehaviour:
   terrainTiles: []
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
+  moveThroughTerrainOverride: 0
 --- !u!114 &-2770078943836941951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51,6 +52,7 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
+  messageEmitter: {fileID: 0}
   equippedWeapon: {fileID: 3479959686748599251, guid: d6e061ba2425d6246bb8f3b0b78342d5, type: 3}
   tags: []
   archetypes:
@@ -80,10 +82,10 @@ MonoBehaviour:
   MOVE: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 13
+    VITALITY: 16
     STRENGTH: 4
     DEXTERITY: 9
-    REFLEX: 3
+    REFLEX: 9
     DEFENSE: 3
     MOVE: 5
   variance: 0

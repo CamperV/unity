@@ -23,8 +23,10 @@ public class AfterImage : Perk, IToolTip
 
     private void RefreshMovement() {
         if (boundUnit.turnActive) {
+            AudioFXBundle loadedBundle = Resources.Load<AudioFXBundle>("ScriptableObjects/AudioFXBundles/BuffAudioFXBundle") as AudioFXBundle;
+
             boundUnit.spriteAnimator.QueueAction(
-                () => boundUnit.TriggerBuffAnimation(audioFXBundle.RandomClip(), "MOV")
+                () => boundUnit.TriggerBuffAnimation(loadedBundle.RandomClip(), "MOV")
             );
 
             boundUnit.moveAvailable = true;

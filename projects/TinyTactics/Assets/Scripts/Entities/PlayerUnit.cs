@@ -311,10 +311,6 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                     // if (attackAvailable && ValidAttackExistsFrom(_reservedGridPosition)) {
                     } else if (attackAvailable) {
                         ChangeState(PlayerUnitFSM.AttackSelection);
-
-                    // there's no one around to receive your attack, so just end turn
-                    } else {
-                        Wait();
                     }
                 }
                 break;
@@ -356,8 +352,10 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                     // > Perk: AfterImage
                     if (moveAvailable) {
                         ChangeState(PlayerUnitFSM.MoveSelection);
+
                     } else {
-                        Wait();
+                        FinishTurn();
+                        ChangeState(PlayerUnitFSM.Idle);
                     }
                 }
                 break;
@@ -469,6 +467,8 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     }
 
     public void WaitNoCheck() {
+        FireOnWaitEvent();
+        //
         FinishTurnNoCheck();
         ChangeState(PlayerUnitFSM.Idle);
     }

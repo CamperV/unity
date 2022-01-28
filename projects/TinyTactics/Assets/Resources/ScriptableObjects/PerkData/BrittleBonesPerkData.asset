@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c087a20e5a53eb6489e93529b3acbfbe, type: 3}
-  m_Name: CripplingStrikePerkData
+  m_Name: BrittleBonesPerkData
   m_EditorClassIdentifier: 
-  perkName: Crippling Strike
-  typeName: CripplingStrike
-  description: On hit, reduce target's MOVE to 0 until end of turn.
-  sprite: {fileID: 21300000, guid: 4af4327727d12f546aa25769de230653, type: 3}
-  belongsToArchetype: {fileID: 11400000, guid: fd4cd4e8a8eca4d4e929fa363144de76, type: 2}
+  perkName: Brittle Bones
+  typeName: BrittleBones
+  description: +4 DEFENSE. On hurt, reduce DEFENSE by 1. Recieves +4 DMG from Striking
+    weapons.
+  sprite: {fileID: 21300000, guid: 90d648f1624836d4396ecd9d2c45612a, type: 3}
+  belongsToArchetype: {fileID: 11400000, guid: 2a23f4a759bdc6a42b4355cb5b5cd665, type: 2}
   isSignaturePerk: 1

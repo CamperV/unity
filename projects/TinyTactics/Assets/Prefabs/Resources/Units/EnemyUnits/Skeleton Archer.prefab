@@ -39,6 +39,19 @@ MonoBehaviour:
     DEFENSE: 5
     MOVE: 5
   variance: 1
+--- !u!114 &-7765607482720670496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254807587281339311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c883efb0d1b0c4abf3eb5a9e17233c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <PerkData>k__BackingField: {fileID: 11400000, guid: 96c34e0df6f294344b658aead4baa657, type: 2}
 --- !u!114 &-5551524322591222529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,19 +80,6 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
---- !u!114 &687917766784680460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7254807587281339311}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59288c3556e52fa4e9fe4a8856776fcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <PerkData>k__BackingField: {fileID: 11400000, guid: b72db5cdb4c98b1469cca96f85bec809, type: 2}
 --- !u!114 &4745207060358894923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,6 +104,7 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
+  messageEmitter: {fileID: 0}
   equippedWeapon: {fileID: 7317941260927309738, guid: ae85c7a71f197d9458e6e0581ecee04d, type: 3}
   tags: []
   archetypes: []

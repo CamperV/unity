@@ -9,7 +9,7 @@ public class CripplingStrike : Perk, IToolTip
     public override string displayName { get; set; } = "Crippling Strike";
 
     public string tooltipName { get; set; } = "Crippling Strike";
-    public string tooltip { get; set; } = "On hit, -50% MOV debuff until end of next turn.";
+    public string tooltip { get; set; } = "On hit, reduce target's MOVE to 0 until end of turn.";
 
     public AudioFXBundle audioFXBundle;
 
@@ -22,13 +22,13 @@ public class CripplingStrike : Perk, IToolTip
     }
 
     private void ApplyDebuff(Unit target) {
+        AudioFXBundle loadedBundle = Resources.Load<AudioFXBundle>("ScriptableObjects/AudioFXBundles/DebuffAudioFXBundle") as AudioFXBundle;
+
         // queue the sound and animation for after it is done animating the Hurt animation
         target.spriteAnimator.QueueAction(
-            () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip(), "MOV")
+            () => target.TriggerDebuffAnimation(loadedBundle.RandomClip(), "MOV")
         );
         
-        float halfMove = target.unitStats.MOVE/2f;
-        int roundedValue = (int)Mathf.Ceil(halfMove);
-        target.statusManager.AddValuedStatus<MoveDebuff>(displayName, -roundedValue);
+        target.statusManager.AddValuedStatus<OneTimeMoveDebuff>(displayName, -target.unitStats.MOVE);
     }
 }
