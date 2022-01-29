@@ -7,22 +7,10 @@ using TMPro;
 
 public class GlossaryPanel : MonoBehaviour
 {
-	public EventManager eventManager;
 	public TextMeshProUGUI glossaryText;
 
 	public void OnEnable() {
-		eventManager.DisablePlayerInput();
-		eventManager.EnableMenuInput();
-        eventManager.menuInputController.RightMouseClickEvent += AnywhereDismiss;
-
 		UpdateActiveGlossaryText();
-	}
-
-	public void OnDisable() {
-		eventManager.EnablePlayerInput();
-        eventManager.menuInputController.RightMouseClickEvent -= AnywhereDismiss;
-
-		eventManager.DisableMenuInput();
 	}
 
 	private void UpdateActiveGlossaryText() {
@@ -41,9 +29,5 @@ public class GlossaryPanel : MonoBehaviour
 		}
 
 		glossaryText.SetText( string.Join("\n\n", textLines.Distinct().OrderBy(it => it)) );
-	}
-
-	private void AnywhereDismiss(Vector3 pos) {
-		gameObject.SetActive(false);
 	}
 }

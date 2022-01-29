@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 5447002276505131986}
   - component: {fileID: 7842335666796096492}
   - component: {fileID: 385589116383181336}
+  - component: {fileID: 6869333141034887251}
   m_Layer: 5
   m_Name: GlossaryPanel
   m_TagString: Untagged
@@ -96,8 +97,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07ab58c7f9c7ff84183f9c2700455fbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventManager: {fileID: 0}
   glossaryText: {fileID: 4419493292604497390}
+--- !u!114 &6869333141034887251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129498287665465435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfe364dc60f71874d84c7ec89ea86a32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventManager: {fileID: 0}
 --- !u!1 &2664225461507942641
 GameObject:
   m_ObjectHideFlags: 0

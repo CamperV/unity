@@ -1658,8 +1658,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3412446320518958569}
   m_HandleRect: {fileID: 3412446320518958570}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1994,8 +1994,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3412446319688079528}
   m_HandleRect: {fileID: 3412446319688079529}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3467,8 +3467,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3412446319601932029}
   m_HandleRect: {fileID: 3412446319601932030}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4199,8 +4199,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3412446321431225366}
   m_HandleRect: {fileID: 3412446321431225367}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4476,8 +4476,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3412446321220317032}
   m_HandleRect: {fileID: 3412446321220317033}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5014,7 +5014,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3412446320652467991}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9402589
+  m_Size: 0.940259
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5711,8 +5711,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3412446321295261611}
   m_HandleRect: {fileID: 3412446321295261612}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5838,7 +5838,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3412446320166208209}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.7439317
+  m_Size: 0.7439318
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6854,17 +6854,17 @@ MonoBehaviour:
     can belong to one (or more) of the 5 Archetypes:
 
 
-    - <b><color=#FFDD70>Assault</color></b>
+    - <b><color=#F57C7C>Assault</color></b>
 
     -
-    <b><color=#FFDD70>Defender</color></b>
+    <b><color=#92ABFF>Defender</color></b>
 
-    - <b><color=#FFDD70>Support</color></b>
+    - <b><color=#FFFFFF>Support</color></b>
 
     -
-    <b><color=#FFDD70>Cunning</color></b>
+    <b><color=#B692FF>Cunning</color></b>
 
-    - <b><color=#FFDD70>Quick</color></b>
+    - <b><color=#AAD481>Quick</color></b>
 
 
     For
@@ -8153,8 +8153,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3412446320376181329}
   m_HandleRect: {fileID: 3412446320376181330}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
