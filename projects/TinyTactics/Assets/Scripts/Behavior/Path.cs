@@ -62,32 +62,6 @@ public class Path<T> where T : struct
 			}
 		}
 
-		Debug.Log($"Created path which moves from {newPath.Start} to {newPath.End}");
 		return newPath;
 	}
-		
-	// public void Clip(MoveRange mRange) {
-	// 	// unwind until out of bounds, then start whackin'
-	// 	List<T> forRemoval = new List<T>();
-	// 	foreach (var pos in path) {
-	// 		if (!mRange.field.ContainsKey( pos )) {
-	// 			forRemoval.Add(pos);
-	// 		}
-	// 	}
-
-	// 	// use two loops to avoid modifying path during iteration
-	// 	foreach (var fr in forRemoval) {
-	// 		path.Remove(fr);
-	// 	}
-	// }
-
-	// public IEnumerable<T> Serially() {
-	// 	LinkedListNode<T> position = path.First;
-	// 	LinkedListNode<T> prevPosition = position;
-	// 	do {
-	// 		prevPosition = position;
-	// 		position = position.Next;
-	// 		yield return position.Value - prevPosition.Value;
-	// 	} while (position != path.Last);
-	// }
 }

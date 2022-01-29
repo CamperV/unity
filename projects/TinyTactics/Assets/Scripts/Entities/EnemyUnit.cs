@@ -192,6 +192,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         if (assignedPod != null) {
 			MoveRange podMoveRange = unitPathfinder.GenerateFlowField<MoveRange>(gridPosition, assignedPod.sharedMoveRangeDimensions);
             AttackRange podAttackRange = AttackRange.OfDimension(gridPosition, assignedPod.sharedAttackRangeDimensions);
+            // podAttackRange.Display(battleMap);
 
             foreach (EnemyBrain.DamagePackage candidateDmgPkg in brain.OptimalDamagePackagesInRange(podMoveRange, podAttackRange)) {
                 Path<GridPosition> fullPathTo = podMoveRange.BFS(gridPosition, candidateDmgPkg.fromPosition);
@@ -294,11 +295,11 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         if (moveRange == null || attackRange == null) UpdateThreatRange();
 
         // make a fake movementRange for displaying
-        MoveRange fakeMoveRange = unitPathfinder.GenerateFakeFlowField<MoveRange>(gridPosition, range: unitStats.MOVE);
-        AttackRange fakeAttackRange = new AttackRange(fakeMoveRange, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
+        // MoveRange fakeMoveRange = unitPathfinder.GenerateFakeFlowField<MoveRange>(gridPosition, range: unitStats.MOVE);
+        // AttackRange fakeAttackRange = new AttackRange(fakeMoveRange, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
 
-        fakeAttackRange.Display(battleMap, Palette.enemyRedPinkColor);
-        fakeMoveRange.Display(battleMap, Palette.threatColorViolet);
+        // fakeAttackRange.Display(battleMap, Palette.enemyRedPinkColor);
+        // fakeMoveRange.Display(battleMap, Palette.threatColorViolet);
         // fakeAttackRange.Display(battleMap, Palette.threatColorRed.WithAlpha(0.5f));
         // fakeMoveRange.Display(battleMap, Palette.threatColorYellow.WithAlpha(0.5f));
   

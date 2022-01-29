@@ -45,16 +45,11 @@ public class SpriteAnimator : MonoBehaviour
 	public bool DoneAnimating() => !isAnimating && !isMoving;
 	public bool EmptyQueue() => actionQueue.Count == 0 && processActionQueue == null;
 
-	private Color originalColor;
-
 	void Awake() {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 
 		// else if you don't have this component, construct a default Updater
 		PositionUpdater = v => transform.position = v;
-
-		// store this at the beginning and use throughout
-		originalColor = spriteRenderer.color;
 	}
 
 	public void ClearStacks() {
@@ -198,6 +193,7 @@ public class SpriteAnimator : MonoBehaviour
 	public IEnumerator TweenColor(Color color, float fixedTime) {
 		animationStack++;
 		//
+		Color originalColor = spriteRenderer.color;
 
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
@@ -213,6 +209,8 @@ public class SpriteAnimator : MonoBehaviour
 	public IEnumerator FlashColor(Color color) {
 		animationStack++;
 		//
+		Color originalColor = spriteRenderer.color;
+		
 		float fixedTime = 1.0f;
 		float timeRatio = 0.0f;
 		

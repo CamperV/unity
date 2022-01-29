@@ -80,8 +80,8 @@ MonoBehaviour:
     VITALITY: 23
     STRENGTH: 9
     DEXTERITY: 7
-    REFLEX: 7
-    DEFENSE: 7
+    REFLEX: 5
+    DEFENSE: 4
     MOVE: 5
   variance: 1
 --- !u!114 &4070303141671970314

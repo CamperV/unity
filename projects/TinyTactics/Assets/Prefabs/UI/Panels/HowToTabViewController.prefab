@@ -455,6 +455,7 @@ GameObject:
   - component: {fileID: 3412446319708853593}
   - component: {fileID: 3412446319708853594}
   - component: {fileID: 3412446319708853591}
+  - component: {fileID: 2684869933929297861}
   m_Layer: 5
   m_Name: Controls Tab
   m_TagString: Untagged
@@ -593,6 +594,24 @@ MonoBehaviour:
   linkedPanel: {fileID: 3412446321113421567}
   linkedPanelBackgroundImage: {fileID: 3412446320705118559}
   borderColor: {r: 1, g: 0.8666667, b: 0.4392157, a: 1}
+--- !u!114 &2684869933929297861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3412446319708853596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958a217e0f6ccc646acc6235704fc503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  clickFX: 1
+  confirmFX: 0
+  backFX: 0
+  specialFX: 0
+  superSpecialFX: 0
 --- !u!1 &3412446319713773358
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,6 +701,7 @@ GameObject:
   - component: {fileID: 3412446319724064710}
   - component: {fileID: 3412446319724064711}
   - component: {fileID: 3412446319724064708}
+  - component: {fileID: 9051100432220719068}
   m_Layer: 5
   m_Name: Perks and Archetypes Tab
   m_TagString: Untagged
@@ -820,6 +840,24 @@ MonoBehaviour:
   linkedPanel: {fileID: 3412446320349290319}
   linkedPanelBackgroundImage: {fileID: 3412446319492559113}
   borderColor: {r: 1, g: 0.8666667, b: 0.4392157, a: 1}
+--- !u!114 &9051100432220719068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3412446319724064713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958a217e0f6ccc646acc6235704fc503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  clickFX: 1
+  confirmFX: 0
+  backFX: 0
+  specialFX: 0
+  superSpecialFX: 0
 --- !u!1 &3412446319724952930
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,6 +2051,7 @@ GameObject:
   - component: {fileID: 3412446319977833161}
   - component: {fileID: 3412446319977833162}
   - component: {fileID: 3412446319977833159}
+  - component: {fileID: 7549276330598930082}
   m_Layer: 5
   m_Name: Strategy Tab
   m_TagString: Untagged
@@ -2151,6 +2190,24 @@ MonoBehaviour:
   linkedPanel: {fileID: 3412446319911866417}
   linkedPanelBackgroundImage: {fileID: 3412446319787639896}
   borderColor: {r: 1, g: 0.8666667, b: 0.4392157, a: 1}
+--- !u!114 &7549276330598930082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3412446319977833164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958a217e0f6ccc646acc6235704fc503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  clickFX: 1
+  confirmFX: 0
+  backFX: 0
+  specialFX: 0
+  superSpecialFX: 0
 --- !u!1 &3412446319989763131
 GameObject:
   m_ObjectHideFlags: 0
@@ -4218,6 +4275,7 @@ GameObject:
   - component: {fileID: 3412446320440256612}
   - component: {fileID: 3412446320440256613}
   - component: {fileID: 3412446320440256610}
+  - component: {fileID: 2733336918574030603}
   m_Layer: 5
   m_Name: Unit Stats Tab
   m_TagString: Untagged
@@ -4356,6 +4414,24 @@ MonoBehaviour:
   linkedPanel: {fileID: 3412446320485313604}
   linkedPanelBackgroundImage: {fileID: 3412446320806299561}
   borderColor: {r: 1, g: 0.8666667, b: 0.4392157, a: 1}
+--- !u!114 &2733336918574030603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3412446320440256615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958a217e0f6ccc646acc6235704fc503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  clickFX: 1
+  confirmFX: 0
+  backFX: 0
+  specialFX: 0
+  superSpecialFX: 0
 --- !u!1 &3412446320460364051
 GameObject:
   m_ObjectHideFlags: 0
@@ -5856,6 +5932,7 @@ GameObject:
   - component: {fileID: 3412446320783890407}
   - component: {fileID: 3412446320783890408}
   - component: {fileID: 3412446320783890405}
+  - component: {fileID: 643804746255724564}
   m_Layer: 5
   m_Name: Mechanics Tab
   m_TagString: Untagged
@@ -5994,6 +6071,24 @@ MonoBehaviour:
   linkedPanel: {fileID: 3412446321206757205}
   linkedPanelBackgroundImage: {fileID: 3412446321123829667}
   borderColor: {r: 1, g: 0.8666667, b: 0.4392157, a: 1}
+--- !u!114 &643804746255724564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3412446320783890410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958a217e0f6ccc646acc6235704fc503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  clickFX: 1
+  confirmFX: 0
+  backFX: 0
+  specialFX: 0
+  superSpecialFX: 0
 --- !u!1 &3412446320806299564
 GameObject:
   m_ObjectHideFlags: 0
@@ -7311,6 +7406,7 @@ GameObject:
   - component: {fileID: 3412446321178696455}
   - component: {fileID: 3412446321178696456}
   - component: {fileID: 3412446321178696453}
+  - component: {fileID: 2482691559019856901}
   m_Layer: 5
   m_Name: Weapons Tab
   m_TagString: Untagged
@@ -7449,6 +7545,24 @@ MonoBehaviour:
   linkedPanel: {fileID: 3412446319713773358}
   linkedPanelBackgroundImage: {fileID: 3412446320177879241}
   borderColor: {r: 1, g: 0.8666667, b: 0.4392157, a: 1}
+--- !u!114 &2482691559019856901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3412446321178696458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958a217e0f6ccc646acc6235704fc503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  clickFX: 1
+  confirmFX: 0
+  backFX: 0
+  specialFX: 0
+  superSpecialFX: 0
 --- !u!1 &3412446321195590234
 GameObject:
   m_ObjectHideFlags: 0
@@ -8669,6 +8783,7 @@ GameObject:
   - component: {fileID: 3412446321436232390}
   - component: {fileID: 3412446321436232391}
   - component: {fileID: 3412446321436232388}
+  - component: {fileID: 2101420095839294125}
   m_Layer: 5
   m_Name: About Tab
   m_TagString: Untagged
@@ -8807,6 +8922,24 @@ MonoBehaviour:
   linkedPanel: {fileID: 3412446320473819610}
   linkedPanelBackgroundImage: {fileID: 3412446320559965113}
   borderColor: {r: 1, g: 0.8666667, b: 0.4392157, a: 1}
+--- !u!114 &2101420095839294125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3412446321436232393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 958a217e0f6ccc646acc6235704fc503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
+  clickFX: 1
+  confirmFX: 0
+  backFX: 0
+  specialFX: 0
+  superSpecialFX: 0
 --- !u!1 &3412446321448230727
 GameObject:
   m_ObjectHideFlags: 0

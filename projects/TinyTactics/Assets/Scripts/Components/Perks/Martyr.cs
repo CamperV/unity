@@ -9,7 +9,7 @@ public class Martyr : Perk, IToolTip
 
     // IToolTip
     public string tooltipName { get; set; } = "Martyr";
-    public string tooltip { get; set; } = "After being attacked, heal adjacent allies for 25% of their VITALITY.";
+    public string tooltip { get; set; } = "After being attacked, heal allies within 2 spaces for 25% of their VITALITY.";
 
     public override void OnAcquire() {
         boundUnit.OnHurt += HealAdjacent;
@@ -20,7 +20,7 @@ public class Martyr : Perk, IToolTip
     }
 
     private void HealAdjacent() {
-        foreach(Unit unit in boundUnit.AlliesWithinRange(1)) {
+        foreach(Unit unit in boundUnit.AlliesWithinRange(2)) {
             unit.HealAmount((int)(0.25f*unit.unitStats.VITALITY));
         }
     }

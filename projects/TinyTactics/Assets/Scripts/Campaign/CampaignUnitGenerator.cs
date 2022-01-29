@@ -43,16 +43,16 @@ public class CampaignUnitGenerator
 	public static NatureData[] NatureTypes = new NatureData[]{
 		new NatureData("Normie", "", ""),
 		//
-		new NatureData("Absolute Unit", "+VIT",  "-MOV", v: 12, m: -1),
-		new NatureData("Bulky",  "+VIT", "-REF", v: 6, r: -3),
-		new NatureData("Brickish", "+DEF", "-REF", def: 3, r: -6),
-		new NatureData("Cautious", "+DEF", "-DEX", def: 2, dex: -3),
-		new NatureData("Glass Cannon", "+STR", "-VIT, -REF, -DEF", s: 6, v: -6, r: -3, def: -3),
+		new NatureData("Absolute Unit", "+VIT",  "-MOV", v: 10, m: -1),
+		new NatureData("Bulky",  "+VIT", "-REF", v: 5, r: -3),
+		new NatureData("Brickish", "+DEF", "-REF", def: 2, r: -5),
+		new NatureData("Cautious", "+DEF", "-DEX", def: 2, dex: -5),
+		new NatureData("Glass Cannon", "+STR", "-VIT, -REF, -DEF", s: 7, v: -5, r: -3, def: -3),
 		new NatureData("Hasty", "+STR", "-DEF", s: 2, def: -2),
-		new NatureData("Precise", "+DEX", "-VIT", dex: 6, v: -6),
+		new NatureData("Precise", "+DEX", "-VIT", dex: 5, v: -5),
 		new NatureData("Sprinter", "+MOV", "-STR", m: 1, s: -2),
-		new NatureData("Wily", "+REF", "-STR", r: 6, s: -2),
-		new NatureData("Whiplike", "+DEX, +REF", "-STR", dex: 6, r: 6, s: -3)
+		new NatureData("Wily", "+REF", "-STR", r: 5, s: -2),
+		new NatureData("Whiplike", "+DEX, +REF", "-STR", dex: 5, r: 5, s: -3)
 	};
 
 	[System.Serializable]

@@ -276,8 +276,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         if (unitStats._CURRENT_HP < unitStats.VITALITY) {
             messageEmitter.Emit(MessageEmitter.MessageType.Heal, $"+{healAmount}");
 
-            TriggerHealAnimation();
-            personalAudioFX.PlayHealFX();
+            // queue the sound and animation for after it is done animating the Hurt animation
+            spriteAnimator.QueueAction(
+                () => {   
+                    TriggerHealAnimation();
+                    personalAudioFX.PlayHealFX();
+                }
+            );
 
             unitStats.UpdateHP(unitStats._CURRENT_HP + healAmount, unitStats.VITALITY);
             UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] healed for GREEN@[{healAmount}].");

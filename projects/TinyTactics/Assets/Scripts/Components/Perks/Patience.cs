@@ -9,7 +9,7 @@ public class Patience : Perk, IToolTip
 
     // IToolTip
     public string tooltipName { get; set; } = "Patience";
-    public string tooltip { get; set; } = "On wait, gain a +2 DEFENSE buff.";
+    public string tooltip { get; set; } = "On wait, gain a one-time +4 DEFENSE buff.";
 
     public AudioFXBundle audioFXBundle;
 
@@ -29,6 +29,6 @@ public class Patience : Perk, IToolTip
             () => boundUnit.TriggerBuffAnimation(loadedBundle.RandomClip(), "DEF")
         );
         //
-        boundUnit.statusManager.AddValuedStatus<DefenseBuff>("Patience", 2);
+        boundUnit.statusManager.AddValuedStatus<OneTimeDefenseBuff>("Patience", 4);
     }
 }

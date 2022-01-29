@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c087a20e5a53eb6489e93529b3acbfbe, type: 3}
-  m_Name: HealingPresencePerkData
+  m_Name: LongshotPerkData
   m_EditorClassIdentifier: 
-  perkName: Healing Presence
-  typeName: HealingPresence
-  description: On start of turn, heal adjacent allies by 50% of their Max HP.
-  sprite: {fileID: 21300000, guid: 14713c4133a327f4783ae2b502c463d0, type: 3}
-  belongsToArchetype: {fileID: 11400000, guid: e3d85aa16bc314245b699ac65182ffc3, type: 2}
+  perkName: Longshot
+  typeName: Longshot
+  description: When using Missile weapons, +1 max attack range.
+  sprite: {fileID: 21300000, guid: 70894305a9b468b4d9900e97c66762e0, type: 3}
+  belongsToArchetype: {fileID: 11400000, guid: 123d5550d9da4f64a956378cca72b9f7, type: 2}
   isSignaturePerk: 1

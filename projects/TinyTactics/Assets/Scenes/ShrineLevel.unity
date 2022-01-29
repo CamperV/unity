@@ -1786,6 +1786,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ToggleCameraLock
       objectReference: {fileID: 0}
+    - target: {fileID: 5232076020989493352, guid: 982b3e5292c44f84eacd4d6ff8b656e0, type: 3}
+      propertyPath: eventManager
+      value: 
+      objectReference: {fileID: 881456445}
+    - target: {fileID: 5866665716082197166, guid: 982b3e5292c44f84eacd4d6ff8b656e0, type: 3}
+      propertyPath: eventManager
+      value: 
+      objectReference: {fileID: 881456445}
     - target: {fileID: 6483763511860868623, guid: 982b3e5292c44f84eacd4d6ff8b656e0, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -1814,6 +1822,26 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6990998273567979986, guid: 982b3e5292c44f84eacd4d6ff8b656e0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6990998273567979986, guid: 982b3e5292c44f84eacd4d6ff8b656e0, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6990998273567979986, guid: 982b3e5292c44f84eacd4d6ff8b656e0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6990998273567979986, guid: 982b3e5292c44f84eacd4d6ff8b656e0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7529971153655877939, guid: 982b3e5292c44f84eacd4d6ff8b656e0, type: 3}
+      propertyPath: eventManager
+      value: 
+      objectReference: {fileID: 881456445}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 982b3e5292c44f84eacd4d6ff8b656e0, type: 3}
 --- !u!114 &635742242 stripped

@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6047190516767794778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4081257334139278387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47683a203c4f334bbe78f6f4f5a06ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <PerkData>k__BackingField: {fileID: 11400000, guid: a5e0d7817e39b96448ea8b5d1e8beee8, type: 2}
 --- !u!114 &-4460089316450889312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12,7 +25,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb1cb1c4ef25854096b14b492813d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: Ranger
+  displayName: Huntress
   <gridPosition>k__BackingField:
     x: 0
     y: 0
@@ -34,19 +47,6 @@ MonoBehaviour:
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
   cancelSignal: 0
---- !u!114 &-3725737520135642223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4081257334139278387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df77688eeb1ce724782aa9e6a2e74942, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <PerkData>k__BackingField: {fileID: 11400000, guid: b9d7e9cf9aa06d043a4b22a94d5f8aa7, type: 2}
 --- !u!114 &2057809623227539322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,7 +129,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
-      value: Adventurer
+      value: Huntress
       objectReference: {fileID: 0}
     - target: {fileID: 7419503456615491691, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_RootOrder

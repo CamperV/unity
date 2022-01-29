@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class OneTimeMoveDebuff : ValuedStatus
 {
-    public override string displayName => $"{modifierValue} Damage ({provider})";
     public override string affectedStat => "MOV";
 
     public override void OnAcquire() {

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   perkName: Patience
   typeName: Patience
-  description: On wait, gain a +4 DEFENSE buff.
+  description: On wait, gain a one-time +4 DEFENSE buff.
   sprite: {fileID: 21300000, guid: 617a66654b4047445828865e1b2b1a59, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: fd4cd4e8a8eca4d4e929fa363144de76, type: 2}
   isSignaturePerk: 1
