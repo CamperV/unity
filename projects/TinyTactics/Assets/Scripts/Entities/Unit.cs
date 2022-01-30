@@ -23,6 +23,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public delegate void DefenseGeneration(ref MutableDefense mutDef, Unit attacker);
     public event DefenseGeneration OnDefend;
 
+    public delegate void FinalEngagementGeneration(ref MutableEngagementStats mutES);
+    public event FinalEngagementGeneration OnFinalEngagementGeneration;
+
     // simply used to signal when a unit has been hit, dodged. etc
     public delegate void OnAction();
     public event OnAction OnHurt;
@@ -345,6 +348,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(ref mutAtt, target);
     public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(ref mutDef, attacker);
+    public void FireOnFinalEngagementGeneration(ref MutableEngagementStats mutES) => OnFinalEngagementGeneration?.Invoke(ref mutES);
+
     public void FireOnHurtEvent() => OnHurt?.Invoke();
     public void FireOnAvoidEvent() {
         TriggerMissAnimation();

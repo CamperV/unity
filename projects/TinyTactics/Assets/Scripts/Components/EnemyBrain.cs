@@ -111,7 +111,7 @@ public class EnemyBrain : MonoBehaviour
 
 		thisUnit.gridPosition = fromPosition;
 		Engagement potentialEngagement = Engagement.Create(thisUnit, target);
-		Engagement.Stats finalStats = potentialEngagement.SimulateAttack();
+		EngagementStats finalStats = potentialEngagement.SimulateAttack();
 
 		thisUnit.gridPosition = savedGridPosition;
 		Debug.Assert(thisUnit.gridPosition == savedGridPosition);

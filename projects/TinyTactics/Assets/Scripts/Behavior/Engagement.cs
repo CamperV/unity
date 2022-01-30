@@ -18,26 +18,6 @@ public class Engagement
 
     private bool resolvedFlag = false;
 
-    public struct Stats {
-		public int damage;
-        public int hitRate;
-        public int critRate;
-
-        public Stats(int d, int hr, int cr) {
-            damage = d;
-            hitRate = hr;
-            critRate = cr;
-        }
-
-		public Stats(Attack a, Defense d) {
-            damage   = (int)Mathf.Clamp((a.damage   - d.damageReduction), 0f, 999f);
-            hitRate  = (int)Mathf.Clamp((a.hitRate  - d.avoidRate), 0f, 100f);
-            critRate = (int)Mathf.Clamp((a.critRate - d.critAvoidRate), 0f, 100f);
-		}
-
-        public bool Empty { get => damage == -1 && hitRate == -1 && critRate == -1; }
-	}
-
     public Engagement(Unit a, Unit b) {
         aggressor = a;
         defender = b;
@@ -106,15 +86,15 @@ public class Engagement
     private bool AnimationFinished() => aggressor.spriteAnimator.DoneAnimating() && defender.spriteAnimator.DoneAnimating();
 
     // this previews what will happen, to display, and not resolve
-    public Stats SimulateAttack() {
-        return new Stats(attack, defense);
+    public EngagementStats SimulateAttack() {
+        return GenerateEngagementStats(attack, defense);
     }
 
-    public Stats SimulateCounterAttack() {
+    public EngagementStats SimulateCounterAttack() {
         if (counterAttack == null) {
-            return new Stats(-1, -1, -1);
+            return new EngagementStats(-1, -1, -1);
         } else {
-            return new Stats(counterAttack.Value, counterDefense.Value);
+            return GenerateEngagementStats(counterAttack.Value, counterDefense.Value);
         }
     }
 
@@ -144,9 +124,19 @@ public class Engagement
         return new Defense(mutableDefense);
     }
 
+    private EngagementStats GenerateEngagementStats(Attack _attack, Defense _defense) {
+        MutableEngagementStats mutableEngagementStats = new MutableEngagementStats(_attack, _defense);
+        
+        // THIS WILL MODIFY THE FINAL ENGAGEMENT STATS PACKAGE
+        aggressor.FireOnFinalEngagementGeneration(ref mutableEngagementStats);
+        defender.FireOnFinalEngagementGeneration(ref mutableEngagementStats);
+        return new EngagementStats(mutableEngagementStats);
+    }
+
     private bool Process(Unit A, Unit B, Attack _attack, Defense _defense, string attackType) {
+        EngagementStats finalStats = GenerateEngagementStats(_attack, _defense);
+        
         A.TriggerAttackAnimation(B.gridPosition);
-        Stats finalStats = new Stats(_attack, _defense);
 
         // log the Engagement
         UIManager.inst.combatLog.AddEntry(

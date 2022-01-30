@@ -66,7 +66,7 @@ public sealed class UIManager : MonoBehaviour
 		enemyEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(anchoredTransform);
 
 		// PLAYER-SIDE
-		Engagement.Stats playerPreviewStats = potentialEngagement.SimulateAttack();
+		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
 		playerEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.aggressor.spriteRenderer.sprite;
 		playerEngagementPreviewPanel.portraitImage.color = potentialEngagement.aggressor.spriteRenderer.color;
 		playerEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.aggressor.equippedWeapon.sprite;
@@ -89,7 +89,7 @@ public sealed class UIManager : MonoBehaviour
 
 		// ENEMY-SIDE
 		// only update this if you CAN counter-attack
-		Engagement.Stats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
+		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
 		enemyEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.defender.spriteRenderer.sprite;
 		enemyEngagementPreviewPanel.portraitImage.color = potentialEngagement.defender.spriteRenderer.color;
 		enemyEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.defender.equippedWeapon.sprite;

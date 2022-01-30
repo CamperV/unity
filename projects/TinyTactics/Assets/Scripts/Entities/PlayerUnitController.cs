@@ -216,7 +216,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public void ForceEndPlayerPhase() {
         if (state != ControllerFSM.Inactive) {
             foreach (PlayerUnit u in activeUnits) {
-                u.WaitNoCheck();
+                if (u.turnActive) u.WaitNoCheck();
             }
             _EndPlayerPhase();
         }
