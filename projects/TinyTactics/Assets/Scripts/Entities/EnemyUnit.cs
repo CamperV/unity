@@ -300,11 +300,11 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
         // fakeAttackRange.Display(battleMap, Palette.enemyRedPinkColor);
         // fakeMoveRange.Display(battleMap, Palette.threatColorViolet);
-        // fakeAttackRange.Display(battleMap, Palette.threatColorRed.WithAlpha(0.5f));
-        // fakeMoveRange.Display(battleMap, Palette.threatColorYellow.WithAlpha(0.5f));
   
         attackRange.Display(battleMap);
-        moveRange.Display(battleMap, Palette.threatColorYellow);
+        // moveRange.Display(battleMap, Palette.threatColorIndigo);
+        moveRange.Display(battleMap, Palette.selectColorBlue);
+        
         battleMap.Highlight(gridPosition, Palette.selectColorWhite);
     }
 }
