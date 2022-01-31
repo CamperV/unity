@@ -20,8 +20,9 @@ public class ChipAway : Perk, IToolTip
     }
 
     private void ChipAttack(ref MutableEngagementStats mutES) {
-        mutES.damage = (int)Mathf.Max(1f, mutES.damage);
-
-        // somehow add mutators here...?
+        if (mutES.damage < 1) {
+            mutES.damage = 1;
+            mutES.AddMutator(this);    
+        }
     }
 }

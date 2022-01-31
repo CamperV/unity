@@ -81,9 +81,10 @@ public sealed class UIManager : MonoBehaviour
 		// list of perks that were relevant for this Attack & potentially, counterDefense
 		List<string> playerUnitMutators = new List<string>(potentialEngagement.attack.mutators);
 		if (potentialEngagement.counterDefense != null) {
-			playerUnitMutators = playerUnitMutators.Concat(potentialEngagement.counterDefense.Value.mutators).Distinct().ToList();
+			playerUnitMutators = playerUnitMutators.Concat(potentialEngagement.counterDefense.Value.mutators).ToList();
 		}
-		string playerUnitMutatorsText = string.Join("\n", playerUnitMutators);
+		playerUnitMutators = playerUnitMutators.Concat(playerPreviewStats.mutators).ToList();
+		string playerUnitMutatorsText = string.Join("\n", playerUnitMutators.Distinct().ToList());
 		playerEngagementPreviewPanel.mutatorsValue.SetText(playerUnitMutatorsText);
 
 
@@ -113,9 +114,10 @@ public sealed class UIManager : MonoBehaviour
 		// list of perks that were relevant for this Defense & potentially, counterAttack
 		List<string> enemyUnitMutators = new List<string>(potentialEngagement.defense.mutators);
 		if (potentialEngagement.counterAttack != null) {
-			enemyUnitMutators = enemyUnitMutators.Concat(potentialEngagement.counterAttack.Value.mutators).Distinct().ToList();
+			enemyUnitMutators = enemyUnitMutators.Concat(potentialEngagement.counterAttack.Value.mutators).ToList();
 		}
-		string enemyUnitMutatorsText = string.Join("\n", enemyUnitMutators);
+		enemyUnitMutators = enemyUnitMutators.Concat(enemyPreviewStats.mutators).ToList();
+		string enemyUnitMutatorsText = string.Join("\n", enemyUnitMutators.Distinct().ToList());
 		enemyEngagementPreviewPanel.mutatorsValue.SetText(enemyUnitMutatorsText);
 	}
 

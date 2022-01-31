@@ -186,6 +186,28 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         }
     }
 
+    public IEnumerable<Unit> Allies() {
+        foreach (GridPosition gp in battleMap.Positions) {
+            if (gp == gridPosition) continue;
+            Unit? unit = unitMap.UnitAt(gp);
+
+            if (unit != null && unit.GetType() == GetType()) {
+                yield return unit;
+            }
+        }
+    }
+
+    public IEnumerable<Unit> Enemies() {
+        foreach (GridPosition gp in battleMap.Positions) {
+            if (gp == gridPosition) continue;
+            Unit? unit = unitMap.UnitAt(gp);
+
+            if (unit != null && unit.GetType() != GetType()) {
+                yield return unit;
+            }
+        }
+    }
+
     // IUnitPhaseInfo
     public void RefreshInfo() {
         // turnActive = true;
@@ -328,7 +350,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         personalAudioFX.PlayFX(playClip);
 
         foreach (string affectedStat in affectedStats) {
-            messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"-{affectedStat}");
+            if (affectedStat != "") {
+                messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"-{affectedStat}");
+            }
         }
 
         StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorIndigo) );

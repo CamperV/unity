@@ -9,17 +9,22 @@ public struct EngagementStats {
     public int damage;
     public int hitRate;
     public int critRate;
+    public List<string> mutators;
 
     public EngagementStats(int d, int hr, int cr) {
         damage = d;
         hitRate = hr;
         critRate = cr;
+        //
+        mutators = new List<string>();
     }
 
     public EngagementStats(MutableEngagementStats mutES) {
         damage   = mutES.damage;
         hitRate  = mutES.hitRate;
         critRate = mutES.critRate;
+        //
+        mutators = new List<string>(mutES.mutators);
     }
 
     public bool Empty { get => damage == -1 && hitRate == -1 && critRate == -1; }
@@ -32,10 +37,17 @@ public class MutableEngagementStats {
     public int damage;
     public int hitRate;
     public int critRate;
+    public List<string> mutators;
 
     public MutableEngagementStats(Attack a, Defense d) {
         damage   = (int)Mathf.Clamp((a.damage   - d.damageReduction), 0f, 999f);
         hitRate  = (int)Mathf.Clamp((a.hitRate  - d.avoidRate), 0f, 100f);
         critRate = (int)Mathf.Clamp((a.critRate - d.critAvoidRate), 0f, 100f);
+        //
+        mutators = new List<string>();
+    }
+
+    public void AddMutator(IMutatorComponent mc) {
+        mutators.Add(mc.displayName);
     }
 }

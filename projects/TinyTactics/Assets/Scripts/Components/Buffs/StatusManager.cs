@@ -46,6 +46,12 @@ public class StatusManager : MonoBehaviour
         buff.ApplyValueAndCondition(modifierValue, Condition);
     }
 
+    public void AddCoupledBuff<T>(string provider, int modifierValue, Unit coupledTarget) where T : CoupledBuff {
+        // don't worry about stacking, just keep adding Components.
+        T buff = AttachStatus<T>(provider);
+        buff.ApplyValueAndCoupling(modifierValue, coupledTarget);
+    }
+
     public void RemoveAllStatusFromProvider(string provider) {
         foreach (Status s in GetComponents<Status>()) {
             if (s.provider == provider) Destroy(s);
