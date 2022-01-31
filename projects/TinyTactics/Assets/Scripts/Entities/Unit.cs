@@ -208,6 +208,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         }
     }
 
+    public IEnumerable<TerrainTile> TerrainWithinRange(int range) {
+        foreach (GridPosition gp in gridPosition.Radiate(range)) {
+            if (gp == gridPosition || !battleMap.IsInBounds(gp)) continue;
+            yield return battleMap.TerrainAt(gp);
+        }
+    }
+
     // IUnitPhaseInfo
     public void RefreshInfo() {
         // turnActive = true;
