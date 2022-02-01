@@ -8,7 +8,7 @@ public abstract class Status : MonoBehaviour, IMutatorComponent
     public Unit boundUnit { get; set; }
     public virtual string displayName { get; set; }
 
-    public string provider = "Emaculate Provision a.k.a. ERROR";
+    public string provider = "Emaculate Provision";
 
     void Awake() {
         boundUnit = GetComponent<Unit>();

@@ -311,6 +311,10 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                     // if (attackAvailable && ValidAttackExistsFrom(_reservedGridPosition)) {
                     } else if (attackAvailable) {
                         ChangeState(PlayerUnitFSM.AttackSelection);
+                        
+                    } else {
+                        FinishTurn();
+                        ChangeState(PlayerUnitFSM.Idle);
                     }
                 }
                 break;
@@ -325,6 +329,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                     DisplayThreatRange();
                     UIManager.inst.DisableEngagementPreview();
 
+                    // when the mouse is over an enemy:
                     if (attackRange.ValidAttack(battleMap.CurrentMouseGridPosition) && EnemyAt(battleMap.CurrentMouseGridPosition) != null) {
                         EnemyUnit? enemy = EnemyAt(battleMap.CurrentMouseGridPosition);
                         battleMap.Highlight(battleMap.CurrentMouseGridPosition, Palette.threatColorYellow);

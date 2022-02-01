@@ -64,6 +64,12 @@ public class StatusManager : MonoBehaviour
         }
     }
 
+    public IEnumerable<ValuedStatus> AllStatuses() {
+        foreach (ValuedStatus s in GetComponents<ValuedStatus>()) {
+            yield return s;
+        }
+    }
+
     //
     //
     //

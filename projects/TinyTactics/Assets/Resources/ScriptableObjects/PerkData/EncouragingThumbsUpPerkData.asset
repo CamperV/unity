@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c087a20e5a53eb6489e93529b3acbfbe, type: 3}
-  m_Name: HealingPresencePerkData
+  m_Name: EncouragingThumbsUpPerkData
   m_EditorClassIdentifier: 
-  perkName: Healing Presence
-  typeName: HealingPresence
-  description: On start of turn, heal adjacent allies by 33% of their Max HP.
-  sprite: {fileID: 21300000, guid: 14713c4133a327f4783ae2b502c463d0, type: 3}
+  perkName: Encouraging Thumbs Up From Across the Battlefield
+  typeName: EncouragingThumbsUp
+  description: On start of turn, heal a random damaged ally by 10% of their Max HP.
+  sprite: {fileID: 21300000, guid: bef9e7c5ef187a342adf3cf70ad79e6b, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: e3d85aa16bc314245b699ac65182ffc3, type: 2}
-  isSignaturePerk: 1
+  isSignaturePerk: 0

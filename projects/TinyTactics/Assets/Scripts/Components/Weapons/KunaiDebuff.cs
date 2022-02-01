@@ -9,7 +9,7 @@ public class KunaiDebuff : WeaponPerk, IToolTip
     public override string displayName { get; set; } = "Kunai Debuff";
     
     public string tooltipName { get; set; } = "Kunai Debuff";
-    public string tooltip { get; set; } = "On hit, -3 DEF, -5 REF.";
+    public string tooltip { get; set; } = "On hit, -2 DEF, -2 REF.";
 
     public AudioFXBundle audioFXBundle;
 
@@ -28,8 +28,8 @@ public class KunaiDebuff : WeaponPerk, IToolTip
                 () => target.TriggerDebuffAnimation(audioFXBundle.RandomClip(), "DEF", "REF")
             );
             
-            target.statusManager.AddValuedStatus<DefenseDebuff>(displayName, -3);
-            target.statusManager.AddValuedStatus<ReflexDebuff>(displayName, -5);
+            target.statusManager.AddValuedStatus<DefenseDebuff>(displayName, -2);
+            target.statusManager.AddValuedStatus<ReflexDebuff>(displayName, -2);
         }
     }
 }

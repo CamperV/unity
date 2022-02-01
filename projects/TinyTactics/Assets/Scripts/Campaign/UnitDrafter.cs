@@ -10,8 +10,8 @@ public class UnitDrafter : MonoBehaviour
 {
     [SerializeField] Campaign draftIntoCampaign;
 
-    [SerializeField] private int maxUnits = 4;
-    [SerializeField] private int unitsOnOffer = 3;
+    [SerializeField] private int maxUnits;
+    [SerializeField] private int unitsOnOffer;
     //
     [SerializeField] private GameObject draftedUnitsDisplay;
     [SerializeField] private DraftedUnitListing draftedUnitListingPrefab;

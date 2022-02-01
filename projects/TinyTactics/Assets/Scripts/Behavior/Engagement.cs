@@ -68,6 +68,7 @@ public class Engagement
         // ReceiveAttack contains logic for animation processing
         defenderSurvived = Process(aggressor, defender, attack, defense, "attack");
         yield return new WaitForSeconds(0.65f);
+        yield return new WaitUntil(aggressor.spriteAnimator.EmptyQueue);
         ///
 
         // if we can counterattack:
@@ -147,13 +148,13 @@ public class Engagement
 		int RN1 = Random.Range(0, 100);
 		
         // 1 RN
-        // bool isHit = RN1 <= finalStats.hitRate;
+        bool isHit = RN1 <= finalStats.hitRate;
 
         // "True Hit"
         // 2RN
-        int RN2 = Random.Range(0, 100);
-        int trueHitRN = (int)((RN1 + RN2)/2f);
-        bool isHit =  trueHitRN <= finalStats.hitRate;
+        // int RN2 = Random.Range(0, 100);
+        // int trueHitRN = (int)((RN1 + RN2)/2f);
+        // bool isHit =  trueHitRN <= finalStats.hitRate;
 
 		// final retval
 		bool survived = true;
@@ -185,6 +186,7 @@ public class Engagement
             // this is emitted here, because OnAvoid doesn't carry state like "toHit" as it exists here
             B.messageEmitter.Emit(MessageEmitter.MessageType.Miss, $"{finalStats.hitRate}%");
 
+            A.FireOnMissEvent();
             B.FireOnAvoidEvent();
             B.personalAudioFX.PlayAvoidFX();
 		}

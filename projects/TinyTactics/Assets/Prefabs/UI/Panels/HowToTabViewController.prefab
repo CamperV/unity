@@ -2505,7 +2505,7 @@ MonoBehaviour:
     follows:\n\n<color=#FFDD70>Might</color> (MT) - \nDetermines the damage done
     by a unit's attack.   <u>+1 MT = +1 damage.</u>\n\n<color=#FFDD70>Accuracy</color>
     (ACC) - \nDetermines the unit's chance to hit or miss the target.   <u>+1 ACC
-    = +1% To Hit</u>\n\n<color=#FFDD70>Weight</color> (ACC) - \nThis one is trickier,
+    = +1% To Hit</u>\n\n<color=#FFDD70>Weight</color> (WT) - \nThis one is trickier,
     and might be changed soon. \n\nWeight incurs a penalty on a unit's Reflex (i.e.,
     Avoid). Weight is mitigated by Strength. For example: if a unit has a Strength
     of 7, and is wielding a weapon of Weight 10, this unit will suffer -3 Reflex

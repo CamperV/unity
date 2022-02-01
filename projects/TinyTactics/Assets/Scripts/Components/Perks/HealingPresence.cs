@@ -9,7 +9,7 @@ public class HealingPresence : Perk, IToolTip
 
     // IToolTip
     public string tooltipName { get; set; } = "Healing Presence";
-    public string tooltip { get; set; } = "On start of turn, heal adjacent allies by 50% of their Max HP.";
+    public string tooltip { get; set; } = "On start of turn, heal adjacent allies by 33% of their Max HP.";
 
     public override void OnAcquire() {
         boundUnit.OnStartTurn += HealAdjacentUnits;
@@ -22,7 +22,7 @@ public class HealingPresence : Perk, IToolTip
     // grant only to allies
     private void HealAdjacentUnits(Unit _) {
         foreach (Unit unit in boundUnit.AlliesWithinRange(1)) {
-            int healAmount = (int)(0.5f * unit.unitStats.VITALITY);
+            int healAmount = (int)(0.33f * unit.unitStats.VITALITY);
             unit.HealAmount(healAmount);
         }
     }
