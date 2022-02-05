@@ -29,7 +29,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4721077009342620575, guid: 55e7842594258894cb3edd0f49b6f939, type: 3}
       propertyPath: m_characterSpacing
-      value: -15
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 4721077009342620575, guid: 55e7842594258894cb3edd0f49b6f939, type: 3}
       propertyPath: m_fontColor32.rgba
