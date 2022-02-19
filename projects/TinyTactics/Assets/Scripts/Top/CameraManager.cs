@@ -31,6 +31,8 @@ public class CameraManager : MonoBehaviour
 	// ZOOM WHEEL HARDWARE SPECIFIC
 	private readonly float scrollTick = 120f;
 
+	private EventManager _cachedEventManager;
+
 	void Awake() {
 		camera = GetComponent<Camera>();
 		cameraLock = true;
@@ -44,9 +46,15 @@ public class CameraManager : MonoBehaviour
 
 		// init for scrolling
 		zoomLevel = camera.orthographicSize;
+
+		// cache the event manager so that we don't look it up every frame
+		_cachedEventManager = GameObject.Find("Battle").GetComponent<EventManager>();
 	}
 
-	public static void FocusActiveCameraOn(Vector3 focalPoint) => Camera.main.GetComponent<CameraManager>().trackingPosition = focalPoint;
+	public static void FocusActiveCameraOn(Vector3 focalPoint) {
+		CameraManager activeCM = Camera.main.GetComponent<CameraManager>();
+		if (activeCM.cameraLock) activeCM.trackingPosition = focalPoint;
+	}
 
 	public void UpdateMovementVector(Vector2 directionalInput) {
 		movementVector = new Vector3(cameraSpeed.x*directionalInput.x, cameraSpeed.y*directionalInput.y, 0);
@@ -60,7 +68,7 @@ public class CameraManager : MonoBehaviour
 	public void LateUpdate() {
 		// MOUSEINPUT FOR SCROLLING SEEMS TO BE BROKEN IN UNITY
 		// use this in the meantime:
-		if (GameObject.Find("Battle").GetComponent<EventManager>().inputController.gameObject.activeInHierarchy) {
+		if (_cachedEventManager.inputController.gameObject.activeInHierarchy) {
 			Vector2 zoomVec = Mouse.current.scroll.ReadValue();
 			if (zoomVec.y != 0) UpdateZoomLevel(zoomVec);
 		}

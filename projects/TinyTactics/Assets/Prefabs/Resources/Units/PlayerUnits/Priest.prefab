@@ -16,18 +16,6 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
---- !u!114 &-2770078943836941951
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4764932412743263581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-2639223290035850267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,6 +68,7 @@ MonoBehaviour:
   REFLEX: 0
   DEFENSE: 0
   MOVE: 0
+  _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 16
@@ -125,6 +114,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5869286192602309075, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1dcb39d7d35e1974084d40b47d27dfd4, type: 3}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
       value: Priest

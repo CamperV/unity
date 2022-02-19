@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using TMPro;
 
-[RequireComponent(typeof(SpriteRenderer), typeof(SpriteAnimator))]
+[RequireComponent(typeof(SpriteAnimator))]
 [RequireComponent(typeof(UnitPathfinder))]
 [RequireComponent(typeof(UnitStats))]
 [RequireComponent(typeof(MessageEmitter))]
@@ -49,7 +49,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     [HideInInspector] public UnitMap unitMap;
     [HideInInspector] public BattleMap battleMap;
     [HideInInspector] public SpriteAnimator spriteAnimator;
-    [HideInInspector] public SpriteRenderer spriteRenderer;
     [HideInInspector] public UnitPathfinder unitPathfinder;
     [HideInInspector] public UnitStats unitStats;
     [HideInInspector] protected HoldTimer holdTimer;
@@ -94,7 +93,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
     protected virtual void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         unitPathfinder = GetComponent<UnitPathfinder>();
         unitStats = GetComponent<UnitStats>();
         holdTimer = GetComponent<HoldTimer>();
@@ -129,8 +127,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
 
         // some init things that need to be taken care of
         unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
-
-        originalColor = spriteRenderer.color;
     }
 
     // we must take care to add certain functions to the MoveRange
@@ -147,14 +143,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         } else {
             attackRange = AttackRange.Empty;
         }
-    }
-
-    public void RevertColor() {
-        spriteRenderer.color = originalColor;
-    }
-
-    public void LerpInactiveColor(float lerpValue) {
-        spriteRenderer.color = Color.Lerp(originalColor, new Color(0.75f, 0.75f, 0.75f, 1f), lerpValue);
     }
 
     public bool HasTagMatch(params string[] tagsToCheck) {
@@ -221,7 +209,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         // turnActive = true;
         moveAvailable = true;
         attackAvailable = true;
-        RevertColor();  // to original
+        spriteAnimator.RevertColor();  // to original
         UpdateThreatRange();
     }
 
@@ -239,7 +227,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         turnActive = false;
         moveAvailable = false;
         attackAvailable = false;
-        spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
+        spriteAnimator.ChangeColor(SpriteAnimator.Inactive);
 
         FireOnFinishTurnEvent();
     }
@@ -285,7 +273,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     }
 
     private IEnumerator SequentialDeath() {
-        yield return new WaitUntil(() => spriteAnimator.isAnimating == false && spriteAnimator.isMoving == false);
+        yield return new WaitUntil(spriteAnimator.DoneAnimatingAndEmptyQueue);
 
         // wait until you're ready to animate
         personalAudioFX.PlayDeathFX();

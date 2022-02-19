@@ -18,6 +18,7 @@ MonoBehaviour:
   REFLEX: 0
   DEFENSE: 0
   MOVE: 0
+  _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 20
@@ -39,18 +40,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8be0813af3ea0b4685d421b5821408f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4435437637835985314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5017226353260258860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7595792225521657401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,6 +55,7 @@ MonoBehaviour:
   terrainTiles: []
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
+  moveThroughTerrainOverride: 0
 --- !u!114 &7658602002536806803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,6 +80,7 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
+  messageEmitter: {fileID: 0}
   equippedWeapon: {fileID: 146772166050584365, guid: f8e8b537543ba874bb8e505e51644735, type: 3}
   tags: []
   archetypes: []

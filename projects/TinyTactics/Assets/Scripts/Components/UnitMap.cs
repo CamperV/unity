@@ -77,7 +77,7 @@ public class UnitMap : MonoBehaviour
     // move a unit into a gridPosition, transform and all. ONly if not reserved
     public void MoveUnit(Unit unit, GridPosition gp, bool newBoardEvent = true) {
         if (map[gp] == null && (reservations[gp] == null || reservations[gp] == unit)) {
-
+            print($"aligning unit {unit}");
             GridPosition prevGridPosition = unit.gridPosition;
             AlignUnit(unit, gp);
 
@@ -92,8 +92,9 @@ public class UnitMap : MonoBehaviour
             // trigger relevant Tile Events/TerrainEffects
             TerrainTile exitingTile = battleMap.TerrainAt(prevGridPosition);
             TerrainTile enteringTile = battleMap.TerrainAt(unit.gridPosition);
-            if (exitingTile.HasTerrainEffect) exitingTile.terrainEffect.OnExitTerrain(unit);
-            if (enteringTile.HasTerrainEffect) enteringTile.terrainEffect.OnEnterTerrain(unit);
+            print($"Tried to get exiting {exitingTile} and entering {enteringTile}");
+            if (exitingTile?.HasTerrainEffect ?? false) exitingTile.terrainEffect.OnExitTerrain(unit);
+            if (enteringTile?.HasTerrainEffect ?? false) enteringTile.terrainEffect.OnEnterTerrain(unit);
 
         } else {
             if (map[gp] == unit || reservations[gp] == unit) AlignUnit(unit, gp);

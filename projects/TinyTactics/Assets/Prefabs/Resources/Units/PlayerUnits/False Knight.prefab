@@ -49,18 +49,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <PerkData>k__BackingField: {fileID: 11400000, guid: d37f2079dde51c640a48c330ca91e610, type: 2}
   audioFXBundle: {fileID: 11400000, guid: 156b54777abab874a9704c6b814b11ff, type: 2}
---- !u!114 &3401030485247819826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8483269944897788772}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5533736364961823358
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,6 +83,7 @@ MonoBehaviour:
   REFLEX: 0
   DEFENSE: 0
   MOVE: 0
+  _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 25
@@ -127,6 +116,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.8932997
       objectReference: {fileID: 0}
+    - target: {fileID: 5869286192602309075, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: fd8c3933880b37a41b6cac2808022bfe, type: 3}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
       value: False Knight

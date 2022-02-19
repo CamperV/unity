@@ -18,6 +18,7 @@ MonoBehaviour:
   REFLEX: 0
   DEFENSE: 0
   MOVE: 0
+  _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 13
@@ -51,6 +52,7 @@ MonoBehaviour:
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
+  messageEmitter: {fileID: 0}
   equippedWeapon: {fileID: 5311602426619238717, guid: 328d95379d47d69468be19c35cfe212b, type: 3}
   tags: []
   archetypes: []
@@ -59,18 +61,6 @@ MonoBehaviour:
   <moveAvailable>k__BackingField: 0
   <attackAvailable>k__BackingField: 0
   assignedPod: {fileID: 0}
---- !u!114 &-1246748389818702250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5381111505984012946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-1203123687076951011
 MonoBehaviour:
   m_ObjectHideFlags: 0

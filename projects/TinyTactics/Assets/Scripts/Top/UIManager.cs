@@ -67,8 +67,8 @@ public sealed class UIManager : MonoBehaviour
 
 		// PLAYER-SIDE
 		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
-		playerEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.aggressor.spriteRenderer.sprite;
-		playerEngagementPreviewPanel.portraitImage.color = potentialEngagement.aggressor.spriteRenderer.color;
+		playerEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.aggressor.spriteAnimator.MainSprite;
+		playerEngagementPreviewPanel.portraitImage.color = potentialEngagement.aggressor.spriteAnimator.MainColor;
 		playerEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.aggressor.equippedWeapon.sprite;
 		playerEngagementPreviewPanel.weaponImage.color = potentialEngagement.aggressor.equippedWeapon.color;
 		playerEngagementPreviewPanel.nameText.SetText(potentialEngagement.aggressor.displayName);
@@ -91,8 +91,8 @@ public sealed class UIManager : MonoBehaviour
 		// ENEMY-SIDE
 		// only update this if you CAN counter-attack
 		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
-		enemyEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.defender.spriteRenderer.sprite;
-		enemyEngagementPreviewPanel.portraitImage.color = potentialEngagement.defender.spriteRenderer.color;
+		enemyEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.defender.spriteAnimator.MainSprite;
+		enemyEngagementPreviewPanel.portraitImage.color = potentialEngagement.defender.spriteAnimator.MainColor;
 		enemyEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.defender.equippedWeapon.sprite;
 		enemyEngagementPreviewPanel.weaponImage.color = potentialEngagement.defender.equippedWeapon.color;
 		enemyEngagementPreviewPanel.nameText.SetText(potentialEngagement.defender.displayName);

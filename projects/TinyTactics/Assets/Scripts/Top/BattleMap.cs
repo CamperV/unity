@@ -19,7 +19,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public event TerrainInteraction TerrainMouseOverEvent;
     //
 
-    [SerializeField] private Tile mouseOverOverlayTile;
+    [SerializeField] private VisualTile mouseOverOverlayTile;
     [SerializeField] private Tile pathOverlayTile;
     [SerializeField] private Tile pathEndOverlayTile;
     
@@ -27,10 +27,10 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public GridPosition CurrentMouseGridPosition { get => recentMouseOver; }
     public bool MouseInBounds { get => IsInBounds(recentMouseOver); }
 
-    private Tilemap overlayTilemap;
-    private Tilemap highlightTilemap;
-    private Tilemap baseTilemap;
-    private Tilemap backgroundTilemap;
+    [SerializeField] private Tilemap overlayTilemap;
+    [SerializeField] private Tilemap highlightTilemap;
+    [SerializeField] private Tilemap gridlinesTilemap;
+    [SerializeField] private Tilemap baseTilemap;
     
     private HashSet<GridPosition> _Positions;
     public HashSet<GridPosition> Positions {
@@ -41,23 +41,17 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
 
     void Awake() {
-        Tilemap[] tilemaps = GetComponentsInChildren<Tilemap>();
-
-        overlayTilemap = tilemaps[0];
         overlayTilemap.CompressBounds();
 		overlayTilemap.RefreshAllTiles();
 
-        highlightTilemap = tilemaps[1];
+        gridlinesTilemap.CompressBounds();
+		gridlinesTilemap.RefreshAllTiles();
+
         highlightTilemap.CompressBounds();
 		highlightTilemap.RefreshAllTiles();
 
-        baseTilemap = tilemaps[2];
         baseTilemap.CompressBounds();
 		baseTilemap.RefreshAllTiles();
-
-        backgroundTilemap = tilemaps[3];
-        backgroundTilemap.CompressBounds();
-		backgroundTilemap.RefreshAllTiles();
     }
 
     void Start() {

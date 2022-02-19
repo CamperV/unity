@@ -7,16 +7,21 @@ using Random = UnityEngine.Random;
 using Extensions;
 using TMPro;
 
-[RequireComponent(typeof(SpriteRenderer))]
 public class SpriteAnimator : MonoBehaviour
 {
     // we want it to take X seconds to go over one tile
 	public static float speedMultiplier = 1f;
 	public static float fixedTimePerTile { get => 0.10f / speedMultiplier; }
 	public static bool skipMovement = false;
+	public static Color Inactive => new Color(0.75f, 0.75f, 0.75f, 1.0f);
 
 	public Action<Vector3> PositionUpdater;
-	private SpriteRenderer spriteRenderer;
+	[SerializeField] private SpriteRenderer spriteRenderer;
+	[SerializeField] private Transform spriteTransform;
+	private Color originalColor;
+	//
+	public Sprite MainSprite => spriteRenderer.sprite;
+	public Color MainColor => spriteRenderer.color;
 
 	private int _animationStack;
 	public int animationStack {
@@ -44,9 +49,10 @@ public class SpriteAnimator : MonoBehaviour
 	// fashioned as Func<bool> for WaitUntil convenience
 	public bool DoneAnimating() => !isAnimating && !isMoving;
 	public bool EmptyQueue() => actionQueue.Count == 0 && processActionQueue == null;
+	public bool DoneAnimatingAndEmptyQueue() => DoneAnimating() && EmptyQueue();
 
 	void Awake() {
-		spriteRenderer = GetComponent<SpriteRenderer>();
+		originalColor = spriteRenderer.color;
 
 		// else if you don't have this component, construct a default Updater
 		PositionUpdater = v => transform.position = v;
@@ -93,6 +99,14 @@ public class SpriteAnimator : MonoBehaviour
 		processActionQueue = null;
 	}
 
+	///////////
+	// COLOR //
+	///////////
+	public void ChangeColor(Color newColor) => spriteRenderer.color = newColor;
+	//
+    public void RevertColor() => ChangeColor(originalColor);
+    public void LerpInactiveColor(float lerpValue) => ChangeColor(Color.Lerp(originalColor, new Color(0.75f, 0.75f, 0.75f, 1f), lerpValue));
+
 	public IEnumerator FadeDown(float fixedTime) {
 		animationStack++;
 		//
@@ -100,7 +114,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
+			ChangeColor(spriteRenderer.color.WithAlpha(1.0f - timeRatio));
 			yield return null;
 		}
 
@@ -150,7 +164,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
+			ChangeColor(spriteRenderer.color.WithAlpha(1.0f - timeRatio));
 			yield return null;
 		}
 
@@ -166,7 +180,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			spriteRenderer.color = spriteRenderer.color.WithAlpha(1.0f - timeRatio);
+			ChangeColor(spriteRenderer.color.WithAlpha(1.0f - timeRatio));
 			yield return null;
 		}
 
@@ -182,7 +196,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			spriteRenderer.color = spriteRenderer.color.WithAlpha(timeRatio);
+			ChangeColor(spriteRenderer.color.WithAlpha(timeRatio));
 			yield return null;
 		}
 
@@ -193,12 +207,11 @@ public class SpriteAnimator : MonoBehaviour
 	public IEnumerator TweenColor(Color color, float fixedTime) {
 		animationStack++;
 		//
-		Color originalColor = spriteRenderer.color;
 
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			spriteRenderer.color = Color.Lerp(originalColor, color, timeRatio).WithAlpha(spriteRenderer.color.a);
+			ChangeColor(Color.Lerp(originalColor, color, timeRatio).WithAlpha(spriteRenderer.color.a));
 			yield return null;
 		}
 
@@ -209,7 +222,6 @@ public class SpriteAnimator : MonoBehaviour
 	public IEnumerator FlashColor(Color color) {
 		animationStack++;
 		//
-		Color originalColor = spriteRenderer.color;
 		
 		float fixedTime = 1.0f;
 		float timeRatio = 0.0f;
@@ -218,55 +230,129 @@ public class SpriteAnimator : MonoBehaviour
 			timeRatio += (Time.deltaTime / fixedTime);
 
 			var colorDiff = originalColor - ((1.0f - timeRatio) * (originalColor - color));
-			spriteRenderer.color = colorDiff.WithAlpha(1.0f);
+			ChangeColor(colorDiff.WithAlpha(1.0f));
 
 			yield return null;
 		}
-		spriteRenderer.color = originalColor;
+		RevertColor();
 		
 		//
 		animationStack--;
 	}
 
+	////////////
+	// MOTION //
+	////////////
+
 	// not relative to time: shake only 3 times, wait a static amt of time
 	public IEnumerator Shake(float radius, int numberOfShakes) {
 		animationStack++;
-		movementStack++;
 		//
-
-		// I would love to do this in a one-liner...
-		// (Select, etc) but due to Unity's choices, you cant' ToList a safeTransform for its enumerated children
-		// this should preserve order...?
-		var ogPosition = transform.position;
-		var childOgPositions = new List<Vector3>();
-		foreach (Transform child in transform) childOgPositions.Add(child.position);
-		int index;
+		Vector3 startPos = spriteTransform.position;
 
 		for (int i = 0; i < numberOfShakes; i++) {
 			Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
-			transform.position = ogPosition + offset;
+			spriteTransform.position = startPos + offset;
 
-			// reverse offset all children, so only the main Unit shakes
-			index = 0;
-			foreach (Transform child in transform) {
-				child.position = childOgPositions[index] - offset;
-				index++;
-			}
 			radius /= 2f;
 			yield return new WaitForSeconds(0.05f);
 		}
-		transform.position = ogPosition;
-		index = 0;
-		foreach (Transform child in transform) {
-			child.position = childOgPositions[index];
-			index++;
-		}
+
+		spriteTransform.position = startPos;
 
 		//
 		animationStack--;
-		movementStack--;
+	}
+
+	public IEnumerator SmoothCosX(float freq, float amplitude, float phase, float fixedTime) {
+		animationStack++;
+        //
+
+		float timeStep = 0.0f;
+		Vector3 startPos = spriteTransform.position;
+
+		while (timeStep < 1.0f) {
+			timeStep += (Time.deltaTime / fixedTime);
+			
+			Vector3 xComponent = amplitude*(1f-timeStep) * (Mathf.Cos( (freq*Time.time) + phase)) * Vector3.right;
+			spriteTransform.position = Vector3.Lerp(spriteTransform.position, startPos + xComponent, timeStep);
+
+			yield return null;
+		}
+		
+		// after the while loop is broken:
+		spriteTransform.position = startPos;
+		animationStack--;
+	}
+
+
+	public IEnumerator BumpTowards<T>(T target, IGrid<T> surface, float distanceScale = 5.0f) where T : struct {
+		yield return SmoothBump(surface.GridToWorld(target), distanceScale);
 	}
 	
+	// this coroutine performs a little 'bump' when you can't move
+	public IEnumerator SmoothBump(Vector3 endpoint, float distanceScale) {
+		if (skipMovement) yield break;
+		animationStack++;
+
+		Vector3 startPos = spriteTransform.position;
+		Vector3 peakPos = startPos + (endpoint - spriteTransform.position)/distanceScale;
+		
+		float timeStep = 0.0f;
+		while (timeStep < 1.0f) {
+			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
+			spriteTransform.position = Vector3.Lerp(startPos, peakPos, timeStep);
+			yield return null;
+		}
+
+		// now for the return journey
+		timeStep = 0.0f;
+		while (timeStep < 1.0f)  {
+			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
+			spriteTransform.position = Vector3.Lerp(peakPos, startPos, timeStep);
+			yield return null;
+		}
+		
+		// after the while loop is broken:
+		spriteTransform.position = startPos;
+		animationStack--;
+	}
+
+
+	// this coroutine performs a little 'bump' when you can't move
+	public IEnumerator SmoothBumpRandom(float radius) {
+		if (skipMovement) yield break;
+		animationStack++;
+
+		float timeScale = 0.5f*fixedTimePerTile;
+
+		// get random location for spike
+		Vector3 startPos = spriteTransform.position;
+		Vector3 peakPos = startPos + (Vector3)Random.insideUnitCircle*radius;
+		
+		float timeStep = 0.0f;
+		while (timeStep < 1.0f) {
+			timeStep += (Time.deltaTime / (timeScale/4f) );
+			spriteTransform.position = Vector3.Lerp(startPos, peakPos, timeStep);
+			yield return null;
+		}
+
+		// now for the return journey
+		timeStep = 0.0f;
+		while (timeStep < 1.0f)  {
+			timeStep += (Time.deltaTime / (4f*timeScale) );
+			spriteTransform.position = Vector3.Lerp(peakPos, startPos, timeStep);
+			yield return null;
+		}
+		
+		// after the while loop is broken:
+		spriteTransform.position = startPos;
+		animationStack--;
+	}
+	
+	////////////////////
+	// UNIT MAP MOVER //
+	////////////////////
 	public IEnumerator SmoothMovement(Vector3 endpoint, float _fixedTime = -1f) {
 		if (skipMovement) {
 			PositionUpdater(endpoint);
@@ -288,44 +374,6 @@ public class SpriteAnimator : MonoBehaviour
 		// after the while loop is broken:
 		PositionUpdater(endpoint);
 		movementStack--;
-	}
-
-	public IEnumerator SmoothCosX(float freq, float amplitude, float phase, float fixedTime) {
-		animationStack++;
-        //
-
-		float timeStep = 0.0f;
-		Vector3 startPos = transform.position;
-
-		var childOgPositions = new List<Vector3>();
-		foreach (Transform child in transform) childOgPositions.Add(child.position);
-		int index;
-
-		while (timeStep < 1.0f) {
-			timeStep += (Time.deltaTime / fixedTime);
-			
-			Vector3 xComponent = amplitude*(1f-timeStep) * (Mathf.Cos( (freq*Time.time) + phase)) * Vector3.right;
-			PositionUpdater(Vector3.Lerp(transform.position, startPos + xComponent, timeStep));
-			
-			// reverse offset all children, so only the main Unit shakes
-			index = 0;
-			foreach (Transform child in transform) {
-				child.position = childOgPositions[index];
-				index++;
-			}
-
-			yield return null;
-		}
-		
-		// after the while loop is broken:
-		PositionUpdater(startPos);
-		index = 0;
-		foreach (Transform child in transform) {
-			child.position = childOgPositions[index];
-			index++;
-		}
-
-		animationStack--;
 	}
 
 	public IEnumerator SmoothMovementGrid<T>(T target, IGrid<T> surface, float _fixedTime = -1f) where T : struct {
@@ -350,108 +398,6 @@ public class SpriteAnimator : MonoBehaviour
 		
 		// after the while loop is broken:
 		PositionUpdater(endpoint);
-		movementStack--;
-	}
-
-	public IEnumerator BumpTowards<T>(T target, IGrid<T> surface, float distanceScale = 5.0f) where T : struct {
-		yield return SmoothBump(surface.GridToWorld(target), distanceScale);
-	}
-	
-	// this coroutine performs a little 'bump' when you can't move
-	public IEnumerator SmoothBump(Vector3 endpoint, float distanceScale) {
-		if (skipMovement) {
-			PositionUpdater(transform.position);
-			yield break;
-		}
-		movementStack++;
-
-		Vector3 startPos = transform.position;
-		Vector3 peakPos = startPos + (endpoint - transform.position)/distanceScale;
-
-		// this version of SmoothBump leaves all children transforms in place
-		List<Vector3> childOgPositions = new List<Vector3>();
-		foreach (Transform child in transform) childOgPositions.Add(child.position);
-		
-		float timeStep = 0.0f;
-		while (timeStep < 1.0f) {
-			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
-			PositionUpdater(Vector3.Lerp(startPos, peakPos, timeStep));
-
-			int index = 0;
-			foreach (Transform child in transform) {
-				child.position = childOgPositions[index];
-				index++;
-			}
-			yield return null;
-		}
-
-		// now for the return journey
-		timeStep = 0.0f;
-		while (timeStep < 1.0f)  {
-			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
-			PositionUpdater(Vector3.Lerp(peakPos, startPos, timeStep));
-
-			int index = 0;
-			foreach (Transform child in transform) {
-				child.position = childOgPositions[index];
-				index++;
-			}
-			yield return null;
-		}
-		
-		// after the while loop is broken:
-		PositionUpdater(startPos);
-		movementStack--;
-	}
-
-
-	// this coroutine performs a little 'bump' when you can't move
-	public IEnumerator SmoothBumpRandom(float radius) {
-		if (skipMovement) {
-			PositionUpdater(transform.position);
-			yield break;
-		}
-		movementStack++;
-
-		float timeScale = 0.5f*fixedTimePerTile;
-
-		// get random location for spike
-		Vector3 startPos = transform.position;
-		Vector3 peakPos = startPos + (Vector3)Random.insideUnitCircle*radius;
-
-		// this version of SmoothBump leaves all children transforms in place
-		List<Vector3> childOgPositions = new List<Vector3>();
-		foreach (Transform child in transform) childOgPositions.Add(child.position);
-		
-		float timeStep = 0.0f;
-		while (timeStep < 1.0f) {
-			timeStep += (Time.deltaTime / (timeScale/4f) );
-			PositionUpdater(Vector3.Lerp(startPos, peakPos, timeStep));
-
-			int index = 0;
-			foreach (Transform child in transform) {
-				child.position = childOgPositions[index];
-				index++;
-			}
-			yield return null;
-		}
-
-		// now for the return journey
-		timeStep = 0.0f;
-		while (timeStep < 1.0f)  {
-			timeStep += (Time.deltaTime / (4f*timeScale) );
-			PositionUpdater(Vector3.Lerp(peakPos, startPos, timeStep));
-
-			int index = 0;
-			foreach (Transform child in transform) {
-				child.position = childOgPositions[index];
-				index++;
-			}
-			yield return null;
-		}
-		
-		// after the while loop is broken:
-		PositionUpdater(startPos);
 		movementStack--;
 	}
 

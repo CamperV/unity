@@ -18,6 +18,7 @@ MonoBehaviour:
   REFLEX: -1
   DEFENSE: -1
   MOVE: -1
+  _LUCK: 0
   _CURRENT_HP: 1
   baseStats:
     VITALITY: 19
@@ -74,18 +75,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <PerkData>k__BackingField: {fileID: 11400000, guid: 2a0882fb811f8af4dbf3b2a1bf166fc3, type: 2}
---- !u!114 &7307107380924533155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7142497734743283761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8027820797824634131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +114,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.7137255
       objectReference: {fileID: 0}
+    - target: {fileID: 5869286192602309075, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 46abb5a20de0b1c42b711d0a14d81799, type: 3}
     - target: {fileID: 6096969835717758623, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_Name
       value: Rogue

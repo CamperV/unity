@@ -442,7 +442,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         turnActive = false;
         moveAvailable = false;
         attackAvailable = false;
-        spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
+        spriteAnimator.ChangeColor(SpriteAnimator.Inactive);
 
         FireOnFinishTurnEvent();
         playerUnitController.CheckEndPhase();
@@ -452,7 +452,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         turnActive = false;
         moveAvailable = false;
         attackAvailable = false;
-        spriteRenderer.color = new Color(0.75f, 0.75f, 0.75f, 1f);
+        spriteAnimator.ChangeColor(SpriteAnimator.Inactive);
 
         FireOnFinishTurnEvent();
     }

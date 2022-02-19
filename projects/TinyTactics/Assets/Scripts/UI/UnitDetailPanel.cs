@@ -45,8 +45,8 @@ public class UnitDetailPanel : MonoBehaviour
 		
 		
 		//
-	    portraitImage.sprite = unit.spriteRenderer.sprite;
-		portraitImage.color = unit.spriteRenderer.color;
+	    portraitImage.sprite = unit.spriteAnimator.MainSprite;
+		portraitImage.color = unit.spriteAnimator.MainColor;
 		
 		//
 		weaponListing.SetWeaponInfo(unit.equippedWeapon);

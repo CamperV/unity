@@ -51,6 +51,7 @@ MonoBehaviour:
   REFLEX: 0
   DEFENSE: 0
   MOVE: 0
+  _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 23
@@ -88,18 +89,6 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
---- !u!114 &7451740897435914862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5050716536496728386}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083d157a1df2ac04294c877274596b3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1336291650815567837
 PrefabInstance:
   m_ObjectHideFlags: 0

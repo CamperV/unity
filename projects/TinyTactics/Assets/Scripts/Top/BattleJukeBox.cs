@@ -15,7 +15,6 @@ public class BattleJukeBox : MonoBehaviour
     [SerializeField] private AudioClip victoryTrack;
     [SerializeField] private AudioClip defeatTrack;
 
-
     // audioSource will be configured to loop
     // use this guy to transition between 3 tracks
     // pre-battle
