@@ -11,7 +11,6 @@ public class PersonalAudioFX : MonoBehaviour
 
     public AudioFXBundle interactAudioFXBundle;
     public AudioFXBundle specialInteractAudioFXBundle;
-    [HideInInspector] public AudioFXBundle weaponAudioFXBundle; // hidden because it comes from the boundUnit's weapon
     public AudioFXBundle avoidAudioFXBundle;
     public AudioFXBundle healAudioFXBundle;
     public AudioFXBundle deathAudioFXBundle;
@@ -23,10 +22,6 @@ public class PersonalAudioFX : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    void Start() {
-        weaponAudioFXBundle = boundUnit.equippedWeapon.audioFXBundle;
-    }
-
     public void PlayFX(AudioClip clip) => audioSource.PlayOneShot(clip, 1f);
 
     public void PlayInteractFX() {
@@ -35,10 +30,6 @@ public class PersonalAudioFX : MonoBehaviour
 
     public void PlaySpecialInteractFX() {
         audioSource.PlayOneShot(specialInteractAudioFXBundle.RandomClip(), 1f);
-    }
-
-    public void PlayWeaponAttackFX() {
-        audioSource.PlayOneShot(weaponAudioFXBundle.RandomClip(), 1f);
     }
 
     public void PlayAvoidFX() {
@@ -59,5 +50,10 @@ public class PersonalAudioFX : MonoBehaviour
 
     public void PlayBlockFX() {
         audioSource.PlayOneShot(blockAudioFXBundle.RandomClip(), 1f);
+    }
+
+    // from the weapon itself
+    public void PlayWeaponAttackFX() {
+        audioSource.PlayOneShot(boundUnit.equippedWeapon.audioFXBundle.RandomClip(), 1f);
     }
 }

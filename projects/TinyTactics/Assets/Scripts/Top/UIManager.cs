@@ -74,8 +74,10 @@ public sealed class UIManager : MonoBehaviour
 		playerEngagementPreviewPanel.nameText.SetText(potentialEngagement.aggressor.displayName);
 		//
 		playerEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.aggressor.unitStats._CURRENT_HP}");
-		playerEngagementPreviewPanel.dmgValue.SetText($"{playerPreviewStats.damage}");
-		playerEngagementPreviewPanel.hitValue.SetText($"{playerPreviewStats.hitRate}%");
+		playerEngagementPreviewPanel.dmgValue.SetText($"{playerPreviewStats.minDamage} - {playerPreviewStats.maxDamage}");
+		playerEngagementPreviewPanel.hitValue.SetText("100%");
+		// playerEngagementPreviewPanel.dmgValue.SetText($"{playerPreviewStats.damage}");
+		// playerEngagementPreviewPanel.hitValue.SetText($"{playerPreviewStats.hitRate}%");
 		playerEngagementPreviewPanel.critValue.SetText($"{playerPreviewStats.critRate}%");
 
 		// list of perks that were relevant for this Attack & potentially, counterDefense
@@ -105,8 +107,10 @@ public sealed class UIManager : MonoBehaviour
 			enemyEngagementPreviewPanel.critValue.SetText($"--%");
 		} else {
 			enemyEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.defender.unitStats._CURRENT_HP}");
-			enemyEngagementPreviewPanel.dmgValue.SetText($"{enemyPreviewStats.damage}");
-			enemyEngagementPreviewPanel.hitValue.SetText($"{enemyPreviewStats.hitRate}%");
+			enemyEngagementPreviewPanel.dmgValue.SetText($"{enemyPreviewStats.minDamage} - {enemyPreviewStats.maxDamage}");
+			enemyEngagementPreviewPanel.hitValue.SetText("100%");
+			// enemyEngagementPreviewPanel.dmgValue.SetText($"{enemyPreviewStats.damage}");
+			// enemyEngagementPreviewPanel.hitValue.SetText($"{enemyPreviewStats.hitRate}%");
 			enemyEngagementPreviewPanel.critValue.SetText($"{enemyPreviewStats.critRate}%");	
 		}
 

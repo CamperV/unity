@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class WeaponListing : MonoBehaviour
+public class MartialWeaponListing : MonoBehaviour
 {
     public TextMeshProUGUI nameValue;
     public Image weaponTypeBackground;
@@ -13,12 +13,12 @@ public class WeaponListing : MonoBehaviour
     public TextMeshProUGUI accuracyValue;
     public TextMeshProUGUI weightValue;
 
-    public void SetWeaponInfo(Weapon weapon) {
+    public void SetWeaponInfo(MartialWeapon weapon) {
         nameValue.SetText(weapon.displayName);
         weaponTypeBackground.color = weapon.color;
 
-        mightValue.SetText($"{weapon.GetComponent<WeaponStats>().MIGHT}");
-        accuracyValue.SetText($"{weapon.GetComponent<WeaponStats>().ACCURACY}");
-        weightValue.SetText($"{weapon.GetComponent<WeaponStats>().WEIGHT}");
+        mightValue.SetText($"{weapon.weaponStats.MIGHT}");
+        accuracyValue.SetText($"{weapon.weaponStats.ACCURACY}");
+        weightValue.SetText($"{weapon.weaponStats.WEIGHT}");
     }
 }

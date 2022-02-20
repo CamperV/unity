@@ -235,7 +235,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         ChangeState(PlayerUnitFSM.Attacking);
 
                         engagementResolveFlag = true;
-                        Engagement engagement = Engagement.Create(this, enemy);
+                        Engagement engagement = new Engagement(this, enemy);
                         StartCoroutine( engagement.Resolve() );
 
                         // wait until the engagement has ended
@@ -335,7 +335,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
                         battleMap.Highlight(battleMap.CurrentMouseGridPosition, Palette.threatColorYellow);
 
                         // create and display EngagementPreviews here
-                        UIManager.inst.EnableEngagementPreview( Engagement.Create(this, enemy), enemy.transform );
+                        UIManager.inst.EnableEngagementPreview( new Engagement(this, enemy), enemy.transform );
                     }
                 }
                 break;
@@ -442,7 +442,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         turnActive = false;
         moveAvailable = false;
         attackAvailable = false;
-        spriteAnimator.ChangeColor(SpriteAnimator.Inactive);
+        spriteAnimator.SetColor(SpriteAnimator.Inactive);
 
         FireOnFinishTurnEvent();
         playerUnitController.CheckEndPhase();
@@ -452,7 +452,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         turnActive = false;
         moveAvailable = false;
         attackAvailable = false;
-        spriteAnimator.ChangeColor(SpriteAnimator.Inactive);
+        spriteAnimator.SetColor(SpriteAnimator.Inactive);
 
         FireOnFinishTurnEvent();
     }

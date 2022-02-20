@@ -22,10 +22,10 @@ MonoBehaviour:
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 10
-    STRENGTH: 3
-    DEXTERITY: 3
-    REFLEX: 3
-    DEFENSE: 3
+    STRENGTH: 2
+    DEXTERITY: 2
+    REFLEX: 0
+    DEFENSE: 1
     MOVE: 3
   variance: 0
 --- !u!114 &-4946214678624175339
@@ -77,14 +77,13 @@ MonoBehaviour:
   unitMap: {fileID: 0}
   battleMap: {fileID: 0}
   spriteAnimator: {fileID: 0}
-  spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   messageEmitter: {fileID: 0}
-  equippedWeapon: {fileID: 4208190406358933966, guid: 80baaa77927ff1c49ad995ee9ede47a2, type: 3}
-  tags: []
+  equippedWeapon: {fileID: 4200387705799600191, guid: 80baaa77927ff1c49ad995ee9ede47a2, type: 3}
+  <tags>k__BackingField: []
   archetypes:
   - {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
   debugStateLabel: {fileID: 0}

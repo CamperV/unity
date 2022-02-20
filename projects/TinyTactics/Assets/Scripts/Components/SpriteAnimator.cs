@@ -102,10 +102,11 @@ public class SpriteAnimator : MonoBehaviour
 	///////////
 	// COLOR //
 	///////////
-	public void ChangeColor(Color newColor) => spriteRenderer.color = newColor;
+	public void SetColor(Color newColor) => spriteRenderer.color = newColor;
+	public void SetPosition(Vector3 newPos) => spriteTransform.position = newPos;
 	//
-    public void RevertColor() => ChangeColor(originalColor);
-    public void LerpInactiveColor(float lerpValue) => ChangeColor(Color.Lerp(originalColor, new Color(0.75f, 0.75f, 0.75f, 1f), lerpValue));
+    public void RevertColor() => SetColor(originalColor);
+    public void LerpInactiveColor(float lerpValue) => SetColor(Color.Lerp(originalColor, new Color(0.75f, 0.75f, 0.75f, 1f), lerpValue));
 
 	public IEnumerator FadeDown(float fixedTime) {
 		animationStack++;
@@ -114,7 +115,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			ChangeColor(spriteRenderer.color.WithAlpha(1.0f - timeRatio));
+			SetColor(spriteRenderer.color.WithAlpha(1.0f - timeRatio));
 			yield return null;
 		}
 
@@ -164,7 +165,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			ChangeColor(spriteRenderer.color.WithAlpha(1.0f - timeRatio));
+			SetColor(spriteRenderer.color.WithAlpha(1.0f - timeRatio));
 			yield return null;
 		}
 
@@ -180,7 +181,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			ChangeColor(spriteRenderer.color.WithAlpha(1.0f - timeRatio));
+			SetColor(spriteRenderer.color.WithAlpha(1.0f - timeRatio));
 			yield return null;
 		}
 
@@ -196,7 +197,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			ChangeColor(spriteRenderer.color.WithAlpha(timeRatio));
+			SetColor(spriteRenderer.color.WithAlpha(timeRatio));
 			yield return null;
 		}
 
@@ -211,7 +212,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-			ChangeColor(Color.Lerp(originalColor, color, timeRatio).WithAlpha(spriteRenderer.color.a));
+			SetColor(Color.Lerp(originalColor, color, timeRatio).WithAlpha(spriteRenderer.color.a));
 			yield return null;
 		}
 
@@ -222,6 +223,7 @@ public class SpriteAnimator : MonoBehaviour
 	public IEnumerator FlashColor(Color color) {
 		animationStack++;
 		//
+		Color startingColor = spriteRenderer.color;
 		
 		float fixedTime = 1.0f;
 		float timeRatio = 0.0f;
@@ -230,11 +232,11 @@ public class SpriteAnimator : MonoBehaviour
 			timeRatio += (Time.deltaTime / fixedTime);
 
 			var colorDiff = originalColor - ((1.0f - timeRatio) * (originalColor - color));
-			ChangeColor(colorDiff.WithAlpha(1.0f));
+			SetColor(colorDiff.WithAlpha(1.0f));
 
 			yield return null;
 		}
-		RevertColor();
+		SetColor(startingColor);
 		
 		//
 		animationStack--;
@@ -252,13 +254,13 @@ public class SpriteAnimator : MonoBehaviour
 
 		for (int i = 0; i < numberOfShakes; i++) {
 			Vector3 offset = (Vector3)Random.insideUnitCircle*radius;
-			spriteTransform.position = startPos + offset;
+			SetPosition(startPos + offset);
 
 			radius /= 2f;
 			yield return new WaitForSeconds(0.05f);
 		}
 
-		spriteTransform.position = startPos;
+		SetPosition(startPos);
 
 		//
 		animationStack--;
@@ -275,13 +277,13 @@ public class SpriteAnimator : MonoBehaviour
 			timeStep += (Time.deltaTime / fixedTime);
 			
 			Vector3 xComponent = amplitude*(1f-timeStep) * (Mathf.Cos( (freq*Time.time) + phase)) * Vector3.right;
-			spriteTransform.position = Vector3.Lerp(spriteTransform.position, startPos + xComponent, timeStep);
+			SetPosition(Vector3.Lerp(spriteTransform.position, startPos + xComponent, timeStep));
 
 			yield return null;
 		}
 		
 		// after the while loop is broken:
-		spriteTransform.position = startPos;
+		SetPosition(startPos);
 		animationStack--;
 	}
 
@@ -301,7 +303,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeStep = 0.0f;
 		while (timeStep < 1.0f) {
 			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
-			spriteTransform.position = Vector3.Lerp(startPos, peakPos, timeStep);
+			SetPosition(Vector3.Lerp(startPos, peakPos, timeStep));
 			yield return null;
 		}
 
@@ -309,12 +311,12 @@ public class SpriteAnimator : MonoBehaviour
 		timeStep = 0.0f;
 		while (timeStep < 1.0f)  {
 			timeStep += (Time.deltaTime / (0.5f*fixedTimePerTile) );
-			spriteTransform.position = Vector3.Lerp(peakPos, startPos, timeStep);
+			SetPosition(Vector3.Lerp(peakPos, startPos, timeStep));
 			yield return null;
 		}
 		
 		// after the while loop is broken:
-		spriteTransform.position = startPos;
+		SetPosition(startPos);
 		animationStack--;
 	}
 
@@ -333,7 +335,7 @@ public class SpriteAnimator : MonoBehaviour
 		float timeStep = 0.0f;
 		while (timeStep < 1.0f) {
 			timeStep += (Time.deltaTime / (timeScale/4f) );
-			spriteTransform.position = Vector3.Lerp(startPos, peakPos, timeStep);
+			SetPosition(Vector3.Lerp(startPos, peakPos, timeStep));
 			yield return null;
 		}
 
@@ -341,12 +343,12 @@ public class SpriteAnimator : MonoBehaviour
 		timeStep = 0.0f;
 		while (timeStep < 1.0f)  {
 			timeStep += (Time.deltaTime / (4f*timeScale) );
-			spriteTransform.position = Vector3.Lerp(peakPos, startPos, timeStep);
+			SetPosition(Vector3.Lerp(peakPos, startPos, timeStep));
 			yield return null;
 		}
 		
 		// after the while loop is broken:
-		spriteTransform.position = startPos;
+		SetPosition(startPos);
 		animationStack--;
 	}
 	

@@ -31,11 +31,6 @@ public class UnitStats : MonoBehaviour
     [HideInInspector] public int _LUCK; // generally hidden. Useful in perks
 
     [HideInInspector] public int _CURRENT_HP;
-    [HideInInspector] public int _ATK =>    STRENGTH + boundUnit.equippedWeapon.weaponStats.MIGHT;
-    [HideInInspector] public int _HIT =>    DEXTERITY*2 + boundUnit.equippedWeapon.weaponStats.ACCURACY;
-    [HideInInspector] public int _CRT =>    boundUnit.equippedWeapon.weaponStats.CRITICAL;
-    [HideInInspector] public int _AVO =>    REFLEX*2 - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
-    [HideInInspector] public int _CRTAVO => (_LUCK + REFLEX) - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
 
     [Serializable]
     public struct BaseStats {
@@ -61,6 +56,27 @@ public class UnitStats : MonoBehaviour
         _LUCK = 0;
 
         boundUnit = GetComponent<Unit>();
+    }
+
+    public int Calculate_ATK() {
+        return STRENGTH + boundUnit.equippedWeapon.weaponStats.MIGHT;
+    }
+
+    public int Calculate_HIT() {
+        return DEXTERITY*2 + boundUnit.equippedWeapon.weaponStats.ACCURACY;
+    }
+
+    public int Calculate_CRT() {
+        return boundUnit.equippedWeapon.weaponStats.CRITICAL;
+    }
+
+    public int Calculate_AVO() {
+        return REFLEX*2 - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
+    }
+
+    public int Calculate_CRTAVO() {
+        // return (_LUCK + REFLEX) - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
+        return _LUCK + REFLEX;
     }
 
     public void ApplyNature(CampaignUnitGenerator.NatureData natureStats) {

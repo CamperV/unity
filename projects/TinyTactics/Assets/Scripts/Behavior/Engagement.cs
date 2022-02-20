@@ -35,10 +35,7 @@ public class Engagement
     }
 
     public static Engagement Create(Unit a, Unit b) {
-        Engagement mutableEngagement = new Engagement(a, b);
-
-        // only return after registered things have modified the Engagement
-        return mutableEngagement;
+        return new Engagement(a, b);
     }
 
     public static bool CounterAttackPossible(Unit agg, Unit def) {
@@ -100,10 +97,22 @@ public class Engagement
     }
 
     private Attack GenerateAttack(Unit generator, Unit defender) {
+        // deprecated
+        // MutableAttack mutableAttack = new MutableAttack(
+        //     generator.unitStats.Calculate_ATK(),
+        //     generator.unitStats.Calculate_HIT(),
+        //     generator.unitStats.Calculate_CRT(),
+        //     defender.gridPosition.ManhattanDistance(generator.gridPosition) == 1
+        // );
+        
+        // // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
+        // generator.FireOnAttackEvent(ref mutableAttack, defender);
+        // return new Attack(mutableAttack);
+
         MutableAttack mutableAttack = new MutableAttack(
-            generator.unitStats._ATK,
-            generator.unitStats._HIT,
-            generator.unitStats._CRT,
+            generator.unitStats.DEXTERITY + generator.equippedWeapon.weaponStats.MIN_MIGHT,
+            generator.unitStats.STRENGTH + generator.equippedWeapon.weaponStats.MAX_MIGHT,
+            generator.unitStats.Calculate_CRT(),
             defender.gridPosition.ManhattanDistance(generator.gridPosition) == 1
         );
         
@@ -113,10 +122,21 @@ public class Engagement
     }
 
     private Defense GenerateDefense(Unit generator, Unit attacker) {
+        // // deprecated
+        // MutableDefense mutableDefense = new MutableDefense(
+        //     generator.unitStats.DEFENSE,          // reduce incoming damage
+        //     generator.unitStats.Calculate_AVO(),             // avoid rate
+        //     generator.unitStats.Calculate_CRTAVO(),           // crit avoid rate
+        //     attacker.gridPosition.ManhattanDistance(generator.gridPosition) == 1
+        // );
+
+        // // THIS WILL MODIFY THE OUTGOING DEFENSE PACKAGE
+        // generator.FireOnDefendEvent(ref mutableDefense, attacker);
+        // return new Defense(mutableDefense);
+
         MutableDefense mutableDefense = new MutableDefense(
-            generator.unitStats.DEFENSE,          // reduce incoming damage
-            generator.unitStats._AVO,             // avoid rate
-            generator.unitStats._CRTAVO,           // crit avoid rate
+            generator.unitStats.DEFENSE,                      // reduce incoming damage
+            generator.unitStats.Calculate_CRTAVO(),           // crit avoid rate
             attacker.gridPosition.ManhattanDistance(generator.gridPosition) == 1
         );
 
@@ -141,14 +161,14 @@ public class Engagement
 
         // log the Engagement
         UIManager.inst.combatLog.AddEntry(
-            $"{A.logTag}@[{A.displayName}] {attackType}s: [ YELLOW@[{finalStats.damage}] ATK, YELLOW@[{finalStats.hitRate}] HIT, YELLOW@[{finalStats.critRate}] CRIT ]"
+            $"{A.logTag}@[{A.displayName}] {attackType}s: YELLOW@[{finalStats.minDamage}]-YELLOW@[{finalStats.maxDamage}] ATK, YELLOW@[{finalStats.critRate}] CRIT ]"
         );
 
 		// calc hit/crit
-		int RN1 = Random.Range(0, 100);
+		// int RN1 = Random.Range(0, 100);
 		
-        // 1 RN
-        bool isHit = RN1 <= finalStats.hitRate;
+        // // 1 RN
+        // bool isHit = RN1 <= finalStats.hitRate;
 
         // "True Hit"
         // 2RN
@@ -156,40 +176,33 @@ public class Engagement
         // int trueHitRN = (int)((RN1 + RN2)/2f);
         // bool isHit =  trueHitRN <= finalStats.hitRate;
 
-		// final retval
-		bool survived = true;
-		if (isHit) {
-            A.personalAudioFX.PlayWeaponAttackFX();
+        // Calculate final damage
+        // calc crit first
+        
+        bool isCrit = Random.Range(0, 100) <= finalStats.critRate;
+        int damage = Random.Range(finalStats.minDamage, finalStats.maxDamage+1);
+        int sufferedDamage = (isCrit) ? damage*3 : damage;
 
-			bool isCrit = RN1 < finalStats.critRate;
-            int sufferedDamage = (isCrit) ? finalStats.damage*3 : finalStats.damage;
+        // now the theatrics
+        A.personalAudioFX.PlayWeaponAttackFX();
+       
+        // if the hit is... unimpressive, play a clang or something
+        if (sufferedDamage < 1) A.personalAudioFX.PlayBlockFX();
 
-            // if the hit is... unimpressive, play a clang or something
-            if (sufferedDamage <= 0) A.personalAudioFX.PlayBlockFX();
+        // hit/crit
+        if (isCrit) {
+            A.FireOnCriticalEvent(B);
+            A.personalAudioFX.PlayCriticalFX();
+            UIManager.inst.combatLog.AddEntry("YELLOW@[Critical Hit!]");          
+        }
 
-            // hit/crit
-            if (isCrit) {
-                A.FireOnCriticalEvent(B);
-                A.personalAudioFX.PlayCriticalFX();
-                UIManager.inst.combatLog.AddEntry("YELLOW@[Critical Hit!]");          
-            }
-
-            // ouchies, play the animations for hurt
-			survived = B.SufferDamage(sufferedDamage, isCritical: isCrit);
-            
-            // fire the event after suffering damage, so the animations are queued in the right order
-            // this also means you will not be debuffed or anything if you die
-            A.FireOnHitEvent(B);
-
-        // miss
-		} else {
-            // this is emitted here, because OnAvoid doesn't carry state like "toHit" as it exists here
-            B.messageEmitter.Emit(MessageEmitter.MessageType.Miss, $"{finalStats.hitRate}%");
-
-            A.FireOnMissEvent();
-            B.FireOnAvoidEvent();
-            B.personalAudioFX.PlayAvoidFX();
-		}
+        // then the meat
+        // ouchies, play the animations for hurt
+        bool survived = B.SufferDamage(sufferedDamage, isCritical: isCrit);
+        
+        // fire the event after suffering damage, so the animations are queued in the right order
+        // this also means you will not be debuffed or anything if you die
+        A.FireOnHitEvent(B);
 
 		return survived;
 	}

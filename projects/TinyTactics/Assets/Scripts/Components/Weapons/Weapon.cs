@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(WeaponStats))]
-public class Weapon : MonoBehaviour
+public abstract class Weapon : MonoBehaviour, ITagged
 {
     // set by equipping Unit
     public Unit boundUnit { get; set; }
@@ -14,16 +14,19 @@ public class Weapon : MonoBehaviour
     public Sprite sprite;
     public Color color;
     
-    [HideInInspector] public WeaponStats weaponStats;
-    public List<string> tags;
+    public WeaponStats weaponStats { get; set; }
+    [field: SerializeField] public List<string> tags { get; set; }
 
     // experimental
-    [SerializeField] public AudioFXBundle audioFXBundle;
+    public AudioFXBundle audioFXBundle;
 
     void Awake() {
         weaponStats = GetComponent<WeaponStats>();
     }
 
+    public abstract int CalculateDamage();
+
+    // ITagged
     public bool HasTagMatch(params string[] tagsToCheck) {
         foreach (string tag in tagsToCheck) {
             if (tags.Contains(tag))
@@ -32,7 +35,7 @@ public class Weapon : MonoBehaviour
         return false;
     }
 
-    public void Equip(Unit unit) {
+    public virtual void Equip(Unit unit) {
         boundUnit = unit;
         
         foreach (WeaponPerk wp in GetComponents<WeaponPerk>()) {

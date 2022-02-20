@@ -10,13 +10,14 @@ using TMPro;
 
 public class HoldTimer : MonoBehaviour
 {
-    private readonly float fixedHoldTime = 1.50f;
+    private readonly float fixedHoldTime = 0.750f;
     private float holdTimeElapsed = 0f;
 
     private Coroutine holdCoroutine;
 
     // assigned in inspector
     [SerializeField] private Image holdTimerVisualization;
+    [SerializeField] private Image holdTimerVisualizationBackground;
 
     // other
     private Unit boundUnit;
@@ -25,6 +26,8 @@ public class HoldTimer : MonoBehaviour
     void Awake() {
         originalHoldTimerColor = holdTimerVisualization.color;
         boundUnit = GetComponent<Unit>();
+
+        holdTimerVisualizationBackground.color = Color.black.WithAlpha(0f);
     }
 
     public void StartTimer(Action OnHold, Action OnCancel) {
@@ -42,6 +45,7 @@ public class HoldTimer : MonoBehaviour
 
         // revert colors, etc
         holdTimerVisualization.color = originalHoldTimerColor.WithAlpha(0f);
+        holdTimerVisualizationBackground.color = Color.black.WithAlpha(0f);
         boundUnit.spriteAnimator.RevertColor();
     }
     
@@ -56,10 +60,9 @@ public class HoldTimer : MonoBehaviour
 
                 float percentComplete = holdTimeElapsed / maxTime;
 
-                // holdTimerVisualization.fillAmount = 1.5f*percentComplete;    this makes the animation appear to end early
                 holdTimerVisualization.fillAmount = percentComplete;
-
                 holdTimerVisualization.color = Color.Lerp(new Color(0.75f, 0.75f, 0.75f, 1f).WithAlpha(0.25f), originalHoldTimerColor.WithAlpha(1f), 1.5f*percentComplete);
+                holdTimerVisualizationBackground.color = Color.black.WithAlpha(2f*percentComplete);
 
                 boundUnit.spriteAnimator.LerpInactiveColor(percentComplete);
                 yield return null;
@@ -75,6 +78,9 @@ public class HoldTimer : MonoBehaviour
         // trigger OnHold here
         //
         OnHold();
+        
+        // reset background
+        holdTimerVisualizationBackground.color = Color.black.WithAlpha(0f);
 
         float flourishTime = 0f;
         float flourishTotal = 0.4f;

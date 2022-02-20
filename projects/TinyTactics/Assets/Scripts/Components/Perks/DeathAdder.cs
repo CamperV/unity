@@ -26,7 +26,7 @@ public class DeathAdder : Perk, IToolTip
         int accum = target.statusManager.AllStatuses().Count() * 2;
 
         if (accum > 0) {
-            mutAtt.damage += accum;
+            mutAtt.AddDamage(accum);
             mutAtt.AddMutator(this);
         }
     }

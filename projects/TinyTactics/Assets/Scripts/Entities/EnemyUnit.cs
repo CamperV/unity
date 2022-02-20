@@ -262,7 +262,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         // WAIT FOR MOVEMENT TO COMPLETE
 
         if (selectedDmgPkg.executableThisTurn) {
-            Engagement engagement = Engagement.Create(this, selectedDmgPkg.target);
+            Engagement engagement = new Engagement(this, selectedDmgPkg.target);
             attackAvailable = false;
             ChangeState(EnemyUnitFSM.Attacking);
             //

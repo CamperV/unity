@@ -110,13 +110,14 @@ public class EnemyBrain : MonoBehaviour
 		GridPosition savedGridPosition = thisUnit.gridPosition;
 
 		thisUnit.gridPosition = fromPosition;
-		Engagement potentialEngagement = Engagement.Create(thisUnit, target);
+		Engagement potentialEngagement = new Engagement(thisUnit, target);
 		EngagementStats finalStats = potentialEngagement.SimulateAttack();
 
 		thisUnit.gridPosition = savedGridPosition;
 		Debug.Assert(thisUnit.gridPosition == savedGridPosition);
 
-		return finalStats.damage;
+		float medianDamage = (finalStats.minDamage + finalStats.maxDamage) / 2f;
+		return (int)medianDamage;
 	}
 
 	private bool CounterAttackPossible(DamagePackage dp) => Engagement.CounterAttackPossible(thisUnit, dp.target, dp.fromPosition);

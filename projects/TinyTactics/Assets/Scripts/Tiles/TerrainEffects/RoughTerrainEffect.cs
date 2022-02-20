@@ -39,9 +39,9 @@ public class RoughTerrainEffect : TerrainEffect, IToolTip
     }
 
     private void GrantAvoid(ref MutableDefense mutDef, Unit target) {
-        mutDef.avoidRate += 15;
+        // mutDef.avoidRate += 15;
         //
-        displayName = "Rough Terrain Bonus";
+        displayName = "Rough Terrain Bonus (does nothing)";
         mutDef.AddMutator(this);
     }
 }

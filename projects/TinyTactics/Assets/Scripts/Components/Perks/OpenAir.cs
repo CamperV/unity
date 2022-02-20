@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class OpenAir : Perk, IToolTip
 {
-    public override string displayName { get; set; } = "Open Air";
+    public override string displayName { get; set; } = "Open Air (does not work)";
 
     // IToolTip
-    public string tooltipName { get; set; } = "Open Air";
+    public string tooltipName { get; set; } = "Open Air (does not work)";
     public string tooltip { get; set; } = "+2 damage when not adjacent to any walls.";
 
     public override void OnAcquire() {
@@ -31,7 +31,7 @@ public class OpenAir : Perk, IToolTip
         }
 
         if (wallsAdjacent == false) {
-            mutAtt.damage += 2;
+            mutAtt.AddDamage(2);
             mutAtt.AddMutator(this);
         }
     }

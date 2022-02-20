@@ -19,7 +19,7 @@ public class OneTimeDamageBuff : ValuedStatus
     }
 
     private void BuffAttackDamage(ref MutableAttack mutAtt, Unit target) {
-        mutAtt.damage += modifierValue;
+        mutAtt.AddDamage(modifierValue);
         mutAtt.AddMutator(this);
     }
 }

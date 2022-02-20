@@ -9,7 +9,7 @@ public class StrongCounter : Perk, IToolTip
 
     // IToolTip
     public string tooltipName { get; set; } = "Strong Counter";
-    public string tooltip { get; set; } = "When counterattacking, increase DMG and HIT.";
+    public string tooltip { get; set; } = "When counterattacking, increase DMG.";
 
     public override void OnAcquire() {
         boundUnit.OnAttack += ConditionalAttack;
@@ -22,8 +22,7 @@ public class StrongCounter : Perk, IToolTip
     // if the unit has not moved since last turn, significantly buff attack
     private void ConditionalAttack(ref MutableAttack mutAtt, Unit target) {
         if (boundUnit.moveAvailable) {
-            mutAtt.damage += 3;
-            mutAtt.hitRate += 15;
+            mutAtt.AddDamage(3);
             //
             mutAtt.AddMutator(this);
         }

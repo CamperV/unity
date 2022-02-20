@@ -12,7 +12,7 @@ public class DraftUnitPanel : MonoBehaviour
     public TextMeshProUGUI classValue;
     public Image portraitValue;
 
-    public WeaponListing weaponListing;
+    public MartialWeaponListing weaponListing;
 
     public GameObject archetypeDisplay;
     public TextMeshProUGUI natureDescription;
@@ -59,7 +59,7 @@ public class DraftUnitPanel : MonoBehaviour
     
 
         // SET WEAPON DATA
-        weaponListing.SetWeaponInfo(unitPackage.unitPrefab.equippedWeapon);
+        // weaponListing.SetWeaponInfo(unitPackage.unitPrefab.equippedWeapon);
     
         // SET NATURE DATA
         natureDescription.SetText(unitPackage.unitData.nature.description);

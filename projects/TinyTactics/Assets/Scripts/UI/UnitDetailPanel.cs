@@ -10,7 +10,7 @@ public class UnitDetailPanel : MonoBehaviour
 	public TextMeshProUGUI classValue;
     public Image portraitImage;
 
-	public WeaponListing weaponListing;
+	public MartialWeaponListing weaponListing;
 	
 	// attributes
 	public TextMeshProUGUI hpValue;
@@ -49,7 +49,7 @@ public class UnitDetailPanel : MonoBehaviour
 		portraitImage.color = unit.spriteAnimator.MainColor;
 		
 		//
-		weaponListing.SetWeaponInfo(unit.equippedWeapon);
+		// weaponListing.SetWeaponInfo(unit.equippedWeapon);
 		
 		// attributes
 		hpValue.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");		
@@ -62,9 +62,9 @@ public class UnitDetailPanel : MonoBehaviour
 		movValue.SetText($"<b>{unit.unitStats.MOVE}</b>");
 
 		// derived
-		atkValue.SetText($"{unit.unitStats._ATK}");
-		hitValue.SetText($"{unit.unitStats._HIT}");
-		avoValue.SetText($"{unit.unitStats._AVO}");
+		atkValue.SetText($"{unit.unitStats.Calculate_ATK()}");
+		hitValue.SetText($"{unit.unitStats.Calculate_HIT()}");
+		avoValue.SetText($"{unit.unitStats.Calculate_AVO()}");
 
 		string redHex = "#FF6D6D";
 		string greenHex = "#6FD66E";

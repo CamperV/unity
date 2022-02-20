@@ -11,4 +11,8 @@ public class WeaponStats : MonoBehaviour
     public int WEIGHT;          // Max(0, WEIGHT - STRENGTH) is subtracted from REFLEX for avoidRate
     public int MIN_RANGE;
     public int MAX_RANGE;
+
+    // natural weapon prototyping
+    public int MIN_MIGHT;
+    public int MAX_MIGHT;
 }

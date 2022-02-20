@@ -8,7 +8,7 @@ using TMPro;
 [RequireComponent(typeof(UnitPathfinder))]
 [RequireComponent(typeof(UnitStats))]
 [RequireComponent(typeof(MessageEmitter))]
-public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
+public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagged
 {
     [SerializeField] public string displayName;
 
@@ -68,7 +68,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
     public Weapon equippedWeapon;
 
     // for effectiveness, such as "Flier"
-    public List<string> tags;
+    [field: SerializeField] public List<string> tags { get; set; }
 
     // for knowing which bag of perks to grab from
     public ArchetypeData[] archetypes;
@@ -227,7 +227,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo
         turnActive = false;
         moveAvailable = false;
         attackAvailable = false;
-        spriteAnimator.ChangeColor(SpriteAnimator.Inactive);
+        spriteAnimator.SetColor(SpriteAnimator.Inactive);
 
         FireOnFinishTurnEvent();
     }
