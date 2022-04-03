@@ -11,7 +11,7 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private GameObject startBattleButtonContainer;
 
 	[SerializeField] private TerrainEffectPanel terrainEffectPanel;
-	[SerializeField] private UnitDetailPanel unitDetailPanel;
+	[SerializeField] private BasicAttackInspection unitInspector;
 
 	[SerializeField] private GameObject engagementPreviewContainer;
 	[SerializeField] private EngagementPreviewPanel playerEngagementPreviewPanel;
@@ -34,29 +34,34 @@ public sealed class UIManager : MonoBehaviour
 		}
 
 		startBattleButtonContainer.SetActive(true);
-		unitDetailPanel.gameObject.SetActive(false);
+		unitInspector.gameObject.SetActive(false);
 		engagementPreviewContainer.SetActive(false);
     }
 
 	public void UpdateTerrainEffectPanel(TerrainTile terrainAt) {
+		terrainEffectPanel.tileValue.sprite = terrainAt.sprite;
+
 		if (terrainAt.HasTerrainEffect) {
 			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: {terrainAt.terrainEffect.shortDisplayName}");
 		} else {
-			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: No Terrain Effect");	
+			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: --");	
 		}
 	}
 
 	public void EnableUnitDetail(Unit unit) {
 		// menuButtons.SetActive(false);
 		//
-		unitDetailPanel.gameObject.SetActive(true);
-		unitDetailPanel.SetUnitInfo(unit);
+		unitInspector.gameObject.SetActive(true);
+		unitInspector.SetUnitInfo(unit);
+		
+		unitInspector.GetComponent<UIBobber>().TrackAnchor(unit.transform);
+		unitInspector.GetComponent<UIBobber>().MoveAnchorOffset(unit.transform.position, 1.0f*Vector3.up);
 	}
 
 	public void DisableUnitDetail() {
 		// menuButtons.SetActive(true);
 		//
-		unitDetailPanel.gameObject.SetActive(false);
+		unitInspector.gameObject.SetActive(false);
 	}
 
 	public void EnableEngagementPreview(Engagement potentialEngagement, Transform anchoredTransform) {

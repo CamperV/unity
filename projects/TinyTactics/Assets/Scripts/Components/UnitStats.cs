@@ -79,6 +79,20 @@ public class UnitStats : MonoBehaviour
         return _LUCK + REFLEX;
     }
 
+    public Pair<int, int> CalculateDamageRange() {
+        int upper = Mathf.Clamp(STRENGTH + boundUnit.equippedWeapon.weaponStats.MAX_MIGHT, 0, 99);
+        int lower = Mathf.Clamp(DEXTERITY + boundUnit.equippedWeapon.weaponStats.MIN_MIGHT, 0, upper);
+        return new Pair<int, int>(lower, upper);
+    }
+
+    // grant 5% extra crit for every point of lowerDmg over upperDmg
+    public int CalculateCritical() {
+        int upper = STRENGTH + boundUnit.equippedWeapon.weaponStats.MAX_MIGHT;
+        int lower = DEXTERITY + boundUnit.equippedWeapon.weaponStats.MIN_MIGHT;
+        int dexOverage = Mathf.Max(0, lower - upper);
+        return boundUnit.equippedWeapon.weaponStats.CRITICAL + dexOverage*5;
+    }
+
     public void ApplyNature(CampaignUnitGenerator.NatureData natureStats) {
         VITALITY  += natureStats.m_VITALITY;
         STRENGTH  += natureStats.m_STRENGTH;

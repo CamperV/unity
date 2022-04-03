@@ -127,6 +127,11 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
         // some init things that need to be taken care of
         unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
+        unitStats.UpdateStrength(unitStats.STRENGTH);
+        unitStats.UpdateDexterity(unitStats.DEXTERITY);
+        unitStats.UpdateReflex(unitStats.REFLEX);
+        unitStats.UpdateDefense(unitStats.DEFENSE);
+        unitStats.UpdateMove(unitStats.MOVE);
     }
 
     // we must take care to add certain functions to the MoveRange

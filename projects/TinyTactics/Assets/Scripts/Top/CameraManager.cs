@@ -97,6 +97,16 @@ public class CameraManager : MonoBehaviour
 				Mathf.Min(maxTrackingBox.y, maxBounds.x),
 				Mathf.Min(maxTrackingBox.z, maxBounds.z)
 			);
+
+		
+			Vector3 bl = minBounds;
+			Vector3 br = new Vector3(maxBounds.x, minBounds.y, 0);
+			Vector3 tl = new Vector3(minBounds.x, maxBounds.y, 0);
+			Vector3 tr = maxBounds;
+			Debug.DrawLine(bl, br, Color.green, Time.deltaTime, false);
+			Debug.DrawLine(br, tr, Color.green, Time.deltaTime, false);
+			Debug.DrawLine(tr, tl, Color.green, Time.deltaTime, false);
+			Debug.DrawLine(tl, bl, Color.green, Time.deltaTime, false);
 		}
 		
 		// move the tracking position based on movement and clamp it into bounds

@@ -15,6 +15,8 @@ public class UIBobber : MonoBehaviour
 	[SerializeField] private float freq;
 	[SerializeField] private float amplitude;
 	[SerializeField] private float phase;
+	
+	[SerializeField] private Vector3 staticOffset;
 
 	[Range(-1f, 1f)]
 	[SerializeField] private float xDamping;
@@ -43,6 +45,7 @@ public class UIBobber : MonoBehaviour
 
 		Vector3 yComponent = amplitude * (Mathf.Sin( (freq*Time.time) + phase)) * Vector3.up;
 		Vector3 xComponent = xDamping * amplitude * (Mathf.Cos( (freq*Time.time) + phase)) * Vector3.right;
+		anchor = anchor + staticOffset;
 		transform.position = Vector3.Lerp(transform.position, anchor + yComponent + xComponent, 10f*Time.deltaTime);
 	}
 

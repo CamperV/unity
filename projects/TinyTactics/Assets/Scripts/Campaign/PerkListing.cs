@@ -13,6 +13,10 @@ public class PerkListing : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public GameObject mouseOverLabel;
     public TextMeshProUGUI nameValue;
+
+    void Start() {
+
+    }
     
     // update UI stuff
     public void SetPerkInfo(PerkData perkData) {
@@ -20,11 +24,18 @@ public class PerkListing : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         perkImage.sprite = perkData.sprite;
         perkImageMatte.color = (1f*perkData.belongsToArchetype.color).WithAlpha(1f);
 
-        // mouseOverLabel.SetActive(true);
+        mouseOverLabel.SetActive(true);
         nameValue.SetText(perkData.perkName);
-        // mouseOverLabel.SetActive(false);
+        foreach (var rt in mouseOverLabel.GetComponentsInChildren<RectTransform>()) {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+        }
+        mouseOverLabel.SetActive(false);
     }
 
-    public void OnPointerEnter(PointerEventData eventData) => mouseOverLabel.SetActive(true);
-    public void OnPointerExit(PointerEventData eventData) => mouseOverLabel.SetActive(false);
+    public void OnPointerEnter(PointerEventData eventData) {
+        mouseOverLabel.SetActive(true);
+    }
+    public void OnPointerExit(PointerEventData eventData) {
+        mouseOverLabel.SetActive(false);
+    }
 }

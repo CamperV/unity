@@ -49,11 +49,11 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: e93ded6ccafb0d9439347f4c3beeaaf6, type: 2}
     - target: {fileID: 7090261759296698485, guid: a776eb44cea03a249847157af35a283b, type: 3}
       propertyPath: CRITICAL
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7090261759296698485, guid: a776eb44cea03a249847157af35a283b, type: 3}
       propertyPath: MAX_MIGHT
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7090261759296698485, guid: a776eb44cea03a249847157af35a283b, type: 3}
       propertyPath: MIN_MIGHT

@@ -65,13 +65,13 @@ MonoBehaviour:
   _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 10
+    VITALITY: 6
     STRENGTH: 2
     DEXTERITY: 3
     REFLEX: 0
-    DEFENSE: 1
+    DEFENSE: 0
     MOVE: 4
-  variance: 1
+  variance: 0
 --- !u!114 &7408625501826054290
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -84,11 +84,11 @@ MonoBehaviour:
   _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 10
+    VITALITY: 6
     STRENGTH: 2
     DEXTERITY: 2
     REFLEX: 0
-    DEFENSE: 2
+    DEFENSE: 1
     MOVE: 3
   variance: 0
 --- !u!1001 &219998693570959736

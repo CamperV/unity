@@ -99,8 +99,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void TriggerPhase() {
         // re-focus the camera on the centroid of your units
-        // Vector3[] unitPositions = activeUnits.Select(u => u.transform.position).ToArray();
-        // CameraManager.FocusActiveCameraOn( VectorUtils.Centroid(unitPositions) );
+        Vector3[] unitPositions = activeUnits.Select(u => u.transform.position).ToArray();
+        CameraManager.FocusActiveCameraOn( VectorUtils.Centroid(unitPositions) );
 
         // disable enemy unit controller for a time
         enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);

@@ -108,11 +108,12 @@ public class Engagement
         // // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
         // generator.FireOnAttackEvent(ref mutableAttack, defender);
         // return new Attack(mutableAttack);
+        Pair<int, int> dmgRange = generator.unitStats.CalculateDamageRange();
 
         MutableAttack mutableAttack = new MutableAttack(
-            generator.unitStats.DEXTERITY + generator.equippedWeapon.weaponStats.MIN_MIGHT,
-            generator.unitStats.STRENGTH + generator.equippedWeapon.weaponStats.MAX_MIGHT,
-            generator.unitStats.Calculate_CRT(),
+            dmgRange.First,
+            dmgRange.Second,
+            generator.unitStats.CalculateCritical(),
             defender.gridPosition.ManhattanDistance(generator.gridPosition) == 1
         );
         
@@ -181,7 +182,7 @@ public class Engagement
         
         bool isCrit = Random.Range(0, 100) <= finalStats.critRate;
         int damage = Random.Range(finalStats.minDamage, finalStats.maxDamage+1);
-        int sufferedDamage = (isCrit) ? damage*3 : damage;
+        int sufferedDamage = (isCrit) ? damage*2 : damage;
 
         // now the theatrics
         A.personalAudioFX.PlayWeaponAttackFX();

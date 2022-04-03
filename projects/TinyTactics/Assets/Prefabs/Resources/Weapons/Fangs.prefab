@@ -77,7 +77,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7090261759296698485, guid: a776eb44cea03a249847157af35a283b, type: 3}
       propertyPath: MAX_MIGHT
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7090261759296698485, guid: a776eb44cea03a249847157af35a283b, type: 3}
       propertyPath: MAX_RANGE
@@ -85,7 +85,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7090261759296698485, guid: a776eb44cea03a249847157af35a283b, type: 3}
       propertyPath: MIN_MIGHT
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7090261759296698485, guid: a776eb44cea03a249847157af35a283b, type: 3}
       propertyPath: MIN_RANGE

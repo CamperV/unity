@@ -67,9 +67,9 @@ MonoBehaviour:
   _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 10
+    VITALITY: 6
     STRENGTH: 1
-    DEXTERITY: 4
+    DEXTERITY: 3
     REFLEX: 0
     DEFENSE: 0
     MOVE: 4

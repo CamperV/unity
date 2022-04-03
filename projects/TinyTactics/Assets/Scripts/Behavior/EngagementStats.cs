@@ -40,9 +40,9 @@ public class MutableEngagementStats {
     public List<string> mutators;
 
     public MutableEngagementStats(Attack a, Defense d) {
-        maxDamage   = (int)Mathf.Clamp((a.maxDamage   - d.damageReduction), 0f, 999f);
-        minDamage   = (int)Mathf.Clamp((a.minDamage   - d.damageReduction), 0f, maxDamage);   // cap minDamage by maxDamage
-        critRate = (int)Mathf.Clamp((a.critRate - d.critAvoidRate), 0f, 100f);
+        maxDamage = (int)Mathf.Clamp((a.maxDamage   - d.damageReduction), 0f, 99f);
+        minDamage = (int)Mathf.Clamp((a.minDamage   - d.damageReduction), 0f, maxDamage);   // cap minDamage by maxDamage
+        critRate  = (int)Mathf.Clamp((a.critRate - d.critAvoidRate), 0f, 100f);
         //
         mutators = new List<string>();
     }
