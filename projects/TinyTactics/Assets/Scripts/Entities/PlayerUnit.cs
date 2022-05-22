@@ -19,6 +19,11 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
         PreWait
     }
     [SerializeField] public PlayerUnitFSM state { get; set; } = PlayerUnitFSM.Idle;
+    // public enum CommandState {
+    //     Idle,               // idle
+    //     CommandActive,      // Command has been selected, and is awaiting player input (a la MoveSelection or AttackSelection)
+    //     CommandExecuting    // Command has received input, and is waiting on something (a la Moving/Attacking/Animation resolving)        
+    // }
 
     // cancels movement
     public bool cancelSignal = false;
@@ -405,7 +410,7 @@ public class PlayerUnit : Unit, IStateMachine<PlayerUnit.PlayerUnitFSM>
     // basically, the PlayerUnits are displaying  before the enemy units drop the display
     //
     // always display AttackRange first, because it is partially overwritten by MoveRange by definition
-    protected override void DisplayThreatRange() {
+    public override void DisplayThreatRange() {
         if (moveRange == null || attackRange == null) UpdateThreatRange();
         
         attackRange.Display(battleMap);

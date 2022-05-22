@@ -78,7 +78,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     // abstract
     public abstract void RevertTurn();
-    protected abstract void DisplayThreatRange();
+    public abstract void DisplayThreatRange();
     protected abstract void DisableFSM();
 
     // IUnitPhaseInfo

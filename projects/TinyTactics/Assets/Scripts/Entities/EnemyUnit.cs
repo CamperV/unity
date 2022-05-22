@@ -291,7 +291,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         ChangeState(EnemyUnitFSM.Idle);
     }
 
-    protected override void DisplayThreatRange() {
+    public override void DisplayThreatRange() {
         if (moveRange == null || attackRange == null) UpdateThreatRange();
 
         // make a fake movementRange for displaying
