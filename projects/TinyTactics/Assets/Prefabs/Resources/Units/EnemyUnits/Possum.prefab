@@ -33,7 +33,7 @@ MonoBehaviour:
   _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 6
+    VITALITY: 15
     STRENGTH: 2
     DEXTERITY: 1
     REFLEX: 0

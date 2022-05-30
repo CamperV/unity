@@ -6,15 +6,18 @@ using Extensions;
 
 public abstract class UnitCommand : ScriptableObject
 {
-    // model things like MoveSelection (previously in PlayerUnitFSM) here
-    //
-    // Activate
-    // Command
-    // ContextualInteracts
-    // ContextualNoInteract (no mouse click)
+    public enum ExitSignal {
+        NoStateChange,
+        NextState,
+        ContinueTurn,
+        ForceFinishTurn
+    }
+    public string name; // fillable via ScriptableObject interface
 
-    public abstract void Activate(PlayerUnit thisUnit);
-    public abstract void Deactivate(PlayerUnit thisUnit);
-    public abstract void ContextualInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract);
-    public abstract void ContextualNoInteract(PlayerUnit thisUnit);
+    public abstract void Activate(PlayerUnit thisUnit); /* Initial activation */
+    public abstract void Deactivate(PlayerUnit thisUnit); /* De-activation, ie Cancel */
+    public abstract ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract); /* Interaction/execution while active */
+    public abstract void ActiveUpdate(PlayerUnit thisUnit); /* Always-on while active */
+    public abstract ExitSignal InProgressUpdate(PlayerUnit thisUnit); /* Always-on after executing */
+    public abstract ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract); /* Finish, usually responsible for executing state changes like Unit Movement */
 }

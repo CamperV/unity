@@ -51,8 +51,6 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         EnterState(EnemyUnitFSM.Idle);
     }
 
-    protected override void DisableFSM() => InitialState();
-
     // IStateMachine<>
     public void EnterState(EnemyUnitFSM enteringState) {
         state = enteringState;

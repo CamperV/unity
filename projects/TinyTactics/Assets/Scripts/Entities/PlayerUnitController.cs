@@ -136,7 +136,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             /////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.NoSelection:
                 SetCurrentSelection( MatchingUnitAt(gp) );
-                currentSelection?.ContextualInteractAt(gp, auxiliaryInteract);
+                currentSelection?.OnInteract(gp, auxiliaryInteract);
                 break;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
                     SetCurrentSelection(unit);
                 }
 
-                currentSelection.ContextualInteractAt(gp, auxiliaryInteract);
+                currentSelection.OnInteract(gp, auxiliaryInteract);
                 break;
         }
     }

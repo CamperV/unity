@@ -79,7 +79,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     // abstract
     public abstract void RevertTurn();
     public abstract void DisplayThreatRange();
-    protected abstract void DisableFSM();
 
     // IUnitPhaseInfo
     [field: SerializeField] public bool turnActive { get; set; } = false;
@@ -210,7 +209,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     }
 
     // IUnitPhaseInfo
-    public void RefreshInfo() {
+    public virtual void RefreshInfo() {
         // turnActive = true;
         moveAvailable = true;
         attackAvailable = true;
@@ -218,7 +217,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         UpdateThreatRange();
     }
 
-    public void StartTurn() {
+    public virtual void StartTurn() {
         turnActive = true;
 
         // finally, store your starting location
@@ -292,7 +291,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
         // playerUnitController checks endPhase here
         FinishTurn();
-        DisableFSM();
 
         // Battle checks victory conditions here
         unitMap.ClearPosition(gridPosition);

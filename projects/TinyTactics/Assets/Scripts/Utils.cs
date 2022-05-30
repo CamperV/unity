@@ -41,6 +41,10 @@ public static class Utils
 		pawn.StartCoroutine( LateFrame(VoidAction) );
 	}
 
+	public static void DelegateCoroutineTo(MonoBehaviour pawn, IEnumerator crtToPerform) {
+		pawn.StartCoroutine(crtToPerform);
+	}
+
 	public static IEnumerator QueueCoroutines(params IEnumerator[] coroutines) {
 		foreach (IEnumerator crt in coroutines) {
 			yield return crt;
