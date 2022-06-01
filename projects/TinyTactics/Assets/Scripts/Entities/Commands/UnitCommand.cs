@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Extensions;
+using UnityEngine.UI;
 
 public abstract class UnitCommand : ScriptableObject
 {
@@ -13,6 +14,7 @@ public abstract class UnitCommand : ScriptableObject
         ForceFinishTurn
     }
     public string name; // fillable via ScriptableObject interface
+    public Sprite sprite; // fillable via ScriptableObject interface
 
     public abstract void Activate(PlayerUnit thisUnit); /* Initial activation */
     public abstract void Deactivate(PlayerUnit thisUnit); /* De-activation, ie Cancel */

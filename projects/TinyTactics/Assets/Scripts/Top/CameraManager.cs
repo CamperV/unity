@@ -121,12 +121,12 @@ public class CameraManager : MonoBehaviour
 		transform.position = Vector3.Lerp(transform.position, trackingPosition, Time.deltaTime*7f);
 	}
 
-	public void AcquireTrackingTarget(Unit selection) {
+	public void AcquireTrackingTarget(Transform selection) {
 		// we update this every frame because the playerUnitController might 
 		// have a currentSelection, which we use to bound the camera additionally
 		// (such that the camera must be within a certain distance from the currentSelection)
 		if (selection != null) {
-			trackingTarget = selection.transform;
+			trackingTarget = selection;
 
 		// use the assigned tilemap to find the bounds
 		} else {

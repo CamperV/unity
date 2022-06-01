@@ -90,6 +90,7 @@ MonoBehaviour:
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
   <attackAvailable>k__BackingField: 0
+  unitCommandSystem: {fileID: 0}
   cancelSignal: 0
 --- !u!1001 &8953324308557356850
 PrefabInstance:

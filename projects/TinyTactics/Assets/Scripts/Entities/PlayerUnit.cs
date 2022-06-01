@@ -10,7 +10,7 @@ using Extensions;
 [RequireComponent(typeof(UnitCommandSystem))]
 public sealed class PlayerUnit : Unit
 {
-    private UnitCommandSystem unitCommandSystem;
+    [HideInInspector] public UnitCommandSystem unitCommandSystem;
 
     // cancels movement
     public bool cancelSignal = false;

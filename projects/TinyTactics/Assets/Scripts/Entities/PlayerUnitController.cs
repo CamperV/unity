@@ -8,8 +8,9 @@ using UnityEngine.UI;
 public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitController.ControllerFSM>
 {
     // publicly acccessible events
-    public delegate void UnitSelection(Unit selection);
+    public delegate void UnitSelection(PlayerUnit selection);
     public event UnitSelection NewPlayerUnitControllerSelection;
+    public event UnitSelection ClearPlayerUnitControllerSelection;
 
     [SerializeField] private List<PlayerUnit> _activeUnits;
     public List<PlayerUnit> activeUnits {
@@ -181,6 +182,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             ChangeState(ControllerFSM.NoSelection);
         } else {
             mostRecentlySelectedUnit = selection;
+            ClearPlayerUnitControllerSelection?.Invoke(mostRecentlySelectedUnit);
+            
             ChangeState(ControllerFSM.Selection);
         }
 

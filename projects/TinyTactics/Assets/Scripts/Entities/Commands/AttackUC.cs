@@ -22,6 +22,8 @@ public class AttackUC : UnitCommand
     public override void Deactivate(PlayerUnit thisUnit) {
         thisUnit.battleMap.ResetHighlight();
         UIManager.inst.DisableEngagementPreview();
+        //
+        UIManager.inst.DisableUnitDetail();
     }
 
     public override ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract) {

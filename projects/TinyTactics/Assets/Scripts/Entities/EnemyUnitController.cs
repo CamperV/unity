@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitController.ControllerFSM>, IUnitPhaseController
 {
     // publicly acccessible events
-    public delegate void UnitSelection(Unit selection);
+    public delegate void UnitSelection(EnemyUnit selection);
     public event UnitSelection NewEnemyUnitControllerSelection;
 
     public static float timeBetweenUnitActions = 0.75f; // seconds

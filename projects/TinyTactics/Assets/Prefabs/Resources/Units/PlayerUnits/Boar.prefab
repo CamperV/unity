@@ -74,6 +74,7 @@ MonoBehaviour:
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
   <attackAvailable>k__BackingField: 0
+  unitCommandSystem: {fileID: 0}
   cancelSignal: 0
 --- !u!114 &4610256338087452107
 MonoBehaviour:

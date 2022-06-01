@@ -15,6 +15,11 @@ using Extensions;
 [RequireComponent(typeof(PlayerUnit))]
 public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.State>
 {
+	public delegate void UnitCommandStateChange(UnitCommand uc);
+    public event UnitCommandStateChange ActivateUC;
+    public event UnitCommandStateChange DeactivateUC;
+    public event UnitCommandStateChange FinishUC;
+
     // IStateMachine<>
     public enum State {
         Idle,               // idle, obv
@@ -24,8 +29,11 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     public State state { get; set; } = State.Idle;
 
     [SerializeField] private List<UnitCommand> unitCommands; // assigned in inspector
+    public IEnumerable<UnitCommand> Commands => unitCommands;
     [SerializeField] private UnitCommand DefaultCommand => unitCommands[0];
+
     private Dictionary<string, bool> commandAvailable = new Dictionary<string, bool>();
+    public bool IsCommandAvailable(UnitCommand uc) => commandAvailable[uc.name];
 
     // these are paired together to maintain state
     // inject this flag into activeCommand communications
@@ -40,6 +48,8 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         foreach (UnitCommand uc in unitCommands) {
             commandAvailable[uc.name] = true;
         }
+
+        if (unitCommands.Count == 0) Debug.LogError($"No commands set for {this}/{thisUnit}");
     }
 
     void Update() {
@@ -86,6 +96,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
             case State.CommandActive:
                 activeCommand.Activate(thisUnit);
+                ActivateUC?.Invoke(activeCommand);
                 thisUnit.personalAudioFX.PlayInteractFX();
                 break;
 
@@ -104,10 +115,12 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
             case State.CommandActive:
                 activeCommand.Deactivate(thisUnit);
+                DeactivateUC?.Invoke(activeCommand);
                 break;
 
             case State.CommandInProgress:
                 UnitCommand.ExitSignal exitSignal = activeCommand.FinishCommand(thisUnit, auxiliaryInteractFlag);
+                FinishUC?.Invoke(activeCommand);
 
                 switch (exitSignal) {
                     case UnitCommand.ExitSignal.ContinueTurn:
@@ -127,7 +140,11 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     // this can happen from a user clicking on a button, or PlayerUnit calling it directly by default (ie MoveUC)
     public void TryIssueCommand(UnitCommand command) {
-        if (commandAvailable[command.name]) {
+        if (commandAvailable[command.name] && command != activeCommand) {
+            // go to Idle first, so that you exit from activeCommand properly
+            // otherwise, CommandActive -> CommandActive does nothing
+            ChangeState(State.Idle);
+            //
             activeCommand = command;
             ChangeState(State.CommandActive);
         }
@@ -142,13 +159,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
         switch(state) {
             case State.Idle:
-                if (interactAt == thisUnit.gridPosition) {
-                    if (auxiliaryInteract) {
-                        TryIssueCommand(unitCommands[1]);
-                    } else {
-                        TryIssueCommand(DefaultCommand);
-                    }
-                }
+                if (interactAt == thisUnit.gridPosition) TryIssueCommand(DefaultCommand);
                 break;
 
             case State.CommandActive:
@@ -164,7 +175,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     }
 
     public void SetAllCommandsAvailability(bool val) {
-        foreach (string commandName in commandAvailable.Keys) {
+        foreach (string commandName in commandAvailable.Keys.ToList()) {
             commandAvailable[commandName] = val;
         }
     }

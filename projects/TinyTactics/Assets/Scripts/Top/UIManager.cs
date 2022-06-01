@@ -12,6 +12,7 @@ public sealed class UIManager : MonoBehaviour
 
 	[SerializeField] private TerrainEffectPanel terrainEffectPanel;
 	[SerializeField] private BasicAttackInspection unitInspector;
+	[SerializeField] private UnitCommandPanel unitCommandPanel;
 
 	[SerializeField] private GameObject engagementPreviewContainer;
 	[SerializeField] private EngagementPreviewPanel playerEngagementPreviewPanel;
@@ -149,5 +150,14 @@ public sealed class UIManager : MonoBehaviour
 		defeatPanel.enemiesDefeatedValue.SetText($"{enemiesDefeated}");
 		defeatPanel.survivingUnitsValue.SetText($"{survivingUnits}");
 		defeatPanel.turnsElapsedValue.SetText($"{turnsElapsed}");
+	}
+
+	public void EnableUnitCommandPanel(PlayerUnit unit) {
+		unitCommandPanel.gameObject.SetActive(unit != null);
+		if (unit != null) unitCommandPanel.SetUnitInfo(unit);
+	}
+
+	public void CleanUpUnitCommandPanel(PlayerUnit droppedUnit) {
+		unitCommandPanel.ClearUnitInfo(droppedUnit);
 	}
 }
