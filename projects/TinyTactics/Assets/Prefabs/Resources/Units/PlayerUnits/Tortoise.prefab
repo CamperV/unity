@@ -54,6 +54,8 @@ MonoBehaviour:
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   messageEmitter: {fileID: 0}
+  playerUnitController: {fileID: 0}
+  enemyUnitController: {fileID: 0}
   equippedWeapon: {fileID: 6631204728426299986, guid: 80198ed1b440aaf44bc6ebee3b34e8ff, type: 3}
   <tags>k__BackingField: []
   archetypes:
@@ -85,7 +87,7 @@ MonoBehaviour:
   _LUCK: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 12
+    VITALITY: 8
     STRENGTH: 2
     DEXTERITY: 2
     REFLEX: 0

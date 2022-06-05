@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a706f991bf857e34ebcdbd56172f49a9, type: 3}
   m_Name: MoveUC
   m_EditorClassIdentifier: 
-  name: Default Movement
+  name: Move
   sprite: {fileID: 21300000, guid: c3c293445d134044a8a673aa4fa085ba, type: 3}
   executionType: 0
+  requiresConfirm: 0

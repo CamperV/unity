@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1878e6f62fbc3944e943e075a76d9e48, type: 3}
   m_Name: AttackUC
   m_EditorClassIdentifier: 
-  name: Default Attack
+  name: Attack
   sprite: {fileID: 21300000, guid: 7671ea189c3630544acf2c271963ec72, type: 3}
   executionType: 0
+  requiresConfirm: 0

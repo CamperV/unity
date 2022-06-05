@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8731260039199402524}
   - component: {fileID: 7386254073552531460}
   - component: {fileID: 7289503662363720736}
+  - component: {fileID: -4809419729727975630}
   m_Layer: 5
   m_Name: UnitCommandPanel
   m_TagString: Untagged
@@ -60,6 +61,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitCommandContainer: {fileID: 6545960520653852380}
   unitCommandVisualPrefab: {fileID: 2317301987230043018, guid: 47c774cee61322147a4558912c266fdc, type: 3}
+--- !u!114 &-4809419729727975630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3282749426593089415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a51bc546ab8c2964984058f0041956a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slideDimensions: {x: 0, y: -200}
+  snappiness: 25
+  active: 0
 --- !u!1 &6545960520653852380
 GameObject:
   m_ObjectHideFlags: 0

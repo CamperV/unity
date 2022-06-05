@@ -10,6 +10,7 @@ using Extensions;
 public class UnitCommandVisual : MonoBehaviour
 {
 	[SerializeField] private Image mainImage;
+	[SerializeField] private TextMeshProUGUI commandName;
 	[SerializeField] private GameObject activeBorder;
 	[SerializeField] private GameObject activeCancelVisual;
 
@@ -27,6 +28,10 @@ public class UnitCommandVisual : MonoBehaviour
 
 	public void SetImage(Sprite sprite) {
 		mainImage.sprite = sprite;
+	}
+
+	public void SetName(string name) {
+		commandName.SetText(name);
 	}
 
 	public void RegisterCommand(UnityAction unityAction) {

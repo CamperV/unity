@@ -44,6 +44,7 @@ public class UnitCommandPanel : MonoBehaviour
 	private void AddToPanel(UnitCommand uc, UnitCommandSystem ucs) {
 		UnitCommandVisual ucv = Instantiate(unitCommandVisualPrefab, unitCommandContainer.transform);
 		ucv.SetImage(uc.sprite);
+		ucv.SetName(uc.name);
 		ucv.RegisterCommand(() => ucs.TryIssueCommand(uc));
 		ucv.SetButtonChecker(() => ucs.IsCommandAvailable(uc));
 		ucv.CheckButtonStatus();
