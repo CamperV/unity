@@ -48,9 +48,12 @@ public class UnitCommandPanel : MonoBehaviour
 		ucv.SetButtonChecker(() => ucs.IsCommandAvailable(uc));
 		ucv.CheckButtonStatus();
 
+		// ucv.GetComponent<ConfirmSpriteSwap>().enabled = uc.requiresConfirm;
+
 		// set the mapping value so that it can be stored/retrieved for visualiztion
 		mapping[uc] = ucv;
 	}
+
 
 	private void ActivateTrigger(UnitCommand uc) {
 		mapping[uc].OnActivate();

@@ -15,3 +15,4 @@ MonoBehaviour:
   name: Wait (End Turn)
   sprite: {fileID: 21300000, guid: 80d5a84133776954eb74d85acafa525d, type: 3}
   executionType: 1
+  requiresConfirm: 1

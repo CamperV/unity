@@ -23,6 +23,8 @@ public class LaunchesConfirmDialog : MonoBehaviour
 
         // this copies the callback before we add LaunchConfirm to it
         confirmCallback = button.onClick;
+
+        if (eventManager == null) eventManager = EventManager.inst;
     }
 
     void Start() {

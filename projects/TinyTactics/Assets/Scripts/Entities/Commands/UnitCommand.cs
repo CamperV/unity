@@ -36,4 +36,6 @@ public abstract class UnitCommand : ScriptableObject
     // this is an optional method for specifying other ways a command can't be available.
     // For example, DefaultAttack can't be available unless there are targetable enemies in range
     public virtual bool IsAvailableAux(PlayerUnit thisUnit) => true;
+    
+    public bool requiresConfirm; // fillable via ScriptableObject interface
 }
