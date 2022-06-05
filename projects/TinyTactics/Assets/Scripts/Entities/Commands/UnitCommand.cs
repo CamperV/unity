@@ -8,13 +8,23 @@ using UnityEngine.UI;
 public abstract class UnitCommand : ScriptableObject
 {
     public enum ExitSignal {
+        // generally for Interactive commands
         NoStateChange,
         NextState,
+
+        // generally for InProgress commands
         ContinueTurn,
         ForceFinishTurn
     }
+
     public string name; // fillable via ScriptableObject interface
     public Sprite sprite; // fillable via ScriptableObject interface
+
+    public enum ExecutionType {
+        Interactive,
+        Immediate
+    }
+    public ExecutionType executionType; // fillable via ScriptableObject interface
 
     public abstract void Activate(PlayerUnit thisUnit); /* Initial activation */
     public abstract void Deactivate(PlayerUnit thisUnit); /* De-activation, ie Cancel */
@@ -22,4 +32,8 @@ public abstract class UnitCommand : ScriptableObject
     public abstract void ActiveUpdate(PlayerUnit thisUnit); /* Always-on while active */
     public abstract ExitSignal InProgressUpdate(PlayerUnit thisUnit); /* Always-on after executing */
     public abstract ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract); /* Finish, usually responsible for executing state changes like Unit Movement */
+
+    // this is an optional method for specifying other ways a command can't be available.
+    // For example, DefaultAttack can't be available unless there are targetable enemies in range
+    public virtual bool IsAvailableAux(PlayerUnit thisUnit) => true;
 }

@@ -100,8 +100,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void TriggerPhase() {
         // re-focus the camera on the centroid of your units
-        Vector3[] unitPositions = activeUnits.Select(u => u.transform.position).ToArray();
-        CameraManager.FocusActiveCameraOn( VectorUtils.Centroid(unitPositions) );
+        // Vector3[] unitPositions = activeUnits.Select(u => u.transform.position).ToArray();
+        // CameraManager.FocusActiveCameraOn( VectorUtils.Centroid(unitPositions) );
 
         // disable enemy unit controller for a time
         enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
@@ -183,7 +183,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         } else {
             mostRecentlySelectedUnit = selection;
             ClearPlayerUnitControllerSelection?.Invoke(mostRecentlySelectedUnit);
-            
+
             ChangeState(ControllerFSM.Selection);
         }
 
@@ -225,18 +225,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         }
     }
 
-    private void _EndPlayerPhase() => GetComponentInParent<TurnManager>().playerPhase.TriggerEnd();
-
-    // this gets called when the BattleMap has a tile that a MouseHold event has triggered over
-    private PlayerUnit _holdUnit;
-
-    public void CheckWaitAt(GridPosition gp) {
-        PlayerUnit? unit = MatchingUnitAt(gp);
-        unit?.ContextualWait();
-        _holdUnit = unit;
-    }
-
-    public void CancelWait(GridPosition gp) {
-        _holdUnit?.CancelWait();
+    private void _EndPlayerPhase() {
+        SetCurrentSelection(null);
+        GetComponentInParent<TurnManager>().playerPhase.TriggerEnd();
     }
 }

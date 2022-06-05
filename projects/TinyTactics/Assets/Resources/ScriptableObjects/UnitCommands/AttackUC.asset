@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: AttackUC
   m_EditorClassIdentifier: 
   name: Default Attack
-  sprite: {fileID: 21300000, guid: ea3b42e54d2092a4487e5a2d2f15fde3, type: 3}
+  sprite: {fileID: 21300000, guid: 7671ea189c3630544acf2c271963ec72, type: 3}
+  executionType: 0

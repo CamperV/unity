@@ -50,8 +50,8 @@ public sealed class EventManager : MonoBehaviour
         battleMap.InteractEvent += gp => playerUnitController.ContextualInteractAt(gp, false);
         battleMap.InteractEvent += enemyUnitController.ContextualInteractAt;
 
-        battleMap.AuxiliaryInteractEvent_0 += playerUnitController.CheckWaitAt; // hold down
-        battleMap.AuxiliaryInteractEvent_1 += playerUnitController.CancelWait;  // release
+        // battleMap.AuxiliaryInteractEvent_0 += // hold down
+        // battleMap.AuxiliaryInteractEvent_1 += // release
         battleMap.AuxiliaryInteractEvent_2 += gp => playerUnitController.ContextualInteractAt(gp, true);  // middle-click (special interact)
 
         battleMap.TerrainMouseOverEvent += uiManager.UpdateTerrainEffectPanel;

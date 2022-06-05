@@ -11,9 +11,19 @@ public class UnitCommandVisual : MonoBehaviour
 {
 	[SerializeField] private Image mainImage;
 	[SerializeField] private GameObject activeBorder;
+	[SerializeField] private GameObject activeCancelVisual;
 
-	public void OnActivate() => activeBorder.SetActive(true);
-	public void OnDeactivate() => activeBorder.SetActive(false);
+	// binds the appropriate UnitCommandSystem.IsCommandAvailable() call to refresh the buttons, without storing a reference explicitly
+	private Func<bool> ButtonChecker;
+
+	public void OnActivate() {
+		activeBorder.SetActive(true);
+		// activeCancelVisual.SetActive(true);
+	}
+	public void OnDeactivate() {
+		activeBorder.SetActive(false);
+		// activeCancelVisual.SetActive(false);
+	}
 
 	public void SetImage(Sprite sprite) {
 		mainImage.sprite = sprite;
@@ -25,5 +35,10 @@ public class UnitCommandVisual : MonoBehaviour
 
 	public void SetButtonStatus(bool status) {
 		GetComponent<Button>().interactable = status;
+	}
+
+	public void SetButtonChecker(Func<bool> _ButtonChecker) => ButtonChecker = _ButtonChecker;
+	public void CheckButtonStatus() {
+		GetComponent<Button>().interactable = ButtonChecker?.Invoke() ?? false;
 	}
 }

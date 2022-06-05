@@ -51,14 +51,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public SpriteAnimator spriteAnimator;
     [HideInInspector] public UnitPathfinder unitPathfinder;
     [HideInInspector] public UnitStats unitStats;
-    [HideInInspector] protected HoldTimer holdTimer;
     [HideInInspector] public StatusManager statusManager;
     [HideInInspector] public PersonalAudioFX personalAudioFX;
     [HideInInspector] public MessageEmitter messageEmitter;
     
     // I don't love this, but it makes things much cleaner.
-    protected PlayerUnitController playerUnitController;
-    protected EnemyUnitController enemyUnitController;
+    public PlayerUnitController playerUnitController;
+    public EnemyUnitController enemyUnitController;
 
     // other
     public MoveRange moveRange;
@@ -94,7 +93,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         spriteAnimator = GetComponent<SpriteAnimator>();
         unitPathfinder = GetComponent<UnitPathfinder>();
         unitStats = GetComponent<UnitStats>();
-        holdTimer = GetComponent<HoldTimer>();
         statusManager = GetComponent<StatusManager>();
         personalAudioFX = GetComponent<PersonalAudioFX>();
         messageEmitter = GetComponent<MessageEmitter>();

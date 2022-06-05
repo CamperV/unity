@@ -11,6 +11,7 @@ public class UnitCommandPanel : MonoBehaviour
 	[SerializeField] private UnitCommandVisual unitCommandVisualPrefab;
 
 	private Dictionary<UnitCommand, UnitCommandVisual> mapping = new Dictionary<UnitCommand, UnitCommandVisual>();
+	private UnitCommandSystem boundUnitCommandSystem;
 
 	public void SetUnitInfo(PlayerUnit unit) {
 		ClearUCs();
@@ -44,33 +45,11 @@ public class UnitCommandPanel : MonoBehaviour
 		UnitCommandVisual ucv = Instantiate(unitCommandVisualPrefab, unitCommandContainer.transform);
 		ucv.SetImage(uc.sprite);
 		ucv.RegisterCommand(() => ucs.TryIssueCommand(uc));
-		ucv.SetButtonStatus(ucs.IsCommandAvailable(uc));
+		ucv.SetButtonChecker(() => ucs.IsCommandAvailable(uc));
+		ucv.CheckButtonStatus();
 
 		// set the mapping value so that it can be stored/retrieved for visualiztion
 		mapping[uc] = ucv;
-
-		// // create a raw GameObject and juice it up here
-		// GameObject ucVisual = new GameObject();
-		// ucVisual.name = uc.name;
-
-		// ucVisual.AddComponent<RectTransform>();
-		// ucVisual.AddComponent<CanvasRenderer>();
-		// Image im = ucVisual.AddComponent<Image>();
-		// im.sprite = uc.sprite;
-
-		// ucVisual.transform.parent = unitCommandContainer.transform;	
-		// ucVisual.transform.localScale = Vector3.one;
-
-		// // now attach the right functions
-		// Button btn = ucVisual.AddComponent<Button>();
-		// btn.onClick.AddListener(() => ucs.TryIssueCommand(uc));
-
-		// // now, set various active... things
-		// // im.color = ucs.IsCommandAvailable(uc) ? Color.white : (0.5f*Color.white).WithAlpha(1f);
-		// btn.interactable = ucs.IsCommandAvailable(uc);
-
-		// // set the mapping value so that it can be stored/retrieved for visualiztion
-		// mapping[uc] = ucVisual;
 	}
 
 	private void ActivateTrigger(UnitCommand uc) {
@@ -82,6 +61,10 @@ public class UnitCommandPanel : MonoBehaviour
 	}
 
 	private void FinishTrigger(UnitCommand uc) {
+		// just in case your ability caused others to become balid/invalid, go ahead and refresh
+		foreach (UnitCommand _uc in mapping.Keys) {
+			mapping[_uc].CheckButtonStatus();
+		}
 		mapping[uc].SetButtonStatus(false);
 	}
 }

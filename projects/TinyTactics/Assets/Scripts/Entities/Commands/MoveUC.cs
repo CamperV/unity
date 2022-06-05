@@ -23,33 +23,6 @@ using Extensions;
 //     break;
 // }
 
-// if (spriteAnimator.isMoving) {    
-//     // just spin
-
-// // we've finished moving
-// } else {
-
-//     // if this interact was fired via Middle-Mouse, immediately wait
-//     if (auxiliaryInteractFlag) {
-//         auxiliaryInteractFlag = false;
-//         Wait();
-
-//     // if there's an in-range enemy, go to AttackSelection
-//     // if (attackAvailable && ValidAttackExistsFrom(_reservedGridPosition)) {
-//     } else if (attackAvailable) {
-//         ChangeState(PlayerUnitFSM.AttackSelection);
-        
-//     } else {
-//         FinishTurn();
-//         ChangeState(PlayerUnitFSM.Idle);
-//     }
-// }
-
-// private bool ValidAttackExistsFrom(GridPosition fromPosition) {
-//     AttackRange standing = AttackRange.Standing(fromPosition, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
-//     return enemyUnitController.activeUnits.Where(enemy => standing.ValidAttack(enemy.gridPosition)).Any();
-// }
-
 [CreateAssetMenu (menuName = "UnitCommands/MoveUC")]
 public class MoveUC : UnitCommand
 {
@@ -79,13 +52,13 @@ public class MoveUC : UnitCommand
         // if a path exists to the destination, smoothly move along the path
         // after reaching your destination, officially move via unitMap
         if (pathToMouseOver != null) {
+            thisUnit.personalAudioFX.PlayInteractFX();
+
             Utils.DelegateCoroutineTo(thisUnit,
                 thisUnit.spriteAnimator.SmoothMovementPath<GridPosition>(pathToMouseOver, thisUnit.battleMap)
             );
             thisUnit.ReservePosition(interactAt);
-
             thisUnit.FireOnMoveEvent(pathToMouseOver);
-            thisUnit.personalAudioFX.PlayInteractFX();
 
             // Complete -> "Change to InProgress state after returning"
             return ExitSignal.NextState;

@@ -26,14 +26,13 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         CommandActive,      // Command has been selected, and is awaiting player input (a la MoveSelection or AttackSelection)
         CommandInProgress   // Command has received input, and is waiting on something (a la Moving/Attacking/Animation resolving)        
     }
-    public State state { get; set; } = State.Idle;
+    [field: SerializeField] public State state { get; set; } = State.Idle;
 
     [SerializeField] private List<UnitCommand> unitCommands; // assigned in inspector
     public IEnumerable<UnitCommand> Commands => unitCommands;
-    [SerializeField] private UnitCommand DefaultCommand => unitCommands[0];
 
     private Dictionary<string, bool> commandAvailable = new Dictionary<string, bool>();
-    public bool IsCommandAvailable(UnitCommand uc) => commandAvailable[uc.name];
+    public bool IsCommandAvailable(UnitCommand uc) => commandAvailable[uc.name] && uc.IsAvailableAux(thisUnit);
 
     // these are paired together to maintain state
     // inject this flag into activeCommand communications
@@ -63,8 +62,17 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
             case State.CommandInProgress:
                 UnitCommand.ExitSignal changeState = activeCommand.InProgressUpdate(thisUnit);
+
+                // if we get the NextState signal, progress to clean-up, ie ExitState->FinishCommand
                 if (changeState == UnitCommand.ExitSignal.NextState) {
                     ChangeState(State.Idle);
+
+                    // then, if its available, try to go to next
+                    // if this is null, TryIssueCommand will take care of it
+                    TryIssueCommand( NextAvailableCommand(UnitCommand.ExecutionType.Interactive) );
+
+                } else {
+                    // we spin (ie ExitSignal.NoStateChange)
                 }
                 break;
         }
@@ -73,7 +81,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     // IStateMachine<>
     public void ChangeState(State newState) {
         if (newState == state) return;
-        
+                
         ExitState(state);
         EnterState(newState);
     }
@@ -97,7 +105,6 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
             case State.CommandActive:
                 activeCommand.Activate(thisUnit);
                 ActivateUC?.Invoke(activeCommand);
-                thisUnit.personalAudioFX.PlayInteractFX();
                 break;
 
             case State.CommandInProgress:
@@ -119,34 +126,37 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
                 break;
 
             case State.CommandInProgress:
-                UnitCommand.ExitSignal exitSignal = activeCommand.FinishCommand(thisUnit, auxiliaryInteractFlag);
-                FinishUC?.Invoke(activeCommand);
-
-                switch (exitSignal) {
-                    case UnitCommand.ExitSignal.ContinueTurn:
-                        break;
-
-                    case UnitCommand.ExitSignal.ForceFinishTurn:
-                        thisUnit.FinishTurn();
-                        break;
-                }
-
-                // either way, you can't use it again
-                commandAvailable[activeCommand.name] = false;
-                if (GetAvailableCommandCount() == 0) thisUnit.FinishTurn();
+                CompleteCommand(activeCommand);
                 break;
         }
     }
 
     // this can happen from a user clicking on a button, or PlayerUnit calling it directly by default (ie MoveUC)
     public void TryIssueCommand(UnitCommand command) {
-        if (commandAvailable[command.name] && command != activeCommand) {
-            // go to Idle first, so that you exit from activeCommand properly
-            // otherwise, CommandActive -> CommandActive does nothing
-            ChangeState(State.Idle);
-            //
-            activeCommand = command;
-            ChangeState(State.CommandActive);
+        if (command == null) return;
+        if (!IsCommandAvailable(command)) return;
+
+        switch (command.executionType) {
+            case UnitCommand.ExecutionType.Interactive:
+                if (command != activeCommand) {
+                    // go to Idle first, so that you exit from activeCommand properly
+                    // otherwise, CommandActive -> CommandActive does nothing
+                    ChangeState(State.Idle);
+                    
+                    //
+                    activeCommand = command;
+                    ChangeState(State.CommandActive);
+
+                // else command == activeCommand, you're already active, deactivate it
+                } else {
+                    CancelActiveCommand();
+                }
+                break;
+
+            case UnitCommand.ExecutionType.Immediate:
+                ChangeState(State.Idle);
+                CompleteCommand(command);
+                break;
         }
     }
 
@@ -154,12 +164,29 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         ChangeState(State.Idle);    // this puts activeCommand to null
     }
 
+    public void CompleteCommand(UnitCommand command) {
+        UnitCommand.ExitSignal exitSignal = command.FinishCommand(thisUnit, auxiliaryInteractFlag);
+        FinishUC?.Invoke(command);
+        commandAvailable[command.name] = false;
+
+        switch (exitSignal) {
+            case UnitCommand.ExitSignal.ContinueTurn:
+                break;
+
+            case UnitCommand.ExitSignal.ForceFinishTurn:
+                thisUnit.FinishTurn();
+                break;
+        }
+        
+        if (GetAvailableCommandCount() == 0) thisUnit.FinishTurn();
+    }
+
     public void Interact(GridPosition interactAt, bool auxiliaryInteract) {
         auxiliaryInteractFlag = auxiliaryInteract;
 
         switch(state) {
             case State.Idle:
-                if (interactAt == thisUnit.gridPosition) TryIssueCommand(DefaultCommand);
+                if (interactAt == thisUnit.gridPosition) TryIssueCommand( NextAvailableCommand(UnitCommand.ExecutionType.Interactive) );
                 break;
 
             case State.CommandActive:
@@ -186,5 +213,10 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
             if (ava) numAvailable++;
         }
         return numAvailable;
+    }
+
+    // this will return null for "Default"
+    private UnitCommand NextAvailableCommand(UnitCommand.ExecutionType executionType) {
+        return unitCommands.FirstOrDefault(uc => IsCommandAvailable(uc) && uc.executionType == executionType);
     }
 }

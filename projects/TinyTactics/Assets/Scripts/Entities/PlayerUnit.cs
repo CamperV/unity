@@ -38,7 +38,7 @@ public sealed class PlayerUnit : Unit
 
     public void OnInteract(GridPosition gp, bool auxiliaryInteract) { 
         if (!turnActive) return;
-
+        personalAudioFX.PlayInteractFX();
         unitCommandSystem.Interact(gp, auxiliaryInteract);
     }
 
@@ -109,83 +109,24 @@ public sealed class PlayerUnit : Unit
     public override void StartTurn() {
         base.StartTurn();
         unitCommandSystem.SetAllCommandsAvailability(true);
+        unitCommandSystem.InitialState();
     }
 
     // diff from Unit.FinishTurn: send signal to the parent controller
     public override void FinishTurn() {
         base.FinishTurn();
         unitCommandSystem.SetAllCommandsAvailability(false);
+        unitCommandSystem.InitialState();
+        //
         playerUnitController.CheckEndPhase();
-    }
-
-    public void FinishTurnNoCheck() {
-        turnActive = false;
-        moveAvailable = false;
-        attackAvailable = false;
-        spriteAnimator.SetColor(SpriteAnimator.Inactive);
-
-        FireOnFinishTurnEvent();
-    }
-
-    // this is an Action which finishes the unit turn early,
-    // / but does so in a way that requires some weird clean up
-    public void Wait() {
-        FireOnWaitEvent();
-        FinishTurn();
     }
 
     public void WaitNoCheck() {
         FireOnWaitEvent();
-        FinishTurnNoCheck();
-    }
-    
-    public void ContextualWait() {
-        // if (turnActive) {
-        //     if (attackAvailable || (moveAvailable && attackAvailable)) {
-        //         switch (state) {
-        //             case PlayerUnitFSM.Moving:
-        //             case PlayerUnitFSM.Attacking:
-        //             case PlayerUnitFSM.Idle:
-        //             case PlayerUnitFSM.MoveSelection:
-        //                 break;
 
-        //             // only start detecting the Wait signal if you're not animating, etc
-        //             case PlayerUnitFSM.AttackSelection:
-        //                 ChangeState(PlayerUnitFSM.PreWait);
-        //                 break;
-        //         }
-        //     } else if (moveAvailable && !attackAvailable) {
-        //         switch (state) {
-        //             case PlayerUnitFSM.Moving:
-        //             case PlayerUnitFSM.Attacking:
-        //             case PlayerUnitFSM.Idle:
-        //                 break;
-
-        //             // only start detecting the Wait signal if you're not animating, etc
-        //             case PlayerUnitFSM.MoveSelection:
-        //                 ChangeState(PlayerUnitFSM.PreWait);
-        //                 break;
-
-        //             case PlayerUnitFSM.AttackSelection:
-        //                 break;
-        //         }
-        //     }
-        // }
-    }
-
-    public void CancelWait() {
-        // if (state == PlayerUnitFSM.PreWait) {
-        //     holdTimer.CancelTimer();
-            
-        //     // since you can only enter PreWait from AttackSelection, head back there
-        //     // it will handle itself wrt going to Idle and checking attackAvailable
-        //     if (moveAvailable) {
-        //         ChangeState(PlayerUnitFSM.MoveSelection);
-
-        //     } else {
-        //         ChangeState(PlayerUnitFSM.AttackSelection);
-        //     }
-        // }
+        base.FinishTurn();
+        unitCommandSystem.SetAllCommandsAvailability(false);
+        unitCommandSystem.InitialState();
     }
 
     public void ReservePosition(GridPosition gp) {

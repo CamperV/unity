@@ -17,8 +17,16 @@ public class UIPulser : MonoBehaviour
 		if (targetImage == null) targetImage = GetComponent<Image>();
 	}
 
-	void Start() {
+	void OnEnable() {
 		StartCoroutine( BetweenPulses() );
+	}
+
+	void OnDisable() {
+		StopAllCoroutines();
+		
+		foreach (Transform childTransform in transform) {
+			Destroy(childTransform.gameObject);
+		}
 	}
 
 	private IEnumerator BetweenPulses() {

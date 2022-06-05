@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Extensions;
+using System.Linq;
 
 [CreateAssetMenu (menuName = "UnitCommands/AttackUC")]
 public class AttackUC : UnitCommand
@@ -13,8 +14,7 @@ public class AttackUC : UnitCommand
     // waiting until an Engagement is done animating and resolving casualties
     public static bool _engagementResolveFlag = false;
 
-
-    public override void Activate(PlayerUnit thisUnit) {
+    public override void Activate(PlayerUnit thisUnit) {        
         thisUnit.UpdateThreatRange(standing: true);
         Utils.DelegateLateFrameTo(thisUnit, thisUnit.DisplayThreatRange);
     }
@@ -93,6 +93,11 @@ public class AttackUC : UnitCommand
         return ExitSignal.ForceFinishTurn;
     }
 
+    // additionally, this command is only available if there's a ValidAttack to be made
+    public override bool IsAvailableAux(PlayerUnit thisUnit) {
+        return ValidAttackExistsFrom(thisUnit, thisUnit.gridPosition);
+    }
+
     //
     //
     private EnemyUnit? EnemyAt(PlayerUnit thisUnit, GridPosition gp) {
@@ -104,5 +109,11 @@ public class AttackUC : UnitCommand
         } else {
             return null;
         }
+    }
+
+    private bool ValidAttackExistsFrom(PlayerUnit thisUnit, GridPosition fromPosition) {        
+        EnemyUnitController enemyUC = thisUnit.enemyUnitController;
+        AttackRange standing = AttackRange.Standing(fromPosition, thisUnit.equippedWeapon.weaponStats.MIN_RANGE, thisUnit.equippedWeapon.weaponStats.MAX_RANGE);
+        return enemyUC.activeUnits.Where(enemy => standing.ValidAttack(enemy.gridPosition)).Any();
     }
 }
