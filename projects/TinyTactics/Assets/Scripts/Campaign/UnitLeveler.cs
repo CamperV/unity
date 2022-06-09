@@ -23,7 +23,6 @@ public class UnitLeveler : MonoBehaviour
     [SerializeField] private DraftPerkPanel draftPerkPanelPrefab;
 
     private Dictionary<Guid, List<PerkData>> unitPerkOfferings;
-    private bool cancelSignal = false;
 
     void Awake() {
         unitPerkOfferings = new Dictionary<Guid, List<PerkData>>();

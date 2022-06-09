@@ -20,10 +20,16 @@ public class UnitCommandPanel : MonoBehaviour
 			AddToPanel(uc, unit.unitCommandSystem);
 		}
 
+		// now that the UnitCommandVisuals have been created, make them noisy
+		foreach (UnitCommandVisual ucv in mapping.Values) {
+			ucv.RegisterCommand(unit.personalAudioFX.PlayInteractFX);
+		}
+
 		// now... can we somehow bind functions here to uc.Activate()/uc.Deactivate() a la invocation list?
 		unit.unitCommandSystem.ActivateUC += ActivateTrigger;
 		unit.unitCommandSystem.DeactivateUC += DeactivateTrigger;
 		unit.unitCommandSystem.FinishUC += FinishTrigger;
+		unit.unitCommandSystem.RevertUC += RevertTrigger;
 	}
 
 	public void ClearUnitInfo(PlayerUnit unit) {
@@ -31,6 +37,7 @@ public class UnitCommandPanel : MonoBehaviour
 		unit.unitCommandSystem.ActivateUC -= ActivateTrigger;
 		unit.unitCommandSystem.DeactivateUC -= DeactivateTrigger;
 		unit.unitCommandSystem.FinishUC -= FinishTrigger;
+		unit.unitCommandSystem.RevertUC -= RevertTrigger;
 	}
 
 	private void ClearUCs() {
@@ -70,5 +77,9 @@ public class UnitCommandPanel : MonoBehaviour
 			mapping[_uc].CheckButtonStatus();
 		}
 		mapping[uc].SetButtonStatus(false);
+	}
+
+	private void RevertTrigger(UnitCommand uc) {
+		mapping[uc].CheckButtonStatus();	
 	}
 }

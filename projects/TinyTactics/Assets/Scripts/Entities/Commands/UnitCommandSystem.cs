@@ -19,6 +19,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     public event UnitCommandStateChange ActivateUC;
     public event UnitCommandStateChange DeactivateUC;
     public event UnitCommandStateChange FinishUC;
+    public event UnitCommandStateChange RevertUC;
 
     // IStateMachine<>
     public enum State {
@@ -40,9 +41,11 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     [SerializeField] private bool auxiliaryInteractFlag = false;
 
     private PlayerUnit thisUnit;
+    private List<UnitCommand> checkpointStack;
 
     void Awake() {
         thisUnit = GetComponent<PlayerUnit>();
+        checkpointStack = new List<UnitCommand>();
 
         foreach (UnitCommand uc in unitCommands) {
             commandAvailable[uc.name] = true;
@@ -88,6 +91,8 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     // IStateMachine<>
     public void InitialState() {
+        checkpointStack.Clear();
+
         ExitState(state);
         EnterState(State.Idle);
     }
@@ -164,13 +169,24 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         ChangeState(State.Idle);    // this puts activeCommand to null
     }
 
+    public void RevertToCheckpoint() {
+        foreach (UnitCommand uc in checkpointStack) {
+            uc.Revert(thisUnit);
+            commandAvailable[uc.name] = true;
+            RevertUC?.Invoke(uc);
+        }
+    }
+
     public void CompleteCommand(UnitCommand command) {
         UnitCommand.ExitSignal exitSignal = command.FinishCommand(thisUnit, auxiliaryInteractFlag);
         FinishUC?.Invoke(command);
         commandAvailable[command.name] = false;
 
         switch (exitSignal) {
+            // if this Command doesn't end your turn, you might be able to revert it
+            // this is the case with MoveUC
             case UnitCommand.ExitSignal.ContinueTurn:
+                checkpointStack.Insert(0, command);
                 break;
 
             case UnitCommand.ExitSignal.ForceFinishTurn:

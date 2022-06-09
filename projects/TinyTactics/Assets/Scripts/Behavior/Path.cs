@@ -53,7 +53,7 @@ public class Path<T> where T : struct
 		return path.Count == 0 || path == null;
 	}
 
-	public static Path<T> MaskWithinRange<T>(Path<T> inputPath, FlowField<T> flowField) where T : struct {
+	public static Path<T> MaskWithinRange(Path<T> inputPath, FlowField<T> flowField) {
 		Path<T> newPath = new Path<T>();
 
 		foreach (T currentPos in inputPath.Unwind()) {

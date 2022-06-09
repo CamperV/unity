@@ -19,7 +19,7 @@ public struct GridPosition : IEquatable<GridPosition>
         return x == other.x && y == other.y;
     }
 
-    public int GetHashCode() {
+    public override int GetHashCode() {
         return x.GetHashCode() ^ (y.GetHashCode() << 2);
     }
 

@@ -21,7 +21,7 @@ public class CameraManager : MonoBehaviour
 	public Vector2 cameraSpeed;
 	private Vector3 movementVector = Vector3.zero;
 
-	private Camera camera;
+	private new Camera camera;
 	private float zoomLevel;
 	public float zoomSpeed;
 

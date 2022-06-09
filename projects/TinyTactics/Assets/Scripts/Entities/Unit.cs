@@ -158,7 +158,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public IEnumerable<Unit> AlliesWithinRange(int range) {
         foreach (GridPosition gp in gridPosition.Radiate(range)) {
             if (gp == gridPosition || !battleMap.IsInBounds(gp)) continue;
-            Unit? unit = unitMap.UnitAt(gp);
+            Unit unit = unitMap.UnitAt(gp);
 
             if (unit != null && unit.GetType() == GetType()) {
                 yield return unit;
@@ -169,7 +169,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public IEnumerable<Unit> EnemiesWithinRange(int range) {
         foreach (GridPosition gp in gridPosition.Radiate(range)) {
             if (gp == gridPosition || !battleMap.IsInBounds(gp)) continue;
-            Unit? unit = unitMap.UnitAt(gp);
+            Unit unit = unitMap.UnitAt(gp);
 
             if (unit != null && unit.GetType() != GetType()) {
                 yield return unit;
@@ -180,7 +180,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public IEnumerable<Unit> Allies() {
         foreach (GridPosition gp in battleMap.Positions) {
             if (gp == gridPosition) continue;
-            Unit? unit = unitMap.UnitAt(gp);
+            Unit unit = unitMap.UnitAt(gp);
 
             if (unit != null && unit.GetType() == GetType()) {
                 yield return unit;
@@ -191,7 +191,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public IEnumerable<Unit> Enemies() {
         foreach (GridPosition gp in battleMap.Positions) {
             if (gp == gridPosition) continue;
-            Unit? unit = unitMap.UnitAt(gp);
+            Unit unit = unitMap.UnitAt(gp);
 
             if (unit != null && unit.GetType() != GetType()) {
                 yield return unit;

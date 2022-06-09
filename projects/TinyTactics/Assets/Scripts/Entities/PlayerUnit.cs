@@ -7,13 +7,9 @@ using UnityEngine.UI;
 using TMPro;
 using Extensions;
 
-[RequireComponent(typeof(UnitCommandSystem))]
 public sealed class PlayerUnit : Unit
 {
     [HideInInspector] public UnitCommandSystem unitCommandSystem;
-
-    // cancels movement
-    public bool cancelSignal = false;
 
     // imported from Campaign
     public Guid CampaignID { get; private set; }
@@ -46,33 +42,7 @@ public sealed class PlayerUnit : Unit
     // undo all the way to Idle
     public override void RevertTurn() {
         unitCommandSystem.CancelActiveCommand();
-        return;
-
-        // switch (state) {
-        //     case PlayerUnitFSM.Moving:
-        //         cancelSignal = true;
-        //         break;
-
-        //     case PlayerUnitFSM.MoveSelection:
-        //     case PlayerUnitFSM.AttackSelection:
-        //         if (turnActive) {
-        //             if (moveAvailable == false) UndoMovement();
-        //             ChangeState(PlayerUnitFSM.Idle);
-        //         }
-        //         break;
-        // }
-    }
-
-    // NOTE: This is janky as hell. Really, I should be using Reservations in the UnitMap, but this kinda works...
-    // there theoretically exists a period of time in which things snap around, as MoveUnit can move a Transform, like SpriteAnimator
-    // however, the SmoothMovementGrid should override that. I don't know the order of operations vis-a-vis coroutines etc
-    //
-    // modifies gridPosition & updates threat range
-    private void UndoMovement() {
-        unitMap.MoveUnit(this, _startingGridPosition);
-        _reservedGridPosition = gridPosition;
-        statusManager.RemoveAllMovementBuffs();
-        RefreshInfo();
+        unitCommandSystem.RevertToCheckpoint();
     }
 
     // this needs to run at the end of the frame
@@ -136,5 +106,10 @@ public sealed class PlayerUnit : Unit
 
     public void ClaimReservation() {
         unitMap.MoveUnit(this, _reservedGridPosition);
+    }
+
+    public void ForfeitReservation() {
+        unitMap.MoveUnit(this, _startingGridPosition);
+        _reservedGridPosition = gridPosition;
     }
 }

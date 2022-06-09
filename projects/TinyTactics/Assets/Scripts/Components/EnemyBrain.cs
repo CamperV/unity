@@ -25,7 +25,7 @@ public class EnemyBrain : MonoBehaviour
 			executableThisTurn = execFlag;
 		}
 
-		public string ToString() => $"DP[{target}, {fromPosition}, {potentialDamage} dmg, {executableThisTurn}]";
+		public override string ToString() => $"DP[{target}, {fromPosition}, {potentialDamage} dmg, {executableThisTurn}]";
 	}
 
 	void Awake() {

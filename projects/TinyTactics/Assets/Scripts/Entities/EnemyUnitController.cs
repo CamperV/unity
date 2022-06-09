@@ -139,7 +139,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
                 break;
 
             case ControllerFSM.Preview:
-                EnemyUnit? unit = MatchingUnitAt(gp);
+                EnemyUnit unit = MatchingUnitAt(gp);
 
                 // swap to the new unit. This will rapidly drop currentPreview (via Cancel/ChangeState(Idle))
                 // then REACQUIRE a currentPreview immediately afterwards
@@ -175,7 +175,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         }
     }
 
-    private EnemyUnit? MatchingUnitAt(GridPosition gp) {
+    private EnemyUnit MatchingUnitAt(GridPosition gp) {
         foreach (EnemyUnit en in activeUnits) {
             if (en.gridPosition == gp) return en;
         }
@@ -214,7 +214,7 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
         yield return new WaitUntil(() => !unit.spriteAnimator.isAnimating);
 
         EnemyBrain.DamagePackage? selectedDmgPkg;
-        Path<GridPosition>? pathTo;
+        Path<GridPosition> pathTo;
         unit.SelectDamagePackage(out selectedDmgPkg, out pathTo);
 
         // if the unit wants to end early, let them

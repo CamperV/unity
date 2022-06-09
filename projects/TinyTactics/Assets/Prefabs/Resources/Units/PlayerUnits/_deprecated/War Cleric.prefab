@@ -76,14 +76,15 @@ MonoBehaviour:
   unitMap: {fileID: 0}
   battleMap: {fileID: 0}
   spriteAnimator: {fileID: 0}
-  spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   messageEmitter: {fileID: 0}
+  playerUnitController: {fileID: 0}
+  enemyUnitController: {fileID: 0}
   equippedWeapon: {fileID: 6617014558017446324, guid: 9b4576937d0c85346990259d06216c4a, type: 3}
-  tags: []
+  <tags>k__BackingField: []
   archetypes:
   - {fileID: 11400000, guid: fd4cd4e8a8eca4d4e929fa363144de76, type: 2}
   - {fileID: 11400000, guid: e3d85aa16bc314245b699ac65182ffc3, type: 2}
@@ -91,7 +92,7 @@ MonoBehaviour:
   <turnActive>k__BackingField: 1
   <moveAvailable>k__BackingField: 1
   <attackAvailable>k__BackingField: 1
-  cancelSignal: 0
+  unitCommandSystem: {fileID: 0}
 --- !u!1001 &981361305450805342
 PrefabInstance:
   m_ObjectHideFlags: 0

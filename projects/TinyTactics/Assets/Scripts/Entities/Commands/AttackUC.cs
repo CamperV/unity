@@ -32,7 +32,7 @@ public class AttackUC : UnitCommand
 
         // if there's a ValidAttack on the mouseclick'd area
         if (thisUnit.attackRange.ValidAttack(interactAt) && EnemyAt(thisUnit, interactAt) != null) {
-            EnemyUnit? enemy = EnemyAt(thisUnit, interactAt);
+            EnemyUnit enemy = EnemyAt(thisUnit, interactAt);
 
             _engagementResolveFlag = true;
             Engagement engagement = new Engagement(thisUnit, enemy);
@@ -69,7 +69,7 @@ public class AttackUC : UnitCommand
 
             // when the mouse is over an enemy:
             if (thisUnit.attackRange.ValidAttack(thisUnit.battleMap.CurrentMouseGridPosition) && EnemyAt(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition) != null) {
-                EnemyUnit? enemy = EnemyAt(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition);
+                EnemyUnit enemy = EnemyAt(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition);
                 thisUnit.battleMap.Highlight(thisUnit.battleMap.CurrentMouseGridPosition, Palette.threatColorYellow);
 
                 // create and display EngagementPreviews here
@@ -100,10 +100,10 @@ public class AttackUC : UnitCommand
 
     //
     //
-    private EnemyUnit? EnemyAt(PlayerUnit thisUnit, GridPosition gp) {
+    private EnemyUnit EnemyAt(PlayerUnit thisUnit, GridPosition gp) {
         if (!thisUnit.battleMap.IsInBounds(gp)) return null;
 
-        Unit? unit = thisUnit.unitMap.UnitAt(gp);
+        Unit unit = thisUnit.unitMap.UnitAt(gp);
         if (unit != null && unit.GetType() == typeof(EnemyUnit)) {
             return unit as EnemyUnit;
         } else {

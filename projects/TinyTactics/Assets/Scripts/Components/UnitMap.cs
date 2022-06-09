@@ -61,7 +61,7 @@ public class UnitMap : MonoBehaviour
         }
     }
 
-    public Unit? UnitAt(GridPosition gp) {
+    public Unit UnitAt(GridPosition gp) {
         return map[gp];
     }
 

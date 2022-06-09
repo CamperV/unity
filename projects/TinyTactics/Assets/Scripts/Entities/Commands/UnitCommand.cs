@@ -17,7 +17,7 @@ public abstract class UnitCommand : ScriptableObject
         ForceFinishTurn
     }
 
-    public string name; // fillable via ScriptableObject interface
+    public new string name; // fillable via ScriptableObject interface
     public Sprite sprite; // fillable via ScriptableObject interface
 
     public enum ExecutionType {
@@ -38,4 +38,8 @@ public abstract class UnitCommand : ScriptableObject
     public virtual bool IsAvailableAux(PlayerUnit thisUnit) => true;
     
     public bool requiresConfirm; // fillable via ScriptableObject interface
+    public bool revertable; // fillable via ScriptableObject interface
+
+    // i don't like this but I'm also on a plane. Make this an interface IRevertable or something
+    public virtual void Revert(PlayerUnit thisUnit){}
 }

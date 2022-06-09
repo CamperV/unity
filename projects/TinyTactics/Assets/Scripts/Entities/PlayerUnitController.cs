@@ -146,7 +146,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             //      2) If you don't, currentSelection will polymorphically decide what it wants to do (via its state) //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.Selection:
-                PlayerUnit? unit = MatchingUnitAt(gp);
+                PlayerUnit unit = MatchingUnitAt(gp);
 
                 // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
                 // then REACQUIRE a currentSelection immediately afterwards
@@ -197,7 +197,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         }
     }
 
-    public PlayerUnit? MatchingUnitAt(GridPosition gp) {
+    public PlayerUnit MatchingUnitAt(GridPosition gp) {
         foreach (PlayerUnit en in activeUnits) {
             if (en.gridPosition == gp) return en;
         }

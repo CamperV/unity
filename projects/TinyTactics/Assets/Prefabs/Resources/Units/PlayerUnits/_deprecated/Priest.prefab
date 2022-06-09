@@ -35,21 +35,22 @@ MonoBehaviour:
   unitMap: {fileID: 0}
   battleMap: {fileID: 0}
   spriteAnimator: {fileID: 0}
-  spriteRenderer: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   messageEmitter: {fileID: 0}
+  playerUnitController: {fileID: 0}
+  enemyUnitController: {fileID: 0}
   equippedWeapon: {fileID: 3479959686748599251, guid: d6e061ba2425d6246bb8f3b0b78342d5, type: 3}
-  tags: []
+  <tags>k__BackingField: []
   archetypes:
   - {fileID: 11400000, guid: e3d85aa16bc314245b699ac65182ffc3, type: 2}
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
   <attackAvailable>k__BackingField: 0
-  cancelSignal: 0
+  unitCommandSystem: {fileID: 0}
 --- !u!114 &3960520077924899042
 MonoBehaviour:
   m_ObjectHideFlags: 0

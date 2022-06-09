@@ -4,31 +4,12 @@ using UnityEngine;
 using TMPro;
 using Extensions;
 
-// For cancelling Movement that is ongoing:
-// if (cancelSignal) {
-//     cancelSignal = false;
-
-//     StopAllCoroutines();
-//     spriteAnimator.ClearStacks();
-
-//     unitMap.ClearReservation(_reservedGridPosition);
-//     UndoMovement();
-
-// } else {
-//     unitMap.MoveUnit(this, _reservedGridPosition);
-// }
-
-// if (cancelSignal) {
-//     ChangeState(PlayerUnitFSM.Idle);
-//     break;
-// }
-
 [CreateAssetMenu (menuName = "UnitCommands/MoveUC")]
 public class MoveUC : UnitCommand
 {
     // we can actually keep some state here: there should never be two MoveUC's Activated at the same time
     public static GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
-    public static Path<GridPosition>? pathToMouseOver;
+    public static Path<GridPosition> pathToMouseOver;
 
     public override void Activate(PlayerUnit thisUnit) {
         // re-calc move range, and display it
@@ -96,5 +77,20 @@ public class MoveUC : UnitCommand
     public override ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract) {
         thisUnit.ClaimReservation();
         return (auxiliaryInteract) ? ExitSignal.ForceFinishTurn : ExitSignal.ContinueTurn;
+    }
+
+    // this is only possible for a few UC
+    // Attacking, or anything else that ends your turn, obviously cannot
+    // but Movement might simply be used to preview an engagement
+    //
+    // NOTE: This is janky as hell. Really, I should be using Reservations in the UnitMap, but this kinda works...
+    // there theoretically exists a period of time in which things snap around, as MoveUnit can move a Transform, like SpriteAnimator
+    // however, the SmoothMovementGrid should override that. I don't know the order of operations vis-a-vis coroutines etc
+    //
+    // modifies gridPosition & updates threat range
+    public override void Revert(PlayerUnit thisUnit) {
+        thisUnit.ForfeitReservation();
+        thisUnit.statusManager.RemoveAllMovementBuffs();
+        thisUnit.RefreshInfo();
     }
 }

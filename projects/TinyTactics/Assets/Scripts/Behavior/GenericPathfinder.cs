@@ -12,7 +12,7 @@ public class GenericPathfinder<T> where T : struct
 		pathableSurface = _pathableSurface;
 	}
 
-	public Path<T>? BFS(T startPosition, T targetPosition) {
+	public Path<T> BFS(T startPosition, T targetPosition) {
 		// this is a simple Best-Path-First BFS graph-search system
 		// Grid Positions are the Nodes, and are connected to their neighbors
 		

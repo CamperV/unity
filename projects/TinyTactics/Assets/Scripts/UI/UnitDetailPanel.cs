@@ -68,7 +68,7 @@ public class UnitDetailPanel : MonoBehaviour
 
 		string redHex = "#FF6D6D";
 		string greenHex = "#6FD66E";
-		string grayHex = "#808080";
+		// string grayHex = "#808080";
 		string yellowHex = "#FFEA94";
 
 		// handle buffs/debuffs after stats, so basically re-write them

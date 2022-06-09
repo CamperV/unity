@@ -164,7 +164,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
     public void RefreshTargets() => brain.RefreshTargets(playerUnitController.activeUnits);
 
-    public void SelectDamagePackage(out EnemyBrain.DamagePackage? selectedDmgPkg, out Path<GridPosition>? pathTo) {
+    public void SelectDamagePackage(out EnemyBrain.DamagePackage? selectedDmgPkg, out Path<GridPosition> pathTo) {
         selectedDmgPkg = null;
         pathTo = null;
 
@@ -204,7 +204,7 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
                 // now... this new path hasn't check the things it needs to, such as "Can I stand here?"
                 // that question is asked by unitMap.CanMoveInto, during moveRange creation
                 // so it is raised when we ask for a ValidMove ("moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);")
-                Path<GridPosition> maskedPathTo = Path<GridPosition>.MaskWithinRange<GridPosition>(fullPathTo, moveRange);
+                Path<GridPosition> maskedPathTo = Path<GridPosition>.MaskWithinRange(fullPathTo, moveRange);
 
                 // first, ask that question, and if it works... then it simply works. Return early
                 if (moveRange.ValidMoveTo(maskedPathTo.End)) {
