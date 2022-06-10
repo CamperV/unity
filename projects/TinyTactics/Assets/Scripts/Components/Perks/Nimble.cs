@@ -13,9 +13,31 @@ public class Nimble : Perk, IToolTip
 
     public override void OnAcquire() {
         boundUnit.unitPathfinder.moveThroughEnemiesOverride = true;
+        //
+        boundUnit.OnMove += GainMultistrikePerPass;
+        boundUnit.statusManager.movementBuffProviders.Add("Nimble");
     }
 
     public override void OnRemoval() {
         boundUnit.unitPathfinder.moveThroughEnemiesOverride = false;
+        //
+        boundUnit.OnMove -= GainMultistrikePerPass;
+        boundUnit.statusManager.movementBuffProviders.Remove("Nimble");
+    }
+
+    private void GainMultistrikePerPass(Path<GridPosition> pathTaken) {
+        int enemyCount = 0;
+        foreach (GridPosition gp in pathTaken.Unwind()) {
+            if (EnemyAt(gp)) enemyCount++;
+        }
+
+        boundUnit.statusManager.AddValuedStatus<OneTimeMultistrikeBuff>("Nimble", enemyCount);
+    }
+
+    private bool EnemyAt(GridPosition gp) {
+        if (!boundUnit.battleMap.IsInBounds(gp)) return false;
+
+        Unit unit = boundUnit.unitMap.UnitAt(gp);
+        return unit != null && unit.GetType() == typeof(EnemyUnit);
     }
 }

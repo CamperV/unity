@@ -19,6 +19,7 @@ public class UnitStats : MonoBehaviour
     public event StatChange UpdateDefenseEvent;
     public event StatChange UpdateMoveEvent;
     public event StatChange UpdateLuckEvent;
+    public event StatChange UpdateMultistrikeEvent;
 
     private Unit boundUnit;
 
@@ -29,6 +30,7 @@ public class UnitStats : MonoBehaviour
     [HideInInspector] public int DEFENSE;
     [HideInInspector] public int MOVE;
     [HideInInspector] public int _LUCK; // generally hidden. Useful in perks
+    [HideInInspector] public int _MULTISTRIKE; // used in Engagement.Process()
 
     [HideInInspector] public int _CURRENT_HP;
 
@@ -54,6 +56,7 @@ public class UnitStats : MonoBehaviour
         MOVE      = baseStats.MOVE;
         //
         _LUCK = 0;
+        _MULTISTRIKE = 0;
 
         boundUnit = GetComponent<Unit>();
     }
@@ -80,7 +83,7 @@ public class UnitStats : MonoBehaviour
     }
 
     public Pair<int, int> CalculateDamageRange() {
-        int upper = Mathf.Clamp(STRENGTH + boundUnit.equippedWeapon.weaponStats.MAX_MIGHT, 0, 99);
+        int upper = Mathf.Clamp(STRENGTH + boundUnit.equippedWeapon.weaponStats.MAX_MIGHT, 0, MAX_STAT_VALUE);
         int lower = Mathf.Clamp(DEXTERITY + boundUnit.equippedWeapon.weaponStats.MIN_MIGHT, 0, upper);
         return new Pair<int, int>(lower, upper);
     }
@@ -110,8 +113,6 @@ public class UnitStats : MonoBehaviour
     public void UpdateVitality(int newValue) {
         VITALITY = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
         UpdateVitalityEvent?.Invoke(newValue);
-        //
-        // UpdateHP(_CURRENT_HP, VITALITY);
     }
 
     public void UpdateStrength(int newValue) {
@@ -142,5 +143,10 @@ public class UnitStats : MonoBehaviour
     public void UpdateLuck(int newValue) {
         _LUCK = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
         UpdateLuckEvent?.Invoke(newValue);
+    }
+
+    public void UpdateMultistrike(int newValue) {
+        _MULTISTRIKE = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        UpdateMultistrikeEvent?.Invoke(newValue);
     }
 }

@@ -82,7 +82,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     // IUnitPhaseInfo
     [field: SerializeField] public bool turnActive { get; set; } = false;
     [field: SerializeField] public bool moveAvailable { get; set; } = false;
-    [field: SerializeField] public bool counterAttackAvailable { get; set; } = false;
+    [field: SerializeField] public bool counterAttackAvailable { get; set; } = true;
     //
     protected Color originalColor = Color.magenta; // aka no texture, lol
 

@@ -63,9 +63,14 @@ public class Engagement
 
         // animate, then create a little pause before counterattacking
         // ReceiveAttack contains logic for animation processing
-        defenderSurvived = Process(aggressor, defender, attack, defense, "attack");
-        yield return new WaitForSeconds(0.65f);
-        yield return new WaitUntil(aggressor.spriteAnimator.EmptyQueue);
+        int numStrikes = 1 + aggressor.unitStats._MULTISTRIKE;
+        while (numStrikes > 0 && defenderSurvived) {
+            defenderSurvived = Process(aggressor, defender, attack, defense, "attack");
+            yield return new WaitForSeconds(0.65f);
+            yield return new WaitUntil(aggressor.spriteAnimator.EmptyQueue);
+            //
+            numStrikes--;
+        }
         ///
 
         // if we can counterattack:
