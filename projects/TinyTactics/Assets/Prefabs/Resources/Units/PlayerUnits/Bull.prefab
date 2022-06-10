@@ -28,6 +28,24 @@ MonoBehaviour:
     DEFENSE: 0
     MOVE: 3
   variance: 0
+--- !u!114 &-5205891048972352178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2944317070584893869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486cc31965039654695ef6f1ae275a1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <state>k__BackingField: 0
+  unitCommands:
+  - {fileID: 11400000, guid: 2490226b4dc6fed4287f39ff3910b6aa, type: 2}
+  - {fileID: 11400000, guid: fb16761fcfdfa0b4ca71bc197dd88f34, type: 2}
+  - {fileID: 11400000, guid: 43541404a9161ab4ab39cd85d7c8b6cc, type: 2}
+  auxiliaryInteractFlag: 0
 --- !u!114 &-4946214678624175339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,9 +109,7 @@ MonoBehaviour:
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
-  <attackAvailable>k__BackingField: 0
   unitCommandSystem: {fileID: 0}
-  cancelSignal: 0
 --- !u!1001 &8953324308557356850
 PrefabInstance:
   m_ObjectHideFlags: 0

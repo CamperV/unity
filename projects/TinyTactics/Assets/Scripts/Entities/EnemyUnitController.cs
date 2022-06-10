@@ -114,7 +114,6 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     // we refresh at the end of the phase,
     // because we want color when it isn't your turn,
     // and because it's possible the other team could add statuses that 
-    // disable attackAvailable/moveAvailable etc
     public void EndPhase() {
         ChangeState(ControllerFSM.NoPreview);
     }

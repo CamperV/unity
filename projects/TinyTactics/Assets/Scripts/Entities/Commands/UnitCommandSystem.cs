@@ -41,11 +41,11 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     [SerializeField] private bool auxiliaryInteractFlag = false;
 
     private PlayerUnit thisUnit;
-    private List<UnitCommand> checkpointStack;
+    private List<UnitCommand> executedStack;
 
     void Awake() {
         thisUnit = GetComponent<PlayerUnit>();
-        checkpointStack = new List<UnitCommand>();
+        executedStack = new List<UnitCommand>();
 
         foreach (UnitCommand uc in unitCommands) {
             commandAvailable[uc.name] = true;
@@ -91,7 +91,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     // IStateMachine<>
     public void InitialState() {
-        checkpointStack.Clear();
+        executedStack.Clear();
 
         ExitState(state);
         EnterState(State.Idle);
@@ -169,8 +169,8 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         ChangeState(State.Idle);    // this puts activeCommand to null
     }
 
-    public void RevertToCheckpoint() {
-        foreach (UnitCommand uc in checkpointStack) {
+    public void RevertExecutedCommands() {
+        foreach (UnitCommand uc in executedStack) {
             uc.Revert(thisUnit);
             commandAvailable[uc.name] = true;
             RevertUC?.Invoke(uc);
@@ -186,7 +186,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
             // if this Command doesn't end your turn, you might be able to revert it
             // this is the case with MoveUC
             case UnitCommand.ExitSignal.ContinueTurn:
-                checkpointStack.Insert(0, command);
+                executedStack.Insert(0, command);
                 break;
 
             case UnitCommand.ExitSignal.ForceFinishTurn:

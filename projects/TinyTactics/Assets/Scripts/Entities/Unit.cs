@@ -82,7 +82,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     // IUnitPhaseInfo
     [field: SerializeField] public bool turnActive { get; set; } = false;
     [field: SerializeField] public bool moveAvailable { get; set; } = false;
-    [field: SerializeField] public bool attackAvailable { get; set; } = false;
+    [field: SerializeField] public bool counterAttackAvailable { get; set; } = false;
     //
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
@@ -135,16 +135,16 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     // The MoveRange field.Keys indicate what tiles can be pathed through
     // However, MoveRange doesn't know what tiles it cannot stand on
     // we pass it a UnitAt lambda to tell it you can't validly stand on occupied tiles
-    public void UpdateThreatRange(bool standing = false) {
+    public void UpdateThreatRange(bool standing = false, int minRange = -1, int maxRange = -1) {
         int movement = (moveAvailable && standing == false) ? unitStats.MOVE : 0;
         moveRange = unitPathfinder.GenerateFlowField<MoveRange>(gridPosition, range: movement);
         moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
 
-        if (attackAvailable) {
-            attackRange = new AttackRange(moveRange, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
-        } else {
-            attackRange = AttackRange.Empty;
-        }
+        attackRange = new AttackRange(
+            moveRange, 
+            (minRange < 0) ? equippedWeapon.weaponStats.MIN_RANGE : minRange,
+            (maxRange < 0) ? equippedWeapon.weaponStats.MAX_RANGE : maxRange
+        );
     }
 
     public bool HasTagMatch(params string[] tagsToCheck) {
@@ -208,15 +208,14 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     // IUnitPhaseInfo
     public virtual void RefreshInfo() {
-        // turnActive = true;
         moveAvailable = true;
-        attackAvailable = true;
         spriteAnimator.RevertColor();  // to original
         UpdateThreatRange();
     }
 
     public virtual void StartTurn() {
         turnActive = true;
+        counterAttackAvailable = true;
 
         // finally, store your starting location
         // this is relevant for RevertTurn calls
@@ -228,7 +227,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public virtual void FinishTurn() {
         turnActive = false;
         moveAvailable = false;
-        attackAvailable = false;
         spriteAnimator.SetColor(SpriteAnimator.Inactive);
 
         FireOnFinishTurnEvent();

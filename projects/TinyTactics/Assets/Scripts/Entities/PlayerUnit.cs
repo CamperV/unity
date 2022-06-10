@@ -42,7 +42,7 @@ public sealed class PlayerUnit : Unit
     // undo all the way to Idle
     public override void RevertTurn() {
         unitCommandSystem.CancelActiveCommand();
-        unitCommandSystem.RevertToCheckpoint();
+        unitCommandSystem.RevertExecutedCommands();
     }
 
     // this needs to run at the end of the frame

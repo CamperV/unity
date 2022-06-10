@@ -6,7 +6,6 @@ public interface IUnitPhaseInfo
 {
     bool turnActive { get; set; }
     bool moveAvailable { get; set; }
-    bool attackAvailable { get; set; }
 
     void RefreshInfo();
     void FinishTurn();

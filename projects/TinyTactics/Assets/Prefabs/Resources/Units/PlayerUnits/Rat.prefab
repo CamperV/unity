@@ -33,9 +33,7 @@ MonoBehaviour:
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
-  <attackAvailable>k__BackingField: 0
   unitCommandSystem: {fileID: 0}
-  cancelSignal: 0
 --- !u!114 &-4527151774166137582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,6 +47,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <PerkData>k__BackingField: {fileID: 11400000, guid: 2a0882fb811f8af4dbf3b2a1bf166fc3, type: 2}
+--- !u!114 &864252243016749815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7674781984935989293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486cc31965039654695ef6f1ae275a1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <state>k__BackingField: 0
+  unitCommands:
+  - {fileID: 11400000, guid: 2490226b4dc6fed4287f39ff3910b6aa, type: 2}
+  - {fileID: 11400000, guid: fb16761fcfdfa0b4ca71bc197dd88f34, type: 2}
+  - {fileID: 11400000, guid: 43541404a9161ab4ab39cd85d7c8b6cc, type: 2}
+  auxiliaryInteractFlag: 0
 --- !u!114 &1461740559526704848
 MonoBehaviour:
   m_ObjectHideFlags: 0

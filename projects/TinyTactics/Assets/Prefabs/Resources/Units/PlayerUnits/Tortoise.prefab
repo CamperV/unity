@@ -1,19 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8268934850280143354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6309928346669176807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e488053048271a846940d5ab1695c176, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <PerkData>k__BackingField: {fileID: 11400000, guid: fbbf67ab72255c64fa32e32e48375cd5, type: 2}
-  audioFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
 --- !u!114 &-5830824188228658511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30,6 +16,25 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
+--- !u!114 &-3265865899854437879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6309928346669176807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486cc31965039654695ef6f1ae275a1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <state>k__BackingField: 0
+  unitCommands:
+  - {fileID: 11400000, guid: 2490226b4dc6fed4287f39ff3910b6aa, type: 2}
+  - {fileID: 11400000, guid: fb16761fcfdfa0b4ca71bc197dd88f34, type: 2}
+  - {fileID: 11400000, guid: 34684b9d54dece546a12d557f4dfe0b7, type: 2}
+  - {fileID: 11400000, guid: 43541404a9161ab4ab39cd85d7c8b6cc, type: 2}
+  auxiliaryInteractFlag: 0
 --- !u!114 &-393818862333564759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,9 +68,8 @@ MonoBehaviour:
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
-  <attackAvailable>k__BackingField: 0
+  <counterAttackAvailable>k__BackingField: 0
   unitCommandSystem: {fileID: 0}
-  cancelSignal: 0
 --- !u!114 &6793773798497395149
 MonoBehaviour:
   m_ObjectHideFlags: 0

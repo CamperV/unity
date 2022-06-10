@@ -261,7 +261,6 @@ public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
         if (selectedDmgPkg.executableThisTurn) {
             Engagement engagement = new Engagement(this, selectedDmgPkg.target);
-            attackAvailable = false;
             ChangeState(EnemyUnitFSM.Attacking);
             //
             engagementResolveFlag = true;

@@ -12,6 +12,10 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public event UnitSelection NewPlayerUnitControllerSelection;
     public event UnitSelection ClearPlayerUnitControllerSelection;
 
+    // this is a flag that allows PlayerUnitController to be locked, ie can't ClearSelection()
+    // this is done by certain unit actions, so that you don't switch units when trying to heal them
+    public bool selectionLocked = false;
+
     [SerializeField] private List<PlayerUnit> _activeUnits;
     public List<PlayerUnit> activeUnits {
         get => _activeUnits.Where(en => en.gameObject.activeInHierarchy).ToList();
@@ -55,9 +59,23 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         InitialState();
     }
 
-    public void RegisterUnit(PlayerUnit unit) => _activeUnits.Add(unit);
+    void Update() {
+        switch (state) {
+            case ControllerFSM.Inactive:
+            case ControllerFSM.NoSelection:
+                break;
 
-    void Update() => ContextualNoInteract();
+            ////////////////////////////////////////////////////////////////////////
+            // as soon as your currentSelection finishes their turn, change state //
+            ////////////////////////////////////////////////////////////////////////
+            case ControllerFSM.Selection:
+                if (currentSelection.turnActive == false) ClearSelection();
+                break;
+        }
+    }
+
+    public void Lock() => selectionLocked = true;
+    public void Unlock() => selectionLocked = false;
 
     public void ChangeState(ControllerFSM newState) {
         ExitState(state);
@@ -98,6 +116,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         }
     }
 
+    public void RegisterUnit(PlayerUnit unit) => _activeUnits.Add(unit);
+
     public void TriggerPhase() {
         // re-focus the camera on the centroid of your units
         // Vector3[] unitPositions = activeUnits.Select(u => u.transform.position).ToArray();
@@ -107,13 +127,12 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
         ChangeState(ControllerFSM.NoSelection);
 
-        activeUnits.ForEach(it => it.StartTurn() );
+        activeUnits.ForEach(it => it.StartTurn());
     }
 
     // we refresh at the end of the phase,
     // because we want color when it isn't your turn,
     // and because it's possible the other team could add statuses that 
-    // disable attackAvailable/moveAvailable etc
     public void EndPhase() {
         ChangeState(ControllerFSM.Inactive);
 
@@ -146,31 +165,18 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
             //      2) If you don't, currentSelection will polymorphically decide what it wants to do (via its state) //
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             case ControllerFSM.Selection:
-                PlayerUnit unit = MatchingUnitAt(gp);
+                if (!selectionLocked) {
+                    PlayerUnit unit = MatchingUnitAt(gp);
 
-                // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
-                // then REACQUIRE a currentSelection immediately afterwards
-                if (unit != null && unit != currentSelection) {
-                    ClearSelection();
-                    SetCurrentSelection(unit);
+                    // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
+                    // then REACQUIRE a currentSelection immediately afterwards
+                    if (unit != null && unit != currentSelection) {
+                        ClearSelection();
+                        SetCurrentSelection(unit);
+                    }
                 }
 
                 currentSelection.OnInteract(gp, auxiliaryInteract);
-                break;
-        }
-    }
-
-    public void ContextualNoInteract() {
-        switch (state) {
-            case ControllerFSM.Inactive:
-            case ControllerFSM.NoSelection:
-                break;
-
-            ////////////////////////////////////////////////////////////////////////
-            // as soon as your currentSelection finishes their turn, change state //
-            ////////////////////////////////////////////////////////////////////////
-            case ControllerFSM.Selection:
-                if (currentSelection.turnActive == false) ClearSelection();
                 break;
         }
     }
