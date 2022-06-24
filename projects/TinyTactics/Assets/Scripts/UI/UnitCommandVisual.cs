@@ -14,6 +14,7 @@ public class UnitCommandVisual : MonoBehaviour
 	[SerializeField] private GameObject activeBorder;
 	[SerializeField] private GameObject activeCancelVisual;
 	[SerializeField] private GameObject cooldown;
+	[SerializeField] private GameObject remainingUses;
 
 	// binds the appropriate UnitCommandSystem.IsCommandAvailable() call to refresh the buttons, without storing a reference explicitly
 	private Func<bool> ButtonChecker;
@@ -43,6 +44,12 @@ public class UnitCommandVisual : MonoBehaviour
 			TextMeshProUGUI tmp = cooldown.GetComponentInChildren<TextMeshProUGUI>();
 			tmp.SetText($"T-{val}");
 		}	
+	}
+
+	public void SetRemainingUses(int val) {
+		remainingUses.SetActive(true);
+		TextMeshProUGUI tmp = remainingUses.GetComponentInChildren<TextMeshProUGUI>();
+		tmp.SetText($"x{val}");
 	}
 
 	public void RegisterCommand(UnityAction unityAction) {

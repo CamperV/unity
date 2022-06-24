@@ -48,11 +48,21 @@ public class UnitCommandPanel : MonoBehaviour
 	}
 
 	private void AddToPanel(UnitCommand uc, UnitCommandSystem ucs) {
-		Debug.Log($"adding {uc} to panel from {ucs}");
 		UnitCommandVisual ucv = Instantiate(unitCommandVisualPrefab, unitCommandContainer.transform);
 		ucv.SetImage(uc.sprite);
 		ucv.SetName(uc.name);
-		ucv.SetCooldown(ucs.CommandCooldown(uc));
+
+		switch (uc.limitType) {
+			case UnitCommand.LimitType.Cooldown:
+				ucv.SetCooldown(ucs.CommandCooldown(uc));
+				break;
+			case UnitCommand.LimitType.LimitedUse:
+				ucv.SetRemainingUses(ucs.CommandRemainingUses(uc));
+				Debug.Log($"Set remaining uses {uc} to {ucs.CommandRemainingUses(uc)}");
+				break;
+		}
+
+		// now register behavior
 		ucv.RegisterCommand(() => ucs.TryIssueCommand(uc));
 		ucv.SetButtonChecker(() => ucs.IsCommandAvailable(uc));
 		ucv.CheckButtonStatus();

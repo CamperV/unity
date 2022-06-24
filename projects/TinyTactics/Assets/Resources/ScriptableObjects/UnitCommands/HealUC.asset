@@ -18,6 +18,9 @@ MonoBehaviour:
   commandCategory: 2
   requiresConfirm: 0
   revertable: 0
+  limitType: 1
+  cooldown: 0
+  remainingUses: 5
   minRange: 1
   maxRange: 1
   healAmount: 3

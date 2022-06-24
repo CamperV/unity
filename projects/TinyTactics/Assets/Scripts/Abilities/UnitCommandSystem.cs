@@ -37,11 +37,24 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     private Dictionary<string, bool> commandAvailable = new Dictionary<string, bool>();
     private Dictionary<string, int> commandCooldowns = new Dictionary<string, int>();
     private Dictionary<string, int> revertableCooldowns = new Dictionary<string, int>();
+    private Dictionary<string, int> commandUses = new Dictionary<string, int>();
     //
     public bool IsCommandAvailable(UnitCommand uc) {
-        return commandAvailable[uc.name] && commandCooldowns[uc.name] == 0 && uc.IsAvailableAux(boundUnit);
+        return commandAvailable[uc.name] && LimitingFactor(uc) && uc.IsAvailableAux(boundUnit);
     }
     public int CommandCooldown(UnitCommand uc) => commandCooldowns[uc.name];
+    public int CommandRemainingUses(UnitCommand uc) => commandUses[uc.name];
+
+    public bool LimitingFactor(UnitCommand uc) {
+        switch (uc.limitType) {
+            case UnitCommand.LimitType.Cooldown:
+                return commandCooldowns[uc.name] == 0;
+            case UnitCommand.LimitType.LimitedUse:
+                return commandUses[uc.name] > 0;
+            default:
+                return false;
+        }
+    }
 
     // these are paired together to maintain state
     // inject this flag into activeCommand communications
@@ -66,6 +79,10 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
             unitCommands.Add(uc);
             commandAvailable[uc.name] = true;
             commandCooldowns[uc.name] = 0;
+
+            if (uc.limitType == UnitCommand.LimitType.LimitedUse) {
+                commandUses[uc.name] = uc.remainingUses;
+            }
         }
 
         if (unitCommands.Count == 0) Debug.LogError($"No commands set for {this}/{boundUnit}");
@@ -168,6 +185,10 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         commandAvailable[command.name] = true;
         commandCooldowns[command.name] = 0;
         revertableCooldowns[command.name] = 0;
+
+        if (command.limitType == UnitCommand.LimitType.LimitedUse) {
+            commandUses[command.name] = command.remainingUses;
+        }
     }
 
     public void RemoveCommand(UnitCommand command) {
@@ -175,6 +196,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         commandAvailable.Remove(command.name);
         commandCooldowns.Remove(command.name);
         revertableCooldowns.Remove(command.name);
+        commandUses.Remove(command.name);
     }
 
     // this can happen from a user clicking on a button, or PlayerUnit calling it directly by default (ie MoveUC)
@@ -221,7 +243,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     public void CompleteCommand(UnitCommand command) {
         UnitCommand.ExitSignal exitSignal = command.FinishCommand(boundUnit, auxiliaryInteractFlag);
-        commandCooldowns[command.name] = command.cooldown + 1;
+        UpdateLimitingFactor(command);
 
         // go ahead and finish all commands like this one
         DisableSimilarCommands(command.commandCategory);
@@ -302,5 +324,16 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     // this will return null for "Default"
     private UnitCommand NextAvailableCommand(UnitCommand.ExecutionType executionType) {
         return unitCommands.FirstOrDefault(uc => IsCommandAvailable(uc) && uc.executionType == executionType);
+    }
+
+    private void UpdateLimitingFactor(UnitCommand command) {
+        switch (command.limitType) {
+            case UnitCommand.LimitType.Cooldown:
+                commandCooldowns[command.name] = command.cooldown + 1;
+                break;
+            case UnitCommand.LimitType.LimitedUse:
+                commandUses[command.name]--;
+                break;
+        }
     }
 }
