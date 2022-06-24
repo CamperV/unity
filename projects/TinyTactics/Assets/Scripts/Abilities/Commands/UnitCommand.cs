@@ -49,4 +49,6 @@ public abstract class UnitCommand : ScriptableObject
 
     // i don't like this but I'm also on a plane. Make this an interface IRevertable or something
     public virtual void Revert(PlayerUnit thisUnit){}
+
+    public int cooldown; // fillable via ScriptableObject interface
 }

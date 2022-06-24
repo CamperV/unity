@@ -35,7 +35,13 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     public IEnumerable<UnitCommand> Commands => unitCommands;
 
     private Dictionary<string, bool> commandAvailable = new Dictionary<string, bool>();
-    public bool IsCommandAvailable(UnitCommand uc) => commandAvailable[uc.name] && uc.IsAvailableAux(boundUnit);
+    private Dictionary<string, int> commandCooldowns = new Dictionary<string, int>();
+    private Dictionary<string, int> revertableCooldowns = new Dictionary<string, int>();
+    //
+    public bool IsCommandAvailable(UnitCommand uc) {
+        return commandAvailable[uc.name] && commandCooldowns[uc.name] == 0 && uc.IsAvailableAux(boundUnit);
+    }
+    public int CommandCooldown(UnitCommand uc) => commandCooldowns[uc.name];
 
     // these are paired together to maintain state
     // inject this flag into activeCommand communications
@@ -59,6 +65,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         foreach (UnitCommand uc in defaultPool.unitCommands) {
             unitCommands.Add(uc);
             commandAvailable[uc.name] = true;
+            commandCooldowns[uc.name] = 0;
         }
 
         if (unitCommands.Count == 0) Debug.LogError($"No commands set for {this}/{boundUnit}");
@@ -159,11 +166,15 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
         unitCommands.Insert(at, command);
         commandAvailable[command.name] = true;
+        commandCooldowns[command.name] = 0;
+        revertableCooldowns[command.name] = 0;
     }
 
     public void RemoveCommand(UnitCommand command) {
         unitCommands.Remove(command);
         commandAvailable.Remove(command.name);
+        commandCooldowns.Remove(command.name);
+        revertableCooldowns.Remove(command.name);
     }
 
     // this can happen from a user clicking on a button, or PlayerUnit calling it directly by default (ie MoveUC)
@@ -203,13 +214,15 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         foreach (UnitCommand uc in executedStack) {
             uc.Revert(boundUnit);
             commandAvailable[uc.name] = true;
+            commandCooldowns[uc.name] = revertableCooldowns[uc.name];
             RevertUC?.Invoke(uc);
         }
     }
 
     public void CompleteCommand(UnitCommand command) {
         UnitCommand.ExitSignal exitSignal = command.FinishCommand(boundUnit, auxiliaryInteractFlag);
-        
+        commandCooldowns[command.name] = command.cooldown + 1;
+
         // go ahead and finish all commands like this one
         DisableSimilarCommands(command.commandCategory);
 
@@ -217,7 +230,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
             // if this Command doesn't end your turn, you might be able to revert it
             // this is the case with MoveUC
             case UnitCommand.ExitSignal.ContinueTurn:
-                executedStack.Insert(0, command);
+                // executedStack.Insert(0, command);
                 break;
 
             case UnitCommand.ExitSignal.ForceFinishTurn:
@@ -248,16 +261,28 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         }
     }
 
+    public void TickCooldowns() {
+        foreach (string commandName in commandCooldowns.Keys.ToList()) {
+            int val = commandCooldowns[commandName];
+            commandCooldowns[commandName] = Mathf.Max(0, val - 1);
+
+            // store the start-of-turn value to revert back to
+            revertableCooldowns[commandName] = commandCooldowns[commandName];
+        }
+    }
+
+    // if you're setting False, just do it
+    // if you're setting True, you must also have a valid cooldown value
     public void SetAllCommandsAvailability(bool val) {
         foreach (string commandName in commandAvailable.Keys.ToList()) {
-            commandAvailable[commandName] = val;
+            commandAvailable[commandName] = val && commandCooldowns[commandName] == 0;
         }
     }
 
     public void DisableSimilarCommands(UnitCommand.CommandCategory commandCategory) {
         foreach (UnitCommand uc in unitCommands) {
             if (uc.commandCategory == commandCategory) {
-                FinishUC?.Invoke(uc);
+                FinishUC?.Invoke(uc); // right now, this is hooked up to UI elements
                 commandAvailable[uc.name] = false;
 
                 // this is for reverting purposes

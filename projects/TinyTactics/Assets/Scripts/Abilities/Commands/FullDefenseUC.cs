@@ -7,7 +7,7 @@ using Extensions;
 [CreateAssetMenu (menuName = "UnitCommands/FullDefenseUC")]
 public class FullDefenseUC : UnitCommand
 {
-    AudioFXBundle audioFXBundle;
+    public AudioFXBundle audioFXBundle;
 
     public override void Activate(PlayerUnit thisUnit){}
     public override void Deactivate(PlayerUnit thisUnit){}

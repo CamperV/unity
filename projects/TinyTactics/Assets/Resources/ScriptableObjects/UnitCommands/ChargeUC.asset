@@ -15,6 +15,8 @@ MonoBehaviour:
   name: Charge
   sprite: {fileID: 21300000, guid: 1e006f47498d9bc4da4a55063835a77b, type: 3}
   executionType: 0
+  commandCategory: 0
   requiresConfirm: 0
   revertable: 1
+  cooldown: 1
   damageBonus: 1

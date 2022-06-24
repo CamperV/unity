@@ -18,3 +18,5 @@ MonoBehaviour:
   commandCategory: 2
   requiresConfirm: 0
   revertable: 0
+  cooldown: 1
+  audioFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}

@@ -79,6 +79,7 @@ public sealed class PlayerUnit : Unit
 
     public override void StartTurn() {
         base.StartTurn();
+        unitCommandSystem.TickCooldowns();
         unitCommandSystem.SetAllCommandsAvailability(true);
         unitCommandSystem.InitialState();
     }
