@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Full Defense
   sprite: {fileID: 21300000, guid: 617a66654b4047445828865e1b2b1a59, type: 3}
   executionType: 1
+  commandCategory: 2
   requiresConfirm: 0
   revertable: 0

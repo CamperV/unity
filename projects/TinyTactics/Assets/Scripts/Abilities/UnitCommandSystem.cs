@@ -146,8 +146,18 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         }
     }
 
+    // find the closest command with the same category, and add it to that
     public void AddCommand(UnitCommand command) {
-        unitCommands.Insert(unitCommands.Count - 1, command);
+        int mostRecent = 0;
+        for (int i = 0; i < unitCommands.Count; i++) {
+            if (unitCommands[i].commandCategory == command.commandCategory)
+                mostRecent = i;
+        }
+
+        // never insert after "wait", which is last
+        int at = Mathf.Min(unitCommands.Count - 1, mostRecent + 1);
+
+        unitCommands.Insert(at, command);
         commandAvailable[command.name] = true;
     }
 
@@ -199,8 +209,9 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     public void CompleteCommand(UnitCommand command) {
         UnitCommand.ExitSignal exitSignal = command.FinishCommand(boundUnit, auxiliaryInteractFlag);
-        FinishUC?.Invoke(command);
-        commandAvailable[command.name] = false;
+        
+        // go ahead and finish all commands like this one
+        DisableSimilarCommands(command.commandCategory);
 
         switch (exitSignal) {
             // if this Command doesn't end your turn, you might be able to revert it
@@ -240,6 +251,18 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     public void SetAllCommandsAvailability(bool val) {
         foreach (string commandName in commandAvailable.Keys.ToList()) {
             commandAvailable[commandName] = val;
+        }
+    }
+
+    public void DisableSimilarCommands(UnitCommand.CommandCategory commandCategory) {
+        foreach (UnitCommand uc in unitCommands) {
+            if (uc.commandCategory == commandCategory) {
+                FinishUC?.Invoke(uc);
+                commandAvailable[uc.name] = false;
+
+                // this is for reverting purposes
+                executedStack.Insert(0, uc);
+            }
         }
     }
 

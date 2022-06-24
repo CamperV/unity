@@ -9,15 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d677b2ee287b260438e76b0de022ce8c, type: 3}
-  m_Name: HealUC
+  m_Script: {fileID: 11500000, guid: e90af2ac6d8fbf940a59eec6906ab6bb, type: 3}
+  m_Name: ChargeUC
   m_EditorClassIdentifier: 
-  name: Minor Heal
-  sprite: {fileID: 21300000, guid: 2358856368b3d5140b5258543a00c470, type: 3}
+  name: Charge
+  sprite: {fileID: 21300000, guid: 1e006f47498d9bc4da4a55063835a77b, type: 3}
   executionType: 0
-  commandCategory: 2
   requiresConfirm: 0
-  revertable: 0
-  minRange: 1
-  maxRange: 1
-  healAmount: 3
+  revertable: 1
+  damageBonus: 1

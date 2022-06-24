@@ -7,6 +7,8 @@ using Extensions;
 [CreateAssetMenu (menuName = "UnitCommands/FullDefenseUC")]
 public class FullDefenseUC : UnitCommand
 {
+    AudioFXBundle audioFXBundle;
+
     public override void Activate(PlayerUnit thisUnit){}
     public override void Deactivate(PlayerUnit thisUnit){}
     public override ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract) => ExitSignal.ForceFinishTurn;
@@ -21,9 +23,8 @@ public class FullDefenseUC : UnitCommand
 
     private void GainDefenseBuff(PlayerUnit thisUnit) {
         // queue the sound and animation for after it is done animating the Hurt animation
-        AudioFXBundle loadedBundle = Resources.Load<AudioFXBundle>("ScriptableObjects/AudioFXBundles/BuffAudioFXBundle") as AudioFXBundle;
         thisUnit.spriteAnimator.QueueAction(
-            () => thisUnit.TriggerBuffAnimation(loadedBundle.RandomClip(), "DEF")
+            () => thisUnit.TriggerBuffAnimation(audioFXBundle.RandomClip(), "DEF")
         );
         thisUnit.statusManager.AddValuedStatus<OneTimeDefenseBuff>(this.name, 3);
     }

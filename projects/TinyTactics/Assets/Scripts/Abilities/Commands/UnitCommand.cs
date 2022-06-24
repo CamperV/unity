@@ -26,6 +26,13 @@ public abstract class UnitCommand : ScriptableObject
     }
     public ExecutionType executionType; // fillable via ScriptableObject interface
 
+    public enum CommandCategory {
+        Movement,
+        Attack,
+        Other
+    }
+    public CommandCategory commandCategory; // fillable via ScriptableObject interface
+
     public abstract void Activate(PlayerUnit thisUnit); /* Initial activation */
     public abstract void Deactivate(PlayerUnit thisUnit); /* De-activation, ie Cancel */
     public abstract ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract); /* Interaction/execution while active */

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d88145fee3d77744b827de8ec1d8dd0f, type: 3}
-  m_Name: MinorHealMut
+  m_Name: ChargeMut2
   m_EditorClassIdentifier: 
-  name: Minor Heal
-  typeName: Heal
-  description: Restore 3 HP to target ally.
-  sprite: {fileID: 21300000, guid: 2358856368b3d5140b5258543a00c470, type: 3}
-  belongsToArchetype: {fileID: 11400000, guid: e3d85aa16bc314245b699ac65182ffc3, type: 2}
+  name: Charge (UC)
+  typeName: Charge
+  description: Gain bonus damage per space moved this turn.
+  sprite: {fileID: 21300000, guid: 1e006f47498d9bc4da4a55063835a77b, type: 3}
+  belongsToArchetype: {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
   isSignature: 1
-  unitCommand: {fileID: 11400000, guid: e70c5728ef29ceb45b6ef282a94ab066, type: 2}
+  unitCommand: {fileID: 11400000, guid: 1e3df0eb082e8be4cb696075e2e1f8d8, type: 2}
