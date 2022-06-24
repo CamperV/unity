@@ -8,6 +8,7 @@ using TMPro;
 [RequireComponent(typeof(UnitPathfinder))]
 [RequireComponent(typeof(UnitStats))]
 [RequireComponent(typeof(MessageEmitter))]
+[RequireComponent(typeof(MutationSystem))]
 public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagged
 {
     [SerializeField] public string displayName;
@@ -16,7 +17,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     protected GridPosition _reservedGridPosition; // this is for maintaining state while animating/moving
     protected GridPosition _startingGridPosition; // this is for maintaining a revertable state when prevewing Engagements, etc
 
-    // these are used so that our various Perks can modify the mutable Attack/Defenses that are created during an Engagement
+    // these are used so that our various components can modify the mutable Attack/Defenses that are created during an Engagement
     public delegate void AttackGeneration(ref MutableAttack mutAtt, Unit target);
     public event AttackGeneration OnAttack;
 
@@ -37,7 +38,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public event OnTargetedAction OnHit;
     public event OnTargetedAction OnCritical;
 
-    public delegate void Movement(Path<GridPosition> path);
+    public delegate void Movement(Unit thisUnit, Path<GridPosition> path);
     public event Movement OnMove;
 
     public delegate void OnPhaseInfo(Unit thisUnit);
@@ -54,14 +55,15 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public StatusManager statusManager;
     [HideInInspector] public PersonalAudioFX personalAudioFX;
     [HideInInspector] public MessageEmitter messageEmitter;
+    [HideInInspector] public MutationSystem mutationSystem;
     
     // I don't love this, but it makes things much cleaner.
-    public PlayerUnitController playerUnitController;
-    public EnemyUnitController enemyUnitController;
+    [HideInInspector] public PlayerUnitController playerUnitController;
+    [HideInInspector] public EnemyUnitController enemyUnitController;
 
     // other
-    public MoveRange moveRange;
-    public AttackRange attackRange;
+    [HideInInspector] public MoveRange moveRange;
+    [HideInInspector] public AttackRange attackRange;
 
     // Equipment
     public Weapon equippedWeapon;
@@ -96,6 +98,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         statusManager = GetComponent<StatusManager>();
         personalAudioFX = GetComponent<PersonalAudioFX>();
         messageEmitter = GetComponent<MessageEmitter>();
+        mutationSystem = GetComponent<MutationSystem>();
 
         // debug
         debugStateLabel = GetComponent<DebugStateLabel>();
@@ -113,12 +116,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         equippedWeapon = Instantiate(equippedWeapon, transform);
     }
 
-    protected virtual void Start() {          
-        // acquire all perks
-        foreach (Perk perk in GetComponents<Perk>()) {
-            perk.OnAcquire();
-        }
-
+    protected virtual void Start() {
         // actually set up the Weapon
         equippedWeapon.Equip(this);
 
@@ -129,6 +127,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         unitStats.UpdateReflex(unitStats.REFLEX);
         unitStats.UpdateDefense(unitStats.DEFENSE);
         unitStats.UpdateMove(unitStats.MOVE);
+
+        // call this Init here, instead of MS's own Start(), to avoid races
+        mutationSystem.Initialize();
     }
 
     // we must take care to add certain functions to the MoveRange
@@ -383,7 +384,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public void FireOnHitEvent(Unit target) => OnHit?.Invoke(target);
     public void FireOnCriticalEvent(Unit target) => OnCritical?.Invoke(target);
 
-    public void FireOnMoveEvent(Path<GridPosition> pathTaken) => OnMove?.Invoke(pathTaken);
+    public void FireOnMoveEvent(Path<GridPosition> pathTaken) => OnMove?.Invoke(this, pathTaken);
 
     public void FireOnStartTurnEvent() => OnStartTurn?.Invoke(this);
     public void FireOnFinishTurnEvent() => OnFinishTurn?.Invoke(this);

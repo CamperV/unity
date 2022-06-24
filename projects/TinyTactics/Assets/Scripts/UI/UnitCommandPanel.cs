@@ -11,7 +11,6 @@ public class UnitCommandPanel : MonoBehaviour
 	[SerializeField] private UnitCommandVisual unitCommandVisualPrefab;
 
 	private Dictionary<UnitCommand, UnitCommandVisual> mapping = new Dictionary<UnitCommand, UnitCommandVisual>();
-	private UnitCommandSystem boundUnitCommandSystem;
 
 	public void SetUnitInfo(PlayerUnit unit) {
 		ClearUCs();
@@ -49,6 +48,7 @@ public class UnitCommandPanel : MonoBehaviour
 	}
 
 	private void AddToPanel(UnitCommand uc, UnitCommandSystem ucs) {
+		Debug.Log($"adding {uc} to panel from {ucs}");
 		UnitCommandVisual ucv = Instantiate(unitCommandVisualPrefab, unitCommandContainer.transform);
 		ucv.SetImage(uc.sprite);
 		ucv.SetName(uc.name);

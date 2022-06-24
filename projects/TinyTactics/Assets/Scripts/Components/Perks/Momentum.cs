@@ -14,13 +14,13 @@ public class Momentum : Perk, IToolTip
     private bool trigger = false;
 
     public override void OnAcquire() {
-        boundUnit.OnMove += CheckMoveCondition;
-        boundUnit.OnStartTurn += ConditionalMoveBuff;
+        // boundUnit.OnMove += CheckMoveCondition;
+        // boundUnit.OnStartTurn += ConditionalMoveBuff;
     }
 
     public override void OnRemoval() {
-        boundUnit.OnMove -= CheckMoveCondition;
-        boundUnit.OnStartTurn -= ConditionalMoveBuff;
+        // boundUnit.OnMove -= CheckMoveCondition;
+        // boundUnit.OnStartTurn -= ConditionalMoveBuff;
     }
 
     // adds a damage buff per square moved this turn

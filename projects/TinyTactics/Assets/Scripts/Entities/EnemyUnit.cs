@@ -5,7 +5,7 @@ using TMPro;
 using Extensions;
 
 [RequireComponent(typeof(EnemyBrain))]
-public class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
+public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 {
     // additional components
     private EnemyBrain brain;

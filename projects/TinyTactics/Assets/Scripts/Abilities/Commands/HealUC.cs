@@ -10,6 +10,8 @@ public class HealUC : TargetableUC
 {
     public int healAmount; // set via SO interface
 
+    // this will change every single instance of HealUC that exists, its an SO
+    // but this will never exist more than once. Just do it, coward 
     private PlayerUnit _targetAlly;
 
     protected override bool ValidTarget(PlayerUnit thisUnit, GridPosition interactAt) {

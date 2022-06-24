@@ -9,12 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c087a20e5a53eb6489e93529b3acbfbe, type: 3}
-  m_Name: ChargePerkData
+  m_Script: {fileID: 11500000, guid: 4b1c758d8f3745041a7c5695b0e66c4e, type: 3}
+  m_Name: ChargeMut
   m_EditorClassIdentifier: 
-  perkName: Charge
+  name: Charge
   typeName: Charge
   description: Gain +1 DMG per space moved this turn.
   sprite: {fileID: 21300000, guid: ea3b42e54d2092a4487e5a2d2f15fde3, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
-  isSignaturePerk: 1
+  isSignature: 1
+  damageBonus: 1

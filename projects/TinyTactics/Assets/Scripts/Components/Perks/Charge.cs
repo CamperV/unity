@@ -12,15 +12,15 @@ public class Charge : Perk, IToolTip
     public string tooltip { get; set; } = "Gain +1 DMG per space moved this turn.";
 
     public override void OnAcquire() {
-        boundUnit.OnMove += GainDamageBuffPerMove;
+        // boundUnit.OnMove += GainDamageBuffPerMove;
 
         //
-        boundUnit.statusManager.movementBuffProviders.Add("Charge");
+        // boundUnit.statusManager.movementBuffProviders.Add("Charge");
     }
 
     public override void OnRemoval() {
-        boundUnit.OnMove -= GainDamageBuffPerMove;
-        boundUnit.statusManager.movementBuffProviders.Remove("Charge");
+        // boundUnit.OnMove -= GainDamageBuffPerMove;
+        // boundUnit.statusManager.movementBuffProviders.Remove("Charge");
     }
 
     // adds a damage buff per square moved this turn

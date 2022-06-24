@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using Extensions;
 
+// [RequireComponent(typeof(UnitCommandSystem))]
 public sealed class PlayerUnit : Unit
 {
     [HideInInspector] public UnitCommandSystem unitCommandSystem;
@@ -25,11 +26,11 @@ public sealed class PlayerUnit : Unit
         UnitName = unitData.unitName;
         unitStats.ApplyNature(unitData.nature);
 
-        foreach (PerkData perkData in unitData.perks) {
-            Type perkType = Type.GetType(perkData.typeName);
-            Perk addedPerk = gameObject.AddComponent(perkType) as Perk;
-            addedPerk.PerkData = perkData;
-        }
+        // foreach (PerkData perkData in unitData.perks) {
+        //     Type perkType = Type.GetType(perkData.typeName);
+        //     Perk addedPerk = gameObject.AddComponent(perkType) as Perk;
+        //     addedPerk.PerkData = perkData;
+        // }
     }
 
     public void OnInteract(GridPosition gp, bool auxiliaryInteract) { 

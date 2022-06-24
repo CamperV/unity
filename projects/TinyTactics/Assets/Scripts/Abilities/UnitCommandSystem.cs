@@ -12,9 +12,11 @@ using Extensions;
 //     PlayerUnit.IssueCommand()) -> CommandActive
 //     activeCommand.ActiveInteractAt -> CommandInProgress
 //     CommandInProgress -> activeCommand.FinishCommand -> Idle
-[RequireComponent(typeof(PlayerUnit))]
 public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.State>
 {
+    // this is only set inside this file. Convenience, so I don't have to re-add Move, Attack, Wait, etc over and over
+    public static string defaultUCP = "ScriptableObjects/UnitCommands/DefaultUnitCommandPool";
+
 	public delegate void UnitCommandStateChange(UnitCommand uc);
     public event UnitCommandStateChange ActivateUC;
     public event UnitCommandStateChange DeactivateUC;
@@ -29,29 +31,37 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     }
     [field: SerializeField] public State state { get; set; } = State.Idle;
 
-    [SerializeField] private List<UnitCommand> unitCommands; // assigned in inspector
+    [SerializeField] private List<UnitCommand> unitCommands;
     public IEnumerable<UnitCommand> Commands => unitCommands;
 
     private Dictionary<string, bool> commandAvailable = new Dictionary<string, bool>();
-    public bool IsCommandAvailable(UnitCommand uc) => commandAvailable[uc.name] && uc.IsAvailableAux(thisUnit);
+    public bool IsCommandAvailable(UnitCommand uc) => commandAvailable[uc.name] && uc.IsAvailableAux(boundUnit);
 
     // these are paired together to maintain state
     // inject this flag into activeCommand communications
     [SerializeField] private UnitCommand activeCommand { get; set; } = null;
     [SerializeField] private bool auxiliaryInteractFlag = false;
 
-    private PlayerUnit thisUnit;
+    private PlayerUnit boundUnit;
     private List<UnitCommand> executedStack;
 
     void Awake() {
-        thisUnit = GetComponent<PlayerUnit>();
+        boundUnit = GetComponent<PlayerUnit>();
         executedStack = new List<UnitCommand>();
 
-        foreach (UnitCommand uc in unitCommands) {
+        // load in the defaults here in unitCommands
+        // No way to add custom commands. Do that via MutationSystem
+        UnitCommandPool defaultPool = Resources.Load<UnitCommandPool>(defaultUCP) as UnitCommandPool;
+
+        // MUST iterate here, cannot do "unitCommands = defaultPool.unitCommands;"
+        // if you do that, unitCommands becomes a reference to a ScriptableObject field, meaning you
+        // lose instance-level information for unitCommandSystems everywhere
+        foreach (UnitCommand uc in defaultPool.unitCommands) {
+            unitCommands.Add(uc);
             commandAvailable[uc.name] = true;
         }
 
-        if (unitCommands.Count == 0) Debug.LogError($"No commands set for {this}/{thisUnit}");
+        if (unitCommands.Count == 0) Debug.LogError($"No commands set for {this}/{boundUnit}");
     }
 
     void Update() {
@@ -60,11 +70,11 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
                 break;
             
             case State.CommandActive:
-                activeCommand.ActiveUpdate(thisUnit);
+                activeCommand.ActiveUpdate(boundUnit);
                 break;
 
             case State.CommandInProgress:
-                UnitCommand.ExitSignal changeState = activeCommand.InProgressUpdate(thisUnit);
+                UnitCommand.ExitSignal changeState = activeCommand.InProgressUpdate(boundUnit);
 
                 // if we get the NextState signal, progress to clean-up, ie ExitState->FinishCommand
                 if (changeState == UnitCommand.ExitSignal.NextState) {
@@ -108,7 +118,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
                 break;
 
             case State.CommandActive:
-                activeCommand.Activate(thisUnit);
+                activeCommand.Activate(boundUnit);
                 ActivateUC?.Invoke(activeCommand);
                 break;
 
@@ -126,7 +136,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
                 break;
 
             case State.CommandActive:
-                activeCommand.Deactivate(thisUnit);
+                activeCommand.Deactivate(boundUnit);
                 DeactivateUC?.Invoke(activeCommand);
                 break;
 
@@ -134,6 +144,16 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
                 CompleteCommand(activeCommand);
                 break;
         }
+    }
+
+    public void AddCommand(UnitCommand command) {
+        unitCommands.Insert(unitCommands.Count - 1, command);
+        commandAvailable[command.name] = true;
+    }
+
+    public void RemoveCommand(UnitCommand command) {
+        unitCommands.Remove(command);
+        commandAvailable.Remove(command.name);
     }
 
     // this can happen from a user clicking on a button, or PlayerUnit calling it directly by default (ie MoveUC)
@@ -171,14 +191,14 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     public void RevertExecutedCommands() {
         foreach (UnitCommand uc in executedStack) {
-            uc.Revert(thisUnit);
+            uc.Revert(boundUnit);
             commandAvailable[uc.name] = true;
             RevertUC?.Invoke(uc);
         }
     }
 
     public void CompleteCommand(UnitCommand command) {
-        UnitCommand.ExitSignal exitSignal = command.FinishCommand(thisUnit, auxiliaryInteractFlag);
+        UnitCommand.ExitSignal exitSignal = command.FinishCommand(boundUnit, auxiliaryInteractFlag);
         FinishUC?.Invoke(command);
         commandAvailable[command.name] = false;
 
@@ -190,11 +210,11 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
                 break;
 
             case UnitCommand.ExitSignal.ForceFinishTurn:
-                thisUnit.FinishTurn();
+                boundUnit.FinishTurn();
                 break;
         }
         
-        if (GetAvailableCommandCount() == 0) thisUnit.FinishTurn();
+        if (GetAvailableCommandCount() == 0) boundUnit.FinishTurn();
     }
 
     public void Interact(GridPosition interactAt, bool auxiliaryInteract) {
@@ -202,11 +222,11 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
         switch(state) {
             case State.Idle:
-                if (interactAt == thisUnit.gridPosition) TryIssueCommand( NextAvailableCommand(UnitCommand.ExecutionType.Interactive) );
+                if (interactAt == boundUnit.gridPosition) TryIssueCommand( NextAvailableCommand(UnitCommand.ExecutionType.Interactive) );
                 break;
 
             case State.CommandActive:
-                UnitCommand.ExitSignal changeState = activeCommand.ActiveInteractAt(thisUnit, interactAt, auxiliaryInteract);
+                UnitCommand.ExitSignal changeState = activeCommand.ActiveInteractAt(boundUnit, interactAt, auxiliaryInteract);
                 if (changeState == UnitCommand.ExitSignal.NextState) {
                     ChangeState(State.CommandInProgress);
                 }
