@@ -52,20 +52,24 @@ public class UnitCommandPanel : MonoBehaviour
 		ucv.SetImage(uc.sprite);
 		ucv.SetName(uc.name);
 
-		switch (uc.limitType) {
-			case UnitCommand.LimitType.Cooldown:
-				ucv.SetCooldown(ucs.CommandCooldown(uc));
-				break;
-			case UnitCommand.LimitType.LimitedUse:
-				ucv.SetRemainingUses(ucs.CommandRemainingUses(uc));
-				Debug.Log($"Set remaining uses {uc} to {ucs.CommandRemainingUses(uc)}");
-				break;
-		}
-
 		// now register behavior
 		ucv.RegisterCommand(() => ucs.TryIssueCommand(uc));
 		ucv.SetButtonChecker(() => ucs.IsCommandAvailable(uc));
 		ucv.CheckButtonStatus();
+
+		// register limittype monitoring
+		// kemudian immediately call it
+		switch (uc.limitType) {
+			case UnitCommand.LimitType.Cooldown:
+				ucv.SetLimitTypeUpdater(() => ucv.SetCooldown(ucs.CommandCooldown(uc)));
+				ucv.UpdateLimitType();
+				break;
+
+			case UnitCommand.LimitType.LimitedUse:
+				ucv.SetLimitTypeUpdater(() => ucv.SetRemainingUses(ucs.CommandRemainingUses(uc)));
+				ucv.UpdateLimitType();
+				break;
+		}
 
 		// ucv.GetComponent<ConfirmSpriteSwap>().enabled = uc.requiresConfirm;
 
@@ -86,11 +90,13 @@ public class UnitCommandPanel : MonoBehaviour
 		// just in case your ability caused others to become balid/invalid, go ahead and refresh
 		foreach (UnitCommand _uc in mapping.Keys) {
 			mapping[_uc].CheckButtonStatus();
+			mapping[uc].UpdateLimitType();
 		}
 		mapping[uc].SetButtonStatus(false);
 	}
 
 	private void RevertTrigger(UnitCommand uc) {
-		mapping[uc].CheckButtonStatus();	
+		mapping[uc].CheckButtonStatus();
+		mapping[uc].UpdateLimitType();	
 	}
 }

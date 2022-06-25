@@ -19,6 +19,9 @@ public class UnitCommandVisual : MonoBehaviour
 	// binds the appropriate UnitCommandSystem.IsCommandAvailable() call to refresh the buttons, without storing a reference explicitly
 	private Func<bool> ButtonChecker;
 
+	// binds UnitCommandSystem.LimitType things (cooldown, limiteduses) to refresh visuals
+	private Action LimitTypeUpdater;
+
 	public void OnActivate() {
 		activeBorder.SetActive(true);
 		// activeCancelVisual.SetActive(true);
@@ -63,5 +66,10 @@ public class UnitCommandVisual : MonoBehaviour
 	public void SetButtonChecker(Func<bool> _ButtonChecker) => ButtonChecker = _ButtonChecker;
 	public void CheckButtonStatus() {
 		GetComponent<Button>().interactable = ButtonChecker?.Invoke() ?? false;
+	}
+
+	public void SetLimitTypeUpdater(Action _LimitTypeUpdater) => LimitTypeUpdater = _LimitTypeUpdater;
+	public void UpdateLimitType() {
+		LimitTypeUpdater?.Invoke();
 	}
 }

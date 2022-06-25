@@ -34,18 +34,26 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     [SerializeField] private List<UnitCommand> unitCommands;
     public IEnumerable<UnitCommand> Commands => unitCommands;
 
+    // "can I currently use this command", not necessarily dependent on usage
     private Dictionary<string, bool> commandAvailable = new Dictionary<string, bool>();
+
+    // "cooldown until you can use again"
+    // shadow: restoring cooldowns for reverting actions
     private Dictionary<string, int> commandCooldowns = new Dictionary<string, int>();
-    private Dictionary<string, int> revertableCooldowns = new Dictionary<string, int>();
+    private Dictionary<string, int> _shadowCooldowns = new Dictionary<string, int>();
+
+    // "how many discrete usages are left"
+    // shadow: restoring uses for reverting actions
     private Dictionary<string, int> commandUses = new Dictionary<string, int>();
+    private Dictionary<string, int> _shadowUses = new Dictionary<string, int>();
     //
     public bool IsCommandAvailable(UnitCommand uc) {
-        return commandAvailable[uc.name] && LimitingFactor(uc) && uc.IsAvailableAux(boundUnit);
+        return commandAvailable[uc.name] && IsAvailableLimitType(uc) && uc.IsAvailableAux(boundUnit);
     }
     public int CommandCooldown(UnitCommand uc) => commandCooldowns[uc.name];
     public int CommandRemainingUses(UnitCommand uc) => commandUses[uc.name];
 
-    public bool LimitingFactor(UnitCommand uc) {
+    private bool IsAvailableLimitType(UnitCommand uc) {
         switch (uc.limitType) {
             case UnitCommand.LimitType.Cooldown:
                 return commandCooldowns[uc.name] == 0;
@@ -77,12 +85,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         // lose instance-level information for unitCommandSystems everywhere
         foreach (UnitCommand uc in defaultPool.unitCommands) {
             unitCommands.Add(uc);
-            commandAvailable[uc.name] = true;
-            commandCooldowns[uc.name] = 0;
-
-            if (uc.limitType == UnitCommand.LimitType.LimitedUse) {
-                commandUses[uc.name] = uc.remainingUses;
-            }
+            InitCommandUsageData(uc);
         }
 
         if (unitCommands.Count == 0) Debug.LogError($"No commands set for {this}/{boundUnit}");
@@ -180,23 +183,21 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
         // never insert after "wait", which is last
         int at = Mathf.Min(unitCommands.Count - 1, mostRecent + 1);
-
         unitCommands.Insert(at, command);
-        commandAvailable[command.name] = true;
-        commandCooldowns[command.name] = 0;
-        revertableCooldowns[command.name] = 0;
 
-        if (command.limitType == UnitCommand.LimitType.LimitedUse) {
-            commandUses[command.name] = command.remainingUses;
-        }
+        InitCommandUsageData(command);
     }
 
     public void RemoveCommand(UnitCommand command) {
         unitCommands.Remove(command);
+        //
         commandAvailable.Remove(command.name);
-        commandCooldowns.Remove(command.name);
-        revertableCooldowns.Remove(command.name);
-        commandUses.Remove(command.name);
+        //
+        if (commandCooldowns.ContainsKey(command.name)) commandCooldowns.Remove(command.name);
+        if (_shadowCooldowns.ContainsKey(command.name)) _shadowCooldowns.Remove(command.name);
+        //
+        if (commandUses.ContainsKey(command.name)) commandUses.Remove(command.name);
+        if (_shadowUses.ContainsKey(command.name)) _shadowUses.Remove(command.name);
     }
 
     // this can happen from a user clicking on a button, or PlayerUnit calling it directly by default (ie MoveUC)
@@ -235,23 +236,35 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     public void RevertExecutedCommands() {
         foreach (UnitCommand uc in executedStack) {
             uc.Revert(boundUnit);
+            //
             commandAvailable[uc.name] = true;
-            commandCooldowns[uc.name] = revertableCooldowns[uc.name];
+
+            switch (uc.limitType) {
+                case UnitCommand.LimitType.Cooldown:
+                    commandCooldowns[uc.name] = _shadowCooldowns[uc.name];
+                    break;
+                case UnitCommand.LimitType.LimitedUse:
+                    commandUses[uc.name] = _shadowUses[uc.name];
+                    break;
+            }
+            //
             RevertUC?.Invoke(uc);
         }
     }
 
     public void CompleteCommand(UnitCommand command) {
         UnitCommand.ExitSignal exitSignal = command.FinishCommand(boundUnit, auxiliaryInteractFlag);
-        UpdateLimitingFactor(command);
+        UseCommandLimitType(command);
 
         // go ahead and finish all commands like this one
+        // this will insert the current command into the executedStack
         DisableSimilarCommands(command.commandCategory);
 
         switch (exitSignal) {
             // if this Command doesn't end your turn, you might be able to revert it
             // this is the case with MoveUC
             case UnitCommand.ExitSignal.ContinueTurn:
+                // --> this is already performed above in DisableSimilarCommands()
                 // executedStack.Insert(0, command);
                 break;
 
@@ -289,15 +302,15 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
             commandCooldowns[commandName] = Mathf.Max(0, val - 1);
 
             // store the start-of-turn value to revert back to
-            revertableCooldowns[commandName] = commandCooldowns[commandName];
+            _shadowCooldowns[commandName] = commandCooldowns[commandName];
         }
     }
 
     // if you're setting False, just do it
     // if you're setting True, you must also have a valid cooldown value
     public void SetAllCommandsAvailability(bool val) {
-        foreach (string commandName in commandAvailable.Keys.ToList()) {
-            commandAvailable[commandName] = val && commandCooldowns[commandName] == 0;
+        foreach (UnitCommand command in unitCommands) {
+            commandAvailable[command.name] = val && IsAvailableLimitType(command);
         }
     }
 
@@ -326,13 +339,31 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         return unitCommands.FirstOrDefault(uc => IsCommandAvailable(uc) && uc.executionType == executionType);
     }
 
-    private void UpdateLimitingFactor(UnitCommand command) {
+    // do NOT update the _shadow versions. Those are used for reversion and can only be updated
+    // on the starts or ends of turns
+    private void UseCommandLimitType(UnitCommand command) {
         switch (command.limitType) {
             case UnitCommand.LimitType.Cooldown:
                 commandCooldowns[command.name] = command.cooldown + 1;
                 break;
             case UnitCommand.LimitType.LimitedUse:
                 commandUses[command.name]--;
+                break;
+        }
+    }
+
+    private void InitCommandUsageData(UnitCommand command) {
+        commandAvailable[command.name] = true;
+
+        switch (command.limitType) {
+            case UnitCommand.LimitType.Cooldown:
+                commandCooldowns[command.name] = 0;
+                _shadowCooldowns[command.name] = 0;
+                break;
+
+            case UnitCommand.LimitType.LimitedUse:
+                commandUses[command.name] = command.remainingUses;
+                _shadowUses[command.name] = command.remainingUses;
                 break;
         }
     }
