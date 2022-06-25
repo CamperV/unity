@@ -14,11 +14,11 @@ public class CripplingStrike : Perk, IToolTip
     public AudioFXBundle audioFXBundle;
 
     public override void OnAcquire() {
-        boundUnit.OnHit += ApplyDebuff;
+        // boundUnit.OnHit += ApplyDebuff;
     }
 
     public override void OnRemoval() {
-        boundUnit.OnHit -= ApplyDebuff;
+        // boundUnit.OnHit -= ApplyDebuff;
     }
 
     private void ApplyDebuff(Unit target) {

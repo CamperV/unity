@@ -29,14 +29,14 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     // simply used to signal when a unit has been hit, dodged. etc
     public delegate void OnAction();
-    public event OnAction OnHurt;
     public event OnAction OnAvoid;
     public event OnAction OnWait;
     public event OnAction OnMiss;
 
-    public delegate void OnTargetedAction(Unit target);
+    public delegate void OnTargetedAction(Unit thisUnit, Unit other);
     public event OnTargetedAction OnHit;
     public event OnTargetedAction OnCritical;
+    public event OnTargetedAction OnHurtBy;
 
     public delegate void Movement(Unit thisUnit, Path<GridPosition> path);
     public event Movement OnMove;
@@ -258,14 +258,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] suffers YELLOW@[{incomingDamage}] damage.");
 
         // ded
-        if (!survived) {
-            TriggerDeath();
-
-        // I've been hurt, but survived
-        } else {
-            FireOnHurtEvent();    
-        }
-
+        if (!survived) TriggerDeath();
         return survived;
 	}
 
@@ -370,7 +363,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(ref mutDef, attacker);
     public void FireOnFinalEngagementGeneration(ref MutableEngagementStats mutES) => OnFinalEngagementGeneration?.Invoke(ref mutES);
 
-    public void FireOnHurtEvent() => OnHurt?.Invoke();
     public void FireOnAvoidEvent() {
         TriggerMissAnimation();
 		UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] KEYWORD@[avoided] the attack.");
@@ -381,8 +373,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public void FireOnMissEvent() => OnMiss?.Invoke();
     
     // targeted versions
-    public void FireOnHitEvent(Unit target) => OnHit?.Invoke(target);
-    public void FireOnCriticalEvent(Unit target) => OnCritical?.Invoke(target);
+    public void FireOnHitEvent(Unit target) => OnHit?.Invoke(this, target);
+    public void FireOnCriticalEvent(Unit target) => OnCritical?.Invoke(this, target);
+    public void FireOnHurtByEvent(Unit other) => OnHurtBy?.Invoke(this, other);
 
     public void FireOnMoveEvent(Path<GridPosition> pathTaken) => OnMove?.Invoke(this, pathTaken);
 

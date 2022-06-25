@@ -205,6 +205,7 @@ public class Engagement
         // then the meat
         // ouchies, play the animations for hurt
         bool survived = B.SufferDamage(sufferedDamage, isCritical: isCrit);
+        if (survived) B.FireOnHurtByEvent(A);
         
         // fire the event after suffering damage, so the animations are queued in the right order
         // this also means you will not be debuffed or anything if you die

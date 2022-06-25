@@ -14,11 +14,11 @@ public class Revenge : Perk, IToolTip
     public AudioFXBundle audioFXBundle;
 
     public override void OnAcquire() {
-        boundUnit.OnHurt += GainDamageBuff;
+        // boundUnit.OnHurt += GainDamageBuff;
     }
 
     public override void OnRemoval() {
-        boundUnit.OnHurt -= GainDamageBuff;
+        // boundUnit.OnHurt -= GainDamageBuff;
     }
 
     private void GainDamageBuff() {

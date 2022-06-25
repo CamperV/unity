@@ -12,12 +12,12 @@ public class Chain : Perk, IToolTip
     public string tooltip { get; set; } = "On hit, +1 non-expiring STR. On miss, lose all accumulated bonus STR.";
 
     public override void OnAcquire() {
-        boundUnit.OnHit += GainDamageBuffPerHit;
+        // boundUnit.OnHit += GainDamageBuffPerHit;
         boundUnit.OnMiss += LoseDamageBuffs;
     }
 
     public override void OnRemoval() {
-        boundUnit.OnHit -= GainDamageBuffPerHit;
+        // boundUnit.OnHit -= GainDamageBuffPerHit;
         boundUnit.OnMiss -= LoseDamageBuffs;
     }
 

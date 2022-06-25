@@ -9,13 +9,13 @@ public class ReducibleDefenseBuff : ValuedStatus
     public override string affectedStat => "DEF";
 
     public override void OnAcquire() {
-        boundUnit.OnHurt += _TickExpire;
+        // boundUnit.OnHurt += _TickExpire;
 
         boundUnit.unitStats.UpdateDefense(boundUnit.unitStats.DEFENSE + modifierValue);
     }
 
     public override void OnExpire() {
-        boundUnit.OnHurt -= _TickExpire;
+        // boundUnit.OnHurt -= _TickExpire;
 
         boundUnit.unitStats.UpdateDefense(boundUnit.unitStats.DEFENSE - modifierValue);
     }

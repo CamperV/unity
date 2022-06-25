@@ -12,11 +12,11 @@ public class Martyr : Perk, IToolTip
     public string tooltip { get; set; } = "After being attacked, heal allies within 2 spaces for 25% of their VITALITY.";
 
     public override void OnAcquire() {
-        boundUnit.OnHurt += HealAdjacent;
+        // boundUnit.OnHurt += HealAdjacent;
     }
 
     public override void OnRemoval() {
-        boundUnit.OnHurt -= HealAdjacent;
+        // boundUnit.OnHurt -= HealAdjacent;
     }
 
     private void HealAdjacent() {

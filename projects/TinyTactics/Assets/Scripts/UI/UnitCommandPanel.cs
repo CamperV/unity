@@ -71,6 +71,7 @@ public class UnitCommandPanel : MonoBehaviour
 				break;
 		}
 
+		// disabled for now, janky and not really working
 		// ucv.GetComponent<ConfirmSpriteSwap>().enabled = uc.requiresConfirm;
 
 		// set the mapping value so that it can be stored/retrieved for visualiztion
