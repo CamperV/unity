@@ -3,25 +3,33 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-[CreateAssetMenu (menuName = "Mutations/SeeingRedMut")]
+[CreateAssetMenu(menuName = "Mutations/SeeingRedMut")]
 public class SeeingRedMut : Mutation
 {
-    public int damageBonus;
+    // apply a marked status to any unit that hits you
+    public so_Status markStatus;
+    public float damageMultiplier;
 
     public override void OnAcquire(Unit thisUnit) {
-        thisUnit.OnMove += GainDamageBuffPerMove;
-        thisUnit.statusManager.movementBuffProviders.Add(name);
+        thisUnit.OnHurtBy += ApplyMarkToAttacker;
+        thisUnit.OnAttack += BonusDamageAgainstMark;
     }
 
     public override void OnRemove(Unit thisUnit) {
-        thisUnit.OnMove -= GainDamageBuffPerMove;
-        thisUnit.statusManager.movementBuffProviders.Remove(name);
+        thisUnit.OnHurtBy -= ApplyMarkToAttacker;
+        thisUnit.OnAttack -= BonusDamageAgainstMark;
     }
 
-    // adds a damage buff per space moved this turn
-    private void GainDamageBuffPerMove(Unit thisUnit, Path<GridPosition> pathTaken) {
-        for (int i = 0; i < pathTaken.Count-1; i++) {
-            thisUnit.statusManager.AddValuedStatus<OneTimeDamageBuff>(name, damageBonus);
+    private void ApplyMarkToAttacker(Unit thisUnit, Unit target) {
+        target.statusSystem.AddStatus(markStatus);
+    }
+
+    private void BonusDamageAgainstMark(ref MutableAttack mutAtt, Unit target) {
+        if (target.statusSystem.HasStatus(markStatus)) {
+            mutAtt.minDamage = (int)(mutAtt.minDamage*damageMultiplier);
+            mutAtt.maxDamage = (int)(mutAtt.maxDamage*damageMultiplier);
+
+            mutAtt.AddMutator(this);
         }
     }
 }

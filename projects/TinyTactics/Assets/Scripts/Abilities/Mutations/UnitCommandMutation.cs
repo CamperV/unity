@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-[CreateAssetMenu (menuName = "Mutations/UnitCommandMutation")]
+[CreateAssetMenu(menuName = "Mutations/UnitCommandMutation")]
 public class UnitCommandMutation : Mutation
 {
     public UnitCommand unitCommand;
 
     public override void OnAcquire(Unit thisUnit) {
         if (thisUnit.GetType() == typeof(PlayerUnit)) {
-            ((PlayerUnit)thisUnit).unitCommandSystem.AddCommand(unitCommand);
-            Debug.Log($"Added {unitCommand} to {thisUnit}");
+            (thisUnit as PlayerUnit).unitCommandSystem.AddCommand(unitCommand);
         }
     }
 

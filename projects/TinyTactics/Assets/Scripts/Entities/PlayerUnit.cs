@@ -7,7 +7,6 @@ using UnityEngine.UI;
 using TMPro;
 using Extensions;
 
-// [RequireComponent(typeof(UnitCommandSystem))]
 public sealed class PlayerUnit : Unit
 {
     [HideInInspector] public UnitCommandSystem unitCommandSystem;

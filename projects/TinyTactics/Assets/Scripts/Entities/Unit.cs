@@ -9,6 +9,7 @@ using TMPro;
 [RequireComponent(typeof(UnitStats))]
 [RequireComponent(typeof(MessageEmitter))]
 [RequireComponent(typeof(MutationSystem))]
+[RequireComponent(typeof(StatusSystem))]
 public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagged
 {
     [SerializeField] public string displayName;
@@ -56,6 +57,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public PersonalAudioFX personalAudioFX;
     [HideInInspector] public MessageEmitter messageEmitter;
     [HideInInspector] public MutationSystem mutationSystem;
+    [HideInInspector] public StatusSystem statusSystem;
     
     // I don't love this, but it makes things much cleaner.
     [HideInInspector] public PlayerUnitController playerUnitController;
@@ -99,6 +101,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         personalAudioFX = GetComponent<PersonalAudioFX>();
         messageEmitter = GetComponent<MessageEmitter>();
         mutationSystem = GetComponent<MutationSystem>();
+        statusSystem = GetComponent<StatusSystem>();
 
         // debug
         debugStateLabel = GetComponent<DebugStateLabel>();

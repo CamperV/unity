@@ -45,6 +45,21 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
+--- !u!114 &-2057060289362124465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2944317070584893869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d1471c02dbc884181c5852278761e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <state>k__BackingField: 0
+  unitCommands: []
+  auxiliaryInteractFlag: 0
 --- !u!114 &5584791901646051810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,6 +85,7 @@ MonoBehaviour:
   personalAudioFX: {fileID: 0}
   messageEmitter: {fileID: 0}
   mutationSystem: {fileID: 0}
+  statusSystem: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
   equippedWeapon: {fileID: 4200387705799600191, guid: 80baaa77927ff1c49ad995ee9ede47a2, type: 3}
@@ -81,21 +97,6 @@ MonoBehaviour:
   <moveAvailable>k__BackingField: 0
   <counterAttackAvailable>k__BackingField: 1
   unitCommandSystem: {fileID: 0}
---- !u!114 &-2057060289362124465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2944317070584893869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04d1471c02dbc884181c5852278761e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <state>k__BackingField: 0
-  unitCommands: []
-  auxiliaryInteractFlag: 0
 --- !u!1001 &8953324308557356850
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -107,6 +108,14 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: a1226647c6185a745b7e674216e5c23b, type: 3}
+    - target: {fileID: -6295692904770981026, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: mutations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6295692904770981026, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: mutations.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 5461e874b9ab95a4185216e920ceaec7, type: 2}
     - target: {fileID: 543854711051192993, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
