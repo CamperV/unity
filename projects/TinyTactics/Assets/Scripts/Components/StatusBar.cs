@@ -10,6 +10,7 @@ using TMPro;
 public class StatusBar : MonoBehaviour
 {	
     [SerializeField] private GameObject panelContainer;
+    [SerializeField] private StatusVisual statusVisualPrefab;
     private Unit boundUnit;
 
 	void Awake() {
@@ -19,32 +20,30 @@ public class StatusBar : MonoBehaviour
     }
 
     void Start() {
-        // UpdateBar(boundUnit.unitStats.VITALITY, boundUnit.unitStats.VITALITY);
-        //
-        // boundUnit.unitStats.UpdateHPEvent += UpdateBar;
-        // boundUnit.unitStats.UpdateDefenseEvent += UpdateArmor;
+        boundUnit.statusSystem.AddStatusEvent += _ => UpdateBar();
+        boundUnit.statusSystem.RemoveStatusEvent += _ => UpdateBar();
+
+        CheckHide();
     }
 
-    private void UpdateBar(int val, int max) {
-        ///
-        // update the levels appropriately
-        ///
-        // gather all segments
-        // List<GameObject> segments = new List<GameObject>();
-        // foreach (Transform bar in levelContainer.transform) {
-        //     segments.Add(bar.gameObject);
-        // }
+    private void CheckHide() {
+        GetComponent<CanvasGroup>().alpha = (boundUnit.statusSystem.Statuses.ToList().Count > 0) ? 1f : 0f;
+    }
 
-        // // if there are too many segments:
-        // while (segments.Count > max) {
-        //     GameObject toDestroy = segments[segments.Count - 1];
-        //     segments.Remove(toDestroy);
-        //     Destroy(toDestroy);
-        // }
-        // // if there are too few segments:
-        // while (segments.Count < max) {
-        //     GameObject segment = Instantiate(barSegmentPrefab, levelContainer.transform);
-        //     segments.Add(segment);
-        // }
+    private void ClearBar() {
+		foreach (Transform t in panelContainer.transform) {
+			Destroy(t.gameObject);
+		}
+    }
+
+    private void UpdateBar() {
+        ClearBar();
+
+        foreach (so_Status status in boundUnit.statusSystem.Statuses) {
+            StatusVisual sv = Instantiate(statusVisualPrefab, panelContainer.transform);
+            sv.SetImage(status.sprite);
+        }
+
+        CheckHide();
     }
 }

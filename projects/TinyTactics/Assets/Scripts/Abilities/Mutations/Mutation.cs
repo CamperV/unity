@@ -7,19 +7,15 @@ public abstract class Mutation : ScriptableObject, IMutatorComponent
 {
     // assign this in the inspector
     public new string name;
-	public string typeName;
 	public string description;
 	public Sprite sprite;
 
+    // IMutatorComponent
 	public string displayName {
-		get {
-			return name;
-		}
-		set {
-			name = value;
-		}
+		get => name;
+		set => name = value;
 	}
-	//
+	
 	public ArchetypeData belongsToArchetype;
 	public bool isSignature;
 

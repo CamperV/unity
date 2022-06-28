@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: SeeingRedMut
   m_EditorClassIdentifier: 
   name: Seeing Red
-  typeName: SeeingRedMut
   description: Deal x2 damage to units who attacked this unit.
   sprite: {fileID: 21300000, guid: a218edae4e493b749a2db714f2618676, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
   isSignature: 1
-  markStatus: {fileID: 11400000, guid: 5e4f6f0fdf016314084a0d896044fb36, type: 2}
+  markStatus: {fileID: 11400000, guid: 4019ea92814ca244fa4c10fdb92f7e9b, type: 2}
   damageMultiplier: 2

@@ -12,14 +12,10 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
 
     // IMutatorComponent
 	public string displayName {
-		get {
-			return name;
-		}
-		set {
-			name = value;
-		}
+		get => name;
+		set => name = value;
 	}
 
     public abstract void OnAcquire(Unit thisUnit);
-    public abstract void OnRemove(Unit thisUnit);
+    public abstract void OnExpire(Unit thisUnit);
 }

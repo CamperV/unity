@@ -12,6 +12,7 @@ public struct Attack
     public int critRate;
     //
     public bool inMeleeRange;
+    // public bool isCounterAttack;
     //
     public List<string> mutators;
 
@@ -21,6 +22,7 @@ public struct Attack
         critRate = mutAtt.critRate;
         //
         inMeleeRange = mutAtt.inMeleeRange;
+        // isCounterAttack = mutAtt.isCounterAttack;
         //
         mutators = new List<string>(mutAtt.mutators);
     }
@@ -35,6 +37,7 @@ public class MutableAttack
     public int critRate;
     //
     public bool inMeleeRange;
+    // public bool isCounterAttack;
     //
     public List<string> mutators;
 

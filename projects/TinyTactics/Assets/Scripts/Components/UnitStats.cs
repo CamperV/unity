@@ -23,6 +23,15 @@ public class UnitStats : MonoBehaviour
 
     private Unit boundUnit;
 
+	public enum UpdateableStat {
+		Vitality,
+		Strength,
+		Dexterity,
+		Defense,
+		Move,
+		Multistrike
+	}
+
     [HideInInspector] public int VITALITY;
     [HideInInspector] public int STRENGTH;
     [HideInInspector] public int DEXTERITY;
@@ -148,5 +157,28 @@ public class UnitStats : MonoBehaviour
     public void UpdateMultistrike(int newValue) {
         _MULTISTRIKE = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
         UpdateMultistrikeEvent?.Invoke(newValue);
+    }
+
+    public void ModifyStat(UpdateableStat targetStat, int modifier) {
+        switch (targetStat) {
+			case UpdateableStat.Vitality:
+				UpdateVitality(VITALITY + modifier);
+				break;				
+			case UpdateableStat.Strength:
+				UpdateStrength(STRENGTH + modifier);
+				break;	
+			case UpdateableStat.Dexterity:
+				UpdateDexterity(DEXTERITY + modifier);
+				break;	
+			case UpdateableStat.Defense:
+                UpdateDefense(DEFENSE + modifier);
+				break;	
+			case UpdateableStat.Move:
+				UpdateMove(MOVE + modifier);
+				break;	
+			case UpdateableStat.Multistrike:
+				UpdateMultistrike(_MULTISTRIKE + modifier);
+				break;	
+		}
     }
 }
