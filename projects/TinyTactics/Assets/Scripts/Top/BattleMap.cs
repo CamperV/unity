@@ -14,6 +14,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public event GridInteraction AuxiliaryInteractEvent_0;
     public event GridInteraction AuxiliaryInteractEvent_1;
     public event GridInteraction AuxiliaryInteractEvent_2;
+    public event GridInteraction GridMouseOverEvent;
 
     public delegate void TerrainInteraction(TerrainTile tt);
     public event TerrainInteraction TerrainMouseOverEvent;
@@ -115,6 +116,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
                 overlayTilemap.SetTile(gridPosition, mouseOverOverlayTile);
                 
                 //
+                GridMouseOverEvent?.Invoke(gridPosition);
                 TerrainMouseOverEvent?.Invoke(TerrainAt(gridPosition));
             }
             recentMouseOver = gridPosition;

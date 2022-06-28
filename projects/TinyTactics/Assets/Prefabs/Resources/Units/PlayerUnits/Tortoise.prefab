@@ -56,6 +56,8 @@ MonoBehaviour:
   personalAudioFX: {fileID: 0}
   messageEmitter: {fileID: 0}
   mutationSystem: {fileID: 0}
+  statusSystem: {fileID: 0}
+  spriteOutline: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
   equippedWeapon: {fileID: 6631204728426299986, guid: 80198ed1b440aaf44bc6ebee3b34e8ff, type: 3}
@@ -115,6 +117,22 @@ PrefabInstance:
       propertyPath: mutations.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: 6f7641f37159dd544be5f2c5aefbe822, type: 2}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.b
+      value: 0.3820755
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.r
+      value: 0.6910378
+      objectReference: {fileID: 0}
     - target: {fileID: 543854711051192993, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

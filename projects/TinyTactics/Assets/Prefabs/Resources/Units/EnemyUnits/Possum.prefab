@@ -83,6 +83,7 @@ MonoBehaviour:
   messageEmitter: {fileID: 0}
   mutationSystem: {fileID: 0}
   statusSystem: {fileID: 0}
+  spriteOutline: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
   equippedWeapon: {fileID: 2000630837077249141, guid: ccf7d450f63cc324296db56718469bbe, type: 3}
@@ -104,6 +105,22 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: bcf190f472514b5429554376dd81966a, type: 3}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.b
+      value: 0.2971698
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.g
+      value: 0.2971698
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4821337886681423052, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9

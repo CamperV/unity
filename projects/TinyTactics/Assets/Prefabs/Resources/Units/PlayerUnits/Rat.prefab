@@ -25,6 +25,8 @@ MonoBehaviour:
   personalAudioFX: {fileID: 0}
   messageEmitter: {fileID: 0}
   mutationSystem: {fileID: 0}
+  statusSystem: {fileID: 0}
+  spriteOutline: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
   equippedWeapon: {fileID: 2000630837077249141, guid: ccf7d450f63cc324296db56718469bbe, type: 3}
@@ -107,6 +109,22 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: d0ca1348b5e33dc48af4040673b0dc45, type: 3}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.b
+      value: 0.3820755
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.r
+      value: 0.6910378
+      objectReference: {fileID: 0}
     - target: {fileID: 543854711051192993, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

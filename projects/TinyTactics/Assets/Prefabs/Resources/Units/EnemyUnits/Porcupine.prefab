@@ -24,13 +24,18 @@ MonoBehaviour:
   statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   messageEmitter: {fileID: 0}
+  mutationSystem: {fileID: 0}
+  statusSystem: {fileID: 0}
+  spriteOutline: {fileID: 0}
+  playerUnitController: {fileID: 0}
+  enemyUnitController: {fileID: 0}
   equippedWeapon: {fileID: 5134566196439452713, guid: 07da5ee3a7c7c3748aec07cf142e0fac, type: 3}
   <tags>k__BackingField: []
   archetypes: []
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
-  <attackAvailable>k__BackingField: 0
+  <counterAttackAvailable>k__BackingField: 1
   assignedPod: {fileID: 0}
 --- !u!114 &-2677856591224219240
 MonoBehaviour:
@@ -51,6 +56,7 @@ MonoBehaviour:
   DEFENSE: 0
   MOVE: 0
   _LUCK: 0
+  _MULTISTRIKE: 0
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 15
@@ -99,6 +105,22 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 299fe97dd0d28d340ac8701532974fb6, type: 3}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.b
+      value: 0.2971698
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.g
+      value: 0.2971698
+      objectReference: {fileID: 0}
+    - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4821337886681423052, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.85

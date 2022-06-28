@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -4435403467399855671}
   - component: {fileID: -4206180013154384781}
   - component: {fileID: -6295692904770981026}
+  - component: {fileID: 160223693219647424}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -233,6 +234,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mutations: []
+--- !u!114 &160223693219647424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6096969835717758623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f82cbd4f12b97054398bfceed5c1975d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thickness: 0.03
+  color: {r: 1, g: 1, b: 1, a: 1}
+  selectionMode: 1
+  renderer: {fileID: 5869286192602309075}
+  material: {fileID: 2100000, guid: 6d0f1d67b39c5a84699654d2b919f3ac, type: 2}
 --- !u!1 &6807299549594369295
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,6 +592,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7419503456615491691}
     m_Modifications:
+    - target: {fileID: 2192757224701236808, guid: 01c1fa5e69a8e80449656d3590d3c784, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2192757224701236808, guid: 01c1fa5e69a8e80449656d3590d3c784, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2192757224701236808, guid: 01c1fa5e69a8e80449656d3590d3c784, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2192757224701236808, guid: 01c1fa5e69a8e80449656d3590d3c784, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2192757224701236808, guid: 01c1fa5e69a8e80449656d3590d3c784, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2192757224701236808, guid: 01c1fa5e69a8e80449656d3590d3c784, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4862752489207046108, guid: 01c1fa5e69a8e80449656d3590d3c784, type: 3}
       propertyPath: m_Name
       value: StatusBar

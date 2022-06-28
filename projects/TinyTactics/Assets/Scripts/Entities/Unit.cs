@@ -10,6 +10,7 @@ using TMPro;
 [RequireComponent(typeof(MessageEmitter))]
 [RequireComponent(typeof(MutationSystem))]
 [RequireComponent(typeof(StatusSystem))]
+[RequireComponent(typeof(SpriteOutline))]
 public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagged
 {
     [SerializeField] public string displayName;
@@ -58,6 +59,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public MessageEmitter messageEmitter;
     [HideInInspector] public MutationSystem mutationSystem;
     [HideInInspector] public StatusSystem statusSystem;
+    [HideInInspector] public SpriteOutline spriteOutline;
     
     // I don't love this, but it makes things much cleaner.
     [HideInInspector] public PlayerUnitController playerUnitController;
@@ -102,6 +104,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         messageEmitter = GetComponent<MessageEmitter>();
         mutationSystem = GetComponent<MutationSystem>();
         statusSystem = GetComponent<StatusSystem>();
+        spriteOutline = GetComponent<SpriteOutline>();
 
         // debug
         debugStateLabel = GetComponent<DebugStateLabel>();
