@@ -15,7 +15,8 @@ public class HealUC : TargetableUC
     private PlayerUnit _targetAlly;
 
     protected override bool ValidTarget(PlayerUnit thisUnit, GridPosition interactAt) {
-        return thisUnit.attackRange.ValidAttack(interactAt) && AllyAt(thisUnit, interactAt);
+        PlayerUnit ally = AllyAt(thisUnit, interactAt);
+        return thisUnit.attackRange.ValidTarget(interactAt) && ally != null && ally.unitStats.MissingHP() > 0;
     }
 
     protected override void Execute(PlayerUnit thisUnit, GridPosition interactAt) {
@@ -24,12 +25,12 @@ public class HealUC : TargetableUC
     }
 
     protected override void ResetValidMouseOver(PlayerUnit thisUnit) {
-        thisUnit.DisplayThreatRange();
+        DisplayTargetRange(thisUnit);
         thisUnit.playerUnitController.Unlock();
     }
 
     protected override void ValidMouseOver(PlayerUnit thisUnit, GridPosition hoverOver) {
-        thisUnit.battleMap.Highlight(thisUnit.battleMap.CurrentMouseGridPosition, Palette.healColorGreen);
+        thisUnit.battleMap.Highlight(thisUnit.battleMap.CurrentMouseGridPosition, tileVisuals.altColor);
         thisUnit.playerUnitController.Lock();
     }
 
@@ -53,5 +54,10 @@ public class HealUC : TargetableUC
         } else {
             return null;
         }
+    }
+
+    protected override void DisplayTargetRange(PlayerUnit thisUnit) {
+        thisUnit.attackRange.Display(thisUnit.battleMap, tileVisuals.color);
+        thisUnit.battleMap.Highlight(thisUnit.gridPosition, Palette.selectColorWhite);
     }
 }

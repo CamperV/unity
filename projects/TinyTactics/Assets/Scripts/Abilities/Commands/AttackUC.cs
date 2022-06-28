@@ -13,10 +13,12 @@ public class AttackUC : UnitCommand
 
     // waiting until an Engagement is done animating and resolving casualties
     public static bool _engagementResolveFlag = false;
+    
+    [SerializeField] private TileVisuals tileVisuals;
 
     public override void Activate(PlayerUnit thisUnit) {        
         thisUnit.UpdateThreatRange(standing: true);
-        Utils.DelegateLateFrameTo(thisUnit, thisUnit.DisplayThreatRange);
+        Utils.DelegateLateFrameTo(thisUnit, () => DisplayAttackRange(thisUnit));
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
@@ -30,8 +32,8 @@ public class AttackUC : UnitCommand
         if (interactAt == thisUnit.gridPosition)
             return ExitSignal.NoStateChange;
 
-        // if there's a ValidAttack on the mouseclick'd area
-        if (thisUnit.attackRange.ValidAttack(interactAt) && EnemyAt(thisUnit, interactAt) != null) {
+        // if there's a ValidTarget on the mouseclick'd area
+        if (thisUnit.attackRange.ValidTarget(interactAt) && EnemyAt(thisUnit, interactAt) != null) {
             EnemyUnit enemy = EnemyAt(thisUnit, interactAt);
 
             _engagementResolveFlag = true;
@@ -64,13 +66,13 @@ public class AttackUC : UnitCommand
             _previousMouseOver = thisUnit.battleMap.CurrentMouseGridPosition;
 
             // reset these
-            thisUnit.DisplayThreatRange();
+            DisplayAttackRange(thisUnit);
             UIManager.inst.DisableEngagementPreview();
 
             // when the mouse is over an enemy:
-            if (thisUnit.attackRange.ValidAttack(thisUnit.battleMap.CurrentMouseGridPosition) && EnemyAt(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition) != null) {
+            if (thisUnit.attackRange.ValidTarget(thisUnit.battleMap.CurrentMouseGridPosition) && EnemyAt(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition) != null) {
                 EnemyUnit enemy = EnemyAt(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition);
-                thisUnit.battleMap.Highlight(thisUnit.battleMap.CurrentMouseGridPosition, Palette.threatColorYellow);
+                thisUnit.battleMap.Highlight(thisUnit.battleMap.CurrentMouseGridPosition, tileVisuals.altColor);
 
                 // create and display EngagementPreviews here
                 UIManager.inst.EnableEngagementPreview( new Engagement(thisUnit, enemy), enemy.transform );
@@ -93,9 +95,9 @@ public class AttackUC : UnitCommand
         return ExitSignal.ForceFinishTurn;
     }
 
-    // additionally, this command is only available if there's a ValidAttack to be made
+    // additionally, this command is only available if there's a ValidTarget to be made
     public override bool IsAvailableAux(PlayerUnit thisUnit) {
-        return ValidAttackExistsFrom(thisUnit, thisUnit.gridPosition);
+        return ValidTargetExistsFrom(thisUnit, thisUnit.gridPosition);
     }
 
     //
@@ -111,9 +113,14 @@ public class AttackUC : UnitCommand
         }
     }
 
-    private bool ValidAttackExistsFrom(PlayerUnit thisUnit, GridPosition fromPosition) {        
+    private bool ValidTargetExistsFrom(PlayerUnit thisUnit, GridPosition fromPosition) {        
         EnemyUnitController enemyUC = thisUnit.enemyUnitController;
-        AttackRange standing = AttackRange.Standing(fromPosition, thisUnit.equippedWeapon.weaponStats.MIN_RANGE, thisUnit.equippedWeapon.weaponStats.MAX_RANGE);
-        return enemyUC.activeUnits.Where(enemy => standing.ValidAttack(enemy.gridPosition)).Any();
+        TargetRange standing = TargetRange.Standing(fromPosition, thisUnit.equippedWeapon.weaponStats.MIN_RANGE, thisUnit.equippedWeapon.weaponStats.MAX_RANGE);
+        return enemyUC.activeUnits.Where(enemy => standing.ValidTarget(enemy.gridPosition)).Any();
+    }
+
+    private void DisplayAttackRange(PlayerUnit thisUnit) {
+        thisUnit.attackRange.Display(thisUnit.battleMap, tileVisuals.color);
+        thisUnit.battleMap.Highlight(thisUnit.gridPosition, Palette.selectColorWhite);
     }
 }

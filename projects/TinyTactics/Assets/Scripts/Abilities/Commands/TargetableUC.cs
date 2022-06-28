@@ -13,9 +13,11 @@ public abstract class TargetableUC : UnitCommand
     // we can actually keep some state here: there should never be two AttackUC's Activated at the same time
     public static GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
 
-    public override void Activate(PlayerUnit thisUnit) {        
+    [SerializeField] protected TileVisuals tileVisuals;
+
+    public override void Activate(PlayerUnit thisUnit) {     
         thisUnit.UpdateThreatRange(standing: true, minRange: minRange, maxRange: maxRange);
-        Utils.DelegateLateFrameTo(thisUnit, thisUnit.DisplayThreatRange);
+        Utils.DelegateLateFrameTo(thisUnit, () => DisplayTargetRange(thisUnit));
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
@@ -28,7 +30,7 @@ public abstract class TargetableUC : UnitCommand
         if (interactAt == thisUnit.gridPosition)
             return ExitSignal.NoStateChange;
 
-        // if there's a ValidAttack on the mouseclick'd area
+        // if there's a ValidTarget on the mouseclick'd area
         if (ValidTarget(thisUnit, interactAt)) {
             Execute(thisUnit, interactAt);
             return ExitSignal.NextState;
@@ -56,4 +58,9 @@ public abstract class TargetableUC : UnitCommand
 
     protected abstract void ResetValidMouseOver(PlayerUnit thisUnit);
     protected abstract void ValidMouseOver(PlayerUnit thisUnit, GridPosition hoverOver);
+
+    protected virtual void DisplayTargetRange(PlayerUnit thisUnit) {
+        thisUnit.attackRange.Display(thisUnit.battleMap, tileVisuals.color);
+        thisUnit.battleMap.Highlight(thisUnit.gridPosition, Palette.selectColorWhite);
+    }
 }

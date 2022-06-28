@@ -11,10 +11,11 @@ public class MoveUC : UnitCommand
     public static GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
     public static Path<GridPosition> pathToMouseOver;
 
+    [SerializeField] protected TileVisuals tileVisuals;
+
     public override void Activate(PlayerUnit thisUnit) {
         // re-calc move range, and display it
-        thisUnit.UpdateThreatRange();
-        Utils.DelegateLateFrameTo(thisUnit, thisUnit.DisplayThreatRange);
+        Utils.DelegateLateFrameTo(thisUnit,  () => DisplayMoveRange(thisUnit));
         UIManager.inst.EnableUnitDetail(thisUnit);
     }
 
@@ -93,4 +94,28 @@ public class MoveUC : UnitCommand
         thisUnit.statusManager.RemoveAllMovementBuffs();
         thisUnit.RefreshInfo();
     }
+
+    protected virtual void DisplayMoveRange(PlayerUnit thisUnit) {   
+        if (thisUnit.moveRange == null) thisUnit.UpdateThreatRange();
+        thisUnit.moveRange.Display(thisUnit.battleMap, tileVisuals.color);
+
+    	foreach (GridPosition gp in ThreatenedRange(thisUnit)) {
+			if (thisUnit.moveRange.field.ContainsKey(gp)) {
+				thisUnit.battleMap.Highlight(gp, tileVisuals.altColor);
+			}
+		}
+
+        thisUnit.battleMap.Highlight(thisUnit.gridPosition, Palette.selectColorWhite);
+    }
+
+    private IEnumerable<GridPosition> ThreatenedRange(PlayerUnit thisUnit) {
+		HashSet<GridPosition> threatened = new HashSet<GridPosition>();
+
+		foreach (EnemyUnit enemy in thisUnit.enemyUnitController.activeUnits) {
+            if (enemy.attackRange == null) enemy.UpdateThreatRange();
+			threatened.UnionWith(enemy.attackRange.field.Keys);
+		}
+
+		foreach (GridPosition gp in threatened) yield return gp;
+	}
 }

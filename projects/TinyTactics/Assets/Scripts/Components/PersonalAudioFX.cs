@@ -11,6 +11,7 @@ public class PersonalAudioFX : MonoBehaviour
 
     public AudioFXBundle interactAudioFXBundle;
     public AudioFXBundle specialInteractAudioFXBundle;
+    public AudioFXBundle wakeUpAudioFXBundle;
     public AudioFXBundle avoidAudioFXBundle;
     public AudioFXBundle healAudioFXBundle;
     public AudioFXBundle deathAudioFXBundle;
@@ -30,6 +31,10 @@ public class PersonalAudioFX : MonoBehaviour
 
     public void PlaySpecialInteractFX() {
         audioSource.PlayOneShot(specialInteractAudioFXBundle.RandomClip(), 1f);
+    }
+
+    public void PlayWakeUpFX() {
+        audioSource.PlayOneShot(wakeUpAudioFXBundle.RandomClip(), 1f);
     }
 
     public void PlayAvoidFX() {

@@ -51,23 +51,23 @@ public class EnemyBrain : MonoBehaviour
 			}
 		}
 
-		if (thisUnit.attackRange.ValidAttack(closestTarget.gridPosition) == false) minDistToTarget += 100;
+		if (thisUnit.attackRange.ValidTarget(closestTarget.gridPosition) == false) minDistToTarget += 100;
 		return minDistToTarget;
 	}
 
 	// behavior: wants to do the most damage, but is easily distractible by damageable units in its range
 	// get the GridPositions where this unit can stand and attack
 	// then select the maximum damage one
-	public IEnumerable<DamagePackage> OptimalDamagePackagesInRange(MoveRange usingMoveRange, AttackRange usingAttackRange) {
-		bool executableThisTurn = usingMoveRange == thisUnit.moveRange && usingAttackRange == thisUnit.attackRange;
+	public IEnumerable<DamagePackage> OptimalDamagePackagesInRange(MoveRange usingMoveRange, TargetRange usingTargetRange) {
+		bool executableThisTurn = usingMoveRange == thisUnit.moveRange && usingTargetRange == thisUnit.attackRange;
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		// find the GP that can be occupied by thisUnit, and calculate the optimal damage for each //
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		List<DamagePackage> damagePackages = new List<DamagePackage>();
 		
-		// 1) Find all units in AttackRange
-		foreach (PlayerUnit potentialTarget in targets.FindAll(t => usingAttackRange.ValidAttack(t.gridPosition))) {
+		// 1) Find all units in TargetRange
+		foreach (PlayerUnit potentialTarget in targets.FindAll(t => usingTargetRange.ValidTarget(t.gridPosition))) {
 
 			// 2) Find all positions around each of these targets that can be occupied by thisUnit
 			foreach (GridPosition potentialNewPosition in CanPathToThenAttack(potentialTarget.gridPosition, usingMoveRange)) {

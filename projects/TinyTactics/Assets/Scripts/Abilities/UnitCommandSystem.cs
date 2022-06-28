@@ -281,7 +281,12 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
         switch(state) {
             case State.Idle:
-                if (interactAt == boundUnit.gridPosition) TryIssueCommand( NextAvailableCommand(UnitCommand.ExecutionType.Interactive) );
+                if (interactAt == boundUnit.gridPosition) {
+                    TryIssueCommand( NextAvailableCommand(UnitCommand.ExecutionType.Interactive) );
+                    
+                    // wake-up sound
+                    boundUnit.personalAudioFX.PlayWakeUpFX();
+                }
                 break;
 
             case State.CommandActive:

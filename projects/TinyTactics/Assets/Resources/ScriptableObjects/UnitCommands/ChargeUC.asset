@@ -21,4 +21,5 @@ MonoBehaviour:
   limitType: 0
   cooldown: 1
   remainingUses: 0
+  tileVisuals: {fileID: 11400000, guid: 62011663f01e0b74e95ad9d1959c5f2c, type: 2}
   damageBonus: 1

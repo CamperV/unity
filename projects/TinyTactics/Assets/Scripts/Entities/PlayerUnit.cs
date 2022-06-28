@@ -34,7 +34,6 @@ public sealed class PlayerUnit : Unit
 
     public void OnInteract(GridPosition gp, bool auxiliaryInteract) { 
         if (!turnActive) return;
-        personalAudioFX.PlayInteractFX();
         unitCommandSystem.Interact(gp, auxiliaryInteract);
     }
 
@@ -44,37 +43,6 @@ public sealed class PlayerUnit : Unit
         unitCommandSystem.CancelActiveCommand();
         unitCommandSystem.RevertExecutedCommands();
     }
-
-    // this needs to run at the end of the frame
-    // this is because of our decoupled event processing
-    // basically, the PlayerUnits are displaying  before the enemy units drop the display
-    //
-    // always display AttackRange first, because it is partially overwritten by MoveRange by definition
-    public override void DisplayThreatRange() {
-        if (moveRange == null || attackRange == null) UpdateThreatRange();
-        
-        attackRange.Display(battleMap);
-        moveRange.Display(battleMap);
-
-    	foreach (GridPosition gp in _ThreatenedRange()) {
-			if (moveRange.field.ContainsKey(gp)) {
-				battleMap.Highlight(gp, Palette.threatColorIndigo);
-			}
-		}
-
-        battleMap.Highlight(gridPosition, Palette.selectColorWhite);
-    }
-
-    private IEnumerable<GridPosition> _ThreatenedRange() {
-		HashSet<GridPosition> threatened = new HashSet<GridPosition>();
-
-		foreach (EnemyUnit enemy in enemyUnitController.activeUnits) {
-            if (enemy.attackRange == null) enemy.UpdateThreatRange();
-			threatened.UnionWith(enemy.attackRange.field.Keys);
-		}
-
-		foreach (GridPosition gp in threatened) yield return gp;
-	}
 
     public override void StartTurn() {
         base.StartTurn();

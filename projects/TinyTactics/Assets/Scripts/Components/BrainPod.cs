@@ -13,7 +13,7 @@ public class BrainPod : MonoBehaviour
 	public int Initiative => (podmates.Count > 0) ? podmates.Min(unit => unit.Initiative) : Int32.MaxValue;
 
 	public HashSet<GridPosition> sharedMoveRangeDimensions;
-	public HashSet<GridPosition> sharedAttackRangeDimensions;
+	public HashSet<GridPosition> sharedTargetRangeDimensions;
 
 	void Awake() {
 		podmates = new List<EnemyUnit>();
@@ -24,19 +24,19 @@ public class BrainPod : MonoBehaviour
 		}
 
 		sharedMoveRangeDimensions = new HashSet<GridPosition>();
-		sharedAttackRangeDimensions = new HashSet<GridPosition>();
+		sharedTargetRangeDimensions = new HashSet<GridPosition>();
 	}
 
 	public void UpdateSharedDetectionRange() {
 		sharedMoveRangeDimensions.Clear();
-		sharedAttackRangeDimensions.Clear();
+		sharedTargetRangeDimensions.Clear();
 
 		foreach (EnemyUnit unit in podmates) {
 			foreach (GridPosition gp in unit.moveRange.field.Keys) {
 				sharedMoveRangeDimensions.Add(gp);
 			}
 			foreach (GridPosition gp in unit.attackRange.field.Keys) {
-				sharedAttackRangeDimensions.Add(gp);
+				sharedTargetRangeDimensions.Add(gp);
 			}
 		}
 	}

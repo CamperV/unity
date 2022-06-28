@@ -4,18 +4,18 @@ using System;
 using UnityEngine;
 using Extensions;
 
-public class AttackRange : FlowField<GridPosition>
+public class TargetRange : FlowField<GridPosition>
 {	
-	public static AttackRange Empty {
+	public static TargetRange Empty {
 		get {
-			AttackRange ar = new AttackRange();
+			TargetRange ar = new TargetRange();
 			ar.field = new Dictionary<GridPosition, int>();
 			return ar;
 		}
 	}
 	
-	public AttackRange(){}
-	public AttackRange(MoveRange moveRange, int minRange, int maxRange) {
+	public TargetRange(){}
+	public TargetRange(MoveRange moveRange, int minRange, int maxRange) {
 		origin = moveRange.origin;
 		field = new Dictionary<GridPosition, int>(moveRange.field);
 
@@ -34,8 +34,8 @@ public class AttackRange : FlowField<GridPosition>
 		field.Remove(origin);
 	}
 
-	public static AttackRange Standing(GridPosition gp, int minRange, int maxRange) {
-		AttackRange ar = new AttackRange();
+	public static TargetRange Standing(GridPosition gp, int minRange, int maxRange) {
+		TargetRange ar = new TargetRange();
 		ar.origin = gp;
 		ar.field = new Dictionary<GridPosition, int>();
 			
@@ -46,8 +46,8 @@ public class AttackRange : FlowField<GridPosition>
 		return ar;
 	}
 
-	public static AttackRange OfDimension(GridPosition gp, ICollection<GridPosition> dimensions) {
-		AttackRange ar = new AttackRange();
+	public static TargetRange OfDimension(GridPosition gp, ICollection<GridPosition> dimensions) {
+		TargetRange ar = new TargetRange();
 		ar.origin = gp;
 		ar.field = new Dictionary<GridPosition, int>();
 			
@@ -58,25 +58,13 @@ public class AttackRange : FlowField<GridPosition>
 	}
 
 
-	public bool ValidAttack(GridPosition gp) {
+	public bool ValidTarget(GridPosition gp) {
 		return gp != origin && field.ContainsKey(gp);
-	}
-
-	public void Display(IGrid<GridPosition> target) {
-		foreach (GridPosition tilePos in field.Keys) {
-			target.Highlight(tilePos, Palette.threatColorRed);
-		}
 	}
 
 	public void Display(IGrid<GridPosition> target, Color color) {
 		foreach (GridPosition tilePos in field.Keys) {
 			target.Highlight(tilePos, color);
-		}
-	}
-
-	public void Display(IGrid<GridPosition> target, float alpha) {
-		foreach (GridPosition tilePos in field.Keys) {
-			target.Highlight(tilePos, Palette.threatColorRed.WithAlpha(alpha));
 		}
 	}
 }

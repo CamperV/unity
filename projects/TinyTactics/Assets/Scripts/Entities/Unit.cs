@@ -67,7 +67,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     // other
     [HideInInspector] public MoveRange moveRange;
-    [HideInInspector] public AttackRange attackRange;
+    [HideInInspector] public TargetRange attackRange;
 
     // Equipment
     public Weapon equippedWeapon;
@@ -83,7 +83,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     // abstract
     public abstract void RevertTurn();
-    public abstract void DisplayThreatRange();
 
     // IUnitPhaseInfo
     [field: SerializeField] public bool turnActive { get; set; } = false;
@@ -147,7 +146,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         moveRange = unitPathfinder.GenerateFlowField<MoveRange>(gridPosition, range: movement);
         moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
 
-        attackRange = new AttackRange(
+        attackRange = new TargetRange(
             moveRange, 
             (minRange < 0) ? equippedWeapon.weaponStats.MIN_RANGE : minRange,
             (maxRange < 0) ? equippedWeapon.weaponStats.MAX_RANGE : maxRange

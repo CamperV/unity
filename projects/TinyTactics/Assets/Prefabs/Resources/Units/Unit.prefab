@@ -180,6 +180,7 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   interactAudioFXBundle: {fileID: 11400000, guid: 93d7df0c57b8bec4b8cf4f0fdbe0965f, type: 2}
   specialInteractAudioFXBundle: {fileID: 11400000, guid: 7dd2ffb50e85ceb4cb5a13e4eab410c3, type: 2}
+  wakeUpAudioFXBundle: {fileID: 11400000, guid: 7dd2ffb50e85ceb4cb5a13e4eab410c3, type: 2}
   avoidAudioFXBundle: {fileID: 11400000, guid: dcb3fd546c8d56d4383e0b1f7125b0a0, type: 2}
   healAudioFXBundle: {fileID: 11400000, guid: 32c2d2ded39b7d0428a75af78a002a82, type: 2}
   deathAudioFXBundle: {fileID: 11400000, guid: ade11ecc095911d429a6c983b6e7da03, type: 2}

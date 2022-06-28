@@ -18,3 +18,7 @@ MonoBehaviour:
   commandCategory: 0
   requiresConfirm: 0
   revertable: 1
+  limitType: 0
+  cooldown: 0
+  remainingUses: 0
+  tileVisuals: {fileID: 11400000, guid: 62011663f01e0b74e95ad9d1959c5f2c, type: 2}

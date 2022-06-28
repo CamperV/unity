@@ -114,6 +114,10 @@ public class UnitStats : MonoBehaviour
         MOVE      += natureStats.m_MOVE;
     }
 
+    public int MissingHP() {
+        return VITALITY - _CURRENT_HP;
+    }
+
     public void UpdateHP(int newValue, int maxValue) {
         _CURRENT_HP = Mathf.Clamp(newValue, 0, maxValue);
         UpdateHPEvent?.Invoke(_CURRENT_HP, maxValue);

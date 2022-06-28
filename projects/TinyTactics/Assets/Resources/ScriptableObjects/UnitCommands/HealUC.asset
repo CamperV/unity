@@ -23,4 +23,5 @@ MonoBehaviour:
   remainingUses: 5
   minRange: 1
   maxRange: 1
+  tileVisuals: {fileID: 11400000, guid: 249224f820ad74944a30a2919a5fbb3e, type: 2}
   healAmount: 3

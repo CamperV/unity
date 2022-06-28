@@ -39,20 +39,20 @@ public class Engagement
     }
 
     public static bool CounterAttackPossible(Unit agg, Unit def) {
-        AttackRange defenderAttackRange = AttackRange.Standing(
+        TargetRange defenderTargetRange = TargetRange.Standing(
             def.gridPosition,
             def.equippedWeapon.weaponStats.MIN_RANGE,
             def.equippedWeapon.weaponStats.MAX_RANGE
         );
-        return defenderAttackRange.ValidAttack(agg.gridPosition) && def.counterAttackAvailable;
+        return defenderTargetRange.ValidTarget(agg.gridPosition) && def.counterAttackAvailable;
     }
     public static bool CounterAttackPossible(Unit agg, Unit def, GridPosition fromPosition) {
-        AttackRange defenderAttackRange = AttackRange.Standing(
+        TargetRange defenderTargetRange = TargetRange.Standing(
             def.gridPosition,
             def.equippedWeapon.weaponStats.MIN_RANGE,
             def.equippedWeapon.weaponStats.MAX_RANGE
         );
-        return defenderAttackRange.ValidAttack(fromPosition) && def.counterAttackAvailable;
+        return defenderTargetRange.ValidTarget(fromPosition) && def.counterAttackAvailable;
     }
 
     public IEnumerator Resolve() {

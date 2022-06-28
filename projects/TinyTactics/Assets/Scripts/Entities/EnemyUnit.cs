@@ -9,7 +9,7 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 {
     // additional components
     private EnemyBrain brain;
-    public BrainPod assignedPod;
+    [HideInInspector] public BrainPod assignedPod;
     public int Initiative => brain.CalculateInitiative();
 
     // IStateMachine<>
@@ -189,10 +189,10 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         // if you're in a BrainPod, use their shared detection range
         if (assignedPod != null) {
 			MoveRange podMoveRange = unitPathfinder.GenerateFlowField<MoveRange>(gridPosition, assignedPod.sharedMoveRangeDimensions);
-            AttackRange podAttackRange = AttackRange.OfDimension(gridPosition, assignedPod.sharedAttackRangeDimensions);
-            // podAttackRange.Display(battleMap);
+            TargetRange podTargetRange = TargetRange.OfDimension(gridPosition, assignedPod.sharedTargetRangeDimensions);
+            // podTargetRange.Display(battleMap);
 
-            foreach (EnemyBrain.DamagePackage candidateDmgPkg in brain.OptimalDamagePackagesInRange(podMoveRange, podAttackRange)) {
+            foreach (EnemyBrain.DamagePackage candidateDmgPkg in brain.OptimalDamagePackagesInRange(podMoveRange, podTargetRange)) {
                 Path<GridPosition> fullPathTo = podMoveRange.BFS(gridPosition, candidateDmgPkg.fromPosition);
 
                 // decide if this DamagePackage is for you
@@ -240,7 +240,7 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             }
         }
 
-        // if you're not in a BrainPod, you're using your own AttackRange as your detection range
+        // if you're not in a BrainPod, you're using your own TargetRange as your detection range
         // which means you won't do anything, and you wouldn't have made it here in the code
     }
 
@@ -288,17 +288,17 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         ChangeState(EnemyUnitFSM.Idle);
     }
 
-    public override void DisplayThreatRange() {
+    private void DisplayThreatRange() {
         if (moveRange == null || attackRange == null) UpdateThreatRange();
 
         // make a fake movementRange for displaying
         // MoveRange fakeMoveRange = unitPathfinder.GenerateFakeFlowField<MoveRange>(gridPosition, range: unitStats.MOVE);
-        // AttackRange fakeAttackRange = new AttackRange(fakeMoveRange, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
+        // TargetRange fakeTargetRange = new TargetRange(fakeMoveRange, equippedWeapon.weaponStats.MIN_RANGE, equippedWeapon.weaponStats.MAX_RANGE);
 
-        // fakeAttackRange.Display(battleMap, Palette.enemyRedPinkColor);
+        // fakeTargetRange.Display(battleMap, Palette.enemyRedPinkColor);
         // fakeMoveRange.Display(battleMap, Palette.threatColorViolet);
   
-        attackRange.Display(battleMap);
+        attackRange.Display(battleMap, Palette.threatColorRed);
         // moveRange.Display(battleMap, Palette.threatColorIndigo);
         moveRange.Display(battleMap, Palette.selectColorBlue);
         
