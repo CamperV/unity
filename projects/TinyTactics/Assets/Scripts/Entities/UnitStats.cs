@@ -21,8 +21,6 @@ public class UnitStats : MonoBehaviour
     public event StatChange UpdateLuckEvent;
     public event StatChange UpdateMultistrikeEvent;
 
-    private Unit boundUnit;
-
 	public enum UpdateableStat {
 		Vitality,
 		Strength,
@@ -54,7 +52,7 @@ public class UnitStats : MonoBehaviour
     }
     [SerializeField] private BaseStats baseStats;
     [SerializeField] private int variance = 2;
-    [SerializeField] private readonly int MAX_STAT_VALUE = 99;
+    public static int _MAX_STAT_VALUE = 99;
 
     void Awake() {
         VITALITY  = baseStats.VITALITY  + Random.Range(-variance, variance);
@@ -66,43 +64,6 @@ public class UnitStats : MonoBehaviour
         //
         _LUCK = 0;
         _MULTISTRIKE = 0;
-
-        boundUnit = GetComponent<Unit>();
-    }
-
-    public int Calculate_ATK() {
-        return STRENGTH + boundUnit.equippedWeapon.weaponStats.MIGHT;
-    }
-
-    public int Calculate_HIT() {
-        return DEXTERITY*2 + boundUnit.equippedWeapon.weaponStats.ACCURACY;
-    }
-
-    public int Calculate_CRT() {
-        return boundUnit.equippedWeapon.weaponStats.CRITICAL;
-    }
-
-    public int Calculate_AVO() {
-        return REFLEX*2 - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
-    }
-
-    public int Calculate_CRTAVO() {
-        // return (_LUCK + REFLEX) - Mathf.Max(0, (boundUnit.equippedWeapon.weaponStats.WEIGHT - STRENGTH));
-        return _LUCK + REFLEX;
-    }
-
-    public Pair<int, int> CalculateDamageRange() {
-        int upper = Mathf.Clamp(STRENGTH + boundUnit.equippedWeapon.weaponStats.MAX_MIGHT, 0, MAX_STAT_VALUE);
-        int lower = Mathf.Clamp(DEXTERITY + boundUnit.equippedWeapon.weaponStats.MIN_MIGHT, 0, upper);
-        return new Pair<int, int>(lower, upper);
-    }
-
-    // grant 5% extra crit for every point of lowerDmg over upperDmg
-    public int CalculateCritical() {
-        int upper = STRENGTH + boundUnit.equippedWeapon.weaponStats.MAX_MIGHT;
-        int lower = DEXTERITY + boundUnit.equippedWeapon.weaponStats.MIN_MIGHT;
-        int dexOverage = Mathf.Max(0, lower - upper);
-        return boundUnit.equippedWeapon.weaponStats.CRITICAL + dexOverage*5;
     }
 
     public void ApplyNature(CampaignUnitGenerator.NatureData natureStats) {
@@ -124,42 +85,42 @@ public class UnitStats : MonoBehaviour
     }
 
     public void UpdateVitality(int newValue) {
-        VITALITY = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        VITALITY = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateVitalityEvent?.Invoke(newValue);
     }
 
     public void UpdateStrength(int newValue) {
-        STRENGTH = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        STRENGTH = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateStrengthEvent?.Invoke(newValue);
     }
 
     public void UpdateDexterity(int newValue) {
-        DEXTERITY = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        DEXTERITY = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateDexterityEvent?.Invoke(newValue);
     }
 
     public void UpdateReflex(int newValue) {
-        REFLEX = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        REFLEX = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateReflexEvent?.Invoke(newValue);
     }
 
     public void UpdateDefense(int newValue) {
-        DEFENSE = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        DEFENSE = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateDefenseEvent?.Invoke(newValue);
     }
 
     public void UpdateMove(int newValue) {
-        MOVE = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        MOVE = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateMoveEvent?.Invoke(newValue);
     }
 
     public void UpdateLuck(int newValue) {
-        _LUCK = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        _LUCK = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateLuckEvent?.Invoke(newValue);
     }
 
     public void UpdateMultistrike(int newValue) {
-        _MULTISTRIKE = Mathf.Clamp(newValue, 0, MAX_STAT_VALUE);
+        _MULTISTRIKE = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateMultistrikeEvent?.Invoke(newValue);
     }
 

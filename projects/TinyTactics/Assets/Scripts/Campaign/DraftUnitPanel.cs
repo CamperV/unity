@@ -12,8 +12,6 @@ public class DraftUnitPanel : MonoBehaviour
     public TextMeshProUGUI classValue;
     public Image portraitValue;
 
-    public MartialWeaponListing weaponListing;
-
     public GameObject archetypeDisplay;
     public TextMeshProUGUI natureDescription;
 

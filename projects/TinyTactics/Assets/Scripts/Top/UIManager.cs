@@ -76,7 +76,6 @@ public sealed class UIManager : MonoBehaviour
 		playerEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.aggressor.spriteAnimator.MainSprite;
 		playerEngagementPreviewPanel.portraitImage.color = potentialEngagement.aggressor.spriteAnimator.MainColor;
 		playerEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.aggressor.equippedWeapon.sprite;
-		playerEngagementPreviewPanel.weaponImage.color = potentialEngagement.aggressor.equippedWeapon.color;
 		playerEngagementPreviewPanel.nameText.SetText(potentialEngagement.aggressor.displayName);
 		//
 		playerEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.aggressor.unitStats._CURRENT_HP}");
@@ -102,7 +101,6 @@ public sealed class UIManager : MonoBehaviour
 		enemyEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.defender.spriteAnimator.MainSprite;
 		enemyEngagementPreviewPanel.portraitImage.color = potentialEngagement.defender.spriteAnimator.MainColor;
 		enemyEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.defender.equippedWeapon.sprite;
-		enemyEngagementPreviewPanel.weaponImage.color = potentialEngagement.defender.equippedWeapon.color;
 		enemyEngagementPreviewPanel.nameText.SetText(potentialEngagement.defender.displayName);
 		//
 		enemyEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.defender.unitStats._CURRENT_HP}");

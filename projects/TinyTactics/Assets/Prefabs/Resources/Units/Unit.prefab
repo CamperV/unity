@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 3229868326669507183}
   - component: {fileID: 8089220344832240176}
   - component: {fileID: 4514586474749791149}
-  - component: {fileID: -4435403467399855671}
   - component: {fileID: -4206180013154384781}
   - component: {fileID: -6295692904770981026}
   - component: {fileID: 160223693219647424}
+  - component: {fileID: 3049187773673169181}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -186,28 +186,6 @@ MonoBehaviour:
   deathAudioFXBundle: {fileID: 11400000, guid: ade11ecc095911d429a6c983b6e7da03, type: 2}
   criticalAudioFXBundle: {fileID: 11400000, guid: 175d5d976f9f3124ab3d1abd64b80022, type: 2}
   blockAudioFXBundle: {fileID: 11400000, guid: 5e25c9bd91b0200409a7338e17a1b5f8, type: 2}
---- !u!114 &-4435403467399855671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6096969835717758623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aad8049a040921842aaf0edc2c8227c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  originOffset: {x: 0, y: 0, z: 0}
-  randomSaltFlag: 1
-  messagePrefabs:
-  - {fileID: 1092597898528495800, guid: fd24f0071602e994f9542618ff03e7e2, type: 3}
-  - {fileID: 8553648522357443454, guid: af9c516b5869a6742b32add2a0c3ebce, type: 3}
-  - {fileID: 5616277527794003609, guid: de89c235cee533148833585c9d3f0393, type: 3}
-  - {fileID: 6350432152992199619, guid: 783b1f74a44426b4abed01c6e7586cd1, type: 3}
-  - {fileID: 2703586094847380705, guid: 5ed676fb49a0b2949901da31e5cef509, type: 3}
-  - {fileID: 9152891043322854889, guid: f82291f6d14f38f4494cc170c3b1c87a, type: 3}
-  - {fileID: 769719700753486821, guid: e0cf16972d9bc6544a768dfcdf11a15e, type: 3}
 --- !u!114 &-4206180013154384781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,6 +230,28 @@ MonoBehaviour:
   selectionMode: 1
   renderer: {fileID: 5869286192602309075}
   material: {fileID: 2100000, guid: 6d0f1d67b39c5a84699654d2b919f3ac, type: 2}
+--- !u!114 &3049187773673169181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6096969835717758623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 632900d65b63a6b43ac35911668ac90c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  originOffset: {x: 0.25, y: 0.45, z: 0}
+  randomSaltFlag: 0
+  messagePrefabs:
+  - {fileID: 1092597898528495800, guid: fd24f0071602e994f9542618ff03e7e2, type: 3}
+  - {fileID: 8553648522357443454, guid: af9c516b5869a6742b32add2a0c3ebce, type: 3}
+  - {fileID: 5616277527794003609, guid: de89c235cee533148833585c9d3f0393, type: 3}
+  - {fileID: 6350432152992199619, guid: 783b1f74a44426b4abed01c6e7586cd1, type: 3}
+  - {fileID: 2703586094847380705, guid: 5ed676fb49a0b2949901da31e5cef509, type: 3}
+  - {fileID: 9152891043322854889, guid: f82291f6d14f38f4494cc170c3b1c87a, type: 3}
+  - {fileID: 769719700753486821, guid: e0cf16972d9bc6544a768dfcdf11a15e, type: 3}
 --- !u!1 &6807299549594369295
 GameObject:
   m_ObjectHideFlags: 0

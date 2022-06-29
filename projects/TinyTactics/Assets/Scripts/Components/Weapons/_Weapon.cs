@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(WeaponStats))]
-public abstract class Weapon : MonoBehaviour, ITagged
+public abstract class _Weapon : MonoBehaviour, ITagged
 {
     // set by equipping Unit
     public Unit boundUnit { get; set; }

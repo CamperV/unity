@@ -41,16 +41,16 @@ public class Engagement
     public static bool CounterAttackPossible(Unit agg, Unit def) {
         TargetRange defenderTargetRange = TargetRange.Standing(
             def.gridPosition,
-            def.equippedWeapon.weaponStats.MIN_RANGE,
-            def.equippedWeapon.weaponStats.MAX_RANGE
+            def.equippedWeapon.MIN_RANGE,
+            def.equippedWeapon.MAX_RANGE
         );
         return defenderTargetRange.ValidTarget(agg.gridPosition) && def.counterAttackAvailable;
     }
     public static bool CounterAttackPossible(Unit agg, Unit def, GridPosition fromPosition) {
         TargetRange defenderTargetRange = TargetRange.Standing(
             def.gridPosition,
-            def.equippedWeapon.weaponStats.MIN_RANGE,
-            def.equippedWeapon.weaponStats.MAX_RANGE
+            def.equippedWeapon.MIN_RANGE,
+            def.equippedWeapon.MAX_RANGE
         );
         return defenderTargetRange.ValidTarget(fromPosition) && def.counterAttackAvailable;
     }
@@ -95,30 +95,20 @@ public class Engagement
 
     public EngagementStats SimulateCounterAttack() {
         if (counterAttack == null) {
-            return new EngagementStats(-1, -1, -1);
+            return new EngagementStats(-1, -1, -1, -1);
         } else {
             return GenerateEngagementStats(counterAttack.Value, counterDefense.Value);
         }
     }
 
     private Attack GenerateAttack(Unit generator, Unit defender) {
-        // deprecated
-        // MutableAttack mutableAttack = new MutableAttack(
-        //     generator.unitStats.Calculate_ATK(),
-        //     generator.unitStats.Calculate_HIT(),
-        //     generator.unitStats.Calculate_CRT(),
-        //     defender.gridPosition.ManhattanDistance(generator.gridPosition) == 1
-        // );
-        
-        // // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
-        // generator.FireOnAttackEvent(ref mutableAttack, defender);
-        // return new Attack(mutableAttack);
-        Pair<int, int> dmgRange = generator.unitStats.CalculateDamageRange();
+        Pair<int, int> dmgRange = generator.equippedWeapon.DamageRange(generator);
 
         MutableAttack mutableAttack = new MutableAttack(
             dmgRange.First,
             dmgRange.Second,
-            generator.unitStats.CalculateCritical(),
+            generator.equippedWeapon.CRITICAL,
+            generator.unitStats.DEXTERITY,
             defender.gridPosition.ManhattanDistance(generator.gridPosition) == 1
         );
         
@@ -128,21 +118,10 @@ public class Engagement
     }
 
     private Defense GenerateDefense(Unit generator, Unit attacker) {
-        // // deprecated
-        // MutableDefense mutableDefense = new MutableDefense(
-        //     generator.unitStats.DEFENSE,          // reduce incoming damage
-        //     generator.unitStats.Calculate_AVO(),             // avoid rate
-        //     generator.unitStats.Calculate_CRTAVO(),           // crit avoid rate
-        //     attacker.gridPosition.ManhattanDistance(generator.gridPosition) == 1
-        // );
-
-        // // THIS WILL MODIFY THE OUTGOING DEFENSE PACKAGE
-        // generator.FireOnDefendEvent(ref mutableDefense, attacker);
-        // return new Defense(mutableDefense);
-
-        MutableDefense mutableDefense = new MutableDefense(
+         MutableDefense mutableDefense = new MutableDefense(
             generator.unitStats.DEFENSE,                      // reduce incoming damage
-            generator.unitStats.Calculate_CRTAVO(),           // crit avoid rate
+            0,           // crit avoid rate
+            generator.unitStats.REFLEX,
             attacker.gridPosition.ManhattanDistance(generator.gridPosition) == 1
         );
 
@@ -169,24 +148,13 @@ public class Engagement
         UIManager.inst.combatLog.AddEntry(
             $"{A.logTag}@[{A.displayName}] {attackType}s: YELLOW@[{finalStats.minDamage}]-YELLOW@[{finalStats.maxDamage}] ATK, YELLOW@[{finalStats.critRate}] CRIT ]"
         );
-
-		// calc hit/crit
-		// int RN1 = Random.Range(0, 100);
-		
-        // // 1 RN
-        // bool isHit = RN1 <= finalStats.hitRate;
-
-        // "True Hit"
-        // 2RN
-        // int RN2 = Random.Range(0, 100);
-        // int trueHitRN = (int)((RN1 + RN2)/2f);
-        // bool isHit =  trueHitRN <= finalStats.hitRate;
-
-        // Calculate final damage
-        // calc crit first
         
         bool isCrit = Random.Range(0, 100) <= finalStats.critRate;
-        int damage = Random.Range(finalStats.minDamage, finalStats.maxDamage+1);
+
+        // this is the final Damage, linear relationship
+        int damage = CalculateFinalDamage(finalStats);
+        Debug.Log($"Resulting damage: {damage}");
+
         int sufferedDamage = (isCrit) ? damage*2 : damage;
 
         // now the theatrics
@@ -218,4 +186,34 @@ public class Engagement
         yield return new WaitUntil(() => resolvedFlag == true);
 		VoidAction();
 	}
+
+    private int CalculateFinalDamage(EngagementStats finalStats) {
+        // 1) Linear
+        // return Random.Range(finalStats.minDamage, finalStats.maxDamage+1);
+
+        // 2) Advantage-based
+        int advantageThreshold = 2;
+
+        int numRolls = 1 + (int)Mathf.Floor((Mathf.Abs(finalStats.advantageRate) / advantageThreshold));
+        Debug.Log($"Advantage rate: {finalStats.advantageRate}, numRolls: {numRolls}");
+
+        int highestRoll = Int32.MinValue;
+        int lowestRoll = Int32.MaxValue;
+        while (numRolls > 0) {
+            // roll here
+            int rollValue = Random.Range(finalStats.minDamage, finalStats.maxDamage+1);
+            Debug.Log($"Rolled {rollValue}");
+
+            highestRoll = Mathf.Max(rollValue, highestRoll);
+            lowestRoll = Mathf.Min(rollValue, lowestRoll);
+
+            numRolls--;
+        }
+
+        Debug.Log($"Highest: {highestRoll}");
+        Debug.Log($"Lowest: {lowestRoll}");
+
+        // if you're at adv/disadv, return different rolls
+        return (finalStats.advantageRate > 0) ? highestRoll : lowestRoll;
+    }
 }

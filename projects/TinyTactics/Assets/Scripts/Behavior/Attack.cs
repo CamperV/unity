@@ -10,6 +10,7 @@ public struct Attack
     public int minDamage;
     public int maxDamage;
     public int critRate;
+    public int dexterity;
     //
     public bool inMeleeRange;
     // public bool isCounterAttack;
@@ -20,6 +21,7 @@ public struct Attack
         minDamage = mutAtt.minDamage;
         maxDamage = mutAtt.maxDamage;
         critRate = mutAtt.critRate;
+        dexterity = mutAtt.dexterity;
         //
         inMeleeRange = mutAtt.inMeleeRange;
         // isCounterAttack = mutAtt.isCounterAttack;
@@ -35,16 +37,18 @@ public class MutableAttack
     public int minDamage;
     public int maxDamage;
     public int critRate;
+    public int dexterity;
     //
     public bool inMeleeRange;
     // public bool isCounterAttack;
     //
     public List<string> mutators;
 
-    public MutableAttack(int minDmg, int maxDmg, int crit, bool withinOne) {
+    public MutableAttack(int minDmg, int maxDmg, int crit, int dex, bool withinOne) {
         minDamage = minDmg;
         maxDamage = maxDmg;
         critRate = crit;
+        dexterity = dex;
         //
         inMeleeRange = withinOne;
         //
@@ -60,56 +64,3 @@ public class MutableAttack
         maxDamage += add;
     }
 }
-
-// [Serializable]
-// public struct Attack
-// {
-//     public int damage;
-//     public int hitRate;
-//     public int critRate;
-//     //
-//     public bool inMeleeRange;
-//     //
-//     public List<string> mutators;
-
-//     public Attack(MutableAttack mutAtt) {
-//         damage = mutAtt.damage;
-//         hitRate = mutAtt.hitRate;
-//         critRate = mutAtt.critRate;
-//         //
-//         inMeleeRange = mutAtt.inMeleeRange;
-//         //
-//         mutators = new List<string>(mutAtt.mutators);
-//     }
-
-//     public string ToString() {
-//         return $"Attack: {damage}/{hitRate}/{critRate}";
-//     }
-// }
-
-// //
-// // This is a class because I would like to mutate it via a Unit's stats, etc
-// public class MutableAttack
-// {
-//     public int damage;
-//     public int hitRate;
-//     public int critRate;
-//     //
-//     public bool inMeleeRange;
-//     //
-//     public List<string> mutators;
-
-//     public MutableAttack(int dmg, int hit, int crit, bool withinOne) {
-//         damage = dmg;
-//         hitRate = hit;
-//         critRate = crit;
-//         //
-//         inMeleeRange = withinOne;
-//         //
-//         mutators = new List<string>();
-//     }
-
-//     public void AddMutator(IMutatorComponent mc) {
-//         mutators.Add(mc.displayName);
-//     }
-// }

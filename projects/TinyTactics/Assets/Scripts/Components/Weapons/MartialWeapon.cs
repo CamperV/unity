@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(WeaponStats))]
-public class MartialWeapon : Weapon
+public class MartialWeapon : _Weapon
 {
     public override int CalculateDamage() {
         // first pass

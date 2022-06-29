@@ -7,10 +7,10 @@ public abstract class WeaponPerk : MonoBehaviour, IMutatorComponent
 {
     public abstract string displayName { get; set; }
 
-    public Weapon boundWeapon { get; set; }
+    public _Weapon boundWeapon { get; set; }
 
     void Awake() {
-        boundWeapon = GetComponent<Weapon>();
+        boundWeapon = GetComponent<_Weapon>();
     }
 
     public abstract void OnEquip();

@@ -9,8 +9,6 @@ public class UnitDetailPanel : MonoBehaviour
 	public TextMeshProUGUI nameValue;
 	public TextMeshProUGUI classValue;
     public Image portraitImage;
-
-	public MartialWeaponListing weaponListing;
 	
 	// attributes
 	public TextMeshProUGUI hpValue;
@@ -62,9 +60,9 @@ public class UnitDetailPanel : MonoBehaviour
 		movValue.SetText($"<b>{unit.unitStats.MOVE}</b>");
 
 		// derived
-		atkValue.SetText($"{unit.unitStats.Calculate_ATK()}");
-		hitValue.SetText($"{unit.unitStats.Calculate_HIT()}");
-		avoValue.SetText($"{unit.unitStats.Calculate_AVO()}");
+		// atkValue.SetText($"{unit.unitStats.Calculate_ATK()}");
+		// hitValue.SetText($"{unit.unitStats.Calculate_HIT()}");
+		// avoValue.SetText($"{unit.unitStats.Calculate_AVO()}");
 
 		string redHex = "#FF6D6D";
 		string greenHex = "#6FD66E";

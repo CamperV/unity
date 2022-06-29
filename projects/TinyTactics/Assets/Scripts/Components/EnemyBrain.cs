@@ -98,7 +98,7 @@ public class EnemyBrain : MonoBehaviour
 
 	// using a different range. Use this when you want to find an answer outside of thisUnit's range
 	private IEnumerable<GridPosition> CanPathToThenAttack(GridPosition potentialTargetPosition, MoveRange usingRange) {
-		foreach (GridPosition withinRange in potentialTargetPosition.Radiate(thisUnit.equippedWeapon.weaponStats.MAX_RANGE, min: thisUnit.equippedWeapon.weaponStats.MIN_RANGE)) {	
+		foreach (GridPosition withinRange in potentialTargetPosition.Radiate(thisUnit.equippedWeapon.MAX_RANGE, min: thisUnit.equippedWeapon.MIN_RANGE)) {	
 			if (usingRange.ValidMoveTo(withinRange))
 				yield return withinRange;
 		}

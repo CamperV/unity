@@ -117,12 +117,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
         moveRange = null;
         attackRange = null;
-
-        equippedWeapon = Instantiate(equippedWeapon, transform);
     }
 
     protected virtual void Start() {
-        // actually set up the Weapon
         equippedWeapon.Equip(this);
 
         // some init things that need to be taken care of
@@ -148,8 +145,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
         attackRange = new TargetRange(
             moveRange, 
-            (minRange < 0) ? equippedWeapon.weaponStats.MIN_RANGE : minRange,
-            (maxRange < 0) ? equippedWeapon.weaponStats.MAX_RANGE : maxRange
+            (minRange < 0) ? equippedWeapon.MIN_RANGE : minRange,
+            (maxRange < 0) ? equippedWeapon.MAX_RANGE : maxRange
         );
     }
 
