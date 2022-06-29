@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bcf00a4c7bd17145893863b371eadbb, type: 3}
+  m_Script: {fileID: 11500000, guid: a68fc264549786240813f5ef5e0b510f, type: 3}
   m_Name: RedMark2
   m_EditorClassIdentifier: 
-  name: Red Mark
+  name: Red Mark (Countdown)
   description: Take double damage from Marker
   sprite: {fileID: 21300000, guid: f71053e9446063c4ba8f0d66f0bacd74, type: 3}
-  value: 2
+  <value>k__BackingField: 1
