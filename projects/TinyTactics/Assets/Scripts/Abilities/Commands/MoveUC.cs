@@ -20,6 +20,7 @@ public class MoveUC : UnitCommand
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
+        thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();
         thisUnit.battleMap.ClearDisplayPath();
         //
@@ -97,7 +98,7 @@ public class MoveUC : UnitCommand
 
     protected virtual void DisplayMoveRange(PlayerUnit thisUnit) {   
         if (thisUnit.moveRange == null) thisUnit.UpdateThreatRange();
-        thisUnit.moveRange.Display(thisUnit.battleMap, tileVisuals.color);
+        thisUnit.moveRange.Display(thisUnit.battleMap, tileVisuals.color, tileVisuals.tile);
 
     	foreach (GridPosition gp in ThreatenedRange(thisUnit)) {
 			if (thisUnit.moveRange.field.ContainsKey(gp)) {

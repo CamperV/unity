@@ -10,4 +10,7 @@ public interface IGrid<T> where T : struct
 
     void Highlight(T gridPosition, Color color);
     void ResetHighlight();
+
+    void SetHighlightTile(T gridPosition, VisualTile visualTile);
+    void ResetHighlightTiles();
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ChargeUC
   m_EditorClassIdentifier: 
   name: Charge
-  sprite: {fileID: 21300000, guid: 1e006f47498d9bc4da4a55063835a77b, type: 3}
+  sprite: {fileID: 21300000, guid: 0a1d2c6e23d933c4aa296488cd67017d, type: 3}
   executionType: 0
   commandCategory: 0
   requiresConfirm: 0
@@ -21,5 +21,5 @@ MonoBehaviour:
   limitType: 0
   cooldown: 1
   remainingUses: 0
-  tileVisuals: {fileID: 11400000, guid: 62011663f01e0b74e95ad9d1959c5f2c, type: 2}
+  tileVisuals: {fileID: 11400000, guid: 5da2c718e955057428b4579ec4c47404, type: 2}
   damageBonus: 1

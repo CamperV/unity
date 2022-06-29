@@ -67,4 +67,11 @@ public class TargetRange : FlowField<GridPosition>
 			target.Highlight(tilePos, color);
 		}
 	}
+
+	public void Display(IGrid<GridPosition> target, Color color, VisualTile vt) {
+		foreach (GridPosition tilePos in field.Keys) {
+			target.SetHighlightTile(tilePos, vt);
+			target.Highlight(tilePos, color);
+		}
+	}
 }

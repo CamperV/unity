@@ -12,6 +12,9 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     [HideInInspector] public BrainPod assignedPod;
     public int Initiative => brain.CalculateInitiative();
 
+    [SerializeField] private TileVisuals moveTileVisuals;
+    [SerializeField] private TileVisuals attackTileVisuals;
+
     // IStateMachine<>
     public enum EnemyUnitFSM {
         Idle,
@@ -88,6 +91,7 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
                 break;
 
             case EnemyUnitFSM.Preview:
+                battleMap.ResetHighlightTiles();
                 battleMap.ResetHighlight();
                 //
                 UIManager.inst.DisableUnitDetail();
@@ -298,9 +302,8 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         // fakeTargetRange.Display(battleMap, Palette.enemyRedPinkColor);
         // fakeMoveRange.Display(battleMap, Palette.threatColorViolet);
   
-        attackRange.Display(battleMap, Palette.threatColorRed);
-        // moveRange.Display(battleMap, Palette.threatColorIndigo);
-        moveRange.Display(battleMap, Palette.selectColorBlue);
+        attackRange.Display(battleMap, attackTileVisuals.color, attackTileVisuals.tile);
+        moveRange.Display(battleMap, moveTileVisuals.color, moveTileVisuals.tile);
         
         battleMap.Highlight(gridPosition, Palette.selectColorWhite);
     }

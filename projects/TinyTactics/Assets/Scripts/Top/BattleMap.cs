@@ -32,6 +32,8 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     [SerializeField] private Tilemap highlightTilemap;
     [SerializeField] private Tilemap gridlinesTilemap;
     [SerializeField] private Tilemap baseTilemap;
+
+    [SerializeField] private VisualTile baseHighlightTile;
     
     private HashSet<GridPosition> _Positions;
     public HashSet<GridPosition> Positions {
@@ -85,7 +87,6 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public void CheckLeftMouseClick(Vector3 screenPosition) {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
-        // Debug.Log($"BattleMap has seen that you clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
             InteractEvent?.Invoke(gridPosition);
@@ -93,13 +94,11 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
     
     public void CheckRightMouseClick(Vector3 screenPosition) {
-        // Debug.Log($"BattleMap has seen that you right-clicked {screenPosition}");
     }
 
     public void CheckMiddleMouseClick(Vector3 screenPosition) {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
-        // Debug.Log($"BattleMap has seen that you middle-clicked {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
             AuxiliaryInteractEvent_2?.Invoke(gridPosition);
@@ -126,7 +125,6 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public void CheckLeftMouseHoldStart(Vector3 screenPosition) {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
-        // Debug.Log($"BattleMap has seen that you started holding mouse @ {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
             AuxiliaryInteractEvent_0?.Invoke(gridPosition);
@@ -136,7 +134,6 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public void CheckLeftMouseHoldEnd(Vector3 screenPosition) {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
-        // Debug.Log($"BattleMap has seen that you released mouse @ {screenPosition}, aka {worldPosition}, aka {gridPosition} [InBounds = {IsInBounds(gridPosition)}]");
 
         if (IsInBounds(gridPosition)) {
             AuxiliaryInteractEvent_1?.Invoke(gridPosition);
@@ -188,6 +185,21 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
             }
         }
 	}
+
+    public void SetHighlightTile(GridPosition gp, VisualTile vt) {
+        if (highlightTilemap.HasTile((Vector3Int)gp)) {
+            highlightTilemap.SetTile((Vector3Int)gp, vt);
+        }
+    }
+
+    public void ResetHighlightTiles() {
+        foreach (var pos in highlightTilemap.cellBounds.allPositionsWithin) {
+            Vector3Int v = new Vector3Int(pos.x, pos.y, pos.z);
+            if (highlightTilemap.HasTile(v)) {
+                highlightTilemap.SetTile(v, baseHighlightTile);
+            }
+        }
+    }
     
 	public void DisplayPath(Path<GridPosition> path) {
 		foreach (GridPosition gp in path.Unwind()) {

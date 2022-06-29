@@ -55,9 +55,4 @@ public class HealUC : TargetableUC
             return null;
         }
     }
-
-    protected override void DisplayTargetRange(PlayerUnit thisUnit) {
-        thisUnit.attackRange.Display(thisUnit.battleMap, tileVisuals.color);
-        thisUnit.battleMap.Highlight(thisUnit.gridPosition, Palette.selectColorWhite);
-    }
 }

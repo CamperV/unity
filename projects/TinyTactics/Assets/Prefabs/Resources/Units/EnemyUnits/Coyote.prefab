@@ -49,6 +49,8 @@ MonoBehaviour:
   <moveAvailable>k__BackingField: 0
   <counterAttackAvailable>k__BackingField: 1
   assignedPod: {fileID: 0}
+  moveTileVisuals: {fileID: 11400000, guid: d869f387131ad9f4ea9f7643facbf3c4, type: 2}
+  attackTileVisuals: {fileID: 11400000, guid: 18a134b39d11303498e3d4a6c247b6a8, type: 2}
 --- !u!114 &7279658016317033225
 MonoBehaviour:
   m_ObjectHideFlags: 0

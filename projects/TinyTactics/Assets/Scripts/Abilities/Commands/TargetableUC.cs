@@ -21,6 +21,7 @@ public abstract class TargetableUC : UnitCommand
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
+        thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();
         //
         UIManager.inst.DisableUnitDetail();
@@ -60,7 +61,7 @@ public abstract class TargetableUC : UnitCommand
     protected abstract void ValidMouseOver(PlayerUnit thisUnit, GridPosition hoverOver);
 
     protected virtual void DisplayTargetRange(PlayerUnit thisUnit) {
-        thisUnit.attackRange.Display(thisUnit.battleMap, tileVisuals.color);
+        thisUnit.attackRange.Display(thisUnit.battleMap, tileVisuals.color, tileVisuals.tile);
         thisUnit.battleMap.Highlight(thisUnit.gridPosition, Palette.selectColorWhite);
     }
 }

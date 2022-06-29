@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {r: 0, g: 0.75, b: 0.3, a: 0.7490196}
   altColor: {r: 0.75, g: 0.75, b: 0.15, a: 0.7490196}
+  tile: {fileID: 11400000, guid: 841eb1bf060c8a44da01532afe7bf293, type: 2}

@@ -22,6 +22,7 @@ public class AttackUC : UnitCommand
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
+        thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();
         UIManager.inst.DisableEngagementPreview();
         //
@@ -120,7 +121,7 @@ public class AttackUC : UnitCommand
     }
 
     private void DisplayAttackRange(PlayerUnit thisUnit) {
-        thisUnit.attackRange.Display(thisUnit.battleMap, tileVisuals.color);
+        thisUnit.attackRange.Display(thisUnit.battleMap, tileVisuals.color, tileVisuals.tile);
         thisUnit.battleMap.Highlight(thisUnit.gridPosition, Palette.selectColorWhite);
     }
 }

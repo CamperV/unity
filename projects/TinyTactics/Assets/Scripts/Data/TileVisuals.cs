@@ -10,5 +10,6 @@ public class TileVisuals : ScriptableObject
 {
     public Color color;
     public Color altColor;
-    // public Tile tileToReplace
+    
+    public VisualTile tile;
 }
