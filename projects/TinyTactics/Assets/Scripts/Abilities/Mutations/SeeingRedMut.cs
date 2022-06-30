@@ -21,6 +21,11 @@ public class SeeingRedMut : Mutation
     }
 
     private void ApplyMarkToAttacker(Unit thisUnit, Unit target) {
+        // first, remove all other instances
+        // TODO: this will need to be fixed with the Provider system. But now, just remove all
+        foreach (Unit enemy in thisUnit.Enemies()) {
+            enemy.statusSystem.RemoveStatus(markStatus);
+        }
         target.statusSystem.AddStatus(markStatus);
     }
 

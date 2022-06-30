@@ -15,4 +15,5 @@ MonoBehaviour:
   name: Red Mark (Countdown)
   description: Take double damage from Marker
   sprite: {fileID: 21300000, guid: f71053e9446063c4ba8f0d66f0bacd74, type: 3}
+  stackable: 1
   <value>k__BackingField: 1

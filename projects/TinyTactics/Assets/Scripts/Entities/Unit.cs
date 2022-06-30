@@ -132,6 +132,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
         // call this Init here, instead of MS's own Start(), to avoid races
         mutationSystem.Initialize();
+        statusSystem.Initialize();
     }
 
     // we must take care to add certain functions to the MoveRange

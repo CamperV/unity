@@ -80,6 +80,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statuses: []
+  active: []
+  values: 
 --- !u!114 &8595874811363893480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,7 +107,7 @@ MonoBehaviour:
     VITALITY: 12
     STRENGTH: 1
     DEXTERITY: 1
-    REFLEX: 1
+    REFLEX: 0
     DEFENSE: 0
     MOVE: 3
   variance: 0

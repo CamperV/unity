@@ -9,6 +9,7 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
     public new string name;
 	public string description;
 	public Sprite sprite;
+	public bool stackable;
 
     // IMutatorComponent
 	public string displayName {
