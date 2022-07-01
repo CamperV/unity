@@ -17,21 +17,34 @@ public class StatusSystem : MonoBehaviour
     public event StatusEvent RemoveStatusEvent;
 
     // assingable in Inspector for prefabs, but can be modified
-    [SerializeField] private List<so_Status> statuses;
-    public IEnumerable<so_Status> Statuses => statuses.ToList().AsEnumerable(); // for iterating + removing
-
+    private Dictionary<string, so_Status> statuses = new Dictionary<string, so_Status>();
     private Dictionary<string, int> expireValues = new Dictionary<string, int>();
+    //
+    public IEnumerable<so_Status> Statuses => statuses.Values.ToList().AsEnumerable(); // for iterating + removing
 
+    //
     public List<string> active;
     public List<int> values;
+
+    public List<string> legible;
     
     void Awake() {
         boundUnit = GetComponent<Unit>();
     }
 
     void Update() {
-        active = expireValues.Keys.ToList();
-        values = expireValues.Values.ToList();
+        legible = new List<string>();
+
+        foreach (KeyValuePair<string, so_Status> kvp in statuses) {
+            string statusProviderID = kvp.Key;
+            so_Status status = kvp.Value;
+
+            string add = $"{status} [{statusProviderID}]";
+            if (expireValues.ContainsKey(statusProviderID)) {
+                add += $"= {expireValues[statusProviderID]}";
+            }
+            legible.Add(add);
+        }
     }
 
     // avoid using Start() because of potential race conditions
@@ -40,28 +53,24 @@ public class StatusSystem : MonoBehaviour
         boundUnit.OnStartTurn += TickExpireAll;
         boundUnit.OnStartTurn += CountdownExpireAll;
         boundUnit.OnFinishTurn += ImmediateExpireAll;
-
-        foreach (so_Status status in statuses) {
-            AddStatus(status, addToList: false);
-        }
     }
 
-    public void AddStatus(so_Status status, bool addToList = true) {
+    public void AddStatus(so_Status status, string statusProviderID) {
         status.OnAcquire(boundUnit);
 
         // if you already have it and they can be combined:
-        if (HasStatus(status) && status.stackable) {
+        if (HasStatus(statusProviderID) && status.stackable) {
             if (status is IValueStatus) {
-                expireValues[status.name] += (status as IValueStatus).value;
+                expireValues[statusProviderID] += (status as IValueStatus).value;
             }
            
 
         // else if you don't have this Status already
         } else {
-            if (addToList) statuses.Add(status);
+            statuses[statusProviderID] = status;
 
             if (status is IValueStatus) {
-                expireValues[status.name] = (status as IValueStatus).value;
+                expireValues[statusProviderID] = (status as IValueStatus).value;
             }
         }
 
@@ -69,54 +78,68 @@ public class StatusSystem : MonoBehaviour
         AddStatusEvent?.Invoke(status);
     }
 
-    public void RemoveStatus(so_Status status) {
-        if (!HasStatus(status)) return;
-        
-        statuses.Remove(status);
+    public void RemoveStatus(string statusProviderID) {
+        if (!HasStatus(statusProviderID)) return;
+
+        so_Status status = statuses[statusProviderID];
+        statuses.Remove(statusProviderID);
         status.OnExpire(boundUnit);
 
-        if (expireValues.ContainsKey(status.name))
-            expireValues.Remove(status.name);       
+        if (expireValues.ContainsKey(statusProviderID))
+            expireValues.Remove(statusProviderID);       
         //
         RemoveStatusEvent?.Invoke(status);
     }
 
-    public bool HasStatus(so_Status _status) {
-        return statuses.Contains(_status);
+    public bool HasStatus(string statusProviderID) {
+        return statuses.ContainsKey(statusProviderID);
     }
 
     // tick like normal, but re-apply the value to the unit
     private void TickExpireAll(Unit _) {
-        foreach (TickValueStatus status in Statuses.OfType<TickValueStatus>()) {
-            int prevValue = expireValues[status.name];
-            int newValue = (int)Mathf.MoveTowards(expireValues[status.name], 0f, 1f);
-            
-            // remove the previous effects, but re-apply the new value
-            status.Apply(boundUnit, -prevValue);
-            status.Apply(boundUnit, newValue);
+        foreach (KeyValuePair<string, so_Status> kvp in new Dictionary<string, so_Status>(statuses)) {
+            string statusProviderID = kvp.Key;
+            so_Status status = kvp.Value;
 
-            expireValues[status.name] = newValue;
+            if (status is TickValueStatus) {
+                int prevValue = expireValues[statusProviderID];
+                int newValue = (int)Mathf.MoveTowards(expireValues[statusProviderID], 0f, 1f);
+                
+                // remove the previous effects, but re-apply the new value
+                (status as TickValueStatus).Apply(boundUnit, -prevValue);
+                (status as TickValueStatus).Apply(boundUnit, newValue);
 
-            if (newValue == 0) RemoveStatus(status);
+                expireValues[statusProviderID] = newValue;
+
+                if (newValue == 0) RemoveStatus(statusProviderID);
+            }
         }
     }
 
     // tick like normal, but don't re-apply the value
     private void CountdownExpireAll(Unit _) {
-        foreach (CountdownStatus status in Statuses.OfType<CountdownStatus>()) {
-            Debug.Log($"{status} has a value {expireValues[status.name]}");
-            expireValues[status.name] = (int)Mathf.MoveTowards(expireValues[status.name], 0f, 1f);
-            Debug.Log($"{status} has a new value {expireValues[status.name]}");
+        foreach (KeyValuePair<string, so_Status> kvp in new Dictionary<string, so_Status>(statuses)) {
+            string statusProviderID = kvp.Key;
+            so_Status status = kvp.Value;
 
-            if (expireValues[status.name] == 0) RemoveStatus(status);
+            if (status is CountdownStatus) {
+                expireValues[statusProviderID] = (int)Mathf.MoveTowards(expireValues[statusProviderID], 0f, 1f);
+
+                if (expireValues[statusProviderID] == 0) RemoveStatus(statusProviderID);
+            }
         }
     }
 
     // always remove the value
     private void ImmediateExpireAll(Unit _) {
-        foreach (ImmediateValueStatus status in Statuses.OfType<ImmediateValueStatus>()) {
-            status.Apply(boundUnit, -expireValues[status.name]);
-            RemoveStatus(status);
+        foreach (KeyValuePair<string, so_Status> kvp in new Dictionary<string, so_Status>(statuses)) {
+            string statusProviderID = kvp.Key;
+            so_Status status = kvp.Value;
+
+            if (status is ImmediateValueStatus) {
+                (status as ImmediateValueStatus).Apply(boundUnit, -expireValues[statusProviderID]);
+                RemoveStatus(statusProviderID);
+            }
         }        
     }
 }

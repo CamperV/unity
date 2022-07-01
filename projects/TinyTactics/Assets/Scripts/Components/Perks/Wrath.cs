@@ -20,7 +20,7 @@ public class Wrath : Perk, IToolTip
     }
 
     // if the unit has not moved since last turn, significantly buff attack
-    private void ConditionalAttack(ref MutableAttack mutAtt, Unit target) {
+    private void ConditionalAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         if ((float)boundUnit.unitStats._CURRENT_HP <= boundUnit.unitStats.VITALITY/2) {
             mutAtt.critRate += 25;
             mutAtt.AddMutator(this);

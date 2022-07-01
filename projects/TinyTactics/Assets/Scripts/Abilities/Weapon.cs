@@ -41,17 +41,17 @@ public class Weapon : ScriptableObject, ITagged
         }
 
         foreach (so_Status status in attachedStatuses) {
-            thisUnit.statusSystem.AddStatus(status);
+            thisUnit.statusSystem.AddStatus(status, so_Status.CreateStatusProviderID(thisUnit, status));
         }
     }
 
     public void Unequip(Unit thisUnit) {
         foreach (Mutation mut in attachedMutations) {
-            thisUnit.mutationSystem.AddMutation(mut);
+            thisUnit.mutationSystem.RemoveMutation(mut);
         }
 
         foreach (so_Status status in attachedStatuses) {
-            thisUnit.statusSystem.AddStatus(status);
+            thisUnit.statusSystem.RemoveStatus(so_Status.CreateStatusProviderID(thisUnit, status));
         }   
     }
 

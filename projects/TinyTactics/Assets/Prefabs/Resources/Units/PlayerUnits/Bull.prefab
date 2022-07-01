@@ -53,8 +53,8 @@ MonoBehaviour:
   _MULTISTRIKE: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 10
-    STRENGTH: 3
+    VITALITY: 100
+    STRENGTH: -1
     DEXTERITY: 1
     REFLEX: 1
     DEFENSE: 0
@@ -112,6 +112,7 @@ MonoBehaviour:
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
   <counterAttackAvailable>k__BackingField: 1
+  legible: 
   unitCommandSystem: {fileID: 0}
 --- !u!114 &7248014706188034185
 MonoBehaviour:
@@ -125,9 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e570eed7f0a32a44cac3eefe74f624ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statuses: []
   active: []
   values: 
+  legible: []
 --- !u!1001 &8953324308557356850
 PrefabInstance:
   m_ObjectHideFlags: 0

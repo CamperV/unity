@@ -24,7 +24,7 @@ public class ConditionalDexterityBuff : ConditionalBuff
         boundUnit.unitStats.UpdateDexterity(boundUnit.unitStats.DEXTERITY - modifierValue);
     }
 
-    private void DisplayBuffAttack(ref MutableAttack mutAtt, Unit target) {
+    private void DisplayBuffAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         if (ConditionValid()) mutAtt.AddMutator(this);
     }
 

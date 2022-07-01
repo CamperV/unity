@@ -21,16 +21,18 @@ public class SeeingRedMut : Mutation
     }
 
     private void ApplyMarkToAttacker(Unit thisUnit, Unit target) {
+        string statusProviderID = so_Status.CreateStatusProviderID(thisUnit, markStatus);
+
         // first, remove all other instances
         // TODO: this will need to be fixed with the Provider system. But now, just remove all
         foreach (Unit enemy in thisUnit.Enemies()) {
-            enemy.statusSystem.RemoveStatus(markStatus);
+            enemy.statusSystem.RemoveStatus(statusProviderID);
         }
-        target.statusSystem.AddStatus(markStatus);
+        target.statusSystem.AddStatus(markStatus, statusProviderID);
     }
 
-    private void BonusDamageAgainstMark(ref MutableAttack mutAtt, Unit target) {
-        if (target.statusSystem.HasStatus(markStatus)) {
+    private void BonusDamageAgainstMark(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
+        if (target.statusSystem.HasStatus(so_Status.CreateStatusProviderID(thisUnit, markStatus))) {
             mutAtt.minDamage = (int)(mutAtt.minDamage*damageMultiplier);
             mutAtt.maxDamage = (int)(mutAtt.maxDamage*damageMultiplier);
 

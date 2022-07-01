@@ -22,7 +22,7 @@ public class ChainBuff : ValuedStatus
         boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH - modifierValue);
     }
 
-    private void DisplayBuffAttack(ref MutableAttack mutAtt, Unit target) {
+    private void DisplayBuffAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         mutAtt.AddMutator(this);
     }
 

@@ -24,7 +24,7 @@ public class DefenseBuff : ValuedStatus
         boundUnit.unitStats.UpdateDefense(boundUnit.unitStats.DEFENSE - modifierValue);
     }
 
-    private void DisplayBuffAttack(ref MutableAttack mutAtt, Unit target) {
+    private void DisplayBuffAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         mutAtt.AddMutator(this);
     }
 

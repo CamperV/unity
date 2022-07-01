@@ -11,7 +11,7 @@ using TMPro;
 [RequireComponent(typeof(MutationSystem))]
 [RequireComponent(typeof(StatusSystem))]
 [RequireComponent(typeof(SpriteOutline))]
-public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagged
+public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagged, IGUID
 {
     [SerializeField] public string displayName;
 
@@ -20,7 +20,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     protected GridPosition _startingGridPosition; // this is for maintaining a revertable state when prevewing Engagements, etc
 
     // these are used so that our various components can modify the mutable Attack/Defenses that are created during an Engagement
-    public delegate void AttackGeneration(ref MutableAttack mutAtt, Unit target);
+    public delegate void AttackGeneration(Unit thisUnit, ref MutableAttack mutAtt, Unit target);
     public event AttackGeneration OnAttack;
 
     public delegate void DefenseGeneration(ref MutableDefense mutDef, Unit attacker);
@@ -88,7 +88,13 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [field: SerializeField] public bool turnActive { get; set; } = false;
     [field: SerializeField] public bool moveAvailable { get; set; } = false;
     [field: SerializeField] public bool counterAttackAvailable { get; set; } = true;
-    //
+
+    // IGUID
+    public Guid GUID { get; set; }
+    public string legible;
+
+    void Update() => legible = GUID.ToString();
+
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
     public bool MouseHovering => battleMap.CurrentMouseGridPosition == gridPosition;
@@ -117,6 +123,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
         moveRange = null;
         attackRange = null;
+
+        // IGUID
+        GUID = Guid.NewGuid();
     }
 
     protected virtual void Start() {
@@ -362,7 +371,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         StartCoroutine( spriteAnimator.SmoothCosX(32f, 0.015f, 0f, 1.0f) );
     }
 
-    public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(ref mutAtt, target);
+    public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(this, ref mutAtt, target);
     public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(ref mutDef, attacker);
     public void FireOnFinalEngagementGeneration(ref MutableEngagementStats mutES) => OnFinalEngagementGeneration?.Invoke(ref mutES);
 

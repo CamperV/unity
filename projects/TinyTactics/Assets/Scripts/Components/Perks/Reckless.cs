@@ -21,7 +21,7 @@ public class Reckless : Perk, IToolTip
         boundUnit.OnDefend -= DefensiveAdv;
     }
 
-    private void OffensiveAdv(ref MutableAttack mutAtt, Unit target) {
+    private void OffensiveAdv(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         mutAtt.AddDamage(7);
         mutAtt.AddMutator(this);
     }

@@ -20,7 +20,7 @@ public class OpenAir : Perk, IToolTip
     }
 
     // check all walls every time you create an attack
-    private void ConditionalAttack(ref MutableAttack mutAtt, Unit target) {
+    private void ConditionalAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         bool wallsAdjacent = false;
 
         foreach (TerrainTile tt in boundUnit.TerrainWithinRange(1)) {

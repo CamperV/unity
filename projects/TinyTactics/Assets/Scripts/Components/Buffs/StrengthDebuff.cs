@@ -24,7 +24,7 @@ public class StrengthDebuff : ValuedStatus
         boundUnit.unitStats.UpdateStrength(boundUnit.unitStats.STRENGTH - modifierValue);
     }
 
-    private void DisplayDebuffAttack(ref MutableAttack mutAtt, Unit target) {
+    private void DisplayDebuffAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         mutAtt.AddMutator(this);
     }
 

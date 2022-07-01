@@ -19,7 +19,7 @@ public class AntiFlier : WeaponPerk, IToolTip
         boundWeapon.boundUnit.OnAttack -= OffensiveAdv;
     }
 
-    private void OffensiveAdv(ref MutableAttack mutAtt, Unit target) {
+    private void OffensiveAdv(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         if (target.HasTagMatch("Flier")) {
             mutAtt.critRate += 100;
             //

@@ -20,7 +20,7 @@ public class BattleFever : Perk, IToolTip
     }
 
     // if the unit has not moved since last turn, significantly buff attack
-    private void ConditionalAttack(ref MutableAttack mutAtt, Unit target) {
+    private void ConditionalAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         int diff = boundUnit.unitStats.VITALITY - boundUnit.unitStats._CURRENT_HP;
         if (diff > 0) {
             mutAtt.critRate += diff;

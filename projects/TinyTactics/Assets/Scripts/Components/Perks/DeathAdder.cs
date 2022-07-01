@@ -22,7 +22,7 @@ public class DeathAdder : Perk, IToolTip
 
     // this will be changed...
     // right now we add damage for all statuses. In the future, do it for all debuffs only
-    private void ConditionalAttack(ref MutableAttack mutAtt, Unit target) {
+    private void ConditionalAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         int accum = target.statusManager.AllStatuses().Count() * 2;
 
         if (accum > 0) {
