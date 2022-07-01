@@ -22,29 +22,31 @@ public class StatusSystem : MonoBehaviour
     //
     public IEnumerable<so_Status> Statuses => statuses.Values.ToList().AsEnumerable(); // for iterating + removing
 
-    //
-    public List<string> active;
-    public List<int> values;
-
-    public List<string> legible;
+    public bool enableLegibleStatuses;
+    public List<string>  legibleStatuses;
     
     void Awake() {
         boundUnit = GetComponent<Unit>();
+
+        legibleStatuses = new List<string>();
     }
 
     void Update() {
-        legible = new List<string>();
+        if (enableLegibleStatuses) {
+            legibleStatuses.Clear();
 
-        foreach (KeyValuePair<string, so_Status> kvp in statuses) {
-            string statusProviderID = kvp.Key;
-            so_Status status = kvp.Value;
+            foreach (KeyValuePair<string, so_Status> kvp in statuses) {
+                string statusProviderID = kvp.Key;
+                so_Status status = kvp.Value;
 
-            string add = $"{status} [{statusProviderID}]";
-            if (expireValues.ContainsKey(statusProviderID)) {
-                add += $"= {expireValues[statusProviderID]}";
+                string add = $"{status} [{statusProviderID}]";
+                if (expireValues.ContainsKey(statusProviderID)) {
+                    add += $"= {expireValues[statusProviderID]}";
+                }
+                legibleStatuses.Add(add);
             }
-            legible.Add(add);
         }
+
     }
 
     // avoid using Start() because of potential race conditions
@@ -60,7 +62,7 @@ public class StatusSystem : MonoBehaviour
 
         // if you already have it and they can be combined:
         if (HasStatus(statusProviderID) && status.stackable) {
-            if (status is IValueStatus) {
+            if (status is IExpireStatus && status is IValueStatus) {
                 expireValues[statusProviderID] += (status as IValueStatus).value;
             }
            
@@ -69,7 +71,7 @@ public class StatusSystem : MonoBehaviour
         } else {
             statuses[statusProviderID] = status;
 
-            if (status is IValueStatus) {
+            if (status is IExpireStatus && status is IValueStatus) {
                 expireValues[statusProviderID] = (status as IValueStatus).value;
             }
         }
@@ -124,7 +126,6 @@ public class StatusSystem : MonoBehaviour
 
             if (status is CountdownStatus) {
                 expireValues[statusProviderID] = (int)Mathf.MoveTowards(expireValues[statusProviderID], 0f, 1f);
-
                 if (expireValues[statusProviderID] == 0) RemoveStatus(statusProviderID);
             }
         }
@@ -136,9 +137,21 @@ public class StatusSystem : MonoBehaviour
             string statusProviderID = kvp.Key;
             so_Status status = kvp.Value;
 
-            if (status is ImmediateValueStatus) {
-                (status as ImmediateValueStatus).Apply(boundUnit, -expireValues[statusProviderID]);
+            if (status is IImmediateStatus) {
                 RemoveStatus(statusProviderID);
+            }
+        }        
+    }
+
+    public void RevertMovementStatuses() {
+        foreach (KeyValuePair<string, so_Status> kvp in new Dictionary<string, so_Status>(statuses)) {
+            string statusProviderID = kvp.Key;
+            so_Status status = kvp.Value;
+
+            if (status is IImmediateStatus) {
+                if ((status as IImmediateStatus).revertWithMovement) {
+                    RemoveStatus(statusProviderID);
+                }
             }
         }        
     }

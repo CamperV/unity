@@ -13,6 +13,8 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
     public new string name;
 	public string description;
 	public Sprite sprite;
+
+	// other valuable data
 	public bool stackable;
 
     // IMutatorComponent

@@ -9,12 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d88145fee3d77744b827de8ec1d8dd0f, type: 3}
-  m_Name: ChargeMut2
+  m_Script: {fileID: 11500000, guid: 48f9461175cbf1144a73d35d3472a96f, type: 3}
+  m_Name: ChargeBuff
   m_EditorClassIdentifier: 
-  name: Charge (UC)
-  description: Gain bonus damage per space moved this turn.
+  name: Charge Buff
+  description: Buff received from ChargeUC
   sprite: {fileID: 21300000, guid: 0a1d2c6e23d933c4aa296488cd67017d, type: 3}
-  belongsToArchetype: {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
-  isSignature: 1
-  unitCommand: {fileID: 11400000, guid: 1e3df0eb082e8be4cb696075e2e1f8d8, type: 2}
+  stackable: 1
+  registerTo: 0
+  modifyStat: 0
+  <value>k__BackingField: 1
+  <revertWithMovement>k__BackingField: 1

@@ -22,4 +22,4 @@ MonoBehaviour:
   cooldown: 1
   remainingUses: 0
   tileVisuals: {fileID: 11400000, guid: 5da2c718e955057428b4579ec4c47404, type: 2}
-  damageBonus: 1
+  chargeBuff: {fileID: 11400000, guid: b38dc0bd9709d0449a12b61e8fed9830, type: 2}

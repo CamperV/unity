@@ -92,7 +92,7 @@ public class MoveUC : UnitCommand
     // modifies gridPosition & updates threat range
     public override void Revert(PlayerUnit thisUnit) {
         thisUnit.ForfeitReservation();
-        thisUnit.statusManager.RemoveAllMovementBuffs();
+        thisUnit.statusSystem.RevertMovementStatuses();
         thisUnit.RefreshInfo();
     }
 

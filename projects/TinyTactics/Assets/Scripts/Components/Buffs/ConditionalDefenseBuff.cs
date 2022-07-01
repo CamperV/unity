@@ -28,7 +28,7 @@ public class ConditionalDefenseBuff : ConditionalBuff
         if (ConditionValid()) mutAtt.AddMutator(this);
     }
 
-    private void DisplayBuffDefense(ref MutableDefense mutDef, Unit target) {
+    private void DisplayBuffDefense(Unit thisUnit, ref MutableDefense mutDef, Unit target) {
         if (ConditionValid()) mutDef.AddMutator(this);
     }
 }

@@ -38,7 +38,7 @@ public class RoughTerrainEffect : TerrainEffect, IToolTip
         if (!targetUnit.tags.Contains("Flier")) targetUnit.OnDefend -= GrantAvoid;
     }
 
-    private void GrantAvoid(ref MutableDefense mutDef, Unit target) {
+    private void GrantAvoid(Unit thisUnit, ref MutableDefense mutDef, Unit target) {
         // mutDef.avoidRate += 15;
         //
         displayName = "Rough Terrain Bonus (does nothing)";

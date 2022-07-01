@@ -26,7 +26,7 @@ public class ChainBuff : ValuedStatus
         mutAtt.AddMutator(this);
     }
 
-    private void DisplayBuffDefense(ref MutableDefense mutDef, Unit target) {
+    private void DisplayBuffDefense(Unit thisUnit, ref MutableDefense mutDef, Unit target) {
         mutDef.AddMutator(this);
     }
 }

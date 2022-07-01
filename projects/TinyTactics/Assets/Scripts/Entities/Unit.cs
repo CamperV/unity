@@ -23,7 +23,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public delegate void AttackGeneration(Unit thisUnit, ref MutableAttack mutAtt, Unit target);
     public event AttackGeneration OnAttack;
 
-    public delegate void DefenseGeneration(ref MutableDefense mutDef, Unit attacker);
+    public delegate void DefenseGeneration(Unit thisUnit, ref MutableDefense mutDef, Unit attacker);
     public event DefenseGeneration OnDefend;
 
     public delegate void FinalEngagementGeneration(ref MutableEngagementStats mutES);
@@ -372,7 +372,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     }
 
     public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(this, ref mutAtt, target);
-    public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(ref mutDef, attacker);
+    public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(this, ref mutDef, attacker);
     public void FireOnFinalEngagementGeneration(ref MutableEngagementStats mutES) => OnFinalEngagementGeneration?.Invoke(ref mutES);
 
     public void FireOnAvoidEvent() {

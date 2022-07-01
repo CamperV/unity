@@ -28,7 +28,7 @@ public class ReflexDebuff : ValuedStatus
         mutAtt.AddMutator(this);
     }
 
-    private void DisplayDebuffDefense(ref MutableDefense mutDef, Unit target) {
+    private void DisplayDebuffDefense(Unit thisUnit, ref MutableDefense mutDef, Unit target) {
         mutDef.AddMutator(this);
     }
 }

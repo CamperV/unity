@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Statuses/ImmediateValueStatus")]
-public class ImmediateValueStatus : so_Status, IValueStatus
+public class ImmediateValueStatus : so_Status, IValueStatus, IImmediateStatus
 {
 	// assign in inspector
 	public UnitStats.UpdateableStat targetStat;
@@ -12,10 +12,13 @@ public class ImmediateValueStatus : so_Status, IValueStatus
 	// IValueStatus
 	[field: SerializeField] public int value { get; set; }
 
-    public override void OnAcquire(Unit thisUnit){}
-    public override void OnExpire(Unit thisUnit){}
+    // IImmediateStatus
+	[field: SerializeField] public bool revertWithMovement { get; set; }
 
-	public void Apply(Unit thisUnit, int _value) {
-		thisUnit.unitStats.ModifyStat(targetStat, _value);
+    public override void OnAcquire(Unit thisUnit) {
+		thisUnit.unitStats.ModifyStat(targetStat, value);
+	}
+    public override void OnExpire(Unit thisUnit){
+		thisUnit.unitStats.ModifyStat(targetStat, -value);
 	}
 }

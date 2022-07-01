@@ -5,7 +5,7 @@ using UnityEngine;
 
 // these kinds of statuses exist for a certain amount of time, and then expire
 [CreateAssetMenu(menuName = "Statuses/CountdownStatus")]
-public class CountdownStatus : so_Status, IValueStatus
+public class CountdownStatus : so_Status, IValueStatus, IExpireStatus
 {
 	// assign in inspector
     // IValueStatus

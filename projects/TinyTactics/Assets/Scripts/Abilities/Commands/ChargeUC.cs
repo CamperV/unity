@@ -7,7 +7,7 @@ using Extensions;
 [CreateAssetMenu (menuName = "UnitCommands/ChargeUC")]
 public class ChargeUC : MoveUC
 {
-    public int damageBonus;
+    public ImmediateEngagementStatus chargeBuff;
 
     public override ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract) {
         if (interactAt == thisUnit.gridPosition)
@@ -26,10 +26,8 @@ public class ChargeUC : MoveUC
             thisUnit.FireOnMoveEvent(MoveUC.pathToMouseOver);
 
             // from ChargeMut
-            for (int i = 0; i < MoveUC.pathToMouseOver.Count-1; i++) {
-                thisUnit.statusManager.AddValuedStatus<OneTimeDamageBuff>(name, damageBonus);
-            }
-            thisUnit.statusManager.movementBuffProviders.Add(name);
+            ImmediateEngagementStatus clonedChargeBuff = ImmediateEngagementStatus.CloneWithValue(chargeBuff, MoveUC.pathToMouseOver.Count-1);
+            thisUnit.statusSystem.AddStatus(clonedChargeBuff, so_Status.CreateStatusProviderID(thisUnit, clonedChargeBuff));
             // from ChargeMut
 
             // Complete -> "Change to InProgress state after returning"
