@@ -27,6 +27,16 @@ public struct GridPosition : IEquatable<GridPosition>
         return $"[{x}, {y}]";
     }
 
+    // public int CompareTo(object obj) {
+    //     if (!(obj is GridPosition)) {
+    //         throw new ArgumentException($"Cannot compare GridPosition to {typeof(obj)}");
+
+    //     } else {
+    //         GridPosition other = obj as GridPosition;
+
+    //     }
+    // }
+
     /////////////////////////////////
     // accessible useful functions //
     /////////////////////////////////

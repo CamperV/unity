@@ -280,6 +280,7 @@ GameObject:
   - component: {fileID: 4765552332064880916}
   - component: {fileID: 9123659800379236887}
   - component: {fileID: 2888374584072153471}
+  - component: {fileID: 5330855408282290366}
   m_Layer: 5
   m_Name: BasicAttackInspection
   m_TagString: Untagged
@@ -353,6 +354,18 @@ MonoBehaviour:
   xDamping: 0
   lockOntoX: 1
   randomPhaseSalt: 0
+--- !u!225 &5330855408282290366
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4765552332064880913}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &4782608706348032232
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,7 +861,7 @@ GameObject:
   - component: {fileID: 8348581641646369417}
   - component: {fileID: 7483717335974814928}
   - component: {fileID: 5707515692725491292}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DamageContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

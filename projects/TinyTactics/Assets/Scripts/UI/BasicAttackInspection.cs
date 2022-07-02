@@ -13,14 +13,14 @@ public class BasicAttackInspection : MonoBehaviour
 
 	public void SetUnitInfo(Unit unit) {
 		// stats first
-		Pair<int, int> dmgRange = unit.equippedWeapon.DamageRange(unit);
+		Pair<int, int> dmgRange = unit.EquippedWeapon.DamageRange(unit);
 		if (dmgRange.First == dmgRange.Second) {
 			atkValue.SetText($"{dmgRange.First}");
 		} else {
 			atkValue.SetText($"{dmgRange.First} - {dmgRange.Second}");
 		}
 
-		int _critValue = unit.equippedWeapon.CRITICAL;
+		int _critValue = unit.EquippedWeapon.CRITICAL;
 		if (_critValue > 0) {
 			critContainer.SetActive(true);
 			critValue.SetText($"{_critValue}");

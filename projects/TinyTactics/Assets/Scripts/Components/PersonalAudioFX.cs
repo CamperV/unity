@@ -59,6 +59,6 @@ public class PersonalAudioFX : MonoBehaviour
 
     // from the weapon itself
     public void PlayWeaponAttackFX() {
-        audioSource.PlayOneShot(boundUnit.equippedWeapon.audioFXBundle.RandomClip(), 1f);
+        audioSource.PlayOneShot(boundUnit.EquippedWeapon.audioFXBundle.RandomClip(), 1f);
     }
 }

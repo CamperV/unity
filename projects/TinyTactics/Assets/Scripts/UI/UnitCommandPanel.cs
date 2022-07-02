@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -7,10 +8,21 @@ using Extensions;
 
 public class UnitCommandPanel : MonoBehaviour
 {
+	[SerializeField] private PlayerInputController inputController;
+	private Dictionary<int, Action> SlotActions;
+	//
 	[SerializeField] private GameObject unitCommandContainer;
 	[SerializeField] private UnitCommandVisual unitCommandVisualPrefab;
 
 	private Dictionary<UnitCommand, UnitCommandVisual> mapping = new Dictionary<UnitCommand, UnitCommandVisual>();
+
+	void Awake() {
+		SlotActions = new Dictionary<int, Action>();
+	}
+
+	void Start() {
+		inputController.QuickBarSlotSelectEvent += SelectSlot;
+	}
 
 	public void SetUnitInfo(PlayerUnit unit) {
 		ClearUCs();
@@ -45,6 +57,7 @@ public class UnitCommandPanel : MonoBehaviour
 		}
 
 		mapping.Clear();
+		SlotActions.Clear();
 	}
 
 	private void AddToPanel(UnitCommand uc, UnitCommandSystem ucs) {
@@ -76,8 +89,15 @@ public class UnitCommandPanel : MonoBehaviour
 
 		// set the mapping value so that it can be stored/retrieved for visualiztion
 		mapping[uc] = ucv;
+		ucv.SetSlotNumber(mapping.Keys.Count);
+
+		// bind activation via numpad/numrow here
+		SlotActions[mapping.Keys.Count] = () => ucs.TryIssueCommand(uc);
 	}
 
+	private void SelectSlot(int slot) {
+		SlotActions[slot].Invoke();
+	}
 
 	private void ActivateTrigger(UnitCommand uc) {
 		mapping[uc].OnActivate();

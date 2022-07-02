@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 160223693219647424}
   - component: {fileID: 3049187773673169181}
   - component: {fileID: 2103595452364973671}
+  - component: {fileID: -2537640162373992601}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -265,10 +266,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e570eed7f0a32a44cac3eefe74f624ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: []
-  values: 
   enableLegibleStatuses: 1
   legibleStatuses: []
+--- !u!114 &-2537640162373992601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6096969835717758623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4748db0b924214ca8c22ff488b6bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapons: []
 --- !u!1 &6807299549594369295
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,12 +20,12 @@ public class BonyResistance : Perk, IToolTip
     }
 
     private void ConditionalDefense(Unit thisUnit, ref MutableDefense mutDef, Unit target) {
-        if (target.equippedWeapon.HasTagMatch("Slash", "Pierce")) {
+        if (target.EquippedWeapon.HasTagMatch("Slash", "Pierce")) {
             mutDef.damageReduction += 2;
             //
             mutDef.AddMutator(this);
         }
-        if (target.equippedWeapon.HasTagMatch("Strike")) {
+        if (target.EquippedWeapon.HasTagMatch("Strike")) {
             mutDef.damageReduction -= 4;
             //
             mutDef.AddMutator(this);

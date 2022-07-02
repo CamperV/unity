@@ -41,16 +41,16 @@ public class Engagement
     public static bool CounterAttackPossible(Unit agg, Unit def) {
         TargetRange defenderTargetRange = TargetRange.Standing(
             def.gridPosition,
-            def.equippedWeapon.MIN_RANGE,
-            def.equippedWeapon.MAX_RANGE
+            def.EquippedWeapon.MIN_RANGE,
+            def.EquippedWeapon.MAX_RANGE
         );
         return defenderTargetRange.ValidTarget(agg.gridPosition) && def.counterAttackAvailable;
     }
     public static bool CounterAttackPossible(Unit agg, Unit def, GridPosition fromPosition) {
         TargetRange defenderTargetRange = TargetRange.Standing(
             def.gridPosition,
-            def.equippedWeapon.MIN_RANGE,
-            def.equippedWeapon.MAX_RANGE
+            def.EquippedWeapon.MIN_RANGE,
+            def.EquippedWeapon.MAX_RANGE
         );
         return defenderTargetRange.ValidTarget(fromPosition) && def.counterAttackAvailable;
     }
@@ -107,12 +107,12 @@ public class Engagement
     }
 
     private Attack GenerateAttack(Unit generator, Unit defender) {
-        Pair<int, int> dmgRange = generator.equippedWeapon.DamageRange(generator);
+        Pair<int, int> dmgRange = generator.EquippedWeapon.DamageRange(generator);
 
         MutableAttack mutableAttack = new MutableAttack(
             dmgRange.First,
             dmgRange.Second,
-            generator.equippedWeapon.CRITICAL,
+            generator.EquippedWeapon.CRITICAL,
             generator.unitStats.DEXTERITY,
             defender.gridPosition.ManhattanDistance(generator.gridPosition) == 1
         );

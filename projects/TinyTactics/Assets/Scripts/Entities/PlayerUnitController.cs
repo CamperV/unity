@@ -142,6 +142,74 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void RefreshUnits() => activeUnits.ForEach(it => it.RefreshInfo());
 
+    IEnumerator<PlayerUnit> CachedUnitEnumerator;
+    //
+    private IEnumerator<PlayerUnit> GenerateCachedUnitEnumerator(PlayerUnit startingUnit) {
+        bool seenStartingUnit = startingUnit == null;
+
+        foreach (PlayerUnit unit in activeUnits.OrderBy(u => u.gridPosition.y).ThenBy(u => u.gridPosition.x)) {
+            // trigger once only
+            // if (firstSeen == null) firstSeen = unit;
+            
+            if (seenStartingUnit == false) {
+                seenStartingUnit = unit == startingUnit;
+            } else {
+                yield return unit;
+            }
+        }
+    }
+
+    public PlayerUnit GetNextUnit(PlayerUnit currentUnit) {
+        // overwrite previous enumerators
+        if (CachedUnitEnumerator == null) CachedUnitEnumerator = GenerateCachedUnitEnumerator(currentUnit);
+
+        // get next one
+        bool success = CachedUnitEnumerator.MoveNext();
+        if (!success) {
+            CachedUnitEnumerator = GenerateCachedUnitEnumerator(currentUnit);
+            CachedUnitEnumerator.MoveNext();
+        }
+
+        return CachedUnitEnumerator.Current;
+    }
+
+    public void SelectNextUnit() {
+        // don't let us interrupt
+        // or mess with our state
+        if (enemyUnitController.currentlyActing) return;
+        // enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
+
+        // we keep a rotating list of PlayerUnits in an Enumerator
+        // we also can index into this to "start" at a certain unit
+        // we do this here with "currentSelection.
+        // however, if the currentSelection is the "last" unit in this rotating Enumerator,
+        // it will fail. We fix this by keeping a "fallback" unit, which is the "first" unit
+        // "first" -> min(gridPosition.y, gridPosition.x)
+        PlayerUnit _fallbackUnit = activeUnits.OrderBy(u => u.gridPosition.y).ThenBy(u => u.gridPosition.x).ToList()[0];
+        PlayerUnit nextUnit = GetNextUnit(currentSelection) ?? _fallbackUnit;
+
+        switch (state) {
+            case ControllerFSM.Inactive:
+                break;
+
+            case ControllerFSM.NoSelection:
+                SetCurrentSelection(nextUnit);
+                currentSelection?.OnInteract(nextUnit.gridPosition, false);
+                break;
+
+            case ControllerFSM.Selection:
+                // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
+                // then REACQUIRE a currentSelection immediately afterwards
+                if (nextUnit != currentSelection) {
+                    ClearSelection();
+                    SetCurrentSelection(nextUnit);
+                }
+
+                currentSelection.OnInteract(nextUnit.gridPosition, false);
+                break;
+        }
+    }
+
     public void ContextualInteractAt(GridPosition gp, bool auxiliaryInteract) {
         switch (state) {
             /////////////////////////////////////////////////////
@@ -183,6 +251,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void SetCurrentSelection(PlayerUnit selection) {
         currentSelection = selection;
+        CachedUnitEnumerator = GenerateCachedUnitEnumerator(currentSelection);
 
         if (selection == null) {
             ChangeState(ControllerFSM.NoSelection);

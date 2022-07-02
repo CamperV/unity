@@ -116,7 +116,7 @@ public class AttackUC : UnitCommand
 
     private bool ValidTargetExistsFrom(PlayerUnit thisUnit, GridPosition fromPosition) {        
         EnemyUnitController enemyUC = thisUnit.enemyUnitController;
-        TargetRange standing = TargetRange.Standing(fromPosition, thisUnit.equippedWeapon.MIN_RANGE, thisUnit.equippedWeapon.MAX_RANGE);
+        TargetRange standing = TargetRange.Standing(fromPosition, thisUnit.EquippedWeapon.MIN_RANGE, thisUnit.EquippedWeapon.MAX_RANGE);
         return enemyUC.activeUnits.Where(enemy => standing.ValidTarget(enemy.gridPosition)).Any();
     }
 

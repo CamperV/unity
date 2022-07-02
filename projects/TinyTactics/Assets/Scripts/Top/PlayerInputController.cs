@@ -25,6 +25,10 @@ public class PlayerInputController : MonoBehaviour
 
 	public delegate void ButtonDown();
 	public event ButtonDown MainInteractButtonEvent;
+	public event ButtonDown SelectNextUnitEvent;
+
+	public delegate void QuickBarSlotSelect(int slot);
+	public event QuickBarSlotSelect QuickBarSlotSelectEvent;
 
 	public delegate void DirectionalInput(Vector2 v);
 	public event DirectionalInput DirectionalInputEvent;
@@ -59,8 +63,21 @@ public class PlayerInputController : MonoBehaviour
 		mouseInput.MouseActionMap.MouseScroll.performed += OnMouseScroll;
 
 		keyboardInput.KeyboardActionMap.MainInteractButton.performed += ctx => OnMainInteractButton();
+		keyboardInput.KeyboardActionMap.SelectNextUnit.performed += ctx => SelectNextUnitEvent?.Invoke();
+
 		keyboardInput.KeyboardActionMap.Axis.performed += ctx => OnAxisMovement();
 		keyboardInput.KeyboardActionMap.Axis.canceled += ctx => OnAxisMovement();
+
+		keyboardInput.KeyboardActionMap.QuickBar_0.performed += ctx => OnQuickBar(0);
+		keyboardInput.KeyboardActionMap.QuickBar_1.performed += ctx => OnQuickBar(1);
+		keyboardInput.KeyboardActionMap.QuickBar_2.performed += ctx => OnQuickBar(2);
+		keyboardInput.KeyboardActionMap.QuickBar_3.performed += ctx => OnQuickBar(3);
+		keyboardInput.KeyboardActionMap.QuickBar_4.performed += ctx => OnQuickBar(4);
+		keyboardInput.KeyboardActionMap.QuickBar_5.performed += ctx => OnQuickBar(5);
+		keyboardInput.KeyboardActionMap.QuickBar_6.performed += ctx => OnQuickBar(6);
+		keyboardInput.KeyboardActionMap.QuickBar_7.performed += ctx => OnQuickBar(7);
+		keyboardInput.KeyboardActionMap.QuickBar_8.performed += ctx => OnQuickBar(8);
+		keyboardInput.KeyboardActionMap.QuickBar_9.performed += ctx => OnQuickBar(9);
 	}
 
 	// always update the position event for listeners
@@ -108,5 +125,9 @@ public class PlayerInputController : MonoBehaviour
 	public void OnAxisMovement() {
 		Vector2 inputVector = keyboardInput.KeyboardActionMap.Axis.ReadValue<Vector2>();
 		DirectionalInputEvent?.Invoke(inputVector);
+	}
+
+	public void OnQuickBar(int slot) {
+		QuickBarSlotSelectEvent?.Invoke(slot);
 	}
 }

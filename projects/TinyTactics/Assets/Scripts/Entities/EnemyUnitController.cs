@@ -27,6 +27,8 @@ public class EnemyUnitController : MonoBehaviour, IStateMachine<EnemyUnitControl
     }
     [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
 
+    public bool currentlyActing => state == ControllerFSM.TakeActions;
+
     private EnemyUnit currentPreview;
     private PlayerUnitController playerUnitController;
 

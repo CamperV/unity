@@ -11,6 +11,7 @@ using TMPro;
 [RequireComponent(typeof(MutationSystem))]
 [RequireComponent(typeof(StatusSystem))]
 [RequireComponent(typeof(SpriteOutline))]
+[RequireComponent(typeof(Inventory))]
 public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagged, IGUID
 {
     [SerializeField] public string displayName;
@@ -60,6 +61,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public MutationSystem mutationSystem;
     [HideInInspector] public StatusSystem statusSystem;
     [HideInInspector] public SpriteOutline spriteOutline;
+    [HideInInspector] public Inventory inventory;
     
     // I don't love this, but it makes things much cleaner.
     [HideInInspector] public PlayerUnitController playerUnitController;
@@ -70,7 +72,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public TargetRange attackRange;
 
     // Equipment
-    public Weapon equippedWeapon;
+    public Weapon EquippedWeapon => inventory.FirstWeapon;
 
     // for effectiveness, such as "Flier"
     [field: SerializeField] public List<string> tags { get; set; }
@@ -91,9 +93,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     // IGUID
     public Guid GUID { get; set; }
-    public string legible;
-
-    void Update() => legible = GUID.ToString();
 
     protected Color originalColor = Color.magenta; // aka no texture, lol
 
@@ -110,6 +109,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         mutationSystem = GetComponent<MutationSystem>();
         statusSystem = GetComponent<StatusSystem>();
         spriteOutline = GetComponent<SpriteOutline>();
+        inventory = GetComponent<Inventory>();
 
         // debug
         debugStateLabel = GetComponent<DebugStateLabel>();
@@ -129,8 +129,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     }
 
     protected virtual void Start() {
-        equippedWeapon.Equip(this);
-
         // some init things that need to be taken care of
         unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
         unitStats.UpdateStrength(unitStats.STRENGTH);
@@ -142,6 +140,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         // call this Init here, instead of MS's own Start(), to avoid races
         mutationSystem.Initialize();
         statusSystem.Initialize();
+        inventory.Initialize();
     }
 
     // we must take care to add certain functions to the MoveRange
@@ -155,8 +154,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
         attackRange = new TargetRange(
             moveRange, 
-            (minRange < 0) ? equippedWeapon.MIN_RANGE : minRange,
-            (maxRange < 0) ? equippedWeapon.MAX_RANGE : maxRange
+            (minRange < 0) ? EquippedWeapon.MIN_RANGE : minRange,
+            (maxRange < 0) ? EquippedWeapon.MAX_RANGE : maxRange
         );
     }
 

@@ -10,7 +10,7 @@ public class ChargeUC : MoveUC
     public ImmediateEngagementStatus chargeBuff;
 
     protected override void ExecuteAdditionalOnMove(PlayerUnit thisUnit, Path<GridPosition> pathTaken) {
-        ImmediateEngagementStatus clonedChargeBuff = ImmediateEngagementStatus.CloneWithValue(chargeBuff, pathTaken.Count-1);
+        ImmediateEngagementStatus clonedChargeBuff = ImmediateEngagementStatus.CloneWithValue(chargeBuff, chargeBuff.value * (pathTaken.Count-1));
         thisUnit.statusSystem.AddStatus(clonedChargeBuff, so_Status.CreateStatusProviderID(thisUnit, clonedChargeBuff));
     }
 

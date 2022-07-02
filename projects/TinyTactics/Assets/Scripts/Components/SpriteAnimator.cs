@@ -134,6 +134,7 @@ public class SpriteAnimator : MonoBehaviour
 		for (int r = 0; r < rendererOriginalAlphas.Length; r++) {
 			rendererOriginalAlphas[r] = renderers[r].color.a;
 		}
+		float canvasOriginalAlpha = canvasGroup.alpha;
 
 		float timeRatio = 0.0f;
 		while (timeRatio < 1.0f) {
@@ -149,7 +150,7 @@ public class SpriteAnimator : MonoBehaviour
 			}
 
 			if (canvasGroup != null) {
-				canvasGroup.alpha = (1.0f - timeRatio);
+				canvasGroup.alpha = Mathf.Lerp(canvasOriginalAlpha, 0f, timeRatio);
 			}
 			yield return null;
 		}

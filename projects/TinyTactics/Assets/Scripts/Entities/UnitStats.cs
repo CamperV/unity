@@ -49,6 +49,8 @@ public class UnitStats : MonoBehaviour
         public int REFLEX;
         public int DEFENSE;
         public int MOVE;
+        //
+        public int _MULTISTRIKE;
     }
     [SerializeField] private BaseStats baseStats;
     [SerializeField] private int variance = 2;
@@ -63,7 +65,7 @@ public class UnitStats : MonoBehaviour
         MOVE      = baseStats.MOVE;
         //
         _LUCK = 0;
-        _MULTISTRIKE = 0;
+        _MULTISTRIKE = baseStats._MULTISTRIKE;
     }
 
     public void ApplyNature(CampaignUnitGenerator.NatureData natureStats) {

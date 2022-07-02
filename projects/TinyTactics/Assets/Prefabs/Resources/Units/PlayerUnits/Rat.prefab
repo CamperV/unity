@@ -27,9 +27,9 @@ MonoBehaviour:
   mutationSystem: {fileID: 0}
   statusSystem: {fileID: 0}
   spriteOutline: {fileID: 0}
+  inventory: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
-  equippedWeapon: {fileID: 11400000, guid: b2c4b680788874143803c221e1be8c12, type: 2}
   <tags>k__BackingField: []
   archetypes:
   - {fileID: 11400000, guid: bd1f6bc81392c5941a31841069a9684d, type: 2}
@@ -37,7 +37,6 @@ MonoBehaviour:
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
   <counterAttackAvailable>k__BackingField: 1
-  legible: 
   unitCommandSystem: {fileID: 0}
 --- !u!114 &2210107795537413021
 MonoBehaviour:
@@ -83,6 +82,7 @@ MonoBehaviour:
     REFLEX: 3
     DEFENSE: 0
     MOVE: 4
+    _MULTISTRIKE: 0
   variance: 0
 --- !u!114 &8623469792262427207
 MonoBehaviour:
@@ -118,6 +118,18 @@ PrefabInstance:
       propertyPath: mutations.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: 9ffd81fa3b9141c42a8cd86c92bfa5db, type: 2}
+    - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: weapons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: weapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 5a279483b63ea0e4ba4375a12006c6c4, type: 2}
+    - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: weapons.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 5ef7e834cf4f24d4d8db087554ec85cf, type: 2}
     - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: color.a
       value: 1

@@ -57,7 +57,7 @@ public class DraftUnitPanel : MonoBehaviour
     
 
         // SET WEAPON DATA
-        // weaponListing.SetWeaponInfo(unitPackage.unitPrefab.equippedWeapon);
+        // weaponListing.SetWeaponInfo(unitPackage.unitPrefab.EquippedWeapon);
     
         // SET NATURE DATA
         natureDescription.SetText(unitPackage.unitData.nature.description);

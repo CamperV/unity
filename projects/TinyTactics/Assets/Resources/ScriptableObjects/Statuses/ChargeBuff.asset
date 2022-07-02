@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: ChargeBuff
   m_EditorClassIdentifier: 
   name: Charge
-  description: Buff received from ChargeUC
   sprite: {fileID: 21300000, guid: 0a1d2c6e23d933c4aa296488cd67017d, type: 3}
   stackable: 1
   registerTo: 0
   modifyStat: 0
-  <value>k__BackingField: 1
+  <value>k__BackingField: 5
   <revertWithMovement>k__BackingField: 1

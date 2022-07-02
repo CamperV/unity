@@ -23,7 +23,7 @@ public class BrittleBones : Perk, IToolTip
 
     // receive more dmg from striking weapons
     private void ConditionalDefense(Unit thisUnit, ref MutableDefense mutDef, Unit target) {
-        if (target.equippedWeapon.HasTagMatch("Strike")) {
+        if (target.EquippedWeapon.HasTagMatch("Strike")) {
             mutDef.damageReduction -= 4;
             //
         }

@@ -256,6 +256,17 @@ namespace Extensions
             return r;
         }
 
+        // List
+        public static List<T> Roll<T>(this List<T> list, int rollAmount) {
+            int size = list.Count;
+            T[] rolled = new T[size];
+
+            for (int i = 0; i < size; i++) {
+                rolled[(i + rollAmount) % size] = list[i];
+            }
+            return new List<T>(rolled);
+        }
+
         // [] version?
         public static T[] RandomSelections<T>(this T[] l, int numSelections) {
             List<T> retVal = new List<T>();

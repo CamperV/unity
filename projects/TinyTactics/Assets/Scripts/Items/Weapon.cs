@@ -3,13 +3,9 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Weapons/Weapon")]
-public class Weapon : ScriptableObject, ITagged
+[CreateAssetMenu(menuName = "Items/Weapon")]
+public class Weapon : Item, IEquipable
 {
-    // assigned in inspector or otherwise
-    public new string name;
-    public Sprite sprite;
-
     public AudioFXBundle audioFXBundle;
 
     public int MIN_MIGHT;
@@ -24,17 +20,7 @@ public class Weapon : ScriptableObject, ITagged
     public List<Mutation> attachedMutations;
     public List<so_Status> attachedStatuses;
 
-    // ITagged
-    [field: SerializeField] public List<string> tags { get; set; }
-
-    public bool HasTagMatch(params string[] tagsToCheck) {
-        foreach (string tag in tagsToCheck) {
-            if (tags.Contains(tag))
-                return true;
-        }
-        return false;
-    }
-
+    // IEquipable
     public void Equip(Unit thisUnit) {
         foreach (Mutation mut in attachedMutations) {
             thisUnit.mutationSystem.AddMutation(mut);
@@ -45,6 +31,7 @@ public class Weapon : ScriptableObject, ITagged
         }
     }
 
+    // IEquipable
     public void Unequip(Unit thisUnit) {
         foreach (Mutation mut in attachedMutations) {
             thisUnit.mutationSystem.RemoveMutation(mut);
@@ -52,7 +39,7 @@ public class Weapon : ScriptableObject, ITagged
 
         foreach (so_Status status in attachedStatuses) {
             thisUnit.statusSystem.RemoveStatus(so_Status.CreateStatusProviderID(thisUnit, status));
-        }   
+        }
     }
 
     public Pair<int, int> DamageRange(Unit thisUnit) {
