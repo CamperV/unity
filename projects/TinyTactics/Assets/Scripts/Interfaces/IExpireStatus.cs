@@ -5,4 +5,5 @@ using UnityEngine;
 
 public interface IExpireStatus
 {
+    int expireTimer { get; set; }
 }

@@ -110,6 +110,14 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: d0ca1348b5e33dc48af4040673b0dc45, type: 3}
+    - target: {fileID: -6295692904770981026, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: mutations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6295692904770981026, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: mutations.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 9ffd81fa3b9141c42a8cd86c92bfa5db, type: 2}
     - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: color.a
       value: 1

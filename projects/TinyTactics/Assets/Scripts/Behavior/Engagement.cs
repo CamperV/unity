@@ -65,21 +65,26 @@ public class Engagement
         // ReceiveAttack contains logic for animation processing
         int numStrikes = 1 + aggressor.unitStats._MULTISTRIKE;
         while (numStrikes > 0 && defenderSurvived) {
-            defenderSurvived = Process(aggressor, defender, attack, defense, "attack");
-            yield return new WaitForSeconds(0.65f);
-            yield return new WaitUntil(aggressor.spriteAnimator.EmptyQueue);
+            defenderSurvived = Process(aggressor, defender, attack, defense);
+            yield return (numStrikes == 1) ? new WaitForSeconds(0.65f) : new WaitForSeconds(0.35f);
             //
             numStrikes--;
         }
+
+        yield return new WaitUntil(aggressor.spriteAnimator.EmptyQueue);
+        yield return new WaitUntil(defender.spriteAnimator.EmptyQueue);
         ///
 
         // if we can counterattack:
-        if (defenderSurvived && counterAttack != null) {
-            yield return new WaitUntil(defender.spriteAnimator.EmptyQueue);
+        if (defenderSurvived && counterAttack != null) {          
+            int numCounterStrikes = 1 + defender.unitStats._MULTISTRIKE;
+            while (numCounterStrikes > 0 && aggressorSurvived) {
+                aggressorSurvived = Process(defender, aggressor, counterAttack.Value, counterDefense.Value);            
+                ///
 
-            // pause again to let the animation finish            
-            aggressorSurvived = Process(defender, aggressor, counterAttack.Value, counterDefense.Value, "counter");
-            ///
+                numCounterStrikes--;
+                if (numCounterStrikes > 0) yield return new WaitForSeconds(0.35f);
+            }
         }
         
         yield return new WaitUntil(AnimationFinished);
@@ -139,14 +144,14 @@ public class Engagement
         return new EngagementStats(mutableEngagementStats);
     }
 
-    private bool Process(Unit A, Unit B, Attack _attack, Defense _defense, string attackType) {
+    private bool Process(Unit A, Unit B, Attack _attack, Defense _defense) {
         EngagementStats finalStats = GenerateEngagementStats(_attack, _defense);
         
         A.TriggerAttackAnimation(B.gridPosition);
 
         // log the Engagement
         UIManager.inst.combatLog.AddEntry(
-            $"{A.logTag}@[{A.displayName}] {attackType}s: YELLOW@[{finalStats.minDamage}]-YELLOW@[{finalStats.maxDamage}] ATK, YELLOW@[{finalStats.critRate}] CRIT ]"
+            $"{A.logTag}@[{A.displayName}]: YELLOW@[{finalStats.minDamage}]-YELLOW@[{finalStats.maxDamage}] ATK, YELLOW@[{finalStats.critRate}] CRIT ]"
         );
         
         bool isCrit = Random.Range(0, 100) <= finalStats.critRate;

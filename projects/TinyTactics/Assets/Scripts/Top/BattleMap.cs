@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.EventSystems;
 using Extensions;
 
 public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosition>
@@ -43,6 +44,9 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
         }
     }
 
+    // this is used/updated to disable clicking on the battleMap when interacting with UI elements
+    private bool disableInteraction;
+
     void Awake() {
         overlayTilemap.CompressBounds();
 		overlayTilemap.RefreshAllTiles();
@@ -59,6 +63,10 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
 
     void Start() {
         ResetHighlight();
+    }
+
+    void Update() {
+        disableInteraction = EventSystem.current.IsPointerOverGameObject();
     }
 
     public bool IsInBounds(GridPosition gp) {
@@ -85,6 +93,9 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
 
     public void CheckLeftMouseClick(Vector3 screenPosition) {
+        if (disableInteraction) return;
+        //
+
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
 
@@ -94,9 +105,13 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
     
     public void CheckRightMouseClick(Vector3 screenPosition) {
+        if (disableInteraction) return;
     }
 
     public void CheckMiddleMouseClick(Vector3 screenPosition) {
+        if (disableInteraction) return;
+        //
+
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
 
@@ -106,6 +121,9 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
 
     public void CheckMouseOver(Vector3 screenPosition) {
+        if (disableInteraction) return;
+        //
+
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
 
@@ -123,6 +141,9 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
 
     public void CheckLeftMouseHoldStart(Vector3 screenPosition) {
+        if (disableInteraction) return;
+        //
+
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
 
@@ -132,6 +153,9 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
 
     public void CheckLeftMouseHoldEnd(Vector3 screenPosition) {
+        if (disableInteraction) return;
+        //
+
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GridPosition gridPosition = WorldToGrid(worldPosition);
 

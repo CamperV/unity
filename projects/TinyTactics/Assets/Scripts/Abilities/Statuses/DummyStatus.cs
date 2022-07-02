@@ -11,6 +11,4 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Statuses/DummyStatus")]
 public class DummyStatus : so_Status
 {
-    public override void OnAcquire(Unit thisUnit) {}
-    public override void OnExpire(Unit thisUnit) {}
 }

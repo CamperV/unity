@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d88145fee3d77744b827de8ec1d8dd0f, type: 3}
-  m_Name: ChargeMut2
+  m_Name: NimbleMut
   m_EditorClassIdentifier: 
-  name: Charge (UC)
-  description: Gain bonus damage per space moved this turn.
-  sprite: {fileID: 21300000, guid: 0a1d2c6e23d933c4aa296488cd67017d, type: 3}
-  belongsToArchetype: {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
+  name: Nimble (UC)
+  description: Gain multistrike for each enemy passed through this turn.
+  sprite: {fileID: 21300000, guid: 28833eb632d77bd4c949d16fb767a02d, type: 3}
+  belongsToArchetype: {fileID: 11400000, guid: bd1f6bc81392c5941a31841069a9684d, type: 2}
   isSignature: 1
-  unitCommand: {fileID: 11400000, guid: 1e3df0eb082e8be4cb696075e2e1f8d8, type: 2}
+  unitCommand: {fileID: 11400000, guid: 2389ddd6f735f7f44924c5dc4c8dfb11, type: 2}

@@ -11,7 +11,6 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
 
     // assign this in the inspector
     public new string name;
-	public string description;
 	public Sprite sprite;
 
 	// other valuable data
@@ -23,6 +22,15 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
 		set => name = value;
 	}
 
-    public abstract void OnAcquire(Unit thisUnit);
-    public abstract void OnExpire(Unit thisUnit);
+    public virtual void OnAcquire(Unit thisUnit) {
+		thisUnit.OnAttack += DisplayModifiedAttack;
+    }
+
+    public virtual void OnExpire(Unit thisUnit) {
+		thisUnit.OnAttack -= DisplayModifiedAttack;
+	}
+
+	private void DisplayModifiedAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
+        mutAtt.AddMutator(this);
+	}
 }

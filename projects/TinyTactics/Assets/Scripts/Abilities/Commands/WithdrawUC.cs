@@ -4,10 +4,11 @@ using UnityEngine;
 using TMPro;
 using Extensions;
 
-[CreateAssetMenu (menuName = "UnitCommands/FullDefenseUC")]
-public class FullDefenseUC : UnitCommand
+[CreateAssetMenu (menuName = "UnitCommands/WithdrawUC")]
+public class WithdrawUC : UnitCommand
 {
     public AudioFXBundle audioFXBundle;
+    public CountdownStatus withdrawBuff;
 
     public override void Activate(PlayerUnit thisUnit){}
     public override void Deactivate(PlayerUnit thisUnit){}
@@ -16,16 +17,13 @@ public class FullDefenseUC : UnitCommand
     public override ExitSignal InProgressUpdate(PlayerUnit thisUnit) => ExitSignal.ForceFinishTurn;
 
     public override ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract) {
-        GainDefenseBuff(thisUnit);
-        thisUnit.counterAttackAvailable = false; // until it starts its turn again
-        return ExitSignal.ForceFinishTurn;
-    }
-
-    private void GainDefenseBuff(PlayerUnit thisUnit) {
         // queue the sound and animation for after it is done animating the Hurt animation
         thisUnit.spriteAnimator.QueueAction(
             () => thisUnit.TriggerBuffAnimation(audioFXBundle.RandomClip(), "DEF")
         );
-        thisUnit.statusManager.AddValuedStatus<OneTimeDefenseBuff>(this.name, 3);
+        thisUnit.statusSystem.AddStatus(withdrawBuff, so_Status.CreateStatusProviderID(thisUnit, withdrawBuff));
+        thisUnit.counterAttackAvailable = false; // until it starts its turn again
+
+        return ExitSignal.ForceFinishTurn;
     }
 }

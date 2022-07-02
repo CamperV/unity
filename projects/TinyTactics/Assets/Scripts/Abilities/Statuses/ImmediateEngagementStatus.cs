@@ -39,6 +39,8 @@ public class ImmediateEngagementStatus : so_Status, IValueStatus, IImmediateStat
 	}
 
     public override void OnAcquire(Unit thisUnit) {
+        base.OnAcquire(thisUnit);
+        
 		switch (registerTo) {
             case RegisterMode.OnAttack:
                 thisUnit.OnAttack += ModifyAttack;
@@ -50,7 +52,9 @@ public class ImmediateEngagementStatus : so_Status, IValueStatus, IImmediateStat
         }
 	}
 
-    public override void OnExpire(Unit thisUnit){
+    public override void OnExpire(Unit thisUnit) {
+        base.OnExpire(thisUnit);
+
         switch (registerTo) {
             case RegisterMode.OnAttack:
                 thisUnit.OnAttack -= ModifyAttack;
@@ -76,8 +80,6 @@ public class ImmediateEngagementStatus : so_Status, IValueStatus, IImmediateStat
                 mutAtt.dexterity += value;
                 break;
         }
-
-        mutAtt.AddMutator(this);
     }
 
     private void ModifyDefend(Unit thisUnit, ref MutableDefense mutDef, Unit attacker) {
@@ -94,7 +96,5 @@ public class ImmediateEngagementStatus : so_Status, IValueStatus, IImmediateStat
                 mutDef.reflex += value;
                 break;
         }
-
-        mutDef.AddMutator(this);
     }
 }

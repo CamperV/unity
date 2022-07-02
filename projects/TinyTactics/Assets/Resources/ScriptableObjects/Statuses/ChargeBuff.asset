@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48f9461175cbf1144a73d35d3472a96f, type: 3}
   m_Name: ChargeBuff
   m_EditorClassIdentifier: 
-  name: Charge Buff
+  name: Charge
   description: Buff received from ChargeUC
   sprite: {fileID: 21300000, guid: 0a1d2c6e23d933c4aa296488cd67017d, type: 3}
   stackable: 1

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e927ac0ac6442f34b9c47a20dee2df22, type: 3}
   m_Name: AltAttackRange
   m_EditorClassIdentifier: 
-  color: {r: 0.75, g: 0.4509804, b: 0.14901961, a: 0.7490196}
-  altColor: {r: 0.75, g: 0.75, b: 0.15, a: 0.7490196}
+  color: {r: 0.7490196, g: 0.2670442, b: 0.14901958, a: 0.7490196}
+  altColor: {r: 0, g: 0, b: 0, a: 0.7490196}
   tile: {fileID: 11400000, guid: bb57e25b084f74d4eb75cea95b585996, type: 2}

@@ -9,14 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c85a3fc1fd5200c4e8e2e195e2dd9f82, type: 3}
-  m_Name: FullDefenseUC
+  m_Script: {fileID: 11500000, guid: c1a548892d5b6774a835d7059775f2bf, type: 3}
+  m_Name: WithdrawUC
   m_EditorClassIdentifier: 
-  name: Full Defense
+  name: Withdraw
   sprite: {fileID: 21300000, guid: 617a66654b4047445828865e1b2b1a59, type: 3}
   executionType: 1
   commandCategory: 2
   requiresConfirm: 0
   revertable: 0
+  limitType: 0
   cooldown: 1
+  remainingUses: 0
   audioFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
+  withdrawBuff: {fileID: 11400000, guid: ca07cfc7fa870f549aad13feca7fc7eb, type: 2}

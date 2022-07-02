@@ -7,10 +7,22 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Statuses/CountdownStatus")]
 public class CountdownStatus : so_Status, IValueStatus, IExpireStatus
 {
-	// assign in inspector
     // IValueStatus
 	[field: SerializeField] public int value { get; set; }
 
-    public override void OnAcquire(Unit thisUnit){}
-    public override void OnExpire(Unit thisUnit){}
+	// IExpireStatus
+	[field: SerializeField] public int expireTimer { get; set; }
+
+	// assign in inspector
+	public UnitStats.UpdateableStat targetStat;
+
+    public override void OnAcquire(Unit thisUnit) {
+		base.OnAcquire(thisUnit);
+		thisUnit.unitStats.ModifyStat(targetStat, value);
+	}
+	
+    public override void OnExpire(Unit thisUnit){
+		base.OnExpire(thisUnit);
+		thisUnit.unitStats.ModifyStat(targetStat, -value);
+	}
 }

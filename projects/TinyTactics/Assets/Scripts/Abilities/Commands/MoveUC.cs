@@ -14,6 +14,8 @@ public class MoveUC : UnitCommand
     [SerializeField] protected TileVisuals tileVisuals;
 
     public override void Activate(PlayerUnit thisUnit) {
+        thisUnit.UpdateThreatRange();
+
         // re-calc move range, and display it
         Utils.DelegateLateFrameTo(thisUnit,  () => DisplayMoveRange(thisUnit));
         UIManager.inst.EnableUnitDetail(thisUnit);
@@ -42,6 +44,9 @@ public class MoveUC : UnitCommand
             );
             thisUnit.ReservePosition(interactAt);
             thisUnit.FireOnMoveEvent(pathToMouseOver);
+
+            // for other inheriting MoveUCs, like Charge or Nimble
+            ExecuteAdditionalOnMove(thisUnit, pathToMouseOver);
 
             // Complete -> "Change to InProgress state after returning"
             return ExitSignal.NextState;
@@ -96,8 +101,9 @@ public class MoveUC : UnitCommand
         thisUnit.RefreshInfo();
     }
 
+    protected virtual void ExecuteAdditionalOnMove(PlayerUnit thisUnit, Path<GridPosition> pathTaken) {}
+
     protected virtual void DisplayMoveRange(PlayerUnit thisUnit) {   
-        if (thisUnit.moveRange == null) thisUnit.UpdateThreatRange();
         thisUnit.moveRange.Display(thisUnit.battleMap, tileVisuals.color, tileVisuals.tile);
 
     	foreach (GridPosition gp in ThreatenedRange(thisUnit)) {
