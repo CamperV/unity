@@ -61,7 +61,6 @@ public sealed class EventManager : MonoBehaviour
 
         // battlemap events
         battleMap.InteractEvent += gp => playerUnitController.ContextualInteractAt(gp, false);
-        battleMap.InteractEvent += enemyUnitController.ContextualInteractAt;
 
         // battleMap.AuxiliaryInteractEvent_0 += // hold down
         // battleMap.AuxiliaryInteractEvent_1 += // release

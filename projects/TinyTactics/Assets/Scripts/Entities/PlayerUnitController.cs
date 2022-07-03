@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitController.ControllerFSM>
+public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
 {
     // publicly acccessible events
     public delegate void UnitSelection(PlayerUnit selection);
@@ -23,18 +23,15 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
     public List<PlayerUnit> disabledUnits => _activeUnits.Where(en => !en.gameObject.activeInHierarchy).ToList();
 
-    public enum ControllerFSM {
-        NoSelection,
-        Selection
-    }
-    [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.NoSelection;
-
     private PlayerUnit currentSelection;
     private PlayerUnit mostRecentlySelectedUnit;
+
+    private UnitMap unitMap;
     private EnemyUnitController enemyUnitController;
 
     void Awake() {
         Battle _topBattleRef = GetComponentInParent<Battle>();
+        unitMap = _topBattleRef.GetComponentInChildren<UnitMap>();
         enemyUnitController = _topBattleRef.GetComponentInChildren<EnemyUnitController>();
     }
 
@@ -55,60 +52,17 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
                 Destroy(sm.gameObject);
             }
         }
-
-        InitialState();
     }
 
     void Update() {
-        switch (state) {
-            case ControllerFSM.NoSelection:
-                break;
-
-            ////////////////////////////////////////////////////////////////////////
-            // as soon as your currentSelection finishes their turn, change state //
-            ////////////////////////////////////////////////////////////////////////
-            case ControllerFSM.Selection:
-                if (currentSelection.turnActive == false) ClearSelection();
-                break;
-        }
+        if (currentSelection != null && currentSelection.turnActive == false) {
+            ClearSelection();
+            Debug.Log($"Fired, {selectionLocked}");
+        }   
     }
 
     public void Lock() => selectionLocked = true;
     public void Unlock() => selectionLocked = false;
-
-    public void ChangeState(ControllerFSM newState) {
-        ExitState(state);
-        EnterState(newState);
-    }
-
-    public void InitialState() {
-        ExitState(state);
-        EnterState(ControllerFSM.NoSelection);
-    }
-
-    public void ExitState(ControllerFSM exitingState) {
-        switch (exitingState) {
-            case ControllerFSM.NoSelection:
-                break;
-
-            case ControllerFSM.Selection:
-                // re-enable EnemyUnitController
-                // enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
-                break;
-        }
-    }
-
-    public void EnterState(ControllerFSM enteringState) {
-        state = enteringState;
-    
-        switch (state) {
-            case ControllerFSM.NoSelection:
-                break;
-
-            case ControllerFSM.Selection:
-                break;
-        }
-    }
 
     public void RegisterUnit(PlayerUnit unit) => _activeUnits.Add(unit);
 
@@ -118,8 +72,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         // CameraManager.FocusActiveCameraOn( VectorUtils.Centroid(unitPositions) );
 
         disabled = false;
-        ChangeState(ControllerFSM.NoSelection);
-
         activeUnits.ForEach(it => it.StartTurn());
     }
 
@@ -128,7 +80,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     // and because it's possible the other team could add statuses that 
     public void EndPhase() {
         disabled = true;
-        ChangeState(ControllerFSM.NoSelection);
 
         // if you end the phase, and you never selected anyone, choose the first just so the camera refocuses
         if (mostRecentlySelectedUnit == null) mostRecentlySelectedUnit = activeUnits[0];
@@ -143,8 +94,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
         foreach (PlayerUnit unit in activeUnits.OrderBy(u => u.gridPosition.y).ThenBy(u => u.gridPosition.x)) {
             // trigger once only
-            // if (firstSeen == null) firstSeen = unit;
-            
             if (seenStartingUnit == false) {
                 seenStartingUnit = unit == startingUnit;
             } else {
@@ -170,9 +119,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public void SelectNextUnit() {
         // don't let us interrupt
         if (disabled) return;
+        enemyUnitController.ClearPreview();
         
-        // enemyUnitController.ClearPreview();
-
         // we keep a rotating list of PlayerUnits in an Enumerator
         // we also can index into this to "start" at a certain unit
         // we do this here with "currentSelection.
@@ -182,86 +130,59 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         PlayerUnit _fallbackUnit = activeUnits.OrderBy(u => u.gridPosition.y).ThenBy(u => u.gridPosition.x).ToList()[0];
         PlayerUnit nextUnit = GetNextUnit(currentSelection) ?? _fallbackUnit;
 
-        switch (state) {
-            case ControllerFSM.NoSelection:
-                SetCurrentSelection(nextUnit);
-                currentSelection?.OnInteract(nextUnit.gridPosition, false);
-                break;
-
-            case ControllerFSM.Selection:
-                // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
-                // then REACQUIRE a currentSelection immediately afterwards
-                if (nextUnit != currentSelection) {
-                    ClearSelection();
-                    SetCurrentSelection(nextUnit);
-                }
-
-                currentSelection.OnInteract(nextUnit.gridPosition, false);
-                break;
+        // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
+        // then REACQUIRE a currentSelection immediately afterwards
+        if (nextUnit != currentSelection) {
+            ClearSelection();
+            SetCurrentSelection(nextUnit);
         }
+        currentSelection?.OnInteract(nextUnit.gridPosition, false);
     }
 
     public void ContextualInteractAt(GridPosition gp, bool auxiliaryInteract) {
-        switch (state) {
-            /////////////////////////////////////////////////////////////////////////////////
-            // When the player interacts with the grid while there is no active selection, //
-            // we attempt to make a selection.                                             //
-            /////////////////////////////////////////////////////////////////////////////////
-            case ControllerFSM.NoSelection:
-                SetCurrentSelection( MatchingUnitAt(gp) );
-                currentSelection?.OnInteract(gp, auxiliaryInteract);
-                break;
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // There are two things that can happen here:                                                             //
+        //      1) If you click on a different unit, de-select current and select the new                         //
+        //      2) If you don't, currentSelection will polymorphically decide what it wants to do (via its state) //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Unit unit = unitMap.UnitAt(gp);
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // There are two things that can happen here:                                                             //
-            //      1) If you click on a different unit, de-select current and select the new                         //
-            //      2) If you don't, currentSelection will polymorphically decide what it wants to do (via its state) //
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            case ControllerFSM.Selection:
-                if (!selectionLocked) {
-                    PlayerUnit unit = MatchingUnitAt(gp);
+        if (unit != null && unit != currentSelection && !selectionLocked) {
+            ClearSelection();
+            enemyUnitController.ClearPreview();
 
-                    // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
-                    // then REACQUIRE a currentSelection immediately afterwards
-                    if (unit != null && unit != currentSelection) {
-                        ClearSelection();
-                        SetCurrentSelection(unit);
-                    }
-                }
+            if (unit is PlayerUnit) {
+                SetCurrentSelection((unit as PlayerUnit));
 
-                currentSelection.OnInteract(gp, auxiliaryInteract);
-                break;
+            } else if (unit is EnemyUnit) {
+                enemyUnitController.Preview((unit as EnemyUnit));
+            }
         }
+
+        currentSelection?.OnInteract(gp, auxiliaryInteract);
     }
 
     public void SetCurrentSelection(PlayerUnit selection) {
         currentSelection = selection;
-        CachedUnitEnumerator = GenerateCachedUnitEnumerator(currentSelection);
 
         if (selection == null) {
-            ChangeState(ControllerFSM.NoSelection);
+            //
+
         } else {
             mostRecentlySelectedUnit = selection;
+            CachedUnitEnumerator = GenerateCachedUnitEnumerator(mostRecentlySelectedUnit);
+            //
             ClearPlayerUnitControllerSelection?.Invoke(mostRecentlySelectedUnit);
-
-            ChangeState(ControllerFSM.Selection);
         }
 
         NewPlayerUnitControllerSelection?.Invoke(selection);
     }
 
     public void ClearSelection() {
-        if (state == ControllerFSM.Selection) {
-            if (currentSelection.turnActive) currentSelection.RevertTurn();
-            SetCurrentSelection(null);
+        if (currentSelection != null && currentSelection.turnActive) {
+            currentSelection.RevertTurn();
         }
-    }
-
-    public PlayerUnit MatchingUnitAt(GridPosition gp) {
-        foreach (PlayerUnit en in activeUnits) {
-            if (en.gridPosition == gp) return en;
-        }
-        return null;
+        SetCurrentSelection(null);
     }
 
     public void CheckEndPhase() {

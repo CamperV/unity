@@ -18,7 +18,6 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     // IStateMachine<>
     public enum EnemyUnitFSM {
         Idle,
-        Preview,
         Moving,
         Attacking
     }
@@ -34,10 +33,6 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     protected override void Start() {
         base.Start();
         InitialState();
-    }
-
-    void Update() {
-        ContextualNoInteract();
     }
 
     // IStateMachine<>
@@ -62,21 +57,7 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         debugStateLabel.SetText(state.ToString());
 
         switch (enteringState) {
-            // when you're entering Idle, it's from being selected
-            // therefore, reset your controller's selections
             case EnemyUnitFSM.Idle:
-                break;
-
-            case EnemyUnitFSM.Preview:
-                UpdateThreatRange();
-                StartCoroutine( Utils.LateFrame(DisplayThreatRange) );
-                //
-                UIManager.inst.EnableUnitDetail(this);
-
-                //
-                personalAudioFX.PlayInteractFX();
-                break;
-
             case EnemyUnitFSM.Moving:
             case EnemyUnitFSM.Attacking:
                 break;
@@ -89,13 +70,6 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             case EnemyUnitFSM.Idle:
                 break;
 
-            case EnemyUnitFSM.Preview:
-                battleMap.ResetHighlightTiles();
-                battleMap.ResetHighlight();
-                //
-                UIManager.inst.DisableUnitDetail();
-                break;
-
             case EnemyUnitFSM.Moving:
                 unitMap.MoveUnit(this, _reservedGridPosition);
                 break;
@@ -106,30 +80,7 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         state = EnemyUnitFSM.Idle;
     }
 
-    public void ContextualInteractAt(GridPosition gp) {
-        switch (state) {
-
-            //////////////////////////////////////////////
-            // ie Active the unit, go to select preview //
-            //////////////////////////////////////////////
-            case EnemyUnitFSM.Idle:
-                if (gp == gridPosition) ChangeState(EnemyUnitFSM.Preview);
-                break;
-
-            ////////////////////////////////////////////////
-            // Any other click will send you back to idle //
-            ////////////////////////////////////////////////
-            case EnemyUnitFSM.Preview:
-                if (gp != gridPosition) ChangeState(EnemyUnitFSM.Idle);
-                break;
-
-            case EnemyUnitFSM.Moving:
-            case EnemyUnitFSM.Attacking:
-                break;
-        }
-    }
-
-    public void ContextualNoInteract() {
+    void Update() {
         switch (state) {
             case EnemyUnitFSM.Idle:
                 break;
@@ -291,7 +242,7 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         ChangeState(EnemyUnitFSM.Idle);
     }
 
-    private void DisplayThreatRange() {
+    public void DisplayThreatRange() {
         if (moveRange == null || attackRange == null) UpdateThreatRange();
 
         // make a fake movementRange for displaying

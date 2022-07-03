@@ -19,14 +19,15 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
     }
     public List<EnemyUnit> disabledUnits => _activeUnits.Where(en => !en.gameObject.activeInHierarchy).ToList();
 
-    private EnemyUnit currentPreview;
     private PlayerUnitController playerUnitController;
+    private BattleMap battleMap;
 
     public bool cancelSignal;
 
     void Awake() {
         Battle _topBattleRef = GetComponentInParent<Battle>();
         playerUnitController = _topBattleRef.GetComponentInChildren<PlayerUnitController>();
+        battleMap = _topBattleRef.GetComponentInChildren<BattleMap>();
     }
 
     void Start() {
@@ -55,57 +56,25 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
     // we refresh at the end of the phase,
     // because we want color when it isn't your turn,
     // and because it's possible the other team could add statuses that 
-    public void EndPhase() {
-
-    }
+    public void EndPhase() {}
 
     public void RefreshUnits() => activeUnits.ForEach(it => it.RefreshInfo());
 
-    public void ContextualInteractAt(GridPosition gp) {
-        // switch (state) {
-        //     /////////////////////////////////////////////////////////////////////////////////
-        //     // When the player interacts with the grid while there is no active selection, //
-        //     // we attempt to make a selection.                                             //
-        //     /////////////////////////////////////////////////////////////////////////////////
-        //     case ControllerFSM.NoPreview:
-        //         SetCurrentPreview( MatchingUnitAt(gp) );
-        //         currentPreview?.ContextualInteractAt(gp);
-        //         break;
-
-        //     case ControllerFSM.Preview:
-        //         EnemyUnit unit = MatchingUnitAt(gp);
-
-        //         // swap to the new unit. This will rapidly drop currentPreview (via Cancel/ChangeState(Idle))
-        //         // then REACQUIRE a currentPreview immediately afterwards
-        //         if (unit != null && unit != currentPreview) {
-        //             ClearPreview();
-        //             SetCurrentPreview(unit);
-        //         }
-
-        //         currentPreview.ContextualInteractAt(gp);
-        //         break;
-
-        //     case ControllerFSM.TakeActions:
-        //         break;
-        // }
-    }
-
-    public void SetCurrentPreview(EnemyUnit selection) {
-        currentPreview = selection;
+    public void Preview(EnemyUnit selection) {
+        selection.UpdateThreatRange();
+        selection.DisplayThreatRange();
+        selection.personalAudioFX.PlayWakeUpFX();
+        //
+        UIManager.inst.EnableUnitDetail(selection);
 
         NewEnemyUnitControllerSelection?.Invoke(selection);
     }
 
     public void ClearPreview() {
-        currentPreview?.RevertTurn();
-        SetCurrentPreview(null);
-    }
-
-    private EnemyUnit MatchingUnitAt(GridPosition gp) {
-        foreach (EnemyUnit en in activeUnits) {
-            if (en.gridPosition == gp) return en;
-        }
-        return null;
+        battleMap.ResetHighlightTiles();
+        battleMap.ResetHighlight();
+        //
+        UIManager.inst.DisableUnitDetail();
     }
 
 	private IEnumerator TakeActionAll() {

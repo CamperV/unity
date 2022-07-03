@@ -34,6 +34,8 @@ public abstract class TargetableUC : UnitCommand
         // if there's a ValidTarget on the mouseclick'd area
         if (ValidTarget(thisUnit, interactAt)) {
             Execute(thisUnit, interactAt);
+            //
+            thisUnit.playerUnitController.Unlock();
             return ExitSignal.NextState;
         }
 
@@ -50,8 +52,12 @@ public abstract class TargetableUC : UnitCommand
             _previousMouseOver = thisUnit.battleMap.CurrentMouseGridPosition;
 
             ResetValidMouseOver(thisUnit);
-
+            //
+            thisUnit.playerUnitController.Unlock();
+            
             if (ValidTarget(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition)) {
+                thisUnit.playerUnitController.Lock();
+                //
                 ValidMouseOver(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition);
             }
         }

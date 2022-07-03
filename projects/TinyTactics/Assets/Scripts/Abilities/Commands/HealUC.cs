@@ -26,12 +26,10 @@ public class HealUC : TargetableUC
 
     protected override void ResetValidMouseOver(PlayerUnit thisUnit) {
         DisplayTargetRange(thisUnit);
-        thisUnit.playerUnitController.Unlock();
     }
 
     protected override void ValidMouseOver(PlayerUnit thisUnit, GridPosition hoverOver) {
         thisUnit.battleMap.Highlight(thisUnit.battleMap.CurrentMouseGridPosition, tileVisuals.altColor);
-        thisUnit.playerUnitController.Lock();
     }
 
     public override ExitSignal InProgressUpdate(PlayerUnit thisUnit) {

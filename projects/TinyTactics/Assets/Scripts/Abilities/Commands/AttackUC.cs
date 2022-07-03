@@ -34,7 +34,7 @@ public class AttackUC : UnitCommand
             return ExitSignal.NoStateChange;
 
         // if there's a ValidTarget on the mouseclick'd area
-        if (thisUnit.attackRange.ValidTarget(interactAt) && EnemyAt(thisUnit, interactAt) != null) {
+        if (thisUnit.attackRange.ValidTarget(interactAt) && EnemyAt(thisUnit, interactAt) != null) {           
             EnemyUnit enemy = EnemyAt(thisUnit, interactAt);
 
             _engagementResolveFlag = true;
@@ -52,7 +52,9 @@ public class AttackUC : UnitCommand
                     _engagementResolveFlag = false;
                 })
             );
-
+            
+            //
+            thisUnit.playerUnitController.Unlock();
             return ExitSignal.NextState;
         }
 
@@ -69,9 +71,13 @@ public class AttackUC : UnitCommand
             // reset these
             DisplayAttackRange(thisUnit);
             UIManager.inst.DisableEngagementPreview();
-
+            //
+            thisUnit.playerUnitController.Unlock();
+            
             // when the mouse is over an enemy:
             if (thisUnit.attackRange.ValidTarget(thisUnit.battleMap.CurrentMouseGridPosition) && EnemyAt(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition) != null) {
+                thisUnit.playerUnitController.Lock();
+                //
                 EnemyUnit enemy = EnemyAt(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition);
                 thisUnit.battleMap.Highlight(thisUnit.battleMap.CurrentMouseGridPosition, tileVisuals.altColor);
 
