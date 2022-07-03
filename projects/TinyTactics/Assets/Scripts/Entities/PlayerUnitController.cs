@@ -15,6 +15,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     // this is a flag that allows PlayerUnitController to be locked, ie can't ClearSelection()
     // this is done by certain unit actions, so that you don't switch units when trying to heal them
     public bool selectionLocked = false;
+    private bool disabled = false;
 
     [SerializeField] private List<PlayerUnit> _activeUnits;
     public List<PlayerUnit> activeUnits {
@@ -23,11 +24,10 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     public List<PlayerUnit> disabledUnits => _activeUnits.Where(en => !en.gameObject.activeInHierarchy).ToList();
 
     public enum ControllerFSM {
-        Inactive,
         NoSelection,
         Selection
     }
-    [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.Inactive;
+    [SerializeField] public ControllerFSM state { get; set; } = ControllerFSM.NoSelection;
 
     private PlayerUnit currentSelection;
     private PlayerUnit mostRecentlySelectedUnit;
@@ -61,7 +61,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     void Update() {
         switch (state) {
-            case ControllerFSM.Inactive:
             case ControllerFSM.NoSelection:
                 break;
 
@@ -84,34 +83,29 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void InitialState() {
         ExitState(state);
-        EnterState(ControllerFSM.Inactive);
+        EnterState(ControllerFSM.NoSelection);
     }
 
     public void ExitState(ControllerFSM exitingState) {
         switch (exitingState) {
-            case ControllerFSM.Inactive:
             case ControllerFSM.NoSelection:
                 break;
 
             case ControllerFSM.Selection:
                 // re-enable EnemyUnitController
-                enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
+                // enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
                 break;
         }
-        state = ControllerFSM.Inactive;
     }
 
     public void EnterState(ControllerFSM enteringState) {
         state = enteringState;
     
         switch (state) {
-            case ControllerFSM.Inactive:
             case ControllerFSM.NoSelection:
                 break;
 
             case ControllerFSM.Selection:
-                // disable enemy unit controller for a time
-                enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.Inactive);
                 break;
         }
     }
@@ -123,8 +117,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         // Vector3[] unitPositions = activeUnits.Select(u => u.transform.position).ToArray();
         // CameraManager.FocusActiveCameraOn( VectorUtils.Centroid(unitPositions) );
 
-        // disable enemy unit controller for a time
-        enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
+        disabled = false;
         ChangeState(ControllerFSM.NoSelection);
 
         activeUnits.ForEach(it => it.StartTurn());
@@ -134,7 +127,8 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     // because we want color when it isn't your turn,
     // and because it's possible the other team could add statuses that 
     public void EndPhase() {
-        ChangeState(ControllerFSM.Inactive);
+        disabled = true;
+        ChangeState(ControllerFSM.NoSelection);
 
         // if you end the phase, and you never selected anyone, choose the first just so the camera refocuses
         if (mostRecentlySelectedUnit == null) mostRecentlySelectedUnit = activeUnits[0];
@@ -175,9 +169,9 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void SelectNextUnit() {
         // don't let us interrupt
-        // or mess with our state
-        if (enemyUnitController.currentlyActing) return;
-        // enemyUnitController.ChangeState(EnemyUnitController.ControllerFSM.NoPreview);
+        if (disabled) return;
+        
+        // enemyUnitController.ClearPreview();
 
         // we keep a rotating list of PlayerUnits in an Enumerator
         // we also can index into this to "start" at a certain unit
@@ -189,9 +183,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
         PlayerUnit nextUnit = GetNextUnit(currentSelection) ?? _fallbackUnit;
 
         switch (state) {
-            case ControllerFSM.Inactive:
-                break;
-
             case ControllerFSM.NoSelection:
                 SetCurrentSelection(nextUnit);
                 currentSelection?.OnInteract(nextUnit.gridPosition, false);
@@ -212,12 +203,6 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
 
     public void ContextualInteractAt(GridPosition gp, bool auxiliaryInteract) {
         switch (state) {
-            /////////////////////////////////////////////////////
-            // When the Controller is inactive, we do nothing. //
-            /////////////////////////////////////////////////////
-            case ControllerFSM.Inactive:
-                break;
-
             /////////////////////////////////////////////////////////////////////////////////
             // When the player interacts with the grid while there is no active selection, //
             // we attempt to make a selection.                                             //
@@ -292,7 +277,7 @@ public class PlayerUnitController : MonoBehaviour, IStateMachine<PlayerUnitContr
     }
 
     public void ForceEndPlayerPhase() {
-        if (state != ControllerFSM.Inactive) {
+        if (!disabled) {
             foreach (PlayerUnit u in activeUnits) {
                 if (u.turnActive) u.WaitNoCheck();
             }

@@ -65,7 +65,6 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             // when you're entering Idle, it's from being selected
             // therefore, reset your controller's selections
             case EnemyUnitFSM.Idle:
-                enemyUnitController.ClearPreview();
                 break;
 
             case EnemyUnitFSM.Preview:
