@@ -161,7 +161,7 @@ public class UnitCommandPanel : MonoBehaviour
 	}
 
 	private void SelectSlot(int slot) {
-		SlotActions[slot].Invoke();
+		if (SlotActions.ContainsKey(slot)) SlotActions[slot].Invoke();
 	}
 
 	private void ActivateTrigger(PlayerUnit thisUnit, UnitCommand uc) {

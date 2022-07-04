@@ -55,7 +55,6 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     void Update() {
         if (currentSelection != null && currentSelection.turnActive == false) {
             ClearSelection();
-            Debug.Log($"Fired, {selectionLocked}");
         }   
     }
 
@@ -132,9 +131,7 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
         currentSelection?.OnInteract(nextUnit.gridPosition, false);
     }
 
-    public void ContextualInteractAt(GridPosition gp, bool auxiliaryInteract) {
-        Debug.Log($"selectionLock: {selectionLocked}");
-        
+    public void ContextualInteractAt(GridPosition gp, bool auxiliaryInteract) {        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // There are two things that can happen here:                                                             //
         //      1) If you click on a different unit, de-select current and select the new                         //
