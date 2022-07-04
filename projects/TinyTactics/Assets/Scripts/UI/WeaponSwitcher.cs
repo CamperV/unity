@@ -25,6 +25,10 @@ public class WeaponSwitcher : MonoBehaviour
 	}
 
 	public void ActivateSwitcher(PlayerUnit thisUnit, UnitCommand thisCommand) {
+		RectTransform _rt = GetComponent<RectTransform>();
+		RectTransform _parent_rt = GetComponentInParent<UnitCommandPanel>().GetComponent<RectTransform>();
+		_rt.position = new Vector2(_parent_rt.position.x, _rt.position.y);
+
 		boundUnit = thisUnit;
 		boundCommand = thisCommand;
 		gameObject.SetActive(true);

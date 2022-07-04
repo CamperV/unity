@@ -17,7 +17,7 @@ public class UIAnchoredBobber : MonoBehaviour
 		rectTransform = GetComponent<RectTransform>();
 	}
 
-	void Start() {
+	void OnEnable() {
 		anchoredPosition = rectTransform.anchoredPosition;
 	}
 
