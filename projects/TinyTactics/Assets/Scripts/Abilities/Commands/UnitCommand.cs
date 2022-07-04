@@ -33,6 +33,18 @@ public abstract class UnitCommand : ScriptableObject
     }
     public CommandCategory commandCategory; // fillable via ScriptableObject interface
 
+    public enum PanelCategory {
+        Main,       // main commands added
+        Default,    // default commands like Move and Attack
+        Special     // default, but special commands, like Wait
+    }
+    public PanelCategory panelCategory; // fillable via ScriptableObject interface
+
+    // default -1, slot in normally
+    // otherwise, use this particular slot number when constructing UnitCommandPanel
+    // ie, Move = 1, Attack = 2, Wait = 0
+    public int panelSlot = -1;
+
     public abstract void Activate(PlayerUnit thisUnit); /* Initial activation */
     public abstract void Deactivate(PlayerUnit thisUnit); /* De-activation, ie Cancel */
     public abstract ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract); /* Interaction/execution while active */

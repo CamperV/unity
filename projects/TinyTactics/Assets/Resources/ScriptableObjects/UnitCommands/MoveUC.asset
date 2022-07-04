@@ -16,6 +16,8 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: c3c293445d134044a8a673aa4fa085ba, type: 3}
   executionType: 0
   commandCategory: 0
+  panelCategory: 1
+  panelSlot: 1
   requiresConfirm: 0
   revertable: 1
   limitType: 0

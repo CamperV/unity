@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -11,10 +12,15 @@ public class UnitCommandPanel : MonoBehaviour
 	[SerializeField] private PlayerInputController inputController;
 	private Dictionary<int, Action> SlotActions;
 	//
-	[SerializeField] private GameObject unitCommandContainer;
+	[SerializeField] private GameObject mainUCPanel;
+	[SerializeField] private GameObject defaultUCPanel;
+	[SerializeField] private GameObject specialUCPanel;
 	[SerializeField] private UnitCommandVisual unitCommandVisualPrefab;
 
 	private Dictionary<UnitCommand, UnitCommandVisual> mapping = new Dictionary<UnitCommand, UnitCommandVisual>();
+
+	// reserved slots that Main Commands can't use
+	private HashSet<int> _reservedSlots = new HashSet<int>{0};
 
 	void Awake() {
 		SlotActions = new Dictionary<int, Action>();
@@ -27,8 +33,34 @@ public class UnitCommandPanel : MonoBehaviour
 	public void SetUnitInfo(PlayerUnit unit) {
 		ClearUCs();
 
-		foreach (UnitCommand uc in unit.unitCommandSystem.Commands) {
-			AddToPanel(uc, unit.unitCommandSystem);
+		// determine slot numbers first, we need all UCVisuals to know about each other
+		UnitCommand[] ucSlotOrder = new UnitCommand[10];
+		//
+		foreach (UnitCommand uc in unit.unitCommandSystem.Commands.Where(it => it.panelSlot != -1)) {
+			if (ucSlotOrder[uc.panelSlot] == null) {
+				ucSlotOrder[uc.panelSlot] = uc;
+			} else {
+				Debug.LogError($"Slot already taken by {ucSlotOrder[uc.panelSlot]}");
+			}
+		}
+
+		// then, insert others at the minumum unoccupied slot
+		foreach (UnitCommand uc in unit.unitCommandSystem.Commands.Where(it => it.panelSlot == -1)) {
+			// first index of unoccupied space
+			int firstIndex = ucSlotOrder.TakeWhile((it, index) => it != null || _reservedSlots.Contains(index)).Count();
+			ucSlotOrder[firstIndex] = uc;
+		}
+
+		// now finally, add to panel
+		// let these be activated when something is added to them
+		mainUCPanel.SetActive(false);
+		defaultUCPanel.SetActive(false);
+		specialUCPanel.SetActive(false);
+		//
+		for (int s = 0; s < ucSlotOrder.Length; s++) {
+			if (ucSlotOrder[s] != null) {
+				AddToPanel(ucSlotOrder[s], unit.unitCommandSystem, s);
+			}
 		}
 
 		// now that the UnitCommandVisuals have been created, make them noisy
@@ -52,16 +84,30 @@ public class UnitCommandPanel : MonoBehaviour
 	}
 
 	private void ClearUCs() {
-		foreach (Transform t in unitCommandContainer.transform) {
-			Destroy(t.gameObject);
-		}
+		foreach (Transform t in defaultUCPanel.transform) Destroy(t.gameObject);
+		foreach (Transform t in mainUCPanel.transform) Destroy(t.gameObject);
+		foreach (Transform t in specialUCPanel.transform) Destroy(t.gameObject);
 
 		mapping.Clear();
 		SlotActions.Clear();
 	}
 
-	private void AddToPanel(UnitCommand uc, UnitCommandSystem ucs) {
-		UnitCommandVisual ucv = Instantiate(unitCommandVisualPrefab, unitCommandContainer.transform);
+	private void AddToPanel(UnitCommand uc, UnitCommandSystem ucs, int slot) {
+		GameObject appropriatePanel = defaultUCPanel;
+		switch (uc.panelCategory) {
+			case UnitCommand.PanelCategory.Main:
+				appropriatePanel = mainUCPanel;
+				break;
+			case UnitCommand.PanelCategory.Default:
+				appropriatePanel = defaultUCPanel;
+				break;
+			case UnitCommand.PanelCategory.Special:
+				appropriatePanel = specialUCPanel;
+				break;
+		}
+
+		appropriatePanel.SetActive(true);
+		UnitCommandVisual ucv = Instantiate(unitCommandVisualPrefab, appropriatePanel.transform);
 		ucv.SetImage(uc.sprite);
 		ucv.SetName(uc.name);
 
@@ -89,10 +135,10 @@ public class UnitCommandPanel : MonoBehaviour
 
 		// set the mapping value so that it can be stored/retrieved for visualiztion
 		mapping[uc] = ucv;
-		ucv.SetSlotNumber(mapping.Keys.Count);
+		ucv.SetSlotNumber(slot);
 
 		// bind activation via numpad/numrow here
-		SlotActions[mapping.Keys.Count] = () => ucs.TryIssueCommand(uc);
+		SlotActions[slot] = () => ucs.TryIssueCommand(uc);
 	}
 
 	private void SelectSlot(int slot) {
