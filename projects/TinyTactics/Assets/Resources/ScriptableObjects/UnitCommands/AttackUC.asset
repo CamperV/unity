@@ -24,4 +24,6 @@ MonoBehaviour:
   limitType: 0
   cooldown: 0
   remainingUses: 0
+  minRange: 0
+  maxRange: 0
   tileVisuals: {fileID: 11400000, guid: a655d0ad078ea284097d98bcd15d4660, type: 2}
