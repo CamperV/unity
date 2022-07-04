@@ -26,6 +26,8 @@ public class PlayerInputController : MonoBehaviour
 	public delegate void ButtonDown();
 	public event ButtonDown MainInteractButtonEvent;
 	public event ButtonDown SelectNextUnitEvent;
+	public event ButtonDown NextWeaponEvent;
+	public event ButtonDown PrevWeaponEvent;
 
 	public delegate void QuickBarSlotSelect(int slot);
 	public event QuickBarSlotSelect QuickBarSlotSelectEvent;
@@ -78,6 +80,9 @@ public class PlayerInputController : MonoBehaviour
 		keyboardInput.KeyboardActionMap.QuickBar_7.performed += ctx => OnQuickBar(7);
 		keyboardInput.KeyboardActionMap.QuickBar_8.performed += ctx => OnQuickBar(8);
 		keyboardInput.KeyboardActionMap.QuickBar_9.performed += ctx => OnQuickBar(9);
+
+		keyboardInput.KeyboardActionMap.NextWeapon.performed += ctx => NextWeaponEvent?.Invoke();
+		keyboardInput.KeyboardActionMap.PrevWeapon.performed += ctx => PrevWeaponEvent?.Invoke();
 	}
 
 	// always update the position event for listeners

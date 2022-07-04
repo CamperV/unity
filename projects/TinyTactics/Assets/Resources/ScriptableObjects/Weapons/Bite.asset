@@ -15,7 +15,8 @@ MonoBehaviour:
   name: Bite
   sprite: {fileID: 21300000, guid: 7671ea189c3630544acf2c271963ec72, type: 3}
   <tags>k__BackingField: []
-  audioFXBundle: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
+  audioFXBundle_Attack: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
+  audioFXBundle_Equip: {fileID: 11400000, guid: dcb3fd546c8d56d4383e0b1f7125b0a0, type: 2}
   MIN_MIGHT: 1
   MAX_MIGHT: 2
   CRITICAL: 10

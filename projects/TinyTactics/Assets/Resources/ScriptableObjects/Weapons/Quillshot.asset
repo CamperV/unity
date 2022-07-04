@@ -15,7 +15,8 @@ MonoBehaviour:
   name: Quillshot
   sprite: {fileID: 21300000, guid: 7f84227ec4c26464890f0651d40b480b, type: 3}
   <tags>k__BackingField: []
-  audioFXBundle: {fileID: 11400000, guid: c6cec7b0e41d6354584dd58ae5d8684c, type: 2}
+  audioFXBundle_Attack: {fileID: 11400000, guid: c6cec7b0e41d6354584dd58ae5d8684c, type: 2}
+  audioFXBundle_Equip: {fileID: 11400000, guid: dcb3fd546c8d56d4383e0b1f7125b0a0, type: 2}
   MIN_MIGHT: 1
   MAX_MIGHT: 3
   CRITICAL: 0

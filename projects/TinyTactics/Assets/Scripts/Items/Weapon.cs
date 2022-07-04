@@ -6,7 +6,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Items/Weapon")]
 public class Weapon : Item, IEquipable
 {
-    public AudioFXBundle audioFXBundle;
+    public AudioFXBundle audioFXBundle_Attack;
+    public AudioFXBundle audioFXBundle_Equip;
 
     public int MIN_MIGHT;
     public int MAX_MIGHT;

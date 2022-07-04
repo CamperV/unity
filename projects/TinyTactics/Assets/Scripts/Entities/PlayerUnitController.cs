@@ -12,10 +12,8 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     public event UnitSelection NewPlayerUnitControllerSelection;
     public event UnitSelection ClearPlayerUnitControllerSelection;
 
-    // this is a flag that allows PlayerUnitController to be locked, ie can't ClearSelection()
     // this is done by certain unit actions, so that you don't switch units when trying to heal them
     public bool selectionLocked = false;
-    private bool disabled = false;
 
     [SerializeField] private List<PlayerUnit> _activeUnits;
     public List<PlayerUnit> activeUnits {
@@ -70,8 +68,6 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
         // re-focus the camera on the centroid of your units
         // Vector3[] unitPositions = activeUnits.Select(u => u.transform.position).ToArray();
         // CameraManager.FocusActiveCameraOn( VectorUtils.Centroid(unitPositions) );
-
-        disabled = false;
         activeUnits.ForEach(it => it.StartTurn());
     }
 
@@ -79,8 +75,6 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     // because we want color when it isn't your turn,
     // and because it's possible the other team could add statuses that 
     public void EndPhase() {
-        disabled = true;
-
         // if you end the phase, and you never selected anyone, choose the first just so the camera refocuses
         if (mostRecentlySelectedUnit == null) mostRecentlySelectedUnit = activeUnits[0];
     }
@@ -118,7 +112,6 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
 
     public void SelectNextUnit() {
         // don't let us interrupt
-        if (disabled) return;
         enemyUnitController.ClearPreview();
         
         // we keep a rotating list of PlayerUnits in an Enumerator
@@ -140,6 +133,8 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     }
 
     public void ContextualInteractAt(GridPosition gp, bool auxiliaryInteract) {
+        Debug.Log($"selectionLock: {selectionLocked}");
+        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // There are two things that can happen here:                                                             //
         //      1) If you click on a different unit, de-select current and select the new                         //
@@ -164,14 +159,13 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
 
     public void SetCurrentSelection(PlayerUnit selection) {
         currentSelection = selection;
+        CachedUnitEnumerator = GenerateCachedUnitEnumerator(mostRecentlySelectedUnit);
 
         if (selection == null) {
             //
 
         } else {
             mostRecentlySelectedUnit = selection;
-            CachedUnitEnumerator = GenerateCachedUnitEnumerator(mostRecentlySelectedUnit);
-            //
             ClearPlayerUnitControllerSelection?.Invoke(mostRecentlySelectedUnit);
         }
 
@@ -198,12 +192,10 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     }
 
     public void ForceEndPlayerPhase() {
-        if (!disabled) {
-            foreach (PlayerUnit u in activeUnits) {
-                if (u.turnActive) u.WaitNoCheck();
-            }
-            _EndPlayerPhase();
+        foreach (PlayerUnit u in activeUnits) {
+            if (u.turnActive) u.WaitNoCheck();
         }
+        _EndPlayerPhase();
     }
 
     private void _EndPlayerPhase() {

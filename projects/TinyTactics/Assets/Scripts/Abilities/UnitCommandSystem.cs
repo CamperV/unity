@@ -17,7 +17,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     // this is only set inside this file. Convenience, so I don't have to re-add Move, Attack, Wait, etc over and over
     public static string defaultUCP = "ScriptableObjects/UnitCommands/DefaultUnitCommandPool";
 
-	public delegate void UnitCommandStateChange(UnitCommand uc);
+	public delegate void UnitCommandStateChange(PlayerUnit thisUnit, UnitCommand uc);
     public event UnitCommandStateChange ActivateUC;
     public event UnitCommandStateChange DeactivateUC;
     public event UnitCommandStateChange FinishUC;
@@ -146,7 +146,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
             case State.CommandActive:
                 activeCommand.Activate(boundUnit);
-                ActivateUC?.Invoke(activeCommand);
+                ActivateUC?.Invoke(boundUnit, activeCommand);
                 break;
 
             case State.CommandInProgress:
@@ -164,7 +164,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
             case State.CommandActive:
                 activeCommand.Deactivate(boundUnit);
-                DeactivateUC?.Invoke(activeCommand);
+                DeactivateUC?.Invoke(boundUnit, activeCommand);
                 break;
 
             case State.CommandInProgress:
@@ -248,7 +248,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
                     break;
             }
             //
-            RevertUC?.Invoke(uc);
+            RevertUC?.Invoke(boundUnit, uc);
         }
     }
 
@@ -322,7 +322,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     public void DisableSimilarCommands(UnitCommand.CommandCategory commandCategory) {
         foreach (UnitCommand uc in unitCommands) {
             if (uc.commandCategory == commandCategory) {
-                FinishUC?.Invoke(uc); // right now, this is hooked up to UI elements
+                FinishUC?.Invoke(boundUnit, uc); // right now, this is hooked up to UI elements
                 commandAvailable[uc.name] = false;
 
                 // this is for reverting purposes

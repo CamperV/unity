@@ -258,11 +258,13 @@ namespace Extensions
 
         // List
         public static List<T> Roll<T>(this List<T> list, int rollAmount) {
+            int CustomMod(int i, int mod) => ((i % mod) + mod) % mod;
+
             int size = list.Count;
             T[] rolled = new T[size];
 
             for (int i = 0; i < size; i++) {
-                rolled[(i + rollAmount) % size] = list[i];
+                rolled[CustomMod((i + rollAmount), size)] = list[i];
             }
             return new List<T>(rolled);
         }

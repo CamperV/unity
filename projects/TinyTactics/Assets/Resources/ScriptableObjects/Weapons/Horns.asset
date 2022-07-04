@@ -15,7 +15,8 @@ MonoBehaviour:
   name: Horns
   sprite: {fileID: 21300000, guid: ba52ee87299629941b726c79b31b449a, type: 3}
   <tags>k__BackingField: []
-  audioFXBundle: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
+  audioFXBundle_Attack: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
+  audioFXBundle_Equip: {fileID: 11400000, guid: dcb3fd546c8d56d4383e0b1f7125b0a0, type: 2}
   MIN_MIGHT: 2
   MAX_MIGHT: 5
   CRITICAL: 0

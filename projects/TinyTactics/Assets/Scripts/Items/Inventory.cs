@@ -16,6 +16,9 @@ public class Inventory : MonoBehaviour
 	// set in inspector
 	[SerializeField] private List<Weapon> weapons;
 	public Weapon FirstWeapon => weapons[0];
+	public IEnumerable<Weapon> Weapons => weapons.AsEnumerable();
+
+	public int numWeapons => weapons.Count;
 
 	void Awake() {
 		boundUnit = GetComponent<Unit>();
@@ -25,16 +28,20 @@ public class Inventory : MonoBehaviour
 		FirstWeapon.Equip(boundUnit);
 	}
 
-	public void SwitchWeaponRight() {
+	public void NextWeapon() {
 		FirstWeapon.Unequip(boundUnit);
-		weapons.Roll(1);
+		weapons = weapons.Roll(1);
+
 		FirstWeapon.Equip(boundUnit);
+        boundUnit.personalAudioFX.PlayWeaponEquipFX();
 	}
 
-	public void SwitchWeaponLeft() {
+	public void PrevWeapon() {
 		FirstWeapon.Unequip(boundUnit);
-		weapons.Roll(-1);
+		weapons = weapons.Roll(-1);
+
 		FirstWeapon.Equip(boundUnit);
+		boundUnit.personalAudioFX.PlayWeaponEquipFX();
 	}
 }
 

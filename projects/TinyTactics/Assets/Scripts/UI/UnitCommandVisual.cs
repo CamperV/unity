@@ -23,21 +23,25 @@ public class UnitCommandVisual : MonoBehaviour
 	// binds UnitCommandSystem.LimitType things (cooldown, limiteduses) to refresh visuals
 	private Action LimitTypeUpdater;
 
-	public void OnActivate() {
+	// can assign in inspector, for things like AttackUC's WeaponSwitcher
+	[Serializable] public class UCVEvent : UnityEvent<PlayerUnit, UnitCommand>{}
+	//
+	public UCVEvent PropagateActivation;
+	public UCVEvent PropagateDeactivation;
+	//
+
+	public void OnActivate(PlayerUnit thisUnit, UnitCommand thisCommand) {
 		activeBorder.SetActive(true);
-		// activeCancelVisual.SetActive(true);
+		PropagateActivation?.Invoke(thisUnit, thisCommand);
 	}
-	public void OnDeactivate() {
+	public void OnDeactivate(PlayerUnit thisUnit, UnitCommand thisCommand) {
 		activeBorder.SetActive(false);
-		// activeCancelVisual.SetActive(false);
+		PropagateDeactivation?.Invoke(thisUnit, thisCommand);
 	}
 
-	public void SetImage(Sprite sprite) {
-		mainImage.sprite = sprite;
-	}
-
-	public void SetName(string name) {
-		commandName.SetText(name);
+	public void SetCommandInfo(UnitCommand uc) {
+		mainImage.sprite = uc.sprite;
+		commandName.SetText(uc.name);
 	}
 
 	public void SetCooldown(int val) {

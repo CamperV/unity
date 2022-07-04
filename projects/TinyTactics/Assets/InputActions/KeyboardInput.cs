@@ -121,6 +121,22 @@ public class @KeyboardInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""NextWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed1fd9f0-4874-4dd2-a3c7-6a1a04910156"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""PrevWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""0801b673-8083-48a5-95f3-af3c5acc785d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -486,6 +502,28 @@ public class @KeyboardInput : IInputActionCollection, IDisposable
                     ""action"": ""SelectNextUnit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ada9ee51-4571-4f6a-861f-69919320e8fe"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1ae07aae-a1da-473a-bb82-499d83c5ab8b"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PrevWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -507,6 +545,8 @@ public class @KeyboardInput : IInputActionCollection, IDisposable
         m_KeyboardActionMap_QuickBar_8 = m_KeyboardActionMap.FindAction("QuickBar_8", throwIfNotFound: true);
         m_KeyboardActionMap_QuickBar_9 = m_KeyboardActionMap.FindAction("QuickBar_9", throwIfNotFound: true);
         m_KeyboardActionMap_SelectNextUnit = m_KeyboardActionMap.FindAction("SelectNextUnit", throwIfNotFound: true);
+        m_KeyboardActionMap_NextWeapon = m_KeyboardActionMap.FindAction("NextWeapon", throwIfNotFound: true);
+        m_KeyboardActionMap_PrevWeapon = m_KeyboardActionMap.FindAction("PrevWeapon", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -569,6 +609,8 @@ public class @KeyboardInput : IInputActionCollection, IDisposable
     private readonly InputAction m_KeyboardActionMap_QuickBar_8;
     private readonly InputAction m_KeyboardActionMap_QuickBar_9;
     private readonly InputAction m_KeyboardActionMap_SelectNextUnit;
+    private readonly InputAction m_KeyboardActionMap_NextWeapon;
+    private readonly InputAction m_KeyboardActionMap_PrevWeapon;
     public struct KeyboardActionMapActions
     {
         private @KeyboardInput m_Wrapper;
@@ -586,6 +628,8 @@ public class @KeyboardInput : IInputActionCollection, IDisposable
         public InputAction @QuickBar_8 => m_Wrapper.m_KeyboardActionMap_QuickBar_8;
         public InputAction @QuickBar_9 => m_Wrapper.m_KeyboardActionMap_QuickBar_9;
         public InputAction @SelectNextUnit => m_Wrapper.m_KeyboardActionMap_SelectNextUnit;
+        public InputAction @NextWeapon => m_Wrapper.m_KeyboardActionMap_NextWeapon;
+        public InputAction @PrevWeapon => m_Wrapper.m_KeyboardActionMap_PrevWeapon;
         public InputActionMap Get() { return m_Wrapper.m_KeyboardActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -634,6 +678,12 @@ public class @KeyboardInput : IInputActionCollection, IDisposable
                 @SelectNextUnit.started -= m_Wrapper.m_KeyboardActionMapActionsCallbackInterface.OnSelectNextUnit;
                 @SelectNextUnit.performed -= m_Wrapper.m_KeyboardActionMapActionsCallbackInterface.OnSelectNextUnit;
                 @SelectNextUnit.canceled -= m_Wrapper.m_KeyboardActionMapActionsCallbackInterface.OnSelectNextUnit;
+                @NextWeapon.started -= m_Wrapper.m_KeyboardActionMapActionsCallbackInterface.OnNextWeapon;
+                @NextWeapon.performed -= m_Wrapper.m_KeyboardActionMapActionsCallbackInterface.OnNextWeapon;
+                @NextWeapon.canceled -= m_Wrapper.m_KeyboardActionMapActionsCallbackInterface.OnNextWeapon;
+                @PrevWeapon.started -= m_Wrapper.m_KeyboardActionMapActionsCallbackInterface.OnPrevWeapon;
+                @PrevWeapon.performed -= m_Wrapper.m_KeyboardActionMapActionsCallbackInterface.OnPrevWeapon;
+                @PrevWeapon.canceled -= m_Wrapper.m_KeyboardActionMapActionsCallbackInterface.OnPrevWeapon;
             }
             m_Wrapper.m_KeyboardActionMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -677,6 +727,12 @@ public class @KeyboardInput : IInputActionCollection, IDisposable
                 @SelectNextUnit.started += instance.OnSelectNextUnit;
                 @SelectNextUnit.performed += instance.OnSelectNextUnit;
                 @SelectNextUnit.canceled += instance.OnSelectNextUnit;
+                @NextWeapon.started += instance.OnNextWeapon;
+                @NextWeapon.performed += instance.OnNextWeapon;
+                @NextWeapon.canceled += instance.OnNextWeapon;
+                @PrevWeapon.started += instance.OnPrevWeapon;
+                @PrevWeapon.performed += instance.OnPrevWeapon;
+                @PrevWeapon.canceled += instance.OnPrevWeapon;
             }
         }
     }
@@ -696,5 +752,7 @@ public class @KeyboardInput : IInputActionCollection, IDisposable
         void OnQuickBar_8(InputAction.CallbackContext context);
         void OnQuickBar_9(InputAction.CallbackContext context);
         void OnSelectNextUnit(InputAction.CallbackContext context);
+        void OnNextWeapon(InputAction.CallbackContext context);
+        void OnPrevWeapon(InputAction.CallbackContext context);
     }
 }

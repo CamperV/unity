@@ -21,6 +21,8 @@ public abstract class TargetableUC : UnitCommand
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
+        thisUnit.playerUnitController.Unlock();
+
         thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();
         //
@@ -34,8 +36,6 @@ public abstract class TargetableUC : UnitCommand
         // if there's a ValidTarget on the mouseclick'd area
         if (ValidTarget(thisUnit, interactAt)) {
             Execute(thisUnit, interactAt);
-            //
-            thisUnit.playerUnitController.Unlock();
             return ExitSignal.NextState;
         }
 
@@ -52,7 +52,6 @@ public abstract class TargetableUC : UnitCommand
             _previousMouseOver = thisUnit.battleMap.CurrentMouseGridPosition;
 
             ResetValidMouseOver(thisUnit);
-            //
             thisUnit.playerUnitController.Unlock();
             
             if (ValidTarget(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition)) {

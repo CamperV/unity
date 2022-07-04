@@ -181,7 +181,7 @@ MonoBehaviour:
   mainUCPanel: {fileID: 3325604678882994809}
   defaultUCPanel: {fileID: 6545960520653852380}
   specialUCPanel: {fileID: 2393967599927122651}
-  unitCommandVisualPrefab: {fileID: 2317301987230043018, guid: 47c774cee61322147a4558912c266fdc, type: 3}
+  defaultUnitCommandVisualPrefab: {fileID: 2317301987230043018, guid: 47c774cee61322147a4558912c266fdc, type: 3}
 --- !u!114 &-4809419729727975630
 MonoBehaviour:
   m_ObjectHideFlags: 0

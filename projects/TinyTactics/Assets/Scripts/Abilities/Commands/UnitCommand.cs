@@ -45,6 +45,9 @@ public abstract class UnitCommand : ScriptableObject
     // ie, Move = 1, Attack = 2, Wait = 0
     public int panelSlot = -1;
 
+    // this is optional. AttackUC has a custom one, so the weapon switcher can activate
+    public UnitCommandVisual unitCommandVisualPrefab;
+
     public abstract void Activate(PlayerUnit thisUnit); /* Initial activation */
     public abstract void Deactivate(PlayerUnit thisUnit); /* De-activation, ie Cancel */
     public abstract ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract); /* Interaction/execution while active */

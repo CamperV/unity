@@ -9,13 +9,15 @@ using Extensions;
 
 public class UnitCommandPanel : MonoBehaviour
 {
-	[SerializeField] private PlayerInputController inputController;
+	public PlayerUnit boundUnit;
+
+	[SerializeField] public PlayerInputController inputController;
 	private Dictionary<int, Action> SlotActions;
 	//
 	[SerializeField] private GameObject mainUCPanel;
 	[SerializeField] private GameObject defaultUCPanel;
 	[SerializeField] private GameObject specialUCPanel;
-	[SerializeField] private UnitCommandVisual unitCommandVisualPrefab;
+	[SerializeField] private UnitCommandVisual defaultUnitCommandVisualPrefab;
 
 	private Dictionary<UnitCommand, UnitCommandVisual> mapping = new Dictionary<UnitCommand, UnitCommandVisual>();
 
@@ -27,10 +29,13 @@ public class UnitCommandPanel : MonoBehaviour
 	}
 
 	void Start() {
+		// bind the SelectSlot actions to QuickBar keys
 		inputController.QuickBarSlotSelectEvent += SelectSlot;
 	}
 
 	public void SetUnitInfo(PlayerUnit unit) {
+		boundUnit = unit;
+		//
 		ClearUCs();
 
 		// determine slot numbers first, we need all UCVisuals to know about each other
@@ -76,6 +81,8 @@ public class UnitCommandPanel : MonoBehaviour
 	}
 
 	public void ClearUnitInfo(PlayerUnit unit) {
+		boundUnit = null;
+
 		// clear callbacks once you're no longer interacting with the UI
 		unit.unitCommandSystem.ActivateUC -= ActivateTrigger;
 		unit.unitCommandSystem.DeactivateUC -= DeactivateTrigger;
@@ -93,6 +100,9 @@ public class UnitCommandPanel : MonoBehaviour
 	}
 
 	private void AddToPanel(UnitCommand uc, UnitCommandSystem ucs, int slot) {
+		//
+		// 1) decide which panel to add to
+		//
 		GameObject appropriatePanel = defaultUCPanel;
 		switch (uc.panelCategory) {
 			case UnitCommand.PanelCategory.Main:
@@ -106,18 +116,24 @@ public class UnitCommandPanel : MonoBehaviour
 				break;
 		}
 
+		//
+		// 2) set generic info
+		//
 		appropriatePanel.SetActive(true);
-		UnitCommandVisual ucv = Instantiate(unitCommandVisualPrefab, appropriatePanel.transform);
-		ucv.SetImage(uc.sprite);
-		ucv.SetName(uc.name);
+		UnitCommandVisual ucvPrefab = (uc.unitCommandVisualPrefab == null) ? defaultUnitCommandVisualPrefab : uc.unitCommandVisualPrefab;
+		UnitCommandVisual ucv = Instantiate(ucvPrefab, appropriatePanel.transform);
+		ucv.SetCommandInfo(uc);
 
-		// now register behavior
+		//
+		// 3) register behavior
+		//
 		ucv.RegisterCommand(() => ucs.TryIssueCommand(uc));
 		ucv.SetButtonChecker(() => ucs.IsCommandAvailable(uc));
 		ucv.CheckButtonStatus();
 
-		// register limittype monitoring
-		// kemudian immediately call it
+		//
+		// 4) register limittype monitoring, and immediately call it
+		//
 		switch (uc.limitType) {
 			case UnitCommand.LimitType.Cooldown:
 				ucv.SetLimitTypeUpdater(() => ucv.SetCooldown(ucs.CommandCooldown(uc)));
@@ -130,30 +146,33 @@ public class UnitCommandPanel : MonoBehaviour
 				break;
 		}
 
-		// disabled for now, janky and not really working
-		// ucv.GetComponent<ConfirmSpriteSwap>().enabled = uc.requiresConfirm;
-
-		// set the mapping value so that it can be stored/retrieved for visualiztion
+		//
+		// 5) set the mapping value so that it can be stored/retrieved for visualiztion
+		//
 		mapping[uc] = ucv;
 		ucv.SetSlotNumber(slot);
 
 		// bind activation via numpad/numrow here
 		SlotActions[slot] = () => ucs.TryIssueCommand(uc);
+
+		//
+		// disabled for now, janky and not really working
+		// ucv.GetComponent<ConfirmSpriteSwap>().enabled = uc.requiresConfirm;
 	}
 
 	private void SelectSlot(int slot) {
 		SlotActions[slot].Invoke();
 	}
 
-	private void ActivateTrigger(UnitCommand uc) {
-		mapping[uc].OnActivate();
+	private void ActivateTrigger(PlayerUnit thisUnit, UnitCommand uc) {
+		mapping[uc].OnActivate(thisUnit, uc);
 	}
 
-	private void DeactivateTrigger(UnitCommand uc) {
-		mapping[uc].OnDeactivate();
+	private void DeactivateTrigger(PlayerUnit thisUnit, UnitCommand uc) {
+		mapping[uc].OnDeactivate(thisUnit, uc);
 	}
 
-	private void FinishTrigger(UnitCommand uc) {
+	private void FinishTrigger(PlayerUnit thisUnit, UnitCommand uc) {
 		// just in case your ability caused others to become balid/invalid, go ahead and refresh
 		foreach (UnitCommand _uc in mapping.Keys) {
 			mapping[_uc].CheckButtonStatus();
@@ -162,7 +181,7 @@ public class UnitCommandPanel : MonoBehaviour
 		mapping[uc].SetButtonStatus(false);
 	}
 
-	private void RevertTrigger(UnitCommand uc) {
+	private void RevertTrigger(PlayerUnit thisUnit, UnitCommand uc) {
 		mapping[uc].CheckButtonStatus();
 		mapping[uc].UpdateLimitType();	
 	}

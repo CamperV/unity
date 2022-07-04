@@ -22,6 +22,8 @@ public class AttackUC : UnitCommand
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
+        thisUnit.playerUnitController.Unlock();
+
         thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();
         UIManager.inst.DisableEngagementPreview();
@@ -53,8 +55,6 @@ public class AttackUC : UnitCommand
                 })
             );
             
-            //
-            thisUnit.playerUnitController.Unlock();
             return ExitSignal.NextState;
         }
 
@@ -122,8 +122,13 @@ public class AttackUC : UnitCommand
 
     private bool ValidTargetExistsFrom(PlayerUnit thisUnit, GridPosition fromPosition) {        
         EnemyUnitController enemyUC = thisUnit.enemyUnitController;
-        TargetRange standing = TargetRange.Standing(fromPosition, thisUnit.EquippedWeapon.MIN_RANGE, thisUnit.EquippedWeapon.MAX_RANGE);
-        return enemyUC.activeUnits.Where(enemy => standing.ValidTarget(enemy.gridPosition)).Any();
+
+        bool validTargetForAnyWeapon = false;
+        foreach (Weapon w in thisUnit.inventory.Weapons) {
+            TargetRange standing = TargetRange.Standing(fromPosition, w.MIN_RANGE, w.MAX_RANGE);
+            validTargetForAnyWeapon |= enemyUC.activeUnits.Where(enemy => standing.ValidTarget(enemy.gridPosition)).Any();
+        }
+        return validTargetForAnyWeapon;
     }
 
     private void DisplayAttackRange(PlayerUnit thisUnit) {
