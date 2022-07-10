@@ -89,7 +89,7 @@ MonoBehaviour:
   _MULTISTRIKE: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 12
+    VITALITY: 20
     STRENGTH: 2
     DEXTERITY: 1
     REFLEX: 0

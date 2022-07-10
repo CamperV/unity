@@ -120,7 +120,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 9ffd81fa3b9141c42a8cd86c92bfa5db, type: 2}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.size
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[0]
@@ -133,7 +133,7 @@ PrefabInstance:
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[2]
       value: 
-      objectReference: {fileID: 11400000, guid: 572e16012f50dd74daeb19444918ec60, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[3]
       value: 

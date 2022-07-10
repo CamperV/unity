@@ -17,14 +17,15 @@ public class MessageEmitter : MonoBehaviour
         Debuff
     }
 
-    public Vector3 originOffset;
+    public Transform origin;  // assign in inspector
     public bool randomSaltFlag;
+
     [SerializeField] private Message[] messagePrefabs;
 
     public void Emit(MessageType messageType, string message) {
-        Vector3 finalOffset = originOffset;
-
         if (randomSaltFlag) {
+            Vector3 finalOffset = origin.position;
+
             float radius = 0.475f;
 
             // on the edge of the unit circle
@@ -36,16 +37,22 @@ public class MessageEmitter : MonoBehaviour
                 Mathf.Clamp(Mathf.Abs(finalOffset.y), .4f, radius), 
                 0
             );
-
-            // uncomment for fixed-offset damage numbers
-            // finalOffset = new Vector3(
-            //     0,
-            //     radius, 
-            //     0
-            // );
         }
 
-        Message emission = Instantiate(messagePrefabs[(int)messageType], transform.position + finalOffset, Quaternion.identity);
+        Message emission = Instantiate(messagePrefabs[(int)messageType], origin.position, Quaternion.identity);
+        emission.textMesh.SetText(message);
+    }
+
+    // this emits towards a source, using the attached Unit's transform as a pivot
+    public void EmitTowards(MessageType messageType, string message, Vector3 source) {
+        float originMag = (origin.position - transform.position).magnitude;
+        Vector3 direction = source - transform.position;
+        Vector3 offset = originMag*direction.normalized;
+
+        // and clamp it, finally
+        float clampedY = (offset.y >= 0f) ? 0.75f*(originMag + 0.10f) : -0.75f*(originMag + 0.10f);
+
+        Message emission = Instantiate(messagePrefabs[(int)messageType], transform.position + new Vector3(offset.x, clampedY, offset.z), Quaternion.identity);
         emission.textMesh.SetText(message);
     }
 }

@@ -27,7 +27,7 @@ public class WeaponSwitcher : MonoBehaviour
 	public void ActivateSwitcher(PlayerUnit thisUnit, UnitCommand thisCommand) {
 		RectTransform _rt = GetComponent<RectTransform>();
 		RectTransform _parent_rt = GetComponentInParent<UnitCommandPanel>().GetComponent<RectTransform>();
-		_rt.position = new Vector2(_parent_rt.position.x, _rt.position.y);
+		_rt.position = new Vector3(_parent_rt.position.x, _rt.position.y, _parent_rt.position.z);
 
 		boundUnit = thisUnit;
 		boundCommand = thisCommand;
@@ -75,9 +75,13 @@ public class WeaponSwitcher : MonoBehaviour
 	}
 
 	private void UpdateVisual(PlayerUnit thisUnit) {
+		Pair<int, int> dmgRange = thisUnit.EquippedWeapon.DamageRange(thisUnit);
+		Pair<int, int> range = new Pair<int, int>(thisUnit.EquippedWeapon.MIN_RANGE, thisUnit.EquippedWeapon.MAX_RANGE);
+		string rangeExt = (range.First == range.Second) ? "" : $" - {range.Second}";
+
 		string title = $"<size={weaponText.fontSize + 8}><color=#{highlightColorHex}>{thisUnit.EquippedWeapon.name}</color></size>\n";
-		string dmg = $"<color=#{highlightColorHex}>Damage</color>\t[{thisUnit.EquippedWeapon.MIN_MIGHT} - {thisUnit.EquippedWeapon.MAX_MIGHT}] + {thisUnit.unitStats.STRENGTH}";
-		string rng = $"<color=#{highlightColorHex}>Range</color>\t[{thisUnit.EquippedWeapon.MIN_RANGE} - {thisUnit.EquippedWeapon.MAX_RANGE}]";
+		string dmg = $"<color=#{highlightColorHex}>Damage</color>\t{dmgRange.First} - {dmgRange.Second}";
+		string rng = $"<color=#{highlightColorHex}>Range</color>\t{range.First}{rangeExt}";
 		//
 		weaponText.SetText(string.Join("\n", title, dmg, rng));
 

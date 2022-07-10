@@ -27,6 +27,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public delegate void DefenseGeneration(Unit thisUnit, ref MutableDefense mutDef, Unit attacker);
     public event DefenseGeneration OnDefend;
 
+    public delegate void ComboAttackGeneration(Unit thisUnit, ref MutableComboAttack mutCombo, Unit target);
+    public event ComboAttackGeneration OnComboAttack;
+
     public delegate void FinalEngagementGeneration(ref MutableEngagementStats mutES);
     public event FinalEngagementGeneration OnFinalEngagementGeneration;
 
@@ -211,6 +214,15 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         }
     }
 
+    public IEnumerable<Unit> EnemiesThreateningCombo() {
+        foreach (Unit unit in unitMap.Units) {
+            if (unit == this || unit.GetType() == GetType()) continue;
+
+            TargetRange standing = TargetRange.Standing(unit.gridPosition, unit.EquippedWeapon.MIN_RANGE, unit.EquippedWeapon.MAX_RANGE);
+            if (standing.ValidTarget(gridPosition)) yield return unit;
+        }
+    }
+
     public IEnumerable<TerrainTile> TerrainWithinRange(int range) {
         foreach (GridPosition gp in gridPosition.Radiate(range)) {
             if (gp == gridPosition || !battleMap.IsInBounds(gp)) continue;
@@ -244,21 +256,18 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         FireOnFinishTurnEvent();
     }
 
-	public bool SufferDamage(int incomingDamage, bool isCritical = false) {
+	public bool SufferDamage(int incomingDamage, Vector3 fromSource, bool isCritical = false) {
         if (isCritical) {
-            messageEmitter.Emit(MessageEmitter.MessageType.CritDamage, $"{incomingDamage}!");
-
+            messageEmitter.EmitTowards(MessageEmitter.MessageType.CritDamage, $"{incomingDamage}!", fromSource);
             TriggerVeryHurtAnimation();
 
         } else {
             if (incomingDamage > 0) {
-                messageEmitter.Emit(MessageEmitter.MessageType.Damage, $"{incomingDamage}");
-
+                messageEmitter.EmitTowards(MessageEmitter.MessageType.Damage, $"{incomingDamage}", fromSource);
                 TriggerHurtAnimation();
 
             } else {
-                messageEmitter.Emit(MessageEmitter.MessageType.NoDamage, $"{incomingDamage}");
-
+                messageEmitter.EmitTowards(MessageEmitter.MessageType.NoDamage, $"{incomingDamage}", fromSource);
                 TriggerNoDamageHurtAnimation();
             }
         }
@@ -372,6 +381,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(this, ref mutAtt, target);
     public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(this, ref mutDef, attacker);
+    public void FireOnComboAttackEvent(ref MutableComboAttack mutCombo, Unit target) => OnComboAttack?.Invoke(this, ref mutCombo, target);
     public void FireOnFinalEngagementGeneration(ref MutableEngagementStats mutES) => OnFinalEngagementGeneration?.Invoke(ref mutES);
 
     public void FireOnAvoidEvent() {

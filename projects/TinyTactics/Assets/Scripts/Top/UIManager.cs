@@ -14,9 +14,8 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private BasicAttackInspection unitInspector;
 	[SerializeField] private UnitCommandPanel unitCommandPanel;
 
-	[SerializeField] private GameObject engagementPreviewContainer;
-	[SerializeField] private EngagementPreviewPanel playerEngagementPreviewPanel;
-	[SerializeField] private EngagementPreviewPanel enemyEngagementPreviewPanel;
+	// deprecated above
+	[SerializeField] private EngagementPreviewBar engagementPreviewBar;
 
 	[SerializeField] private EndgameStatsPanel victoryPanel;
 	[SerializeField] private EndgameStatsPanel defeatPanel;
@@ -36,7 +35,7 @@ public sealed class UIManager : MonoBehaviour
 
 		startBattleButtonContainer.SetActive(true);
 		unitInspector.gameObject.SetActive(false);
-		engagementPreviewContainer.SetActive(false);
+		engagementPreviewBar.gameObject.SetActive(false);
     }
 
 	public void UpdateTerrainEffectPanel(TerrainTile terrainAt) {
@@ -65,75 +64,15 @@ public sealed class UIManager : MonoBehaviour
 		unitInspector.gameObject.SetActive(false);
 	}
 
-	public void EnableEngagementPreview(Engagement potentialEngagement, Transform anchoredTransform) {
-		engagementPreviewContainer.SetActive(true);
-
-		playerEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(anchoredTransform);
-		enemyEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(anchoredTransform);
-
-		// PLAYER-SIDE
-		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
-		playerEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.aggressor.spriteAnimator.MainSprite;
-		playerEngagementPreviewPanel.portraitImage.color = potentialEngagement.aggressor.spriteAnimator.MainColor;
-		playerEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.aggressor.EquippedWeapon.sprite;
-		playerEngagementPreviewPanel.nameText.SetText(potentialEngagement.aggressor.displayName);
-		//
-		playerEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.aggressor.unitStats._CURRENT_HP}");
-		playerEngagementPreviewPanel.dmgValue.SetText($"{playerPreviewStats.minDamage} - {playerPreviewStats.maxDamage}");
-		playerEngagementPreviewPanel.hitValue.SetText("100%");
-		// playerEngagementPreviewPanel.dmgValue.SetText($"{playerPreviewStats.damage}");
-		// playerEngagementPreviewPanel.hitValue.SetText($"{playerPreviewStats.hitRate}%");
-		playerEngagementPreviewPanel.critValue.SetText($"{playerPreviewStats.critRate}%");
-
-		// list of perks that were relevant for this Attack & potentially, counterDefense
-		List<string> playerUnitMutators = new List<string>(potentialEngagement.attack.mutators);
-		if (potentialEngagement.counterDefense != null) {
-			playerUnitMutators = playerUnitMutators.Concat(potentialEngagement.counterDefense.Value.mutators).ToList();
-		}
-		playerUnitMutators = playerUnitMutators.Concat(playerPreviewStats.mutators).ToList();
-		string playerUnitMutatorsText = string.Join("\n", playerUnitMutators.Distinct().ToList());
-		playerEngagementPreviewPanel.mutatorsValue.SetText(playerUnitMutatorsText);
-
-
-		// ENEMY-SIDE
-		// only update this if you CAN counter-attack
-		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
-		enemyEngagementPreviewPanel.portraitImage.sprite = potentialEngagement.defender.spriteAnimator.MainSprite;
-		enemyEngagementPreviewPanel.portraitImage.color = potentialEngagement.defender.spriteAnimator.MainColor;
-		enemyEngagementPreviewPanel.weaponImage.sprite = potentialEngagement.defender.EquippedWeapon.sprite;
-		enemyEngagementPreviewPanel.nameText.SetText(potentialEngagement.defender.displayName);
-		//
-		enemyEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.defender.unitStats._CURRENT_HP}");
-
-		if (enemyPreviewStats.Empty) {
-			enemyEngagementPreviewPanel.dmgValue.SetText($"--");
-			enemyEngagementPreviewPanel.hitValue.SetText($"--%");
-			enemyEngagementPreviewPanel.critValue.SetText($"--%");
-		} else {
-			enemyEngagementPreviewPanel.hpValue.SetText($"{potentialEngagement.defender.unitStats._CURRENT_HP}");
-			enemyEngagementPreviewPanel.dmgValue.SetText($"{enemyPreviewStats.minDamage} - {enemyPreviewStats.maxDamage}");
-			enemyEngagementPreviewPanel.hitValue.SetText("100%");
-			// enemyEngagementPreviewPanel.dmgValue.SetText($"{enemyPreviewStats.damage}");
-			// enemyEngagementPreviewPanel.hitValue.SetText($"{enemyPreviewStats.hitRate}%");
-			enemyEngagementPreviewPanel.critValue.SetText($"{enemyPreviewStats.critRate}%");	
-		}
-
-		
-		// list of perks that were relevant for this Defense & potentially, counterAttack
-		List<string> enemyUnitMutators = new List<string>(potentialEngagement.defense.mutators);
-		if (potentialEngagement.counterAttack != null) {
-			enemyUnitMutators = enemyUnitMutators.Concat(potentialEngagement.counterAttack.Value.mutators).ToList();
-		}
-		enemyUnitMutators = enemyUnitMutators.Concat(enemyPreviewStats.mutators).ToList();
-		string enemyUnitMutatorsText = string.Join("\n", enemyUnitMutators.Distinct().ToList());
-		enemyEngagementPreviewPanel.mutatorsValue.SetText(enemyUnitMutatorsText);
+	public void EnableEngagementPreview(Engagement potentialEngagement, Transform _) {
+		engagementPreviewBar.gameObject.SetActive(true);
+		engagementPreviewBar.GetComponent<UIAnchoredSlider>().SetActive(true, teleportInactiveFirst: true);
+		engagementPreviewBar.SetEngagementStats(potentialEngagement);
 	}
 
 	public void DisableEngagementPreview() {
-		engagementPreviewContainer.SetActive(false);
-
-		playerEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(null);
-		enemyEngagementPreviewPanel.GetComponent<UIBobber>().TrackAnchor(null);
+		engagementPreviewBar.gameObject.SetActive(false);
+		engagementPreviewBar.GetComponent<UIAnchoredSlider>().SetActive(false);
 	}
 
 	public void CreateVictoryPanel(int enemiesDefeated, int survivingUnits, int turnsElapsed) {

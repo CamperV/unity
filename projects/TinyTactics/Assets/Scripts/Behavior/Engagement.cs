@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -61,14 +62,32 @@ public class Engagement
         bool aggressorSurvived = true;
         bool defenderSurvived = true;
 
+        List<Unit> comboAllies = defender.EnemiesThreateningCombo().Where(u => u != aggressor).ToList();
+        Debug.Log($"has {comboAllies.Count} c.Al");
+
         // animate, then create a little pause before counterattacking
         // ReceiveAttack contains logic for animation processing
         int numStrikes = 1 + aggressor.unitStats._MULTISTRIKE;
         while (numStrikes > 0 && defenderSurvived) {
-            defenderSurvived = Process(aggressor, defender, attack, defense);
-            yield return (numStrikes == 1) ? new WaitForSeconds(0.65f) : new WaitForSeconds(0.35f);
+            defenderSurvived = ProcessAttack(aggressor, defender, attack, defense);
             //
             numStrikes--;
+
+            if (defenderSurvived) {
+                // before we go to the next attack, process ComboAttacks (if defender is still around)
+                if (comboAllies.Count > 0) {
+                    yield return new WaitForSeconds(0.35f);
+
+                    foreach (Unit comboUnit in comboAllies) {
+                        ComboAttack comboAttack = GenerateComboAttack(comboUnit, defender);
+                        defenderSurvived = ProcessCombo(comboUnit, defender, comboAttack, defense);
+
+                        yield return new WaitForSeconds(0.35f);
+                    }
+                }
+            }
+
+            yield return (numStrikes == 0) ? new WaitForSeconds(0.65f) : new WaitForSeconds(0.35f);
         }
 
         yield return new WaitUntil(aggressor.spriteAnimator.EmptyQueue);
@@ -76,10 +95,10 @@ public class Engagement
         ///
 
         // if we can counterattack:
-        if (defenderSurvived && counterAttack != null) {          
+        if (defenderSurvived && counterAttack != null) {            
             int numCounterStrikes = 1 + defender.unitStats._MULTISTRIKE;
             while (numCounterStrikes > 0 && aggressorSurvived) {
-                aggressorSurvived = Process(defender, aggressor, counterAttack.Value, counterDefense.Value);            
+                aggressorSurvived = ProcessAttack(defender, aggressor, counterAttack.Value, counterDefense.Value);            
                 ///
 
                 numCounterStrikes--;
@@ -135,6 +154,16 @@ public class Engagement
         return new Defense(mutableDefense);
     }
 
+    private ComboAttack GenerateComboAttack(Unit generator, Unit defender) {
+        int finalDamage = (int)Mathf.Floor( (generator.EquippedWeapon.MIN_MIGHT + generator.unitStats.STRENGTH) / 2 );
+
+        MutableComboAttack mutableComboAttack = new MutableComboAttack(finalDamage);
+        
+        // THIS WILL MODIFY THE OUTGOING COMBO-ATTACK PACKAGE
+        generator.FireOnComboAttackEvent(ref mutableComboAttack, defender);
+        return new ComboAttack(mutableComboAttack);
+    }
+
     private EngagementStats GenerateEngagementStats(Attack _attack, Defense _defense) {
         MutableEngagementStats mutableEngagementStats = new MutableEngagementStats(_attack, _defense);
         
@@ -144,7 +173,7 @@ public class Engagement
         return new EngagementStats(mutableEngagementStats);
     }
 
-    private bool Process(Unit A, Unit B, Attack _attack, Defense _defense) {
+    private bool ProcessAttack(Unit A, Unit B, Attack _attack, Defense _defense) {
         EngagementStats finalStats = GenerateEngagementStats(_attack, _defense);
         
         A.TriggerAttackAnimation(B.gridPosition);
@@ -155,10 +184,7 @@ public class Engagement
         );
         
         bool isCrit = Random.Range(0, 100) <= finalStats.critRate;
-
-        // this is the final Damage, linear relationship
         int damage = CalculateFinalDamage(finalStats);
-        Debug.Log($"Resulting damage: {damage}");
 
         int sufferedDamage = (isCrit) ? damage*2 : damage;
 
@@ -166,7 +192,7 @@ public class Engagement
         A.personalAudioFX.PlayWeaponAttackFX();
        
         // if the hit is... unimpressive, play a clang or something
-        if (sufferedDamage < 1) A.personalAudioFX.PlayBlockFX();
+        if (sufferedDamage < 1) B.personalAudioFX.PlayBlockFX();
 
         // hit/crit
         if (isCrit) {
@@ -177,7 +203,29 @@ public class Engagement
 
         // then the meat
         // ouchies, play the animations for hurt
-        bool survived = B.SufferDamage(sufferedDamage, isCritical: isCrit);
+        bool survived = B.SufferDamage(sufferedDamage, A.transform.position, isCritical: isCrit);
+        if (survived) B.FireOnHurtByEvent(A);
+        
+        // fire the event after suffering damage, so the animations are queued in the right order
+        // this also means you will not be debuffed or anything if you die
+        A.FireOnHitEvent(B);
+
+		return survived;
+	}
+
+    private bool ProcessCombo(Unit A, Unit B, ComboAttack _combo, Defense previousDefense) {        
+        A.TriggerAttackAnimation(B.gridPosition);
+
+        // now the theatrics
+        A.personalAudioFX.PlayWeaponAttackFX();
+
+        int sufferedDamage = (int)Mathf.Clamp((_combo.damage - previousDefense.damageReduction), 0f, 99f);
+       
+        // if the hit is... unimpressive, play a clang or something
+        if (sufferedDamage < 1) B.personalAudioFX.PlayBlockFX();
+
+        // ouchies, play the animations for hurt
+        bool survived = B.SufferDamage(sufferedDamage, A.transform.position);
         if (survived) B.FireOnHurtByEvent(A);
         
         // fire the event after suffering damage, so the animations are queued in the right order
@@ -200,14 +248,14 @@ public class Engagement
         int advantageThreshold = 2;
 
         int numRolls = 1 + (int)Mathf.Floor((Mathf.Abs(finalStats.advantageRate) / advantageThreshold));
-        Debug.Log($"Advantage rate: {finalStats.advantageRate}, numRolls: {numRolls}");
+        // Debug.Log($"Advantage rate: {finalStats.advantageRate}, numRolls: {numRolls}");
 
         int highestRoll = Int32.MinValue;
         int lowestRoll = Int32.MaxValue;
         while (numRolls > 0) {
             // roll here
             int rollValue = Random.Range(finalStats.minDamage, finalStats.maxDamage+1);
-            Debug.Log($"Rolled {rollValue}");
+            // Debug.Log($"Rolled {rollValue}");
 
             highestRoll = Mathf.Max(rollValue, highestRoll);
             lowestRoll = Mathf.Min(rollValue, lowestRoll);
@@ -215,8 +263,8 @@ public class Engagement
             numRolls--;
         }
 
-        Debug.Log($"Highest: {highestRoll}");
-        Debug.Log($"Lowest: {lowestRoll}");
+        // Debug.Log($"Highest: {highestRoll}");
+        // Debug.Log($"Lowest: {lowestRoll}");
 
         // if you're at adv/disadv, return different rolls
         return (finalStats.advantageRate > 0) ? highestRoll : lowestRoll;

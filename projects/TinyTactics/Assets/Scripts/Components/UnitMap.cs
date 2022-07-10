@@ -18,8 +18,7 @@ public class UnitMap : MonoBehaviour
     private Dictionary<GridPosition, Unit> map;
     private Dictionary<GridPosition, Unit> reservations;
 
-    // public List<GridPosition> currentMap = new List<GridPosition>();
-    // public List<GridPosition> currentRes = new List<GridPosition>();
+    public IEnumerable<Unit> Units => map.Values.Where(u => u != null);
 
     void Awake() {
         battleMap = GetComponentInChildren<BattleMap>();

@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 632900d65b63a6b43ac35911668ac90c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originOffset: {x: 0, y: 0, z: 0}
+  origin: {fileID: 0}
   randomSaltFlag: 0
   messagePrefabs: []
 --- !u!114 &6992608897359903800
@@ -107,11 +107,11 @@ MonoBehaviour:
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 12
-    STRENGTH: 1
+    STRENGTH: 2
     DEXTERITY: 2
     REFLEX: 0
     DEFENSE: 1
-    MOVE: 3
+    MOVE: 2
     _MULTISTRIKE: 0
   variance: 0
 --- !u!1001 &219998693570959736
