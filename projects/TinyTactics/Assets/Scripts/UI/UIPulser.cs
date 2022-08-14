@@ -42,20 +42,24 @@ public class UIPulser : MonoBehaviour
 		// while also decreasing its alpha
 		GameObject pulseClone = new GameObject();
 		pulseClone.name = $"{targetImage.gameObject.name}_PulseClone";
-
-		pulseClone.transform.parent = targetImage.gameObject.transform;
-		pulseClone.transform.localPosition = Vector3.zero;
+		pulseClone.AddComponent<RectTransform>();
+		pulseClone.transform.SetParent(targetImage.gameObject.transform);
+		
+		pulseClone.GetComponent<RectTransform>().sizeDelta = targetImage.gameObject.GetComponent<RectTransform>().sizeDelta;
+		pulseClone.GetComponent<RectTransform>().localScale = Vector3.one;
+		pulseClone.GetComponent<RectTransform>().localPosition = Vector3.zero;
 		//
 		CanvasGroup canvasGroup = pulseClone.AddComponent<CanvasGroup>();
 		Image im = pulseClone.AddComponent<Image>();
 		im.sprite = targetImage.sprite;
 
 		float timeRatio = 0.0f;
+		Vector3 initialScale = pulseClone.transform.localScale;
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / pulseLength);
 
 			// smooth transparency & scale increase
-			pulseClone.transform.localScale = Vector3.Lerp(Vector3.one, finalScale, timeRatio);
+			pulseClone.transform.localScale = Vector3.Lerp(initialScale, finalScale, timeRatio);
 			canvasGroup.alpha = (1.0f - timeRatio);
 
 			yield return null;

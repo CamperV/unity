@@ -20,36 +20,30 @@ public class MiniHealthBar : MonoBehaviour
     public int maxVal;
     public float healthRatio;
 
-    [HideInInspector] public Transform barLevel;
+    [SerializeField] private Transform barLevel;
     public Color barColor;
 
-    [HideInInspector] public SpriteRenderer[] renderers;
-    SpriteRenderer backgroundRenderer;
-    SpriteRenderer barRenderer;
-    SpriteRenderer borderRenderer;
+    [SerializeField] private SpriteRenderer backgroundRenderer;
+    [SerializeField] private SpriteRenderer barRenderer;
+    [SerializeField] private SpriteRenderer borderRenderer;
 
-    public Unit boundUnit;
-    public TextMeshPro textValue;
+    private Unit boundUnit;
+    [SerializeField] private TextMeshPro textValue;
 
-
-	void Awake() {
-        // get all your own members
-        barLevel = GetComponentsInChildren<Transform>()[2];
-        renderers = GetComponentsInChildren<SpriteRenderer>();
-
-        backgroundRenderer = renderers[0];
-        barRenderer        = renderers[1];
-        borderRenderer     = renderers[2];
-
-        // now, bind yourself to your parent Unit
-        // just fail ungracefully if you don't have one, that shouldn't exist anyway
+    void Awake() {
         boundUnit = GetComponentInParent<Unit>();
+        Debug.Assert(boundUnit != null);
     }
 
     void Start() {
         UpdateBar(boundUnit.unitStats.VITALITY, boundUnit.unitStats.VITALITY);
-        //
         boundUnit.unitStats.UpdateHPEvent += UpdateBar;
+    }
+
+    private void SetAlpha(float alpha) {
+        foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>()) {
+            sr.color = sr.color.WithAlpha(alpha);
+        }
     }
 
     public void UpdateBar(int val, int max) {
@@ -67,18 +61,7 @@ public class MiniHealthBar : MonoBehaviour
             )
         );
 
-        // textValue.SetText($"{currVal}/{maxVal}");
-        textValue.SetText($"{currVal}");
-    }
-
-    public static Color HueSatLerp(Color A, Color B, float ratio) {
-        float AH, AS, AV, BH, BS, BV;
-        Color.RGBToHSV(A, out AH, out AS, out AV);
-        Color.RGBToHSV(B, out BH, out BS, out BV);
-
-        float _H = Mathf.Lerp(AH, BH, ratio);
-        float _S = Mathf.Lerp(AS, BS, ratio);
-        return Color.HSVToRGB(_H, _S, 1f);
+        textValue.SetText($"{currVal}/{maxVal}");
     }
 
     public IEnumerator AnimateBar(Vector3 fromScale, Vector3 toScale, Color color, float delayTime, float fixedTime) {
@@ -107,6 +90,16 @@ public class MiniHealthBar : MonoBehaviour
 		}
 
         Destroy(go);
+    }
+
+    private static Color HueSatLerp(Color A, Color B, float ratio) {
+        float AH, AS, AV, BH, BS, BV;
+        Color.RGBToHSV(A, out AH, out AS, out AV);
+        Color.RGBToHSV(B, out BH, out BS, out BV);
+
+        float _H = Mathf.Lerp(AH, BH, ratio);
+        float _S = Mathf.Lerp(AS, BS, ratio);
+        return Color.HSVToRGB(_H, _S, 1f);
     }
 
     private IEnumerator _UpdateBarVisual(Vector3 toScale) {

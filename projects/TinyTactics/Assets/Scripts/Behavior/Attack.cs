@@ -7,24 +7,19 @@ using UnityEngine;
 [Serializable]
 public struct Attack
 {
-    public int minDamage;
-    public int maxDamage;
+    // this is used to allow EngagementStats to make a final damage determination
+    public DamageContext damageContext;
+
     public int critRate;
-    public int dexterity;
-    //
-    public bool inMeleeRange;
-    // public bool isCounterAttack;
+    public int advantageRate;
     //
     public List<string> mutators;
 
     public Attack(MutableAttack mutAtt) {
-        minDamage = mutAtt.minDamage;
-        maxDamage = mutAtt.maxDamage;
+        damageContext = mutAtt.damageContext;
+
         critRate = mutAtt.critRate;
-        dexterity = mutAtt.dexterity;
-        //
-        inMeleeRange = mutAtt.inMeleeRange;
-        // isCounterAttack = mutAtt.isCounterAttack;
+        advantageRate = mutAtt.advantageRate;
         //
         mutators = new List<string>(mutAtt.mutators);
     }
@@ -34,23 +29,24 @@ public struct Attack
 // This is a class because I would like to mutate it via a Unit's stats, etc
 public class MutableAttack
 {
-    public int minDamage;
-    public int maxDamage;
+    public DamageContext damageContext;
+    private int bonusDamage = 0;
+    private float bonusDamageMultiplier = 1f;
+
     public int critRate;
-    public int dexterity;
-    //
-    public bool inMeleeRange;
-    // public bool isCounterAttack;
+    public int advantageRate;
+
     //
     public List<string> mutators;
 
-    public MutableAttack(int minDmg, int maxDmg, int crit, int dex, bool withinOne) {
-        minDamage = minDmg;
-        maxDamage = maxDmg;
+    public MutableAttack(DamageContext dc, int crit, int adv) {
+        damageContext = new DamageContext(
+            dc.Projection,
+            () => (int)(bonusDamageMultiplier * (dc.Resolver() + bonusDamage))
+        );
+
         critRate = crit;
-        dexterity = dex;
-        //
-        inMeleeRange = withinOne;
+        advantageRate = adv;
         //
         mutators = new List<string>();
     }
@@ -59,8 +55,11 @@ public class MutableAttack
         mutators.Add(mc.displayName);
     }
 
-    public void AddDamage(int add) {
-        minDamage += add;
-        maxDamage += add;
+    public void AddBonusDamage(int add) {
+        bonusDamage += add;
+    }
+
+    public void AddBonusDamageMultiplier(float mult) {
+        bonusDamageMultiplier = mult;
     }
 }

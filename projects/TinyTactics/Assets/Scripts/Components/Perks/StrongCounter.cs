@@ -22,7 +22,7 @@ public class StrongCounter : Perk, IToolTip
     // if the unit has not moved since last turn, significantly buff attack
     private void ConditionalAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         if (boundUnit.moveAvailable) {
-            mutAtt.AddDamage(3);
+            mutAtt.AddBonusDamage(3);
             //
             mutAtt.AddMutator(this);
         }

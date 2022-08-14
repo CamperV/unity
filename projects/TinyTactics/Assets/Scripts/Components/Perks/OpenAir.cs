@@ -31,7 +31,7 @@ public class OpenAir : Perk, IToolTip
         }
 
         if (wallsAdjacent == false) {
-            mutAtt.AddDamage(2);
+            mutAtt.AddBonusDamage(2);
             mutAtt.AddMutator(this);
         }
     }

@@ -40,6 +40,7 @@ MonoBehaviour:
   statusSystem: {fileID: 0}
   spriteOutline: {fileID: 0}
   inventory: {fileID: 0}
+  portraitSprite: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
   <tags>k__BackingField: []
@@ -78,7 +79,7 @@ MonoBehaviour:
     DEXTERITY: 3
     REFLEX: 3
     DEFENSE: 0
-    MOVE: 4
+    MOVE: 3
     _MULTISTRIKE: 1
   variance: 0
 --- !u!114 &4127691264941027503
@@ -93,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 632900d65b63a6b43ac35911668ac90c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originOffset: {x: 0, y: 0, z: 0}
+  origin: {fileID: 0}
   randomSaltFlag: 0
   messagePrefabs: []
 --- !u!114 &7408625501826054290
@@ -130,7 +131,7 @@ PrefabInstance:
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 5a279483b63ea0e4ba4375a12006c6c4, type: 2}
+      objectReference: {fileID: 11400000, guid: 9ae5c960ccab1a14b9d77ebd0f923ee8, type: 2}
     - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: color.a
       value: 1

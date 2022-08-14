@@ -69,7 +69,7 @@ public class ImmediateEngagementStatus : so_Status, IValueStatus, IImmediateStat
     private void ModifyAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         switch (modifyStat) {
             case ModifyStat.Damage:
-                mutAtt.AddDamage(value);
+                mutAtt.AddBonusDamage(value);
                 break;
 
             case ModifyStat.CriticalRate:
@@ -77,7 +77,7 @@ public class ImmediateEngagementStatus : so_Status, IValueStatus, IImmediateStat
                 break;
 
             case ModifyStat.AdvantageRate:
-                mutAtt.dexterity += value;
+                mutAtt.advantageRate += value;
                 break;
         }
     }
@@ -93,7 +93,7 @@ public class ImmediateEngagementStatus : so_Status, IValueStatus, IImmediateStat
                 break;
 
             case ModifyStat.AdvantageRate:
-                mutDef.reflex += value;
+                mutDef.advantageRate += value;
                 break;
         }
     }

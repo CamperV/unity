@@ -28,6 +28,7 @@ MonoBehaviour:
   statusSystem: {fileID: 0}
   spriteOutline: {fileID: 0}
   inventory: {fileID: 0}
+  portraitSprite: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
   <tags>k__BackingField: []
@@ -76,9 +77,9 @@ MonoBehaviour:
   _MULTISTRIKE: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 5
+    VITALITY: 8
     STRENGTH: 1
-    DEXTERITY: 4
+    DEXTERITY: 2
     REFLEX: 3
     DEFENSE: 0
     MOVE: 4
@@ -120,24 +121,24 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 9ffd81fa3b9141c42a8cd86c92bfa5db, type: 2}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 5a279483b63ea0e4ba4375a12006c6c4, type: 2}
+      objectReference: {fileID: 11400000, guid: de221ed030122064d8ea1522a7ea4b42, type: 2}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 5ef7e834cf4f24d4d8db087554ec85cf, type: 2}
+      objectReference: {fileID: 11400000, guid: 9ae5c960ccab1a14b9d77ebd0f923ee8, type: 2}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[2]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: f5bd38f70d40e5a40adcd5d5afbd82ea, type: 2}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[3]
       value: 
-      objectReference: {fileID: 11400000, guid: e31e59966fb34ce43956670abd2d96c5, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: color.a
       value: 1

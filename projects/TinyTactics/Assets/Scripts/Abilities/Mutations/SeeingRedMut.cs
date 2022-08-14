@@ -32,9 +32,7 @@ public class SeeingRedMut : Mutation
 
     private void BonusDamageAgainstMark(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         if (target.statusSystem.HasStatus(so_Status.CreateStatusProviderID(thisUnit, markStatus))) {
-            mutAtt.minDamage = (int)(mutAtt.minDamage*damageMultiplier);
-            mutAtt.maxDamage = (int)(mutAtt.maxDamage*damageMultiplier);
-
+            mutAtt.AddBonusDamageMultiplier(damageMultiplier);
             mutAtt.AddMutator(this);
         }
     }

@@ -32,10 +32,16 @@ public class SegmentedHealthBar : MonoBehaviour
 
     private Color barColor;
 
+    private CanvasGroup canvasGroup;
+    private float originalAlpha;
+
 	void Awake() {
         // now, bind yourself to your parent Unit
         // just fail ungracefully if you don't have one, that shouldn't exist anyway
         boundUnit = GetComponentInParent<Unit>();
+
+        canvasGroup = GetComponentInChildren<CanvasGroup>();
+        originalAlpha = canvasGroup.alpha;
     }
 
     void Start() {

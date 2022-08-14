@@ -116,7 +116,7 @@ public class EnemyBrain : MonoBehaviour
 		thisUnit.gridPosition = savedGridPosition;
 		Debug.Assert(thisUnit.gridPosition == savedGridPosition);
 
-		float medianDamage = (finalStats.minDamage + finalStats.maxDamage) / 2f;
+		float medianDamage = (finalStats.finalDamageContext.Min + finalStats.finalDamageContext.Max) / 2f;
 		return (int)medianDamage;
 	}
 

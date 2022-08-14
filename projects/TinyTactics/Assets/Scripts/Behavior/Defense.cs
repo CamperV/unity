@@ -8,18 +8,14 @@ public struct Defense
 {
     public int damageReduction;
     public int critAvoidRate;
-    public int reflex; // REFLEX
-    //
-    public bool inMeleeRange;
+    public int advantageRate; // REFLEX
     //
     public List<string> mutators;
 
     public Defense(MutableDefense mutDef) {
         damageReduction = mutDef.damageReduction;
         critAvoidRate = mutDef.critAvoidRate;
-        reflex = mutDef.reflex;
-        //
-        inMeleeRange = mutDef.inMeleeRange;
+        advantageRate = mutDef.advantageRate;
         //
         mutators = new List<string>(mutDef.mutators); 
     }
@@ -31,18 +27,14 @@ public class MutableDefense
 {
     public int damageReduction;
     public int critAvoidRate;
-    public int reflex; // REFLEX
-    //
-    public bool inMeleeRange;
+    public int advantageRate; // REFLEX
     //
     public List<string> mutators;
 
-    public MutableDefense(int dr, int critAvoid, int _ref, bool withinOne) {
+    public MutableDefense(int dr, int critAvoid, int reflex) {
         damageReduction = dr;
         critAvoidRate = critAvoid;
-        reflex = _ref;
-        //
-        inMeleeRange = withinOne;
+        advantageRate = reflex;
         //
         mutators = new List<string>();
     }
@@ -51,7 +43,7 @@ public class MutableDefense
         mutators.Add(mc.displayName);
     }
 
-    public void AddDamageReduction(int add) {
+    public void AddBonusDamageReduction(int add) {
         damageReduction += add;
     }
 }

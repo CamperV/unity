@@ -21,7 +21,7 @@ public class Opportunist : Perk, IToolTip
 
     private void OffensiveAdv(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         if (!Engagement.CounterAttackPossible(boundUnit, target)) {
-            mutAtt.AddDamage(5);
+            mutAtt.AddBonusDamage(5);
             mutAtt.AddMutator(this);
         }
     }

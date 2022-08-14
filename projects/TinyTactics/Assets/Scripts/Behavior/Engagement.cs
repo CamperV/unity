@@ -119,21 +119,22 @@ public class Engagement
 
     public EngagementStats SimulateCounterAttack() {
         if (counterAttack == null) {
-            return new EngagementStats(-1, -1, -1, -1);
+            return new EngagementStats(-1, -1);
         } else {
             return GenerateEngagementStats(counterAttack.Value, counterDefense.Value);
         }
     }
 
     private Attack GenerateAttack(Unit generator, Unit defender) {
-        Pair<int, int> dmgRange = generator.EquippedWeapon.DamageRange(generator);
+        DamageContext damageContext = new DamageContext(
+            generator.EquippedWeapon.GenerateProjection(generator),     // the overall range of damage that can be done
+            () => generator.EquippedWeapon.RollDamage(generator)        // the executor which returns a true final damage value
+        );
 
         MutableAttack mutableAttack = new MutableAttack(
-            dmgRange.First,
-            dmgRange.Second,
-            generator.EquippedWeapon.CRITICAL,
-            generator.unitStats.DEXTERITY,
-            defender.gridPosition.ManhattanDistance(generator.gridPosition) == 1
+            damageContext,                      // DamageContext to emit a real value and hold info about it
+            generator.EquippedWeapon.CRITICAL,  // crit rate of course
+            generator.unitStats.DEXTERITY       // advantage rate
         );
         
         // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
@@ -143,10 +144,9 @@ public class Engagement
 
     private Defense GenerateDefense(Unit generator, Unit attacker) {
          MutableDefense mutableDefense = new MutableDefense(
-            generator.unitStats.DEFENSE,                      // reduce incoming damage
-            0,           // crit avoid rate
-            generator.unitStats.REFLEX,
-            attacker.gridPosition.ManhattanDistance(generator.gridPosition) == 1
+            generator.unitStats.DEFENSE,    // reduce incoming damage
+            generator.unitStats.REFLEX,     // crit avoid rate
+            generator.unitStats.REFLEX      // advantage rate
         );
 
         // THIS WILL MODIFY THE OUTGOING DEFENSE PACKAGE
@@ -155,9 +155,7 @@ public class Engagement
     }
 
     private ComboAttack GenerateComboAttack(Unit generator, Unit defender) {
-        int finalDamage = (int)Mathf.Floor( (generator.EquippedWeapon.MIN_MIGHT + generator.unitStats.STRENGTH) / 2 );
-
-        MutableComboAttack mutableComboAttack = new MutableComboAttack(finalDamage);
+        MutableComboAttack mutableComboAttack = new MutableComboAttack( generator.EquippedWeapon.ComboDamage(generator) );
         
         // THIS WILL MODIFY THE OUTGOING COMBO-ATTACK PACKAGE
         generator.FireOnComboAttackEvent(ref mutableComboAttack, defender);
@@ -176,16 +174,10 @@ public class Engagement
     private bool ProcessAttack(Unit A, Unit B, Attack _attack, Defense _defense) {
         EngagementStats finalStats = GenerateEngagementStats(_attack, _defense);
         
-        A.TriggerAttackAnimation(B.gridPosition);
+        A.TriggerAttackAnimation(B.gridPosition);       
+        int damage = finalStats.finalDamageContext.Resolver();
 
-        // log the Engagement
-        UIManager.inst.combatLog.AddEntry(
-            $"{A.logTag}@[{A.displayName}]: YELLOW@[{finalStats.minDamage}]-YELLOW@[{finalStats.maxDamage}] ATK, YELLOW@[{finalStats.critRate}] CRIT ]"
-        );
-        
         bool isCrit = Random.Range(0, 100) <= finalStats.critRate;
-        int damage = CalculateFinalDamage(finalStats);
-
         int sufferedDamage = (isCrit) ? damage*2 : damage;
 
         // now the theatrics
@@ -239,34 +231,4 @@ public class Engagement
         yield return new WaitUntil(() => resolvedFlag == true);
 		VoidAction();
 	}
-
-    private int CalculateFinalDamage(EngagementStats finalStats) {
-        // 1) Linear
-        // return Random.Range(finalStats.minDamage, finalStats.maxDamage+1);
-
-        // 2) Advantage-based
-        int advantageThreshold = 2;
-
-        int numRolls = 1 + (int)Mathf.Floor((Mathf.Abs(finalStats.advantageRate) / advantageThreshold));
-        // Debug.Log($"Advantage rate: {finalStats.advantageRate}, numRolls: {numRolls}");
-
-        int highestRoll = Int32.MinValue;
-        int lowestRoll = Int32.MaxValue;
-        while (numRolls > 0) {
-            // roll here
-            int rollValue = Random.Range(finalStats.minDamage, finalStats.maxDamage+1);
-            // Debug.Log($"Rolled {rollValue}");
-
-            highestRoll = Mathf.Max(rollValue, highestRoll);
-            lowestRoll = Mathf.Min(rollValue, lowestRoll);
-
-            numRolls--;
-        }
-
-        // Debug.Log($"Highest: {highestRoll}");
-        // Debug.Log($"Lowest: {lowestRoll}");
-
-        // if you're at adv/disadv, return different rolls
-        return (finalStats.advantageRate > 0) ? highestRoll : lowestRoll;
-    }
 }

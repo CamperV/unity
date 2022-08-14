@@ -21,12 +21,12 @@ public class ChipAway : Perk, IToolTip
 
     private void ChipAttack(ref MutableEngagementStats mutES) {
         bool triggered = false;
-        if (mutES.minDamage < 1) {
-            mutES.minDamage = 1;
+        if (mutES.finalDamageContext.Min < 1) {
+            // mutES.finalDamageContext.Min = 1;
             triggered = true;
         }
-        if (mutES.maxDamage < 1) {
-            mutES.maxDamage = 1;
+        if (mutES.finalDamageContext.Max < 1) {
+            // mutES.finalDamageContext.Min = 1;
             triggered = true;
         }
         

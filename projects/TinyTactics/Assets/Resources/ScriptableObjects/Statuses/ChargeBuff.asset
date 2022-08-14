@@ -17,5 +17,5 @@ MonoBehaviour:
   stackable: 1
   registerTo: 0
   modifyStat: 0
-  <value>k__BackingField: 5
+  <value>k__BackingField: 1
   <revertWithMovement>k__BackingField: 1

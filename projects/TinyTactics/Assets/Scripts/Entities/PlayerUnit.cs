@@ -37,6 +37,9 @@ public sealed class PlayerUnit : Unit
         unitCommandSystem.Interact(gp, auxiliaryInteract);
     }
 
+    public void OnClearInteract() { 
+    }
+
     // this essentially is an "undo" for us
     // undo all the way to Idle
     public override void RevertTurn() {

@@ -18,6 +18,9 @@ public class AttackUC : TargetableUC
             maxRange: thisUnit.EquippedWeapon.MAX_RANGE
         );
         Utils.DelegateLateFrameTo(thisUnit, () => DisplayTargetRange(thisUnit));
+
+        // reset this to make sure the same-frame mouseOver works
+        TargetableUC._previousMouseOver = null;
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
@@ -25,9 +28,9 @@ public class AttackUC : TargetableUC
 
         thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();
-        UIManager.inst.DisableEngagementPreview();
         //
         UIManager.inst.DisableUnitDetail();
+        UIManager.inst.DisableEngagementPreview();
     }
 
     protected override bool ValidTarget(PlayerUnit thisUnit, GridPosition interactAt) {
@@ -39,6 +42,7 @@ public class AttackUC : TargetableUC
 
         _engagementResolveFlag = true;
         Engagement engagement = new Engagement(thisUnit, enemy);
+        UIManager.inst.EnableEngagementPreview(engagement, enemy.transform );
 
         Utils.DelegateCoroutineTo(thisUnit,
             engagement.Resolve()
@@ -50,6 +54,7 @@ public class AttackUC : TargetableUC
         Utils.DelegateCoroutineTo(thisUnit,
             engagement.ExecuteAfterResolving(() => {
                 _engagementResolveFlag = false;
+                UIManager.inst.DisableEngagementPreview();
             })
         );
     }

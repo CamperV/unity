@@ -11,13 +11,15 @@ public abstract class TargetableUC : UnitCommand
     public int maxRange; // assign in ScriptableObject interface
 
     // we can actually keep some state here: there should never be two AttackUC's Activated at the same time
-    public static GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
+    public static GridPosition? _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
 
     [SerializeField] protected TileVisuals tileVisuals;
 
     public override void Activate(PlayerUnit thisUnit) {     
         thisUnit.UpdateThreatRange(standing: true, minRange: minRange, maxRange: maxRange);
         Utils.DelegateLateFrameTo(thisUnit, () => DisplayTargetRange(thisUnit));
+
+        _previousMouseOver = null;
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
@@ -59,6 +61,8 @@ public abstract class TargetableUC : UnitCommand
                 //
                 ValidMouseOver(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition);
             }
+        } else {
+            // Debug.Log($"Active, previous: {_previousMouseOver}");
         }
     }
 

@@ -9,7 +9,7 @@ using Extensions;
 
 public class UnitCommandPanel : MonoBehaviour
 {
-	public PlayerUnit boundUnit;
+	private PlayerUnit boundUnit;
 
 	[SerializeField] public PlayerInputController inputController;
 	private Dictionary<int, Action> SlotActions;

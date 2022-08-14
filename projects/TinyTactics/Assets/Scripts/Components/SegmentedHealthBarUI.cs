@@ -13,100 +13,158 @@ public class SegmentedHealthBarUI : MonoBehaviour
     // ie, less than 5 is red, more than 15 is blue-green, etc
     // this is NOT a 0 - 100% scale, so that any full-health bar is the same color (even if one has 1 HP and one has 100 HP)
     // this would remain red even if at full-health, if around the threshold
-    public Color color_0;
-    public Color color_1;
-    public Color dimColor;
+    [SerializeField] private Color color_0;
+    [SerializeField] private Color color_1;
+    [SerializeField] private Color dimColor;
+    [SerializeField] private Color threatenedColor;
 
-    public GameObject healthContainer;
-    public GameObject healthLevelContainer;
-    public GameObject barSegmentPrefab;
-    public TextMeshProUGUI healthValue;
+    [SerializeField] private GameObject combinedLevelContainer;
+    [SerializeField] private TextMeshProUGUI combinedPreviewValue;
 
-    public GameObject armorContainer;
-    public GameObject armorLevelContainer;
-    public GameObject armorSegmentPrefab;
-    public TextMeshProUGUI armorValue;
+    [SerializeField] private GameObject barSegmentPrefab;
+    [SerializeField] private GameObject armorSegmentPrefab;
 
-
-    private int currVal;
-    private int maxVal;
+    private int currVal_Health;
+    private int maxVal_Health;
     private float healthRatio;
+    private List<GameObject> healthSegments;
+    private int currVal_Armor;
 
     private Color barColor;
 
+    void Awake() {
+        healthSegments = new List<GameObject>();
+    }
+
     public void AttachTo(Unit thisUnit) {
-        UpdateBar(thisUnit.unitStats.VITALITY, thisUnit.unitStats.VITALITY);
-        UpdateArmor(thisUnit.unitStats.DEFENSE);
+        UpdateHealthAndRedraw(thisUnit.unitStats._CURRENT_HP, thisUnit.unitStats.VITALITY);
+        UpdateArmorAndRedraw(thisUnit.unitStats.DEFENSE);
         //
-        thisUnit.unitStats.UpdateHPEvent += UpdateBar;
-        thisUnit.unitStats.UpdateDefenseEvent += UpdateArmor;
+        thisUnit.unitStats.UpdateHPEvent += UpdateHealthAndRedraw;
+        thisUnit.unitStats.UpdateDefenseEvent += UpdateArmorAndRedraw;
     }
 
-    private void UpdateBar(int val, int max) {
-        bool healing = val > currVal;
-
-        currVal = val;
-        maxVal = max;
-        healthRatio = (float)currVal/(float)maxVal;
-        Vector3 toScale = new Vector3(healthRatio, 1.0f, 1.0f);
-
-        ///
-        // update the levels appropriately
-        ///
-        // gather all segments
-        List<GameObject> segments = new List<GameObject>();
-        foreach (Transform bar in healthLevelContainer.transform) {
-            segments.Add(bar.gameObject);
-        }
-
-        // if there are too many segments:
-        while (segments.Count > max) {
-            GameObject toDestroy = segments[segments.Count - 1];
-            segments.Remove(toDestroy);
-            Destroy(toDestroy);
-        }
-        // if there are too few segments:
-        while (segments.Count < max) {
-            GameObject segment = Instantiate(barSegmentPrefab, healthLevelContainer.transform);
-            segments.Add(segment);
-        }
-
-        // color the segments appropriately
-        Color barColor = HueSatLerp(color_0, color_1, healthRatio*healthRatio);
-        for (int l = 0; l < max; l++) {
-            if (l < val)  segments[l].GetComponent<Image>().color = barColor;
-            if (l >= val) segments[l].GetComponent<Image>().color = dimColor;
-        }
-
-        healthValue.SetText(currVal.ToString());
+    private void UpdateHealthAndRedraw(int val, int max) {
+        currVal_Health = val;
+        maxVal_Health = max;
+        healthRatio = (float)val/(float)max;
+        UpdateAll();
     }
 
-    private void UpdateArmor(int defValue) {
-        armorContainer.SetActive(defValue > 0);
-        if (defValue < 1) return;
+    private void UpdateArmorAndRedraw(int defValue) {
+        currVal_Armor = defValue;
+        UpdateAll();
+    }
+
+    public void Clear() {
+        StopAllCoroutines();
+        healthSegments.Clear();
+
+        foreach (Transform bar in combinedLevelContainer.transform) {
+            Destroy(bar.gameObject);
+        }
+
+        combinedPreviewValue.SetText($"");
+    }
+
+    private void UpdateAll() {
+        Clear();
+
+        // health first
+        healthSegments.Clear();
+        for (int s = 0; s < maxVal_Health; s++) {
+            GameObject seg = Instantiate(barSegmentPrefab, combinedLevelContainer.transform);
+            healthSegments.Add(seg);
+        }
+
+        // color the health segments appropriately
+        Color barColor = RatioColor(healthRatio);
+        for (int l = 0; l < maxVal_Health; l++) {
+            healthSegments[l].GetComponent<Image>().color = (l < currVal_Health) ? barColor : dimColor;
+        }
+
+        // set Health value in text
+        combinedPreviewValue.SetText($"<color=#05D97A>{currVal_Health}</color>");
+
+        // now set armor, if you dare
+        if (currVal_Armor > 0) {
+            for (int a = 0; a < currVal_Armor; a++) {
+                Instantiate(armorSegmentPrefab, combinedLevelContainer.transform);
+            }
+
+            combinedPreviewValue.SetText($"{combinedPreviewValue.text} <color=#DE9E41>({currVal_Armor})</color>");
+        }
+    }
+
+    public void PreviewDamage(int damageAmountPreview) {
         //
+        // visually flash the bar to demonstrate the health loss
+        //
+        StartFlashSegments(damageAmountPreview);
 
-        // gather all segments
-        List<GameObject> segments = new List<GameObject>();
-        foreach (Transform armor in armorLevelContainer.transform) {
-            segments.Add(armor.gameObject);
-        }
+        //
+        // and also explicity show the new health value
+        //
+        Color currentColor = RatioColor(healthRatio);
 
-        // if there are too many segments:
-        while (segments.Count > defValue) {
-            GameObject toDestroy = segments[segments.Count - 1];
-            segments.Remove(toDestroy);
-            Destroy(toDestroy);
-        }
-        // if there are too few segments:
-        while (segments.Count < defValue) {
-            GameObject segment = Instantiate(armorSegmentPrefab, armorLevelContainer.transform);
-            segments.Add(segment);
-        }
-        
-        armorValue.SetText(defValue.ToString());
+        // now get the color that the bar will be
+        int previewHealth = currVal_Health - damageAmountPreview;
+        float previewRatio = (float)previewHealth/(float)maxVal_Health;
+        Color previewColor = RatioColor(previewRatio);
+
+        string currentColor_Hex = ColorUtility.ToHtmlStringRGB(currentColor);
+        string previewColor_Hex = ColorUtility.ToHtmlStringRGB(previewColor);
+        combinedPreviewValue.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color> \u2192 <color=#{previewColor_Hex}>{previewHealth}</color>");
     }
 
+    private void StartFlashSegments(int numSegmentsFromBack) {
+        if (healthSegments.Count > 0) {
+            int healthDiff = maxVal_Health - currVal_Health;
+            StartCoroutine(
+                FlashSegments(healthSegments.AsEnumerable().Reverse().Skip(healthDiff).Take(numSegmentsFromBack))
+            );
+        }
+    }
+
+    private IEnumerator FlashSegments(IEnumerable<GameObject> barSegments) {
+        foreach (GameObject barSegment in barSegments) {
+            StartCoroutine( FlashSingle(barSegment) );
+            // yield return null;
+            // yield return new WaitForSeconds(0.1f);
+        }
+        yield break;
+    }
+
+    private IEnumerator FlashSingle(GameObject barSegment) {
+        Image image = barSegment.GetComponent<Image>();
+        Color originalColor = image.color;
+
+        float fixedTime = 0.5f;
+		float timeRatio = 0.0f;
+
+        while (true) {
+            // to dim
+            timeRatio = 0.0f;
+            while (timeRatio < 1.0f) {
+                timeRatio += (Time.deltaTime / fixedTime);
+                image.color = Color.Lerp(originalColor, threatenedColor, timeRatio).WithAlpha(1f);
+                yield return null;
+            }
+            // yield return new WaitForSeconds(0.25f);
+
+            // and then back up to normal color
+            timeRatio = 0.0f;
+            while (timeRatio < 1.0f) {
+                timeRatio += (Time.deltaTime / fixedTime);
+                image.color = Color.Lerp(threatenedColor, originalColor, timeRatio).WithAlpha(1f);
+                yield return null;
+            }
+
+            // wait on "normal color"
+            // yield return new WaitForSeconds(0.50f);
+        }
+    }
+    
     private static Color HueSatLerp(Color A, Color B, float ratio) {
         float AH, AS, AV, BH, BS, BV;
         Color.RGBToHSV(A, out AH, out AS, out AV);
@@ -115,5 +173,9 @@ public class SegmentedHealthBarUI : MonoBehaviour
         float _H = Mathf.Lerp(AH, BH, ratio);
         float _S = Mathf.Lerp(AS, BS, ratio);
         return Color.HSVToRGB(_H, _S, 1f);
+    }
+
+    private Color RatioColor(float ratio) {
+        return HueSatLerp(color_0, color_1, ratio*ratio);
     }
 }

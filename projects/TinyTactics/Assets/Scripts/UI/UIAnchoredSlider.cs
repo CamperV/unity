@@ -7,38 +7,67 @@ using TMPro;
 public class UIAnchoredSlider : MonoBehaviour
 {
 	public Vector2 slideDimensions;
+	public bool useHeight;
+	public bool startInactive;
 
 	[Range(1, 50)]
 	public float snappiness;
 
-	private Vector2 activePosition;
-	private Vector2 inactivePosition;
-	private RectTransform rectTransform;
+	[Header("Activation Customization")]
+	public bool slideOnEnable;
+	public float slideOnEnableDelay;
+	public UIAnchoredSlider cascadeAfter;
 
-	public bool active = false;
-	public Vector2 Destination => (active) ? activePosition : inactivePosition;
+	[Header("Data")]
+	public Vector2 activePosition;
+	public Vector2 inactivePosition;
+
+	private RectTransform rectTransform;
+	private bool active;
+
+	public bool InPosition => active && activePosition == rectTransform.anchoredPosition;
 
 	void Awake() {
 		rectTransform = GetComponent<RectTransform>();
+		
+		activePosition = rectTransform.anchoredPosition;
+
+		Vector2 inactiveOffset = slideDimensions;
+		if (useHeight) {
+			// keep the direction, but make the magnitude dependent on the height of the object
+			inactiveOffset = rectTransform.rect.height*inactiveOffset.normalized;
+		}
+		inactivePosition = rectTransform.anchoredPosition + inactiveOffset;
 	}
 
-	void Start() {
-		if (active) {
-			activePosition = rectTransform.anchoredPosition;
-			inactivePosition = rectTransform.anchoredPosition + slideDimensions;
-		} else {
-			activePosition = rectTransform.anchoredPosition - slideDimensions;
-			inactivePosition = rectTransform.anchoredPosition;
-		}
+	void OnEnable() {
+		StartCoroutine( WaitForCascade() );
+	}
+
+	// this creates a cascading effect, where a parent slider must complete their slide
+	// before this slider tries to slide.
+	private IEnumerator WaitForCascade() {
+		yield return new WaitUntil(() => cascadeAfter?.InPosition == true);
+		if (slideOnEnableDelay > 0f)
+			yield return new WaitForSeconds(slideOnEnableDelay);
+
+		// then, do it
+		SetActive(slideOnEnable, teleportInactiveFirst: startInactive);
+	}
+
+	void OnDisable() {
+		SetActive(false);
 	}
 
 	void Update() {
-		float dist = Vector2.Distance(rectTransform.anchoredPosition, Destination);
+		Vector2 destination = (active) ? activePosition : inactivePosition;
+		float dist = Vector2.Distance(rectTransform.anchoredPosition, destination);
+
 		if (dist > 0.1f) {
-			rectTransform.anchoredPosition = Vector3.Lerp(rectTransform.anchoredPosition, Destination, snappiness*Time.deltaTime);
+			rectTransform.anchoredPosition = Vector3.Lerp(rectTransform.anchoredPosition, destination, snappiness*Time.deltaTime);
 
 		} else if (dist < 0.1f && dist > 0f) {
-			rectTransform.anchoredPosition = Destination;
+			rectTransform.anchoredPosition = destination;
 		}
 	}
 

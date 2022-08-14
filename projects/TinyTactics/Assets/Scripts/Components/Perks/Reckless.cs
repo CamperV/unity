@@ -22,13 +22,13 @@ public class Reckless : Perk, IToolTip
     }
 
     private void OffensiveAdv(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
-        mutAtt.AddDamage(7);
+        mutAtt.AddBonusDamage(7);
         mutAtt.AddMutator(this);
     }
 
     // since "damageReduction" can become negative, we can use this to increase the opponents damage
     private void DefensiveAdv(Unit thisUnit, ref MutableDefense mutDef, Unit target) {
-        mutDef.AddDamageReduction(-7);
+        mutDef.AddBonusDamageReduction(-7);
         mutDef.AddMutator(this);
     }
 }

@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Items/Weapon")]
-public class Weapon : Item, IEquipable
+public abstract class Weapon : Item, IEquipable
 {
     public AudioFXBundle audioFXBundle_Attack;
     public AudioFXBundle audioFXBundle_Equip;
 
-    public int MIN_MIGHT;
-    public int MAX_MIGHT;
-    public int CRITICAL;
     public int MIN_RANGE;
     public int MAX_RANGE;
+    public int CRITICAL;
 
     public static int _MAX_DAMAGE_VALUE = 99;
 
@@ -43,9 +40,9 @@ public class Weapon : Item, IEquipable
         }
     }
 
-    public Pair<int, int> DamageRange(Unit thisUnit) {
-        int upper = Mathf.Clamp(thisUnit.unitStats.STRENGTH + MAX_MIGHT, 0, _MAX_DAMAGE_VALUE);
-        int lower = Mathf.Clamp(thisUnit.unitStats.STRENGTH + MIN_MIGHT, 0, upper);
-        return new Pair<int, int>(lower, upper);
-    }
+    public abstract Pair<int, int> DamageRange(Unit thisUnit);
+    public abstract int RollDamage(Unit thisUnit);
+    public abstract int ComboDamage(Unit thisUnit);
+    public abstract string DisplayDamage(Unit thisUnit);
+    public abstract Dictionary<int, float> GenerateProjection(Unit thisUnit);
 }

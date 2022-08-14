@@ -31,7 +31,7 @@ public class CloseQuarters : Perk, IToolTip
         }
 
         if (wallsAdjacent == true) {
-            mutAtt.AddDamage(2);
+            mutAtt.AddBonusDamage(2);
             mutAtt.AddMutator(this);
         }
     }

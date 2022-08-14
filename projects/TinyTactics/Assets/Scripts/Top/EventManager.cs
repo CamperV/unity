@@ -69,8 +69,8 @@ public sealed class EventManager : MonoBehaviour
         battleMap.TerrainMouseOverEvent += uiManager.UpdateTerrainEffectPanel;
 
         // unit controller events
-        playerUnitController.NewPlayerUnitControllerSelection += u => cameraManager.AcquireTrackingTarget(u?.transform);
-        enemyUnitController.NewEnemyUnitControllerSelection += u => cameraManager.AcquireTrackingTarget(u?.transform);
+        // playerUnitController.NewPlayerUnitControllerSelection += u => cameraManager.AcquireTrackingTarget(u?.transform);
+        // enemyUnitController.NewEnemyUnitControllerSelection += u => cameraManager.AcquireTrackingTarget(u?.transform);
 
         playerUnitController.NewPlayerUnitControllerSelection += uiManager.EnableUnitCommandPanel;
         playerUnitController.ClearPlayerUnitControllerSelection += uiManager.CleanUpUnitCommandPanel;

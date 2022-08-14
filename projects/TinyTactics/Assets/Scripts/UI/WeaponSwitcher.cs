@@ -75,12 +75,11 @@ public class WeaponSwitcher : MonoBehaviour
 	}
 
 	private void UpdateVisual(PlayerUnit thisUnit) {
-		Pair<int, int> dmgRange = thisUnit.EquippedWeapon.DamageRange(thisUnit);
 		Pair<int, int> range = new Pair<int, int>(thisUnit.EquippedWeapon.MIN_RANGE, thisUnit.EquippedWeapon.MAX_RANGE);
 		string rangeExt = (range.First == range.Second) ? "" : $" - {range.Second}";
 
 		string title = $"<size={weaponText.fontSize + 8}><color=#{highlightColorHex}>{thisUnit.EquippedWeapon.name}</color></size>\n";
-		string dmg = $"<color=#{highlightColorHex}>Damage</color>\t{dmgRange.First} - {dmgRange.Second}";
+		string dmg = $"<color=#{highlightColorHex}>Damage</color>\t{thisUnit.EquippedWeapon.DisplayDamage(thisUnit)}";
 		string rng = $"<color=#{highlightColorHex}>Range</color>\t{range.First}{rangeExt}";
 		//
 		weaponText.SetText(string.Join("\n", title, dmg, rng));

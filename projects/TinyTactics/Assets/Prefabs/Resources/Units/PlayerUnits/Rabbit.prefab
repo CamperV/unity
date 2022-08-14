@@ -44,6 +44,7 @@ MonoBehaviour:
   statusSystem: {fileID: 0}
   spriteOutline: {fileID: 0}
   inventory: {fileID: 0}
+  portraitSprite: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
   <tags>k__BackingField: []
@@ -91,7 +92,7 @@ MonoBehaviour:
   _MULTISTRIKE: 0
   _CURRENT_HP: 0
   baseStats:
-    VITALITY: 6
+    VITALITY: 8
     STRENGTH: 0
     DEXTERITY: 2
     REFLEX: 1
@@ -111,7 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 632900d65b63a6b43ac35911668ac90c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originOffset: {x: 0, y: 0, z: 0}
+  origin: {fileID: 0}
   randomSaltFlag: 0
   messagePrefabs: []
 --- !u!1001 &5404564485489381899
@@ -140,7 +141,7 @@ PrefabInstance:
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: f7580e1d138ce5f4daa53c41e0a11864, type: 2}
+      objectReference: {fileID: 11400000, guid: de221ed030122064d8ea1522a7ea4b42, type: 2}
     - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: color.a
       value: 1

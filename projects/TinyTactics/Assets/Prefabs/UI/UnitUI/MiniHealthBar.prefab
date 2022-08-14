@@ -586,9 +586,11 @@ MonoBehaviour:
   currVal: 0
   maxVal: 0
   healthRatio: 0
-  barLevel: {fileID: 0}
+  barLevel: {fileID: 2091203145322738484}
   barColor: {r: 0, g: 0, b: 0, a: 0}
-  renderers: []
+  backgroundRenderer: {fileID: 6370022383706587344}
+  barRenderer: {fileID: 238208391865932632}
+  borderRenderer: {fileID: 9057642295882299004}
   boundUnit: {fileID: 0}
   textValue: {fileID: 1786923226362469848}
 --- !u!210 &7884809336341267554

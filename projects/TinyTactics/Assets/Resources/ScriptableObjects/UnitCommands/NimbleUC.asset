@@ -16,10 +16,13 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 28833eb632d77bd4c949d16fb767a02d, type: 3}
   executionType: 0
   commandCategory: 0
+  panelCategory: 0
+  panelSlot: -1
+  unitCommandVisualPrefab: {fileID: 0}
   requiresConfirm: 0
   revertable: 1
-  limitType: 1
-  cooldown: 0
+  limitType: 0
+  cooldown: 2
   remainingUses: 5
   tileVisuals: {fileID: 11400000, guid: 4d26a24a1ee38aa48944412b6ee8a70c, type: 2}
   nimbleBuff: {fileID: 11400000, guid: a6c55d74829a1dc46bbc8df692242205, type: 2}

@@ -65,6 +65,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public StatusSystem statusSystem;
     [HideInInspector] public SpriteOutline spriteOutline;
     [HideInInspector] public Inventory inventory;
+    [HideInInspector] public Sprite portraitSprite;
     
     // I don't love this, but it makes things much cleaner.
     [HideInInspector] public PlayerUnitController playerUnitController;
@@ -113,6 +114,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         statusSystem = GetComponent<StatusSystem>();
         spriteOutline = GetComponent<SpriteOutline>();
         inventory = GetComponent<Inventory>();
+        portraitSprite = GetComponentInChildren<SpriteRenderer>().sprite;
 
         // debug
         debugStateLabel = GetComponent<DebugStateLabel>();
