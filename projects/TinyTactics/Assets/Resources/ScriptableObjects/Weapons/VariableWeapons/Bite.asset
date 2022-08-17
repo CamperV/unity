@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e503674299771694d97f45d88efef8a2, type: 3}
-  m_Name: BiteClassic
+  m_Script: {fileID: 11500000, guid: 30accaf00369e754180663eeac6c282c, type: 3}
+  m_Name: Bite
   m_EditorClassIdentifier: 
-  name: Classic Bite
+  name: Bite
   sprite: {fileID: 21300000, guid: 7671ea189c3630544acf2c271963ec72, type: 3}
   <tags>k__BackingField: []
-  audioFXBundle_Attack: {fileID: 11400000, guid: 7dd2ffb50e85ceb4cb5a13e4eab410c3, type: 2}
-  audioFXBundle_Equip: {fileID: 11400000, guid: 4e7adba501f241747bddcdc7379be213, type: 2}
+  audioFXBundle_Attack: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
+  audioFXBundle_Equip: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
   MIN_RANGE: 1
-  MAX_RANGE: 2
-  CRITICAL: 10
+  MAX_RANGE: 1
+  CRITICAL: 0
   attachedMutations: []
   attachedStatuses: []
-  MIN_MIGHT: 1
-  MAX_MIGHT: 2
+  MIN_MIGHT: 4
+  MAX_MIGHT: 6

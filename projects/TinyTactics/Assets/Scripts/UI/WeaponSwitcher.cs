@@ -79,7 +79,7 @@ public class WeaponSwitcher : MonoBehaviour
 		string rangeExt = (range.First == range.Second) ? "" : $" - {range.Second}";
 
 		string title = $"<size={weaponText.fontSize + 8}><color=#{highlightColorHex}>{thisUnit.EquippedWeapon.name}</color></size>\n";
-		string dmg = $"<color=#{highlightColorHex}>Damage</color>\t{thisUnit.EquippedWeapon.DisplayDamage(thisUnit)}";
+		string dmg = $"<color=#{highlightColorHex}>Damage</color>\t{thisUnit.EquippedWeapon.DisplayRawDamage(thisUnit)}";
 		string rng = $"<color=#{highlightColorHex}>Range</color>\t{range.First}{rangeExt}";
 		//
 		weaponText.SetText(string.Join("\n", title, dmg, rng));

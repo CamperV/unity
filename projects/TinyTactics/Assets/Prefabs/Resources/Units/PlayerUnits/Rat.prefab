@@ -79,7 +79,7 @@ MonoBehaviour:
   baseStats:
     VITALITY: 8
     STRENGTH: 1
-    DEXTERITY: 2
+    DEXTERITY: 6
     REFLEX: 3
     DEFENSE: 0
     MOVE: 4
@@ -121,7 +121,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 9ffd81fa3b9141c42a8cd86c92bfa5db, type: 2}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[0]
@@ -130,11 +130,11 @@ PrefabInstance:
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 9ae5c960ccab1a14b9d77ebd0f923ee8, type: 2}
+      objectReference: {fileID: 11400000, guid: ee475da8efc45fa479630c65269ec1c1, type: 2}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[2]
       value: 
-      objectReference: {fileID: 11400000, guid: f5bd38f70d40e5a40adcd5d5afbd82ea, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[3]
       value: 

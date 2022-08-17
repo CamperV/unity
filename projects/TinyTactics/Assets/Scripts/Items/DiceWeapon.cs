@@ -26,7 +26,7 @@ public class DiceWeapon : Weapon
         return dice.Select(it => it.Min).Sum(); // don't add STRENGTH here
     }
 
-    public override string DisplayDamage(Unit thisUnit) {
+    public override string DisplayRawDamage(Unit thisUnit) {
         Debug.Assert( dice.All(d => d.Name == dice[0].Name) );
         return $"{dice.Count}{dice[0].Name} + STR";
     }

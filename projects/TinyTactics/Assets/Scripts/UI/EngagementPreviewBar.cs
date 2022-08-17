@@ -9,7 +9,7 @@ public class EngagementPreviewBar : MonoBehaviour
 {
 	[Header("Player Side")]
     [SerializeField] private SegmentedHealthBarUI healthBar_Player;
-	[SerializeField] private BarChart projectedDamage_Player;
+	[SerializeField] private UIDamageProjector projectedDamage_Player;
 	[SerializeField] private GameObject multstrikeContainer_Player;
 	[SerializeField] private TextMeshProUGUI multistrikeValue_Player;
 	[SerializeField] private GameObject mutatorsContainer_Player;
@@ -20,7 +20,7 @@ public class EngagementPreviewBar : MonoBehaviour
 
 	[Header("Enemy Side")]
     [SerializeField] private SegmentedHealthBarUI healthBar_Enemy;
-	[SerializeField] private BarChart projectedDamage_Enemy;
+	[SerializeField] private UIDamageProjector projectedDamage_Enemy;
 	[SerializeField] private GameObject multstrikeContainer_Enemy;
 	[SerializeField] private TextMeshProUGUI multistrikeValue_Enemy;
 	[SerializeField] private GameObject mutatorsContainer_Enemy;
@@ -47,7 +47,7 @@ public class EngagementPreviewBar : MonoBehaviour
 
 		// get the simulated damage and display it (w/ mutlistrike)
 		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
-		DisplayDamageProjection(projectedDamage_Player, playerPreviewStats);
+		projectedDamage_Player.DisplayDamageProjection(playerPreviewStats);
 		
 
 		// list of perks that were relevant for this Attack & potentially, counterDefense
@@ -79,13 +79,12 @@ public class EngagementPreviewBar : MonoBehaviour
 
 		// get the simulated damage and display it (w/ mutlistrike)	
 		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
+		projectedDamage_Enemy.DisplayDamageProjection(enemyPreviewStats);
+
 		if (enemyPreviewStats.Empty) {
-			projectedDamage_Enemy.Clear();
 			multstrikeContainer_Enemy.SetActive(false);
 
 		} else {
-			DisplayDamageProjection(projectedDamage_Enemy, enemyPreviewStats);
-
 			if (potentialEngagement.defender.unitStats._MULTISTRIKE > 0) {
 				multstrikeContainer_Enemy.SetActive(true);
 				multistrikeValue_Enemy.SetText($"x{potentialEngagement.defender.unitStats._MULTISTRIKE+1}");
@@ -113,10 +112,5 @@ public class EngagementPreviewBar : MonoBehaviour
 		disadvantageIndicator_Player.SetActive(playerPreviewStats.hasDisadvantage);
 		advantageIndicator_Enemy.SetActive(enemyPreviewStats.hasAdvantage);
 		disadvantageIndicator_Enemy.SetActive(enemyPreviewStats.hasDisadvantage);
-	}
-
-	private void DisplayDamageProjection(BarChart displayChart, EngagementStats engagementProjection) {
-		Dictionary<int, float> simResults = engagementProjection.finalDamageContext.Projection;
-		displayChart.Visualize(simResults);
 	}
 }

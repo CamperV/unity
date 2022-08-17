@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1df54d04c8f949f45b432bbf23a36bdf, type: 3}
-  m_Name: Bite
+  m_Script: {fileID: 11500000, guid: 30accaf00369e754180663eeac6c282c, type: 3}
+  m_Name: Gore
   m_EditorClassIdentifier: 
-  name: Bite
-  sprite: {fileID: 21300000, guid: a664db92b41d015448ce472e4515b31f, type: 3}
+  name: Horns
+  sprite: {fileID: 21300000, guid: ba52ee87299629941b726c79b31b449a, type: 3}
   <tags>k__BackingField: []
   audioFXBundle_Attack: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
   audioFXBundle_Equip: {fileID: 11400000, guid: 662eb4d190f7aed4191327c35a5e1633, type: 2}
@@ -22,6 +22,5 @@ MonoBehaviour:
   CRITICAL: 0
   attachedMutations: []
   attachedStatuses: []
-  dice:
-  - {fileID: 11400000, guid: ab11394dc2875a346aaabaa288bb3750, type: 2}
-  - {fileID: 11400000, guid: ab11394dc2875a346aaabaa288bb3750, type: 2}
+  MIN_MIGHT: 2
+  MAX_MIGHT: 8

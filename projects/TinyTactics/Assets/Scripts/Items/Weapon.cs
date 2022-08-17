@@ -43,6 +43,6 @@ public abstract class Weapon : Item, IEquipable
     public abstract Pair<int, int> DamageRange(Unit thisUnit);
     public abstract int RollDamage(Unit thisUnit);
     public abstract int ComboDamage(Unit thisUnit);
-    public abstract string DisplayDamage(Unit thisUnit);
+    public abstract string DisplayRawDamage(Unit thisUnit);
     public abstract Dictionary<int, float> GenerateProjection(Unit thisUnit);
 }

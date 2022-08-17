@@ -5,8 +5,8 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[CreateAssetMenu(menuName = "Items/ClassicWeapon")]
-public class ClassicWeapon : Weapon
+[CreateAssetMenu(menuName = "Items/VariableWeapon")]
+public class VariableWeapon : Weapon
 {
     public int MIN_MIGHT;
     public int MAX_MIGHT;
@@ -25,22 +25,18 @@ public class ClassicWeapon : Weapon
         return (int)Mathf.Floor( (MIN_MIGHT + thisUnit.unitStats.STRENGTH) / 2 );
     }
 
-    public override string DisplayDamage(Unit thisUnit) {
-        Pair<int, int> dmg = DamageRange(thisUnit);
-
-        if (dmg.First != dmg.Second) {
-            return $"{dmg.First} - {dmg.Second} + STR";
+    public override string DisplayRawDamage(Unit thisUnit) {
+        if (MIN_MIGHT != MAX_MIGHT) {
+            return $"{MIN_MIGHT} - {MAX_MIGHT} + STR";
         } else {
-            return $"{dmg.First} + STR";
+            return $"{MIN_MIGHT} + STR";
         }
     }
 
     public override Dictionary<int, float> GenerateProjection(Unit thisUnit) {
         Dictionary<int, float> damageProjection = new Dictionary<int, float>();
 
-        // we abstract this such that we can add "WeightedDie" later
-        // but for now, just calculate a base probability via Dia
-        foreach (int flatValue in Enumerable.Range(MIN_MIGHT, MAX_MIGHT)) {
+        foreach (int flatValue in Enumerable.Range(MIN_MIGHT, (MAX_MIGHT+1 - MIN_MIGHT))) {
             int potentialDamage = flatValue + thisUnit.unitStats.STRENGTH;
 
             // start at 0 and if, over multiple die, we can roll it more, add the prob

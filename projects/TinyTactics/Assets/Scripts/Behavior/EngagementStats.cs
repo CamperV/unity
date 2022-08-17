@@ -90,7 +90,7 @@ public class MutableEngagementStats {
             float P_target = Mathf.Pow((float)targetFaceValue/(float)numFaces, numRolls) - P_sumPrev;
             finalProjection[dmgKey + modifier] = (StandardRoll || HasAdvantage) ? P_target : 1f - P_target;
             
-            Debug.Log($"n={numRolls}, m={numFaces}, T={targetFaceValue}, P={P_target}, sumOfAllPrev: {P_sumPrev}");
+            // Debug.Log($"n={numRolls}, m={numFaces}, T={targetFaceValue}, P={P_target}, sumOfAllPrev: {P_sumPrev}");
             P_sumPrev += P_target;
         }
 
