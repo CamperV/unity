@@ -14,6 +14,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "LeftMouseClick_Modified",
+                    "type": "Button",
+                    "id": "56490aa9-57f1-4214-bb88-f01f74945f35",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "RightMouseClick",
                     "type": "Button",
                     "id": "c26e8f8a-8c62-4918-8d81-e7349aea1f3c",
@@ -120,6 +128,39 @@
                     "action": "MouseScroll",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "CtrlClick",
+                    "id": "faa8debd-0989-4a1f-9210-85b696cd7e9a",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftMouseClick_Modified",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "a27578bc-3ad8-4bd8-9e1a-fdd513733ac8",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftMouseClick_Modified",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "d3fdb3f6-dbcb-4fe2-b47c-46ed72928c0b",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftMouseClick_Modified",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }

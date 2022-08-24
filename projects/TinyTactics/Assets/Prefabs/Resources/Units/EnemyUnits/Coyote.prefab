@@ -72,12 +72,13 @@ MonoBehaviour:
   MOVE: 0
   _LUCK: 0
   _MULTISTRIKE: 0
+  BRAWN: 0
+  FINESSE: 0
   _CURRENT_HP: 0
   baseStats:
     VITALITY: 12
-    STRENGTH: 2
-    DEXTERITY: 3
-    REFLEX: 3
+    BRAWN: 2
+    FINESSE: 3
     DEFENSE: 0
     MOVE: 3
     _MULTISTRIKE: 1
@@ -131,7 +132,7 @@ PrefabInstance:
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 870048e449ca55046a9c688655ee1c4d, type: 2}
+      objectReference: {fileID: 11400000, guid: a0af7f82c0ea5624ea5e39ac8207e860, type: 2}
     - target: {fileID: 160223693219647424, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: color.a
       value: 1

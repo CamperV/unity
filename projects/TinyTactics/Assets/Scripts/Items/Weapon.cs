@@ -19,7 +19,7 @@ public abstract class Weapon : Item, IEquipable
     public List<so_Status> attachedStatuses;
 
     // IEquipable
-    public void Equip(Unit thisUnit) {
+    public virtual void Equip(Unit thisUnit) {
         foreach (Mutation mut in attachedMutations) {
             thisUnit.mutationSystem.AddMutation(mut);
         }
@@ -30,7 +30,7 @@ public abstract class Weapon : Item, IEquipable
     }
 
     // IEquipable
-    public void Unequip(Unit thisUnit) {
+    public virtual void Unequip(Unit thisUnit) {
         foreach (Mutation mut in attachedMutations) {
             thisUnit.mutationSystem.RemoveMutation(mut);
         }

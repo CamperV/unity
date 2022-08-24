@@ -18,6 +18,7 @@ MonoBehaviour:
   commandCategory: 0
   panelCategory: 1
   panelSlot: 1
+  unitCommandVisualPrefab: {fileID: 0}
   requiresConfirm: 0
   revertable: 1
   limitType: 0

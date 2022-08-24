@@ -14,11 +14,17 @@ public class TextDamageProjector : UIDamageProjector
             int min = engagementProjection.finalDamageContext.Min;
             int max = engagementProjection.finalDamageContext.Max;
 
+            string accum = "";
             if (min != max) {
-                text.SetText($"{min} - {max}");
+                accum += $"{min} - {max}";
             } else {
-                text.SetText($"{min}");
+                accum += $"{min}";
             }
+            
+            if (engagementProjection.critRate > 0) {
+                accum += $" [{engagementProjection.critRate}]";
+            }
+            text.SetText(accum);
         }
     }
 

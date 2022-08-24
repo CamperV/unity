@@ -23,6 +23,8 @@ public class UnitStats : MonoBehaviour
 
 	public enum UpdateableStat {
 		Vitality,
+        Brawn,
+        Finesse,
 		Strength,
 		Dexterity,
 		Defense,
@@ -39,28 +41,43 @@ public class UnitStats : MonoBehaviour
     [HideInInspector] public int _LUCK; // generally hidden. Useful in perks
     [HideInInspector] public int _MULTISTRIKE; // used in Engagement.Process()
 
+    [HideInInspector] public int BRAWN;
+    [HideInInspector] public int FINESSE;
+
     [HideInInspector] public int _CURRENT_HP;
 
     [Serializable]
     public struct BaseStats {
         public int VITALITY;
-        public int STRENGTH;
-        public int DEXTERITY;
-        public int REFLEX;
+        //
+        public int BRAWN;
+        public int FINESSE;
+        //
+        // public int STRENGTH;
+        // public int DEXTERITY;
+        // public int REFLEX;
         public int DEFENSE;
         public int MOVE;
         //
         public int _MULTISTRIKE;
+
     }
     [SerializeField] private BaseStats baseStats;
-    [SerializeField] private int variance = 2;
+    [SerializeField] private int variance = 0;
     public static int _MAX_STAT_VALUE = 99;
 
     void Awake() {
         VITALITY  = baseStats.VITALITY  + Random.Range(-variance, variance);
-        STRENGTH  = baseStats.STRENGTH  + Random.Range(-variance, variance);
-        DEXTERITY = baseStats.DEXTERITY + Random.Range(-variance, variance);
-        REFLEX    = baseStats.REFLEX    + Random.Range(-variance, variance);
+        //
+        BRAWN     = baseStats.BRAWN     + Random.Range(-variance, variance);
+        FINESSE   = baseStats.FINESSE   + Random.Range(-variance, variance);
+        //
+        // STRENGTH  = baseStats.STRENGTH  + Random.Range(-variance, variance);
+        // DEXTERITY = baseStats.DEXTERITY + Random.Range(-variance, variance);
+        // REFLEX    = baseStats.REFLEX    + Random.Range(-variance, variance);
+        STRENGTH  = 0                   + Random.Range(-variance, variance);
+        DEXTERITY = 0                   + Random.Range(-variance, variance);
+        REFLEX    = 0                   + Random.Range(-variance, variance);
         DEFENSE   = baseStats.DEFENSE   + Random.Range(-variance, variance);
         MOVE      = baseStats.MOVE;
         //

@@ -22,5 +22,5 @@ MonoBehaviour:
   CRITICAL: 0
   attachedMutations: []
   attachedStatuses: []
-  MIN_MIGHT: 3
-  MAX_MIGHT: 5
+  MIN_MIGHT: 4
+  MAX_MIGHT: 4
