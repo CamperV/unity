@@ -108,13 +108,13 @@ public class SegmentedHealthBarUI : MonoBehaviour
         Color currentColor = RatioColor(healthRatio);
 
         // now get the color that the bar will be
-        int previewHealth = currVal_Health - damageAmountPreview;
+        int previewHealth = (int)Mathf.Max(0f, currVal_Health - damageAmountPreview);
         float previewRatio = (float)previewHealth/(float)maxVal_Health;
         Color previewColor = RatioColor(previewRatio);
 
         string currentColor_Hex = ColorUtility.ToHtmlStringRGB(currentColor);
         string previewColor_Hex = ColorUtility.ToHtmlStringRGB(previewColor);
-        combinedPreviewValue.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color> \u2192 <color=#{previewColor_Hex}>{previewHealth}</color>");
+        combinedPreviewValue.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color>\u2192<color=#{previewColor_Hex}>{previewHealth}</color>");
     }
 
     private void StartFlashSegments(int numSegmentsFromBack) {

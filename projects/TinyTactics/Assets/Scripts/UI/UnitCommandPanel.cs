@@ -33,6 +33,12 @@ public class UnitCommandPanel : MonoBehaviour
 		inputController.QuickBarSlotSelectEvent += SelectSlot;
 	}
 
+	void OnEnable() {
+		foreach (var lc in GetComponentsInChildren<LayoutGroup>()) {
+			LayoutRebuilder.MarkLayoutForRebuild(lc.GetComponent<RectTransform>());
+		}
+	}
+
 	public void SetUnitInfo(PlayerUnit unit) {
 		boundUnit = unit;
 		//
