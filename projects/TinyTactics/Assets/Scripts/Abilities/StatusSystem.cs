@@ -141,52 +141,6 @@ public class StatusSystem : MonoBehaviour
         }        
     }
 
-    // // tick like normal, but re-apply the value to the unit
-    // private void TickExpireAll(Unit _) {
-    //     foreach (KeyValuePair<string, so_Status> kvp in new Dictionary<string, so_Status>(statuses)) {
-    //         string statusProviderID = kvp.Key;
-    //         so_Status status = kvp.Value;
-
-    //         if (status is TickStatus) {
-    //             int prevValue = expireTimers[statusProviderID];
-    //             int newValue = (int)Mathf.MoveTowards(expireTimers[statusProviderID], 0f, 1f);
-                
-    //             // remove the previous effects, but re-apply the new value
-    //             (status as TickStatus).Apply(boundUnit, -prevValue);
-    //             (status as TickStatus).Apply(boundUnit, newValue);
-
-    //             expireTimers[statusProviderID] = newValue;
-
-    //             if (newValue == 0) RemoveStatus(statusProviderID);
-    //         }
-    //     }
-    // }
-
-    // tick like normal, but don't re-apply the value
-    // private void CountdownExpireAll(Unit _) {
-    //     foreach (KeyValuePair<string, so_Status> kvp in new Dictionary<string, so_Status>(statuses)) {
-    //         string statusProviderID = kvp.Key;
-    //         so_Status status = kvp.Value;
-
-    //         if (status is CountdownStatus) {
-    //             expireTimers[statusProviderID] = (int)Mathf.MoveTowards(expireTimers[statusProviderID], 0f, 1f);
-    //             if (expireTimers[statusProviderID] == 0) RemoveStatus(statusProviderID);
-    //         }
-    //     }
-    // }
-
-    // always remove the value
-    // private void ImmediateExpireAll(Unit _) {
-    //     foreach (KeyValuePair<string, so_Status> kvp in new Dictionary<string, so_Status>(statuses)) {
-    //         string statusProviderID = kvp.Key;
-    //         so_Status status = kvp.Value;
-
-    //         if (status is IImmediateStatus) {
-    //             RemoveStatus(statusProviderID);
-    //         }
-    //     }        
-    // }
-
     public void RevertMovementStatuses() {
         foreach (KeyValuePair<string, so_Status> kvp in new Dictionary<string, so_Status>(statuses)) {
             string statusProviderID = kvp.Key;

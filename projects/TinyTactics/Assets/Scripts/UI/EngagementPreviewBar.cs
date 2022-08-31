@@ -11,32 +11,32 @@ public class EngagementPreviewBar : MonoBehaviour
     [SerializeField] private SegmentedHealthBarUI healthBar_Player;
 	[SerializeField] private UIDamageProjector projectedDamage_Player;
 	[SerializeField] private UIMultistrikeDisplay multistrikeDisplay_Player;
-
-	[SerializeField] private GameObject mutatorsContainer_Player;
-	[SerializeField] private TextMeshProUGUI mutatorsList_Player;
+	[SerializeField] private UIMutatorDisplay mutatorDisplay_Player;
 	[SerializeField] private Image portrait_Player;
 
 	[Header("Enemy Side")]
     [SerializeField] private SegmentedHealthBarUI healthBar_Enemy;
 	[SerializeField] private UIDamageProjector projectedDamage_Enemy;
 	[SerializeField] private UIMultistrikeDisplay multistrikeDisplay_Enemy;
-
-	[SerializeField] private GameObject mutatorsContainer_Enemy;
-	[SerializeField] private TextMeshProUGUI mutatorsList_Enemy;
+	[SerializeField] private UIMutatorDisplay mutatorDisplay_Enemy;
 	[SerializeField] private Image portrait_Enemy;
 
 	void OnEnable() {
-		foreach (var lc in GetComponentsInChildren<LayoutGroup>()) {
-			LayoutRebuilder.MarkLayoutForRebuild(lc.GetComponent<RectTransform>());
-		}
+		// foreach (var lc in GetComponentsInChildren<LayoutGroup>()) {
+		// 	Debug.Log($"Found {lc} to rebuild");
+		// 	// LayoutRebuilder.ForceRebuildLayoutImmediate(lc.GetComponent<RectTransform>());
+		// 	LayoutRebuilder.MarkLayoutForRebuild(lc.GetComponent<RectTransform>());
+		// }
+
+		foreach (var layoutGroup in GetComponentsInChildren<LayoutGroup>()) {
+			Debug.Log($"Found {layoutGroup} to rebuild");
+        	LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroup.GetComponent<RectTransform>());
+    	}
 	}
 
 	void OnDisable() {
 		healthBar_Player.Clear();
 		healthBar_Enemy.Clear();
-		
-		mutatorsContainer_Player.SetActive(false);
-		mutatorsContainer_Enemy.SetActive(false);
 	}
 
 	public void SetEngagementStats(Engagement potentialEngagement) {
@@ -47,20 +47,17 @@ public class EngagementPreviewBar : MonoBehaviour
 		// get the simulated damage and display it (w/ mutlistrike)
 		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
 		projectedDamage_Player.DisplayDamageProjection(playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE);
-		// multistrikeDisplay_Player.DisplayMultistrike(potentialEngagement.aggressor.unitStats._MULTISTRIKE);		
 
-		// list of perks that were relevant for this Attack & potentially, counterDefense
 		List<string> playerUnitMutators = new List<string>(potentialEngagement.attack.mutators);
 		if (potentialEngagement.counterDefense != null) {
 			playerUnitMutators = playerUnitMutators.Concat(potentialEngagement.counterDefense.Value.mutators).ToList();
 		}
 		playerUnitMutators = playerUnitMutators.Concat(playerPreviewStats.mutators).ToList();
+		mutatorDisplay_Player.DisplayMutators(playerUnitMutators);
 
-		if (playerUnitMutators.Count > 0) {
-			mutatorsContainer_Player.SetActive(true);
-			string playerUnitMutatorsText = string.Join("\n", playerUnitMutators.Distinct().ToList());
-			mutatorsList_Player.SetText(playerUnitMutatorsText);
-		}
+		// this is currently being displayed in the DisplayDamageProjection
+		// multistrikeDisplay_Player.DisplayMultistrike(potentialEngagement.aggressor.unitStats._MULTISTRIKE);
+
 
 		//
 		// then enemy-side
@@ -74,12 +71,6 @@ public class EngagementPreviewBar : MonoBehaviour
 		// get the simulated damage and display it (w/ mutlistrike)	
 		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
 		projectedDamage_Enemy.DisplayDamageProjection(enemyPreviewStats, potentialEngagement.defender.unitStats._MULTISTRIKE);
-		// multistrikeDisplay_Enemy.DisplayMultistrike(potentialEngagement.defender.unitStats._MULTISTRIKE);		
-
-		if (!enemyPreviewStats.Empty) {
-			// how much damage can we do to the Player?
-			healthBar_Player.PreviewDamage(enemyPreviewStats.finalDamageContext.Max * (potentialEngagement.defender.unitStats._MULTISTRIKE+1));
-		}
 
 		// list of perks that were relevant for this Defense & potentially, counterAttack
 		List<string> enemyUnitMutators = new List<string>(potentialEngagement.defense.mutators);
@@ -87,11 +78,14 @@ public class EngagementPreviewBar : MonoBehaviour
 			enemyUnitMutators = enemyUnitMutators.Concat(potentialEngagement.counterAttack.Value.mutators).ToList();
 		}
 		enemyUnitMutators = enemyUnitMutators.Concat(enemyPreviewStats.mutators).ToList();
+		mutatorDisplay_Enemy.DisplayMutators(enemyUnitMutators);	
 
-		if (enemyUnitMutators.Count > 0) {
-			mutatorsContainer_Enemy.SetActive(true);
-			string enemyUnitMutatorsText = string.Join("\n", enemyUnitMutators.Distinct().ToList());
-			mutatorsList_Enemy.SetText(enemyUnitMutatorsText);
+		// this is currently being displayed in the DisplayDamageProjection
+		// multistrikeDisplay_Enemy.DisplayMultistrike(potentialEngagement.defender.unitStats._MULTISTRIKE);
+
+		// how much damage can we do to the Player?
+		if (!enemyPreviewStats.Empty) {
+			healthBar_Player.PreviewDamage(enemyPreviewStats.finalDamageContext.Max * (potentialEngagement.defender.unitStats._MULTISTRIKE+1));
 		}
 
 		// Finally:
