@@ -4,15 +4,15 @@ using UnityEngine;
 using TMPro;
 using Extensions;
 
-[CreateAssetMenu (menuName = "UnitCommands/NimbleUC")]
-public class NimbleUC : MoveUC
+[CreateAssetMenu (menuName = "UnitCommands/ScurryUC")]
+public class ScurryUC : MoveUC
 {
-    public ImmediateValueStatus nimbleBuff;
+    public ImmediateValueStatus scurryBuff;
 
     public override void Activate(PlayerUnit thisUnit) {
-        // NimbleUC
+        // ScurryUC
         thisUnit.unitPathfinder.moveThroughEnemiesOverride = true;
-        // NimbleUC
+        // ScurryUC
         thisUnit.UpdateThreatRange();
 
         // re-calc move range, and display it
@@ -36,8 +36,8 @@ public class NimbleUC : MoveUC
             if (EnemyAt(thisUnit, gp)) passedEnemies++;
         }
     
-        ImmediateValueStatus clonedNimbleBuff = ImmediateValueStatus.CloneWithValue(nimbleBuff, passedEnemies);
-        thisUnit.statusSystem.AddStatus(clonedNimbleBuff, so_Status.CreateStatusProviderID(thisUnit, clonedNimbleBuff));
+        ImmediateValueStatus clonedScurryBuff = ImmediateValueStatus.CloneWithValue(scurryBuff, passedEnemies);
+        thisUnit.statusSystem.AddStatus(clonedScurryBuff, so_Status.CreateStatusProviderID(thisUnit, clonedScurryBuff));
     }
 
     // this ignores auxiliaryInteract, so you can't accidentally immediately Wait

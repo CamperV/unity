@@ -59,7 +59,8 @@ MonoBehaviour:
   portraitSprite: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
-  <tags>k__BackingField: []
+  <tags>k__BackingField:
+  - Gunk Enthusiast
   archetypes: []
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0

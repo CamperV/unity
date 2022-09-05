@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d88145fee3d77744b827de8ec1d8dd0f, type: 3}
-  m_Name: NimbleMut
+  m_Name: ScurryMut
   m_EditorClassIdentifier: 
-  name: Nimble (UC)
+  name: Scurry (UC)
   description: Gain multistrike for each enemy passed through this turn.
   sprite: {fileID: 21300000, guid: 28833eb632d77bd4c949d16fb767a02d, type: 3}
   belongsToArchetype: {fileID: 11400000, guid: bd1f6bc81392c5941a31841069a9684d, type: 2}

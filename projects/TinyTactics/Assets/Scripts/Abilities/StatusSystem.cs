@@ -63,8 +63,6 @@ public class StatusSystem : MonoBehaviour
     public void Initialize() {
         boundUnit.OnStartTurn += StartTurn;
         boundUnit.OnFinishTurn += EndTurn;
-        // boundUnit.OnStartTurn += CountdownExpireAll;
-        // boundUnit.OnFinishTurn += ImmediateExpireAll;
     }
 
     public void AddStatus(so_Status status, string statusProviderID) {

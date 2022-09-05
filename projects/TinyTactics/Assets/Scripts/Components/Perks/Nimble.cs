@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class Nimble : Perk, IToolTip
+public class Scurry : Perk, IToolTip
 {
-    public override string displayName { get; set; } = "Nimble";
+    public override string displayName { get; set; } = "Scurry";
 
     // IToolTip
-    public string tooltipName { get; set; } = "Nimble";
+    public string tooltipName { get; set; } = "Scurry";
     public string tooltip { get; set; } = "Move through enemy-occupied spaces.";
 
     public override void OnAcquire() {
         boundUnit.unitPathfinder.moveThroughEnemiesOverride = true;
         //
         // boundUnit.OnMove += GainMultistrikePerPass;
-        // boundUnit.statusManager.movementBuffProviders.Add("Nimble");
+        // boundUnit.statusManager.movementBuffProviders.Add("Scurry");
     }
 
     public override void OnRemoval() {
         boundUnit.unitPathfinder.moveThroughEnemiesOverride = false;
         //
         // boundUnit.OnMove -= GainMultistrikePerPass;
-        // boundUnit.statusManager.movementBuffProviders.Remove("Nimble");
+        // boundUnit.statusManager.movementBuffProviders.Remove("Scurry");
     }
 
     private void GainMultistrikePerPass(Path<GridPosition> pathTaken) {
@@ -31,7 +31,7 @@ public class Nimble : Perk, IToolTip
             if (EnemyAt(gp)) enemyCount++;
         }
 
-        boundUnit.statusManager.AddValuedStatus<OneTimeMultistrikeBuff>("Nimble", enemyCount);
+        boundUnit.statusManager.AddValuedStatus<OneTimeMultistrikeBuff>("Scurry", enemyCount);
     }
 
     private bool EnemyAt(GridPosition gp) {

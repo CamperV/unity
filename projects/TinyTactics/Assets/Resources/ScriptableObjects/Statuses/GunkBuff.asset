@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fea9025439cc1f4f9963b8464e4a4cf, type: 3}
+  m_Name: GunkBuff
+  m_EditorClassIdentifier: 
+  name: Gunk
+  sprite: {fileID: 21300000, guid: c85a084f5547c4b4d8ac0c1af92ece1c, type: 3}
+  stackable: 0
+  registerTo: 1
+  modifyStat: 2
+  <value>k__BackingField: 2

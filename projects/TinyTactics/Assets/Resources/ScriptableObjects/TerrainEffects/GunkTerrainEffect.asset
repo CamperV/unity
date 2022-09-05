@@ -9,12 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe0fbf33ff2fb6845907df923278d445, type: 3}
-  m_Name: NimbleBuff
+  m_Script: {fileID: 11500000, guid: d35435857e907944cbaf2aaf208d740d, type: 3}
+  m_Name: GunkTerrainEffect
   m_EditorClassIdentifier: 
-  name: Nimble
-  sprite: {fileID: 21300000, guid: 28833eb632d77bd4c949d16fb767a02d, type: 3}
-  stackable: 1
-  targetStat: 7
-  <value>k__BackingField: 1
-  <revertWithMovement>k__BackingField: 1
+  gunkBuff: {fileID: 11400000, guid: 6ec7ef7a1fde69946987c9c5dca85621, type: 2}
+  gunkDebuff: {fileID: 11400000, guid: 490e4d2d0124fee4b9a28624427a7c20, type: 2}

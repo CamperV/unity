@@ -46,7 +46,7 @@ public class MoveUC : UnitCommand
             thisUnit.ReservePosition(interactAt);
             thisUnit.FireOnMoveEvent(pathToMouseOver);
 
-            // for other inheriting MoveUCs, like Charge or Nimble
+            // for other inheriting MoveUCs, like Charge or Scurry
             ExecuteAdditionalOnMove(thisUnit, pathToMouseOver);
 
             // Complete -> "Change to InProgress state after returning"
