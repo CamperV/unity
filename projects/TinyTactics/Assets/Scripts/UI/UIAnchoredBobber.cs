@@ -28,4 +28,10 @@ public class UIAnchoredBobber : MonoBehaviour
 
 		rectTransform.anchoredPosition = Vector3.Lerp(rectTransform.anchoredPosition, destination, 10f*Time.deltaTime);
 	}
+
+	public void SetData(float f, Vector3 a, float p) {
+		freq = f;
+		amplitude = a;
+		phase = p;
+	}
 }

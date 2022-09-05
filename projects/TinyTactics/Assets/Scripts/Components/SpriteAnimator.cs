@@ -140,9 +140,14 @@ public class SpriteAnimator : MonoBehaviour
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
 
+			// we check for null here, because some of the animators delete themselves, 
+			// while their SpriteRenderers may have captured by GetComponentsInChildren at the
+			// top of this function
 			for (int rr = 0; rr < renderers.Length; rr++) {
-				float alpha = rendererOriginalAlphas[rr] * (1.0f - timeRatio);
-				renderers[rr].color = renderers[rr].color.WithAlpha(alpha);
+				if (renderers[rr] != null) {
+					float alpha = rendererOriginalAlphas[rr] * (1.0f - timeRatio);
+					renderers[rr].color = renderers[rr].color.WithAlpha(alpha);
+				}
 			}
 
 			foreach (var tm in textMeshes) {

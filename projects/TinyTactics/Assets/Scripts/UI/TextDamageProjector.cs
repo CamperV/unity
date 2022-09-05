@@ -50,6 +50,7 @@ public class TextDamageProjector : UIDamageProjector
             else if (multistrikeValue == 2) msColor_Hex = ColorUtility.ToHtmlStringRGB(x3_Color);
             else if (multistrikeValue >= 3) msColor_Hex = ColorUtility.ToHtmlStringRGB(x4_Color);
 
+            accum = $"<bounce>{accum}</bounce>";
             if (multistrikeValue > 0) {
                 accum += $" <wave><sup><size=64><color=#{msColor_Hex}>x{multistrikeValue+1}</color></size></sup></wave>";
             }

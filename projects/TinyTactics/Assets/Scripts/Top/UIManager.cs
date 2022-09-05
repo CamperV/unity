@@ -14,8 +14,8 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private BasicAttackInspection unitInspector;
 	[SerializeField] private UnitCommandPanel unitCommandPanel;
 
-	// deprecated above
 	[SerializeField] private EngagementPreviewBar engagementPreviewBar;
+	[SerializeField] private MiniEngagementPreview miniEngagementPreviewPrefab;
 
 	[SerializeField] private EndgameStatsPanel victoryPanel;
 	[SerializeField] private EndgameStatsPanel defeatPanel;
@@ -23,6 +23,11 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private GameObject menuButtons;
 
 	public CombatLog combatLog;
+
+	// for binding UI, etc
+    public delegate void EngagementPreviewEvent();
+	public event EngagementPreviewEvent EnableEngagementPreviewEvent;
+    public event EngagementPreviewEvent DisableEngagementPreviewEvent;
 	
     void Awake() {
         // only allow one UIManager to exist at any time
@@ -64,15 +69,45 @@ public sealed class UIManager : MonoBehaviour
 		unitInspector.gameObject.SetActive(false);
 	}
 
-	public void EnableEngagementPreview(Engagement potentialEngagement, Transform _) {
+	public void EnableEngagementPreview(Engagement potentialEngagement) {
 		engagementPreviewBar.gameObject.SetActive(true);
 		engagementPreviewBar.GetComponent<UIAnchoredSlider>().SetActive(true, teleportInactiveFirst: true);
-		engagementPreviewBar.SetEngagementStats(potentialEngagement);
+
+		
+		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
+		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
+		engagementPreviewBar.SetEngagementStats(potentialEngagement, playerPreviewStats, enemyPreviewStats);
+
+		// also, create a little in-situ display
+		// cross'd PreviewStats because they are displaying the damage they might *receive*
+		MiniEngagementPreview miniPreview_Aggressor = Instantiate(miniEngagementPreviewPrefab, potentialEngagement.aggressor.transform);
+		MiniEngagementPreview miniPreview_Defender  = Instantiate(miniEngagementPreviewPrefab, potentialEngagement.defender.transform);
+
+		// set appropriate values, and ensure the previews are destroyed when the EngagementPreview proper is disabled
+		miniPreview_Aggressor.SetEngagementStats(enemyPreviewStats, potentialEngagement.defender.unitStats._MULTISTRIKE+1);
+		miniPreview_Defender.SetEngagementStats(playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE+1);
+		DisableEngagementPreviewEvent += () => Destroy(miniPreview_Aggressor.gameObject);
+		DisableEngagementPreviewEvent += () => Destroy(miniPreview_Defender.gameObject);
+
+		// visualize certain values, and ensure the previews are reverted when the EngagementPreview proper is disabled
+		potentialEngagement.aggressor.GetComponentInChildren<MiniHealthBar>()?.PreviewDamage(
+			enemyPreviewStats.finalDamageContext.Max*(potentialEngagement.defender.unitStats._MULTISTRIKE+1)
+		);
+		potentialEngagement.defender.GetComponentInChildren<MiniHealthBar>()?.PreviewDamage(
+			playerPreviewStats.finalDamageContext.Max*(potentialEngagement.aggressor.unitStats._MULTISTRIKE+1)
+		);
+		DisableEngagementPreviewEvent += () => potentialEngagement.aggressor.GetComponentInChildren<MiniHealthBar>()?.RevertPreview();
+		DisableEngagementPreviewEvent += () => potentialEngagement.defender.GetComponentInChildren<MiniHealthBar>()?.RevertPreview();
 	}
 
 	public void DisableEngagementPreview() {
 		engagementPreviewBar.gameObject.SetActive(false);
 		engagementPreviewBar.GetComponent<UIAnchoredSlider>().SetActive(false);
+
+		// invoke and immediately clear invocation list
+		// this is to clear all the anon functions we put on this from the MiniPreviews
+		DisableEngagementPreviewEvent?.Invoke();
+		DisableEngagementPreviewEvent = null;
 	}
 
 	public void CreateVictoryPanel(int enemiesDefeated, int survivingUnits, int turnsElapsed) {

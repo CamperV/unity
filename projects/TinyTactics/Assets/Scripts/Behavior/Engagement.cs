@@ -17,6 +17,8 @@ public class Engagement
     public Defense defense;
     public Defense? counterDefense;
 
+    public List<ComboAttack> comboAttacks;
+
     private bool resolvedFlag = false;
 
     public Engagement(Unit a, Unit b) {
@@ -33,6 +35,10 @@ public class Engagement
             counterAttack = GenerateAttack(defender, aggressor);
             counterDefense = GenerateDefense(aggressor, defender);
         }
+
+        // and also, all the combos
+        var comboAllies = defender.EnemiesThreateningCombo().Where(u => u != aggressor);
+        comboAttacks = comboAllies.Select(ally => GenerateComboAttack(ally, defender)).ToList();
     }
 
     public static Engagement Create(Unit a, Unit b) {
@@ -60,10 +66,7 @@ public class Engagement
         resolvedFlag = false;
 
         bool aggressorSurvived = true;
-        bool defenderSurvived = true;
-
-        List<Unit> comboAllies = defender.EnemiesThreateningCombo().Where(u => u != aggressor).ToList();
-        Debug.Log($"has {comboAllies.Count} c.Al");
+        bool defenderSurvived = true;       
 
         // animate, then create a little pause before counterattacking
         // ReceiveAttack contains logic for animation processing
@@ -75,15 +78,13 @@ public class Engagement
 
             if (defenderSurvived) {
                 // before we go to the next attack, process ComboAttacks (if defender is still around)
-                if (comboAllies.Count > 0) {
+                if (comboAttacks.Count > 0) {
                     yield return new WaitForSeconds(0.35f);
 
-                    foreach (Unit comboUnit in comboAllies) {
-                        ComboAttack comboAttack = GenerateComboAttack(comboUnit, defender);
-                        defenderSurvived = ProcessCombo(comboUnit, defender, comboAttack, defense);
-
+                    foreach (ComboAttack comboAttack in comboAttacks) {
+                        defenderSurvived = ProcessCombo(comboAttack.unit, defender, comboAttack, defense);
                         yield return new WaitForSeconds(0.35f);
-                    }
+                    }               
                 }
             }
 
@@ -145,7 +146,7 @@ public class Engagement
     private Defense GenerateDefense(Unit generator, Unit attacker) {
          MutableDefense mutableDefense = new MutableDefense(
             generator.unitStats.DEFENSE,    // reduce incoming damage
-            generator.unitStats.REFLEX,     // crit avoid rate
+            generator.unitStats.FINESSE,     // crit avoid rate
             generator.unitStats.REFLEX      // advantage rate
         );
 
@@ -155,7 +156,7 @@ public class Engagement
     }
 
     private ComboAttack GenerateComboAttack(Unit generator, Unit defender) {
-        MutableComboAttack mutableComboAttack = new MutableComboAttack( generator.EquippedWeapon.ComboDamage(generator) );
+        MutableComboAttack mutableComboAttack = new MutableComboAttack(generator, generator.EquippedWeapon.ComboDamage(generator));
         
         // THIS WILL MODIFY THE OUTGOING COMBO-ATTACK PACKAGE
         generator.FireOnComboAttackEvent(ref mutableComboAttack, defender);

@@ -581,8 +581,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad87e44d6efea04cafb88cfe0b725dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color_0: {r: 0.54901963, g: 0.16862746, b: 0.16862746, a: 0}
-  color_1: {r: 0.019607844, g: 0.8509804, b: 0.47843137, a: 0}
+  color_0: {r: 0.54901963, g: 0.16862746, b: 0.16862746, a: 1}
+  color_1: {r: 0.019607844, g: 0.8509804, b: 0.47843137, a: 1}
   currVal: 0
   maxVal: 0
   healthRatio: 0
@@ -591,8 +591,8 @@ MonoBehaviour:
   backgroundRenderer: {fileID: 6370022383706587344}
   barRenderer: {fileID: 238208391865932632}
   borderRenderer: {fileID: 9057642295882299004}
-  boundUnit: {fileID: 0}
   textValue: {fileID: 1786923226362469848}
+  flashingBarPrefab: {fileID: 65330307454582458, guid: 692181e48fb888e4fad2e60c8849cc8a, type: 3}
 --- !u!210 &7884809336341267554
 SortingGroup:
   m_ObjectHideFlags: 0

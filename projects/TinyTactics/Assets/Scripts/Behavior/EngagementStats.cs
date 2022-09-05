@@ -8,9 +8,12 @@ using UnityEngine;
 public struct EngagementStats {
     public DamageContext finalDamageContext;
     public int critRate;
+
+    // pseudo-deprecated
     public int advantageRate;   // this is an integer that represents how many times you can re-roll and take the higher number
     public bool hasAdvantage;
     public bool hasDisadvantage;
+
     public List<string> mutators;
 
     public EngagementStats(MutableEngagementStats mutES) {

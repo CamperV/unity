@@ -41,7 +41,7 @@ public class MutableAttack
 
     public MutableAttack(DamageContext dc, int crit, int adv) {
         damageContext = new DamageContext(
-            dc.Projection,
+            ModifyProjectionBonus(dc.Projection),
             () => (int)(bonusDamageMultiplier * (dc.Resolver() + bonusDamage))
         );
 
@@ -57,9 +57,28 @@ public class MutableAttack
 
     public void AddBonusDamage(int add) {
         bonusDamage += add;
+        RefreshDamageContext();
     }
 
     public void AddBonusDamageMultiplier(float mult) {
         bonusDamageMultiplier = mult;
+        RefreshDamageContext();
+    }
+
+    private void RefreshDamageContext() {
+        damageContext = new DamageContext(
+            ModifyProjectionBonus(damageContext.Projection),
+            damageContext.Resolver
+        );
+    }
+
+    private Dictionary<int, float> ModifyProjectionBonus(Dictionary<int, float> projection) {
+        Dictionary<int, float> finalProjection = new Dictionary<int, float>();
+
+        foreach (int dmgKey in projection.Keys.OrderBy(it => it)) {
+            finalProjection[(int)bonusDamageMultiplier*(dmgKey + bonusDamage)] = projection[dmgKey];
+        }
+
+        return finalProjection;
     }
 }

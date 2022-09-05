@@ -81,7 +81,7 @@ MonoBehaviour:
     FINESSE: 3
     DEFENSE: 0
     MOVE: 3
-    _MULTISTRIKE: 1
+    _MULTISTRIKE: 0
   variance: 0
 --- !u!114 &4127691264941027503
 MonoBehaviour:

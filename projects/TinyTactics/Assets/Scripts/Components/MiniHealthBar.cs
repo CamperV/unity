@@ -56,7 +56,7 @@ public class MiniHealthBar : MonoBehaviour
 
         StartCoroutine(
             Utils.QueueCoroutines(
-                _UpdateBarVisual(toScale),
+                _UpdateBarVisual(healthRatio),
                 AnimateBar(barLevel.transform.localScale, toScale, Color.red, 1.0f, 1.0f)
             )
         );
@@ -92,6 +92,26 @@ public class MiniHealthBar : MonoBehaviour
         Destroy(go);
     }
 
+    // visually flash the bar to demonstrate the health loss
+    private MiniBarAnimator flashingBar;
+    [SerializeField] private MiniBarAnimator flashingBarPrefab;
+
+    public void PreviewDamage(int damageAmountPreview) {
+        float previewHealthRatio = (float)Mathf.Max(0, currVal - damageAmountPreview)/(float)maxVal;
+
+        SpriteRenderer levelSR = barLevel.GetComponent<SpriteRenderer>();
+        flashingBar = Instantiate(flashingBarPrefab, barLevel.parent);
+        flashingBar.Reposition(barLevel.localPosition, barLevel.localScale, levelSR.sortingLayerName, levelSR.sortingOrder - 1);
+        flashingBar.InfiniFlash();
+
+        ScaleBar(previewHealthRatio);
+    }
+
+    public void RevertPreview() {
+        Destroy(flashingBar.gameObject);
+        ScaleBar(healthRatio);
+    }
+
     private static Color HueSatLerp(Color A, Color B, float ratio) {
         float AH, AS, AV, BH, BS, BV;
         Color.RGBToHSV(A, out AH, out AS, out AV);
@@ -102,10 +122,15 @@ public class MiniHealthBar : MonoBehaviour
         return Color.HSVToRGB(_H, _S, 1f);
     }
 
-    private IEnumerator _UpdateBarVisual(Vector3 toScale) {
-        barLevel.transform.localScale = toScale;
-        barColor = HueSatLerp(color_0, color_1, healthRatio*healthRatio);
-        barRenderer.color = barColor;
+    private IEnumerator _UpdateBarVisual(float ratio) {
+        ScaleBar(ratio);
         yield break;
+    }
+
+    private void ScaleBar(float ratio) {
+        Vector3 toScale = new Vector3(ratio, 1f, 1f);
+        barLevel.transform.localScale = toScale;
+        barColor = HueSatLerp(color_0, color_1, ratio*ratio);
+        barRenderer.color = barColor;
     }
 }

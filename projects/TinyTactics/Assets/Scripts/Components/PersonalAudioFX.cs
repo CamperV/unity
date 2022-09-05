@@ -18,6 +18,8 @@ public class PersonalAudioFX : MonoBehaviour
     public AudioFXBundle criticalAudioFXBundle;
     public AudioFXBundle blockAudioFXBundle;
 
+    public bool IsPlaying() => audioSource.isPlaying;
+
     void Awake() {
         boundUnit = GetComponent<Unit>();
         audioSource = GetComponent<AudioSource>();

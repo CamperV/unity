@@ -296,6 +296,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
         StartCoroutine( spriteAnimator.SmoothCosX(12f, 0.06f, 0f, 1.0f) );
         yield return spriteAnimator.FadeDownAll(1.0f);
+        // yield return new WaitWhile(personalAudioFX.IsPlaying);
 
         // after animating:
         UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] is KEYWORD@[destroyed].");

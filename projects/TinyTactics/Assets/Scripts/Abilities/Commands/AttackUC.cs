@@ -42,7 +42,7 @@ public class AttackUC : TargetableUC
 
         _engagementResolveFlag = true;
         Engagement engagement = new Engagement(thisUnit, enemy);
-        UIManager.inst.EnableEngagementPreview(engagement, enemy.transform );
+        UIManager.inst.DisableEngagementPreview();
 
         Utils.DelegateCoroutineTo(thisUnit,
             engagement.Resolve()
@@ -54,7 +54,6 @@ public class AttackUC : TargetableUC
         Utils.DelegateCoroutineTo(thisUnit,
             engagement.ExecuteAfterResolving(() => {
                 _engagementResolveFlag = false;
-                UIManager.inst.DisableEngagementPreview();
             })
         );
     }
@@ -69,7 +68,7 @@ public class AttackUC : TargetableUC
 
         // create and display EngagementPreviews here
         EnemyUnit enemy = EnemyAt(thisUnit, hoverOver);
-        UIManager.inst.EnableEngagementPreview( new Engagement(thisUnit, enemy), enemy.transform );
+        UIManager.inst.EnableEngagementPreview( new Engagement(thisUnit, enemy) );
     }
 
     ////////////////////////////////////////////////////////////////////

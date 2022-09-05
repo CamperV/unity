@@ -10,26 +10,19 @@ public class EngagementPreviewBar : MonoBehaviour
 	[Header("Player Side")]
     [SerializeField] private SegmentedHealthBarUI healthBar_Player;
 	[SerializeField] private UIDamageProjector projectedDamage_Player;
-	[SerializeField] private UIMultistrikeDisplay multistrikeDisplay_Player;
 	[SerializeField] private UIMutatorDisplay mutatorDisplay_Player;
 	[SerializeField] private Image portrait_Player;
+	//
+	[SerializeField] private UIComboAttackDisplay comboAttackDisplay;
 
 	[Header("Enemy Side")]
     [SerializeField] private SegmentedHealthBarUI healthBar_Enemy;
 	[SerializeField] private UIDamageProjector projectedDamage_Enemy;
-	[SerializeField] private UIMultistrikeDisplay multistrikeDisplay_Enemy;
 	[SerializeField] private UIMutatorDisplay mutatorDisplay_Enemy;
 	[SerializeField] private Image portrait_Enemy;
 
 	void OnEnable() {
-		// foreach (var lc in GetComponentsInChildren<LayoutGroup>()) {
-		// 	Debug.Log($"Found {lc} to rebuild");
-		// 	// LayoutRebuilder.ForceRebuildLayoutImmediate(lc.GetComponent<RectTransform>());
-		// 	LayoutRebuilder.MarkLayoutForRebuild(lc.GetComponent<RectTransform>());
-		// }
-
 		foreach (var layoutGroup in GetComponentsInChildren<LayoutGroup>()) {
-			Debug.Log($"Found {layoutGroup} to rebuild");
         	LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroup.GetComponent<RectTransform>());
     	}
 	}
@@ -39,13 +32,12 @@ public class EngagementPreviewBar : MonoBehaviour
 		healthBar_Enemy.Clear();
 	}
 
-	public void SetEngagementStats(Engagement potentialEngagement) {
+	public void SetEngagementStats(Engagement potentialEngagement, EngagementStats playerPreviewStats, EngagementStats enemyPreviewStats) {
 		// player-side first
 		healthBar_Player.AttachTo(potentialEngagement.aggressor);
 		portrait_Player.sprite = potentialEngagement.aggressor.portraitSprite;
 
 		// get the simulated damage and display it (w/ mutlistrike)
-		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
 		projectedDamage_Player.DisplayDamageProjection(playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE);
 
 		List<string> playerUnitMutators = new List<string>(potentialEngagement.attack.mutators);
@@ -54,10 +46,6 @@ public class EngagementPreviewBar : MonoBehaviour
 		}
 		playerUnitMutators = playerUnitMutators.Concat(playerPreviewStats.mutators).ToList();
 		mutatorDisplay_Player.DisplayMutators(playerUnitMutators);
-
-		// this is currently being displayed in the DisplayDamageProjection
-		// multistrikeDisplay_Player.DisplayMultistrike(potentialEngagement.aggressor.unitStats._MULTISTRIKE);
-
 
 		//
 		// then enemy-side
@@ -68,8 +56,7 @@ public class EngagementPreviewBar : MonoBehaviour
 		// how much damage can we do to the Enemy? (need to do this AFTER the health bar is attached to the enemy)
 		healthBar_Enemy.PreviewDamage(playerPreviewStats.finalDamageContext.Max * (potentialEngagement.aggressor.unitStats._MULTISTRIKE+1));
 
-		// get the simulated damage and display it (w/ mutlistrike)	
-		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
+		// get the simulated damage and display it (w/ mutlistrike)
 		projectedDamage_Enemy.DisplayDamageProjection(enemyPreviewStats, potentialEngagement.defender.unitStats._MULTISTRIKE);
 
 		// list of perks that were relevant for this Defense & potentially, counterAttack
@@ -79,9 +66,6 @@ public class EngagementPreviewBar : MonoBehaviour
 		}
 		enemyUnitMutators = enemyUnitMutators.Concat(enemyPreviewStats.mutators).ToList();
 		mutatorDisplay_Enemy.DisplayMutators(enemyUnitMutators);	
-
-		// this is currently being displayed in the DisplayDamageProjection
-		// multistrikeDisplay_Enemy.DisplayMultistrike(potentialEngagement.defender.unitStats._MULTISTRIKE);
 
 		// how much damage can we do to the Player?
 		if (!enemyPreviewStats.Empty) {
@@ -93,5 +77,8 @@ public class EngagementPreviewBar : MonoBehaviour
 		// disadvantageIndicator_Player.SetActive(playerPreviewStats.hasDisadvantage);
 		// advantageIndicator_Enemy.SetActive(enemyPreviewStats.hasAdvantage);
 		// disadvantageIndicator_Enemy.SetActive(enemyPreviewStats.hasDisadvantage);
+
+		// SUPER Finally: include any combo-able allies and their attacks
+		comboAttackDisplay.DisplayComboAttacks(potentialEngagement.comboAttacks);
 	}
 }
