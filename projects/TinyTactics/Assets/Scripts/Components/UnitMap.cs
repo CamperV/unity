@@ -95,7 +95,7 @@ public class UnitMap : MonoBehaviour
 
         } else {
             if (map[gp] == unit || reservations[gp] == unit) AlignUnit(unit, gp);
-            else Debug.Log($"Failed to move {unit} into occupied GP {gp}");
+            else Debug.LogError($"Failed to move {unit} into occupied GP {gp}");
         }
     }
 
@@ -121,5 +121,14 @@ public class UnitMap : MonoBehaviour
     public void AlignUnit(Unit unit, GridPosition gp) {
         unit.gridPosition = gp;
         unit.transform.position = battleMap.GridToWorld(gp);
+    }
+
+    public void ApplyTerrainEffects(GridPosition gridPosition, TerrainTile previousTerrain, TerrainTile terrain) {
+        Unit unit = UnitAt(gridPosition);
+
+        if (unit != null) {
+            if (previousTerrain?.HasTerrainEffect ?? false) previousTerrain.terrainEffect.OnExitTerrain(unit);
+            if (terrain?.HasTerrainEffect ?? false) terrain.terrainEffect.OnEnterTerrain(unit);
+        }
     }
 }

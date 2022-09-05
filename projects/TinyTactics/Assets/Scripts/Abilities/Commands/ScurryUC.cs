@@ -12,6 +12,7 @@ public class ScurryUC : MoveUC
     public override void Activate(PlayerUnit thisUnit) {
         // ScurryUC
         thisUnit.unitPathfinder.moveThroughEnemiesOverride = true;
+        thisUnit.unitPathfinder.loweredTerrainCostOverride = true;
         // ScurryUC
         thisUnit.UpdateThreatRange();
 
@@ -28,6 +29,7 @@ public class ScurryUC : MoveUC
         UIManager.inst.DisableUnitDetail();
         
         thisUnit.unitPathfinder.moveThroughEnemiesOverride = false;
+        thisUnit.unitPathfinder.loweredTerrainCostOverride = false;
     }
 
     protected override void ExecuteAdditionalOnMove(PlayerUnit thisUnit, Path<GridPosition> pathTaken) {

@@ -43,7 +43,7 @@ public sealed class UIManager : MonoBehaviour
 		engagementPreviewBar.gameObject.SetActive(false);
     }
 
-	public void UpdateTerrainEffectPanel(TerrainTile terrainAt) {
+	public void UpdateTerrainEffectPanel(GridPosition _, TerrainTile terrainAt) {
 		terrainEffectPanel.tileValue.sprite = terrainAt.sprite;
 
 		if (terrainAt.HasTerrainEffect) {

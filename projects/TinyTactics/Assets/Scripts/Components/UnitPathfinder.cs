@@ -16,6 +16,7 @@ public class UnitPathfinder : MonoBehaviour
 
 	public bool moveThroughEnemiesOverride; // defaults to false
 	public bool moveThroughTerrainOverride; // defaults to false
+	public bool loweredTerrainCostOverride; // defaults to false
 
 	// get your own IPathable
 	void Awake(){
@@ -57,12 +58,12 @@ public class UnitPathfinder : MonoBehaviour
 				} else {
 					TerrainTile terrainAt = battleMap.TerrainAt(adjacent);
 					costAt = (terrainCostOverrides.ContainsKey(terrainAt)) ? terrainCostOverrides[terrainAt] : terrainAt.cost;
+
+					if (costAt > 1 && loweredTerrainCostOverride) costAt = 1;
 				}
 				
 				if (costAt == -1) // -1 indicates this area is impassable
 					continue;
-
-
 				
 				//////////////////////////////////////////////////////
 				// Move distance, ie range v total cost constraints //

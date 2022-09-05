@@ -9,13 +9,13 @@ using Extensions;
 
 public class MutationSystem : MonoBehaviour
 {
-    private PlayerUnit boundUnit;
+    private Unit boundUnit;
 
     // assingable in Inspector for prefabs, but can be modified
     public List<Mutation> mutations;    
     
     void Awake() {
-        boundUnit = GetComponent<PlayerUnit>();
+        boundUnit = GetComponent<Unit>();
     }
 
     // avoid using Start() because of potential race conditions

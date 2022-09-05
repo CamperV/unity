@@ -67,6 +67,7 @@ public sealed class EventManager : MonoBehaviour
         battleMap.AuxiliaryInteractEvent_2 += gp => playerUnitController.ContextualInteractAt(gp, true);  // middle-click (special interact)
 
         battleMap.TerrainMouseOverEvent += uiManager.UpdateTerrainEffectPanel;
+        battleMap.TerrainChangeEvent += unitMap.ApplyTerrainEffects;
 
         // unit controller events
         // playerUnitController.NewPlayerUnitControllerSelection += u => cameraManager.AcquireTrackingTarget(u?.transform);

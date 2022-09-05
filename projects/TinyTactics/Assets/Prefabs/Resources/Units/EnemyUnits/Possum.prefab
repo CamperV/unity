@@ -59,8 +59,7 @@ MonoBehaviour:
   portraitSprite: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
-  <tags>k__BackingField:
-  - Gunk Enthusiast
+  <tags>k__BackingField: []
   archetypes: []
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
@@ -126,6 +125,14 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: bcf190f472514b5429554376dd81966a, type: 3}
+    - target: {fileID: -6295692904770981026, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: mutations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6295692904770981026, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: mutations.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: cde3a63dbb255d84181c274461144a48, type: 2}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.size
       value: 1

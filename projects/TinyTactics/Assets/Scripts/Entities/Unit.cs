@@ -50,6 +50,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public delegate void OnPhaseInfo(Unit thisUnit);
     public event OnPhaseInfo OnStartTurn;
     public event OnPhaseInfo OnFinishTurn;
+    public event OnPhaseInfo OnDeath;
     //
 
     // necessary Component references
@@ -291,6 +292,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     private IEnumerator SequentialDeath() {
         yield return new WaitUntil(spriteAnimator.DoneAnimatingAndEmptyQueue);
 
+        // first, fire the Death event
+        FireOnDeathEvent();
+
         // wait until you're ready to animate
         personalAudioFX.PlayDeathFX();
 
@@ -405,4 +409,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     public void FireOnStartTurnEvent() => OnStartTurn?.Invoke(this);
     public void FireOnFinishTurnEvent() => OnFinishTurn?.Invoke(this);
+
+    public void FireOnDeathEvent() => OnDeath?.Invoke(this);
 }
