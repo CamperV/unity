@@ -80,14 +80,14 @@ public sealed class UIManager : MonoBehaviour
 
 		// also, create a little in-situ display
 		// cross'd PreviewStats because they are displaying the damage they might *receive*
-		MiniEngagementPreview miniPreview_Aggressor = Instantiate(miniEngagementPreviewPrefab, potentialEngagement.aggressor.transform);
-		MiniEngagementPreview miniPreview_Defender  = Instantiate(miniEngagementPreviewPrefab, potentialEngagement.defender.transform);
+		// MiniEngagementPreview miniPreview_Aggressor = Instantiate(miniEngagementPreviewPrefab, potentialEngagement.aggressor.transform);
+		// MiniEngagementPreview miniPreview_Defender  = Instantiate(miniEngagementPreviewPrefab, potentialEngagement.defender.transform);
 
-		// set appropriate values, and ensure the previews are destroyed when the EngagementPreview proper is disabled
-		miniPreview_Aggressor.SetEngagementStats(enemyPreviewStats, potentialEngagement.defender.unitStats._MULTISTRIKE+1);
-		miniPreview_Defender.SetEngagementStats(playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE+1);
-		DisableEngagementPreviewEvent += () => Destroy(miniPreview_Aggressor.gameObject);
-		DisableEngagementPreviewEvent += () => Destroy(miniPreview_Defender.gameObject);
+		// // set appropriate values, and ensure the previews are destroyed when the EngagementPreview proper is disabled
+		// miniPreview_Aggressor.SetEngagementStats(enemyPreviewStats, potentialEngagement.defender.unitStats._MULTISTRIKE+1);
+		// miniPreview_Defender.SetEngagementStats(playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE+1);
+		// DisableEngagementPreviewEvent += () => Destroy(miniPreview_Aggressor.gameObject);
+		// DisableEngagementPreviewEvent += () => Destroy(miniPreview_Defender.gameObject);
 
 		// visualize certain values, and ensure the previews are reverted when the EngagementPreview proper is disabled
 		potentialEngagement.aggressor.GetComponentInChildren<MiniHealthBar>()?.PreviewDamage(

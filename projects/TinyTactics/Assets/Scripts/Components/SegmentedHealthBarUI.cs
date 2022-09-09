@@ -114,7 +114,8 @@ public class SegmentedHealthBarUI : MonoBehaviour
 
         string currentColor_Hex = ColorUtility.ToHtmlStringRGB(currentColor);
         string previewColor_Hex = ColorUtility.ToHtmlStringRGB(previewColor);
-        combinedPreviewValue.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color>\u2192<color=#{previewColor_Hex}>{previewHealth}</color>");
+        // combinedPreviewValue.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color>\u2192<color=#{previewColor_Hex}>{previewHealth}</color>");
+        combinedPreviewValue.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color>");
     }
 
     private void StartFlashSegments(int numSegmentsFromBack) {

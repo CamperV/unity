@@ -15,6 +15,6 @@ public class PortraitComboAttackItem : MonoBehaviour
     }
 
     public void SetText(string message) {
-        text.SetText($"<bounce>{message}</bounce>");
+        text.SetText($"<wave>{message}</wave>");
     }
 }

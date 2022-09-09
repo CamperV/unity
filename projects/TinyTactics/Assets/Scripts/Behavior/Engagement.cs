@@ -8,6 +8,9 @@ using Random = UnityEngine.Random;
 // this class is created for an acutal battle between two Units
 public class Engagement
 {
+    public static float attackDelay = 0.5f;
+    public static float defenseDelay = 1f;
+
     public Unit aggressor;
     public Unit defender;
 
@@ -79,16 +82,16 @@ public class Engagement
             if (defenderSurvived) {
                 // before we go to the next attack, process ComboAttacks (if defender is still around)
                 if (comboAttacks.Count > 0) {
-                    yield return new WaitForSeconds(0.35f);
+                    yield return new WaitForSeconds(attackDelay);
 
                     foreach (ComboAttack comboAttack in comboAttacks) {
                         defenderSurvived = ProcessCombo(comboAttack.unit, defender, comboAttack, defense);
-                        yield return new WaitForSeconds(0.35f);
+                        yield return new WaitForSeconds(attackDelay);
                     }               
                 }
             }
 
-            yield return (numStrikes == 0) ? new WaitForSeconds(0.65f) : new WaitForSeconds(0.35f);
+            yield return (numStrikes == 0) ? new WaitForSeconds(defenseDelay) : new WaitForSeconds(attackDelay);
         }
 
         yield return new WaitUntil(aggressor.spriteAnimator.EmptyQueue);
@@ -103,7 +106,7 @@ public class Engagement
                 ///
 
                 numCounterStrikes--;
-                if (numCounterStrikes > 0) yield return new WaitForSeconds(0.35f);
+                if (numCounterStrikes > 0) yield return new WaitForSeconds(attackDelay);
             }
         }
         
