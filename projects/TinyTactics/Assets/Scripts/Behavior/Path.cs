@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class Path<T> where T : struct
+public class Path<T> where T : struct, IEquatable<T>
 {
 	public Path() {}
 
@@ -29,14 +29,9 @@ public class Path<T> where T : struct
 		return path.Find(position).Previous.Value;
 	}
 	
-	public IEnumerable<T> Unwind(int slice = 0) {
+	public IEnumerable<T> Unwind() {
 		LinkedListNode<T> position = path.First;
 		while (true) {
-			// skip a certain number of tiles when unwinding
-			if (slice > 0) {
-				slice--;
-				continue;
-			}
 			yield return position.Value;
 
 			if (position != path.Last) {
@@ -67,13 +62,16 @@ public class Path<T> where T : struct
 
 	// these paths must come to us IN ORDER
 	// ie, their Ends must overlap with another's Start
+	// then we actually skip those instances
 	public static Path<T> MergePaths(IEnumerable<Path<T>> paths) {
 		Path<T> newPath = new Path<T>();
 
 		foreach (Path<T> path in paths) {
 			foreach (T currentPos in path.Unwind()) {
-				if (!newPath.Contains(currentPos))
-					newPath.AddLast(currentPos);
+				if (newPath.Count > 0 && currentPos.Equals(newPath.End))
+					continue;
+				
+				newPath.AddLast(currentPos);
 			}
 		}
 
