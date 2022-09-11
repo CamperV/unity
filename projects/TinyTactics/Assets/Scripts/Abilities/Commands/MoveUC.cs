@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 using Extensions;
@@ -10,16 +11,28 @@ public class MoveUC : UnitCommand
 {
     // we can actually keep some state here: there should never be two MoveUC's Activated at the same time
     public static GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
-    public static Path<GridPosition> pathToMouseOver;
+    
+    // I really hate that I'm keeping so much data here
+    // but only one MoveUC will ever be active, so we can store it in the class
+    // maybe I should encapsulate it, and then write the behavior elsewhere
+    // but first... write it!
+    public static Path<GridPosition> _mouseOverPath;
+    public static MoveRange _activeMoveRange;
+    public static List<GridPosition> _waypoints;
+    public static List<Path<GridPosition>> _pathSegments;
 
     [SerializeField] protected TileVisuals tileVisuals;
 
     public override void Activate(PlayerUnit thisUnit) {
         thisUnit.UpdateThreatRange();
+        _activeMoveRange = thisUnit.moveRange;
 
         // re-calc move range, and display it
-        Utils.DelegateLateFrameTo(thisUnit,  () => DisplayMoveRange(thisUnit));
+        Utils.DelegateLateFrameTo(thisUnit, () => DisplayMoveRange(thisUnit, thisUnit.moveRange));
         UIManager.inst.EnableUnitDetail(thisUnit);
+
+        _waypoints = new List<GridPosition>{thisUnit.gridPosition};
+        _pathSegments = new List<Path<GridPosition>>();
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
@@ -28,26 +41,36 @@ public class MoveUC : UnitCommand
         thisUnit.battleMap.ClearDisplayPath();
         //
         UIManager.inst.DisableUnitDetail();
+
+        _waypoints = null;
+        _activeMoveRange = null;
+        _pathSegments = null;
     }
 
     public override ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract) {
         if (interactAt == thisUnit.gridPosition)
             return ExitSignal.NoStateChange;
         
-        // pathToMouseOver is updated right before this in ContextualNoUpdate
+        // use this to create waypoints, and don't process anything
+        if (auxiliaryInteract) {
+            _AddWaypoint(thisUnit, interactAt);
+            return ExitSignal.NoStateChange;
+        }
+
+        // _mouseOverPath is updated right before this in ContextualNoUpdate
         // if a path exists to the destination, smoothly move along the path
         // after reaching your destination, officially move via unitMap
-        if (pathToMouseOver != null) {
+        if (_mouseOverPath != null) {
             thisUnit.personalAudioFX.PlayInteractFX();
 
             Utils.DelegateCoroutineTo(thisUnit,
-                thisUnit.spriteAnimator.SmoothMovementPath<GridPosition>(pathToMouseOver, thisUnit.battleMap)
+                thisUnit.spriteAnimator.SmoothMovementPath<GridPosition>(_mouseOverPath, thisUnit.battleMap)
             );
             thisUnit.ReservePosition(interactAt);
-            thisUnit.FireOnMoveEvent(pathToMouseOver);
+            thisUnit.FireOnMoveEvent(_mouseOverPath);
 
             // for other inheriting MoveUCs, like Charge or Scurry
-            ExecuteAdditionalOnMove(thisUnit, pathToMouseOver);
+            ExecuteAdditionalOnMove(thisUnit, _mouseOverPath);
 
             // Complete -> "Change to InProgress state after returning"
             return ExitSignal.NextState;
@@ -63,11 +86,25 @@ public class MoveUC : UnitCommand
         if (thisUnit.battleMap.CurrentMouseGridPosition != _previousMouseOver) {    // when the mouse-on-grid changes:
             thisUnit.battleMap.ClearDisplayPath();
 
+            // okay I need to write this down
+            // user can input waypoints, but I need to generate a new FlowField/MoveRange for it
+            // keep the entire system here. Honestly since we're already storing other crap statically...
             if (thisUnit.battleMap.MouseInBounds) {
-                pathToMouseOver = thisUnit.moveRange.BFS(thisUnit.gridPosition, thisUnit.battleMap.CurrentMouseGridPosition);
-                _previousMouseOver = thisUnit.battleMap.CurrentMouseGridPosition;
+                
+                // starting from:
+                GridPosition finalWaypoint = (_waypoints.Count > 0) ? _waypoints.Last() : thisUnit.gridPosition;
+                Path<GridPosition> finalSegment = _activeMoveRange.BFS(finalWaypoint, thisUnit.battleMap.CurrentMouseGridPosition);               
 
-                if (pathToMouseOver != null) thisUnit.battleMap.DisplayPath(pathToMouseOver);
+                if (finalSegment != null) {
+                    var segmentsCopy = new List<Path<GridPosition>>(_pathSegments);
+                    segmentsCopy.Add(finalSegment);
+
+                    _mouseOverPath = Path<GridPosition>.MergePaths(segmentsCopy);
+                    thisUnit.battleMap.DisplayPath(_mouseOverPath, _waypoints);
+                }
+
+                // finally,
+                _previousMouseOver = thisUnit.battleMap.CurrentMouseGridPosition;
             }
         }
     }
@@ -84,7 +121,8 @@ public class MoveUC : UnitCommand
     // if Auxiliary Interact was used, force a FinishTurn after moving (auto wait)
     public override ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract) {
         thisUnit.ClaimReservation();
-        return (auxiliaryInteract) ? ExitSignal.ForceFinishTurn : ExitSignal.ContinueTurn;
+        // return (auxiliaryInteract) ? ExitSignal.ForceFinishTurn : ExitSignal.ContinueTurn;
+        return ExitSignal.ContinueTurn;
     }
 
     // this is only possible for a few UC
@@ -100,15 +138,17 @@ public class MoveUC : UnitCommand
         thisUnit.ForfeitReservation();
         thisUnit.statusSystem.RevertMovementStatuses();
         thisUnit.RefreshInfo();
+
+        _waypoints = null;
     }
 
     protected virtual void ExecuteAdditionalOnMove(PlayerUnit thisUnit, Path<GridPosition> pathTaken) {}
 
-    protected virtual void DisplayMoveRange(PlayerUnit thisUnit) {   
-        thisUnit.moveRange.Display(thisUnit.battleMap, tileVisuals.color, tileVisuals.tile);
+    protected virtual void DisplayMoveRange(PlayerUnit thisUnit, MoveRange moveRange) {   
+        moveRange.Display(thisUnit.battleMap, tileVisuals.color, tileVisuals.tile);
 
     	foreach (GridPosition gp in ThreatenedRange(thisUnit)) {
-			if (thisUnit.moveRange.field.ContainsKey(gp)) {
+			if (moveRange.field.ContainsKey(gp)) {
 				thisUnit.battleMap.Highlight(gp, tileVisuals.altColor);
 			}
 		}
@@ -126,4 +166,25 @@ public class MoveUC : UnitCommand
 
 		foreach (GridPosition gp in threatened) yield return gp;
 	}
+
+    // nasty static storage for now
+    private void _AddWaypoint(PlayerUnit thisUnit, GridPosition gp) {
+        Path<GridPosition> pathSegment = _activeMoveRange.BFS(_waypoints.Last(), gp);
+        
+        if (pathSegment != null) {
+            _pathSegments.Add(pathSegment);
+            _waypoints.Add(gp);
+            
+            int remainingMovement = thisUnit.unitStats.MOVE - _pathSegments.Sum(pathSeg => pathSeg.Count-1);
+            _activeMoveRange = thisUnit.unitPathfinder.GenerateFlowField<MoveRange>(_waypoints.Last(), range: remainingMovement);
+            _activeMoveRange.RegisterValidMoveToFunc(thisUnit.unitMap.CanMoveInto);
+
+            // re-display move range
+            thisUnit.battleMap.ResetHighlightTiles();
+            thisUnit.battleMap.ResetHighlight();
+            thisUnit.battleMap.ClearDisplayPath();
+
+            Utils.DelegateLateFrameTo(thisUnit, () => DisplayMoveRange(thisUnit, _activeMoveRange));
+        }
+    }
 }

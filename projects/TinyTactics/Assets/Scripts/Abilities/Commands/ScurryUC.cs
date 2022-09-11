@@ -10,23 +10,14 @@ public class ScurryUC : MoveUC
     public ImmediateValueStatus scurryBuff;
 
     public override void Activate(PlayerUnit thisUnit) {
-        // ScurryUC
         thisUnit.unitPathfinder.moveThroughEnemiesOverride = true;
         thisUnit.unitPathfinder.loweredTerrainCostOverride = true;
-        // ScurryUC
-        thisUnit.UpdateThreatRange();
-
-        // re-calc move range, and display it
-        Utils.DelegateLateFrameTo(thisUnit,  () => DisplayMoveRange(thisUnit));
-        UIManager.inst.EnableUnitDetail(thisUnit);
+        
+        base.Activate(thisUnit);
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
-        thisUnit.battleMap.ResetHighlightTiles();
-        thisUnit.battleMap.ResetHighlight();
-        thisUnit.battleMap.ClearDisplayPath();
-        //
-        UIManager.inst.DisableUnitDetail();
+        base.Deactivate(thisUnit);
         
         thisUnit.unitPathfinder.moveThroughEnemiesOverride = false;
         thisUnit.unitPathfinder.loweredTerrainCostOverride = false;

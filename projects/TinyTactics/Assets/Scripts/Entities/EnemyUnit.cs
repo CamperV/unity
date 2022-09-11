@@ -244,13 +244,6 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 
     public void DisplayThreatRange() {
         if (moveRange == null || attackRange == null) UpdateThreatRange();
-
-        // make a fake movementRange for displaying
-        // MoveRange fakeMoveRange = unitPathfinder.GenerateFakeFlowField<MoveRange>(gridPosition, range: unitStats.MOVE);
-        // TargetRange fakeTargetRange = new TargetRange(fakeMoveRange, EquippedWeapon.MIN_RANGE, EquippedWeapon.MAX_RANGE);
-
-        // fakeTargetRange.Display(battleMap, attackTileVisuals.color, attackTileVisuals.tile);
-        // fakeMoveRange.Display(battleMap, moveTileVisuals.color, moveTileVisuals.tile);
   
         attackRange.Display(battleMap, attackTileVisuals.color, attackTileVisuals.tile);
         moveRange.Display(battleMap, moveTileVisuals.color, moveTileVisuals.tile);

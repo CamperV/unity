@@ -26,6 +26,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
 
     [SerializeField] private VisualTile mouseOverOverlayTile;
     [SerializeField] private Tile pathOverlayTile;
+    [SerializeField] private Tile pathWaypointOverlayTile;
     [SerializeField] private Tile pathEndOverlayTile;
     
     private GridPosition recentMouseOver;
@@ -112,7 +113,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
         if (disableInteraction) return;
     }
 
-    public void CheckMiddleMouseClick(Vector3 screenPosition) {
+    public void CheckAuxiliaryInteract(Vector3 screenPosition) {
         if (disableInteraction) return;
         //
 
@@ -260,6 +261,27 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
 
         Vector3Int as_V2 = new Vector3Int(path.End.x, path.End.y, -1);
         overlayTilemap.SetTile(as_V2, pathEndOverlayTile);
+	}
+
+	public void DisplayPath(Path<GridPosition> path, List<GridPosition> waypoints) {
+		foreach (GridPosition gp in path.Unwind()) {
+			overlayTilemap.SetTile(
+                new Vector3Int(gp.x, gp.y, -1),
+                pathOverlayTile
+            );
+		}
+
+        foreach (GridPosition wp in waypoints) {
+			overlayTilemap.SetTile(
+                new Vector3Int(wp.x, wp.y, -1),
+                pathWaypointOverlayTile
+            );       
+        }
+
+        overlayTilemap.SetTile(
+            new Vector3Int(path.End.x, path.End.y, -1),
+            pathEndOverlayTile
+        );
 	}
 
     // this uses Vector3Int, to reach that special forbidden zone where GridPosition's cannot reach normally

@@ -67,7 +67,6 @@ public class MoveRange : FlowField<GridPosition>, IPathable<GridPosition>
 		}
 	}
 
-
     public Path<GridPosition> BFS(GridPosition startPosition, GridPosition targetPosition) {
         // we can short-circuit easily - if the MoveRange doesn't have the key, don't even try
         if (!ValidMoveTo(targetPosition)) {

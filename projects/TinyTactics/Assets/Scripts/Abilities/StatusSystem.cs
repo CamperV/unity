@@ -42,7 +42,6 @@ public class StatusSystem : MonoBehaviour
                 string statusProviderID = kvp.Key;
                 so_Status status = kvp.Value;
 
-                // string add = $"{status} [{statusProviderID}]";
                 string add = $"{status}";
 
                 if (status is IExpireStatus) {

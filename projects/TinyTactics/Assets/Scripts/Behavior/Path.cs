@@ -64,4 +64,19 @@ public class Path<T> where T : struct
 
 		return newPath;
 	}
+
+	// these paths must come to us IN ORDER
+	// ie, their Ends must overlap with another's Start
+	public static Path<T> MergePaths(IEnumerable<Path<T>> paths) {
+		Path<T> newPath = new Path<T>();
+
+		foreach (Path<T> path in paths) {
+			foreach (T currentPos in path.Unwind()) {
+				if (!newPath.Contains(currentPos))
+					newPath.AddLast(currentPos);
+			}
+		}
+
+		return newPath;
+	}
 }

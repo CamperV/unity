@@ -46,7 +46,7 @@ public sealed class EventManager : MonoBehaviour
         inputController.RightMouseClickEvent += _ => playerUnitController.ClearSelection();
         inputController.RightMouseClickEvent += _ => enemyUnitController.ClearPreview();
 
-        inputController.MiddleMouseClickEvent += battleMap.CheckMiddleMouseClick;
+        inputController.MiddleMouseClickEvent += battleMap.CheckAuxiliaryInteract;
 
         inputController.LeftMouseHoldStartEvent += battleMap.CheckLeftMouseHoldStart;
         inputController.LeftMouseHoldEndEvent += battleMap.CheckLeftMouseHoldEnd;

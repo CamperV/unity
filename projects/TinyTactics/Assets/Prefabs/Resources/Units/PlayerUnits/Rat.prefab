@@ -55,6 +55,7 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
+  loweredTerrainCostOverride: 0
 --- !u!114 &2726641857695291562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83,7 +84,7 @@ MonoBehaviour:
     BRAWN: 1
     FINESSE: 4
     DEFENSE: 0
-    MOVE: 4
+    MOVE: 12
     _MULTISTRIKE: 0
   variance: 0
 --- !u!114 &8623469792262427207
