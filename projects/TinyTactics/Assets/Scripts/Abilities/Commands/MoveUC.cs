@@ -10,7 +10,7 @@ using Extensions;
 public class MoveUC : UnitCommand
 {
     // we can actually keep some state here: there should never be two MoveUC's Activated at the same time
-    public static GridPosition _previousMouseOver; // for MoveSelection and AttackSelection (ContextualNoInteract)
+    public static GridPosition? _previousMouseOver = null; // for MoveSelection and AttackSelection (ContextualNoInteract)
     
     // I really hate that I'm keeping so much data here
     // but only one MoveUC will ever be active, so we can store it in the class
@@ -83,29 +83,35 @@ public class MoveUC : UnitCommand
     // this is where we constantly recalculate/show the path to your mouse destination
     // this will fire on Update(), but should only fire when CommandActive is the state
     public override void ActiveUpdate(PlayerUnit thisUnit) {
+        if (!thisUnit.battleMap.MouseInBounds) return;
+
         if (thisUnit.battleMap.CurrentMouseGridPosition != _previousMouseOver) {    // when the mouse-on-grid changes:
             thisUnit.battleMap.ClearDisplayPath();
 
-            // okay I need to write this down
             // user can input waypoints, but I need to generate a new FlowField/MoveRange for it
             // keep the entire system here. Honestly since we're already storing other crap statically...
-            if (thisUnit.battleMap.MouseInBounds) {
-                
-                // starting from:
-                GridPosition finalWaypoint = (_waypoints.Count > 0) ? _waypoints.Last() : thisUnit.gridPosition;
-                Path<GridPosition> finalSegment = _activeMoveRange.BFS(finalWaypoint, thisUnit.battleMap.CurrentMouseGridPosition);               
 
-                if (finalSegment != null) {
-                    var segmentsCopy = new List<Path<GridPosition>>(_pathSegments);
-                    segmentsCopy.Add(finalSegment);
+            // starting from:
+            GridPosition finalWaypoint = (_waypoints.Count > 0) ? _waypoints.Last() : thisUnit.gridPosition;
+            Path<GridPosition> finalSegment = _activeMoveRange.BFS(finalWaypoint, thisUnit.battleMap.CurrentMouseGridPosition);               
 
-                    _mouseOverPath = Path<GridPosition>.MergePaths(segmentsCopy);
-                    thisUnit.battleMap.DisplayPath(_mouseOverPath, _waypoints);
-                }
+            if (finalSegment != null) {
+                var segmentsCopy = new List<Path<GridPosition>>(_pathSegments);
+                segmentsCopy.Add(finalSegment);
 
-                // finally,
-                _previousMouseOver = thisUnit.battleMap.CurrentMouseGridPosition;
+                _mouseOverPath = Path<GridPosition>.MergePaths(segmentsCopy);
+                thisUnit.battleMap.DisplayPath(_mouseOverPath, _waypoints);
+
+            // still display the other segments
+            } else if (_pathSegments.Count > 0) {
+                thisUnit.battleMap.DisplayPath(
+                    Path<GridPosition>.MergePaths( new List<Path<GridPosition>>(_pathSegments) ),
+                    _waypoints
+                );
             }
+
+            // finally,
+            _previousMouseOver = thisUnit.battleMap.CurrentMouseGridPosition;
         }
     }
 
@@ -156,6 +162,18 @@ public class MoveUC : UnitCommand
         thisUnit.battleMap.Highlight(thisUnit.gridPosition, Palette.selectColorWhite);
     }
 
+    protected virtual void DisplayMoveRange(PlayerUnit thisUnit, MoveRange moveRange, float alphaOverride) {   
+        moveRange.Display(thisUnit.battleMap, tileVisuals.color.WithAlpha(alphaOverride), tileVisuals.tile);
+
+    	foreach (GridPosition gp in ThreatenedRange(thisUnit)) {
+			if (moveRange.field.ContainsKey(gp)) {
+				thisUnit.battleMap.Highlight(gp, tileVisuals.altColor.WithAlpha(alphaOverride));
+			}
+		}
+
+        thisUnit.battleMap.Highlight(thisUnit.gridPosition, Palette.selectColorWhite);
+    }
+
     private IEnumerable<GridPosition> ThreatenedRange(PlayerUnit thisUnit) {
 		HashSet<GridPosition> threatened = new HashSet<GridPosition>();
 
@@ -169,6 +187,9 @@ public class MoveUC : UnitCommand
 
     // nasty static storage for now
     private void _AddWaypoint(PlayerUnit thisUnit, GridPosition gp) {
+        _previousMouseOver = null; // force a state update for displaying purposes/recalculating the paths
+
+
         Path<GridPosition> pathSegment = _activeMoveRange.BFS(_waypoints.Last(), gp);
         
         if (pathSegment != null) {
@@ -184,6 +205,7 @@ public class MoveUC : UnitCommand
             thisUnit.battleMap.ResetHighlight();
             thisUnit.battleMap.ClearDisplayPath();
 
+            Utils.DelegateLateFrameTo(thisUnit, () => DisplayMoveRange(thisUnit, thisUnit.moveRange, 0.25f));
             Utils.DelegateLateFrameTo(thisUnit, () => DisplayMoveRange(thisUnit, _activeMoveRange));
         }
     }
