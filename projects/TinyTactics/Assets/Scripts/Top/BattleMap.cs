@@ -25,9 +25,7 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     //
 
     [SerializeField] private VisualTile mouseOverOverlayTile;
-    [SerializeField] private Tile pathOverlayTile;
-    [SerializeField] private Tile pathWaypointOverlayTile;
-    [SerializeField] private Tile pathEndOverlayTile;
+    [SerializeField] private PathTileSet pathTileSet;
     
     private GridPosition recentMouseOver;
     public GridPosition CurrentMouseGridPosition { get => recentMouseOver; }
@@ -254,42 +252,15 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     }
     
 	public void DisplayPath(Path<GridPosition> path) {
-		foreach (GridPosition gp in path.Unwind()) {
-            Vector3Int as_V = new Vector3Int(gp.x, gp.y, -1);
-			overlayTilemap.SetTile(as_V, pathOverlayTile);
-		}
-
-        Vector3Int as_V2 = new Vector3Int(path.End.x, path.End.y, -1);
-        overlayTilemap.SetTile(as_V2, pathEndOverlayTile);
+		pathTileSet.DisplayPath(overlayTilemap, path);
 	}
 
 	public void DisplayPath(Path<GridPosition> path, List<GridPosition> waypoints) {
-		foreach (GridPosition gp in path.Unwind()) {
-			overlayTilemap.SetTile(
-                new Vector3Int(gp.x, gp.y, -1),
-                pathOverlayTile
-            );
-		}
-
-        foreach (GridPosition wp in waypoints) {
-			overlayTilemap.SetTile(
-                new Vector3Int(wp.x, wp.y, -1),
-                pathWaypointOverlayTile
-            );       
-        }
-
-        overlayTilemap.SetTile(
-            new Vector3Int(path.End.x, path.End.y, -1),
-            pathEndOverlayTile
-        );
+		pathTileSet.DisplayPath(overlayTilemap, path, waypoints);
 	}
 
     // this uses Vector3Int, to reach that special forbidden zone where GridPosition's cannot reach normally
 	public void ClearDisplayPath() {
-        overlayTilemap.CompressBounds();
-
-        foreach (Vector3Int v in overlayTilemap.cellBounds.allPositionsWithin) {
-            if (v.z == -1) overlayTilemap.SetTile(v, null);
-        }
+        pathTileSet.ClearDisplayPath(overlayTilemap);
 	}
 }

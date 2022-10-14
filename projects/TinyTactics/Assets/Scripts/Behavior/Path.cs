@@ -40,6 +40,17 @@ public class Path<T> where T : struct, IEquatable<T>
 		}
 	}
 
+	public IEnumerable<LinkedListNode<T>> UnwindNodes() {
+		LinkedListNode<T> position = path.First;
+		while (true) {
+			yield return position;
+
+			if (position != path.Last) {
+				position = position.Next;
+			} else { break; }
+		}
+	}
+
 	public bool Contains(T v) {
 		return path.Contains(v);
 	}

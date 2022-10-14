@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-[CreateAssetMenu (menuName = "Tiles/TerrainTile")]
+[CreateAssetMenu (menuName = "CustomTiles/TerrainTile")]
 public class TerrainTile : Tile
 {
 	// returns an integer that signifies the cost of entering this tile
