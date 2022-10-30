@@ -192,7 +192,7 @@ public class Engagement
 
         // hit/crit
         if (isCrit) {
-            A.FireOnCriticalEvent(B);
+            A.FireOnCriticalTargetEvent(B);
             A.personalAudioFX.PlayCriticalFX();
             UIManager.inst.combatLog.AddEntry("YELLOW@[Critical Hit!]");          
         }
@@ -200,11 +200,15 @@ public class Engagement
         // then the meat
         // ouchies, play the animations for hurt
         bool survived = B.SufferDamage(sufferedDamage, A.transform.position, isCritical: isCrit);
-        if (survived) B.FireOnHurtByEvent(A);
+        if (survived) {
+            B.FireOnHurtByTargetEvent(A);
+        } else {
+            A.FireOnDefeatTargetEvent(B);
+        }
         
         // fire the event after suffering damage, so the animations are queued in the right order
         // this also means you will not be debuffed or anything if you die
-        A.FireOnHitEvent(B);
+        A.FireOnHitTargetEvent(B);
 
 		return survived;
 	}
@@ -222,11 +226,11 @@ public class Engagement
 
         // ouchies, play the animations for hurt
         bool survived = B.SufferDamage(sufferedDamage, A.transform.position);
-        if (survived) B.FireOnHurtByEvent(A);
+        if (survived) B.FireOnHurtByTargetEvent(A);
         
         // fire the event after suffering damage, so the animations are queued in the right order
         // this also means you will not be debuffed or anything if you die
-        A.FireOnHitEvent(B);
+        A.FireOnHitTargetEvent(B);
 
 		return survived;
 	}

@@ -14,7 +14,7 @@ public class ImmediateValueStatus : so_Status, IValueStatus, IImmediateStatus, I
 	}
 
 	// assign in inspector
-	public UnitStats.UpdateableStat targetStat;
+	public UnitStats.UpdatableStat targetStat;
     
 	// IValueStatus
 	[field: SerializeField] public int value { get; set; }

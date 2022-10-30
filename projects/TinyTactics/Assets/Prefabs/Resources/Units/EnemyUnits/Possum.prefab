@@ -28,6 +28,7 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
+  loweredTerrainCostOverride: 0
 --- !u!114 &438022455614158335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,11 +62,13 @@ MonoBehaviour:
   enemyUnitController: {fileID: 0}
   <tags>k__BackingField: []
   archetypes: []
+  mutArchetypes: []
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
   <counterAttackAvailable>k__BackingField: 1
   assignedPod: {fileID: 0}
+  experienceReward: 12
   moveTileVisuals: {fileID: 11400000, guid: d869f387131ad9f4ea9f7643facbf3c4, type: 2}
   attackTileVisuals: {fileID: 11400000, guid: 18a134b39d11303498e3d4a6c247b6a8, type: 2}
 --- !u!114 &8595874811363893480

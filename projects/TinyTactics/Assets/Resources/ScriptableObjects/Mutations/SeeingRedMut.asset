@@ -15,7 +15,6 @@ MonoBehaviour:
   name: Seeing Red
   description: Deal x2 damage to units who attacked this unit.
   sprite: {fileID: 21300000, guid: a218edae4e493b749a2db714f2618676, type: 3}
-  belongsToArchetype: {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
-  isSignature: 1
+  archetype: {fileID: 11400000, guid: 2c21546f4dca7db44bd0920c2939f2fa, type: 2}
   markStatus: {fileID: 11400000, guid: 4019ea92814ca244fa4c10fdb92f7e9b, type: 2}
   damageMultiplier: 2

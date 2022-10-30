@@ -11,12 +11,12 @@ public class SeeingRedMut : Mutation
     public float damageMultiplier;
 
     public override void OnAcquire(Unit thisUnit) {
-        thisUnit.OnHurtBy += ApplyMarkToAttacker;
+        thisUnit.OnHurtByTarget += ApplyMarkToAttacker;
         thisUnit.OnAttack += BonusDamageAgainstMark;
     }
 
     public override void OnRemove(Unit thisUnit) {
-        thisUnit.OnHurtBy -= ApplyMarkToAttacker;
+        thisUnit.OnHurtByTarget -= ApplyMarkToAttacker;
         thisUnit.OnAttack -= BonusDamageAgainstMark;
     }
 

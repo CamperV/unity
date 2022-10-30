@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26edc491db45c2641ad3f1195a626632, type: 3}
+  m_Name: LevelProgression_Alternating
+  m_EditorClassIdentifier: 
+  levelUpProgression:
+  - {fileID: 11400000, guid: 5c9657d2a37643142b9d027b1dd26972, type: 2}
+  - {fileID: 11400000, guid: 0f7a686f8e1083e43b7b59663cac7c69, type: 2}
+  - {fileID: 11400000, guid: 5c9657d2a37643142b9d027b1dd26972, type: 2}
+  - {fileID: 11400000, guid: 9c5654b7d7c9c0e4c9d527664479e543, type: 2}

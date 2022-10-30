@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: MinorHealMut
   m_EditorClassIdentifier: 
   name: Minor Heal
-  typeName: Heal
   description: Restore 3 HP to target ally.
   sprite: {fileID: 21300000, guid: 2358856368b3d5140b5258543a00c470, type: 3}
-  belongsToArchetype: {fileID: 11400000, guid: e3d85aa16bc314245b699ac65182ffc3, type: 2}
-  isSignature: 1
+  archetype: {fileID: 11400000, guid: 1a115433b3ee74f4db327d1263bb3322, type: 2}
   unitCommand: {fileID: 11400000, guid: e70c5728ef29ceb45b6ef282a94ab066, type: 2}

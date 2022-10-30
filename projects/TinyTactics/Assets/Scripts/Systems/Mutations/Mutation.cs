@@ -16,8 +16,7 @@ public abstract class Mutation : ScriptableObject, IMutatorComponent
 		set => name = value;
 	}
 	
-	public ArchetypeData belongsToArchetype;
-	public bool isSignature;
+	public MutationArchetype archetype;
 
     public abstract void OnAcquire(Unit thisUnit);
     public abstract void OnRemove(Unit thisUnit);

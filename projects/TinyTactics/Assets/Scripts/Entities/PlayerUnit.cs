@@ -10,6 +10,7 @@ using Extensions;
 public sealed class PlayerUnit : Unit
 {
     [HideInInspector] public UnitCommandSystem unitCommandSystem;
+    [HideInInspector] public ExperienceSystem experienceSystem;
 
     // imported from Campaign
     public Guid CampaignID { get; private set; }
@@ -18,6 +19,12 @@ public sealed class PlayerUnit : Unit
     protected override void Awake() {
         base.Awake();
         unitCommandSystem = GetComponent<UnitCommandSystem>();
+        experienceSystem = GetComponent<ExperienceSystem>();
+    }
+
+    protected override void Start() {
+        base.Start();
+        experienceSystem.Initialize();
     }
 
     public void ImportData(CampaignUnitGenerator.CampaignUnitData unitData) {

@@ -14,11 +14,11 @@ public class KunaiDebuff : WeaponPerk, IToolTip
     public AudioFXBundle audioFXBundle;
 
     public override void OnEquip() {
-        // boundWeapon.boundUnit.OnHit += ApplyDebuff;
+        // boundWeapon.boundUnit.OnHitTarget += ApplyDebuff;
     }
 
     public override void OnUnequip() {
-        // boundWeapon.boundUnit.OnHit -= ApplyDebuff;
+        // boundWeapon.boundUnit.OnHitTarget -= ApplyDebuff;
     }
 
     private void ApplyDebuff(Unit target) {

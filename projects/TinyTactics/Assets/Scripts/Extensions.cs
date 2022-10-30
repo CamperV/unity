@@ -307,6 +307,12 @@ namespace Extensions
             return a[rand];
         }
 
+        // List<T>
+        public static T SelectRandom<T>(this List<T> l) {
+            int rand = Random.Range(0, l.Count);
+            return l[rand];
+        }
+
         // Dict
         public static KeyValuePair<T, U> SelectRandomEntry<T, U>(this Dictionary<T, U> d) {
             int rand = Random.Range(0, d.Keys.Count);

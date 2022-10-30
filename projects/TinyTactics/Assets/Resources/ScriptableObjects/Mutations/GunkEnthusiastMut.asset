@@ -15,6 +15,5 @@ MonoBehaviour:
   name: Gunk Enthusiast
   description: Create a Gunk tile on death.
   sprite: {fileID: 21300000, guid: 12eb85734f6c3344fa96335bf4de0850, type: 3}
-  belongsToArchetype: {fileID: 11400000, guid: 2a23f4a759bdc6a42b4355cb5b5cd665, type: 2}
-  isSignature: 0
+  archetype: {fileID: 11400000, guid: fc3a0474b3f9c1c4990fab9a7a413bd0, type: 2}
   gunkTerrain: {fileID: 11400000, guid: 770df71ee2e513c4098333fbf8ac849c, type: 2}

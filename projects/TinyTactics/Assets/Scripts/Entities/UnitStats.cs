@@ -15,13 +15,15 @@ public class UnitStats : MonoBehaviour
     public event StatChange UpdateVitalityEvent;
     public event StatChange UpdateStrengthEvent;
     public event StatChange UpdateDexterityEvent;
+    public event StatChange UpdateBrawnEvent;
+    public event StatChange UpdateFinesseEvent;
     public event StatChange UpdateReflexEvent;
     public event StatChange UpdateDefenseEvent;
     public event StatChange UpdateMoveEvent;
     public event StatChange UpdateLuckEvent;
     public event StatChange UpdateMultistrikeEvent;
 
-	public enum UpdateableStat {
+	public enum UpdatableStat {
 		Vitality,
         Brawn,
         Finesse,
@@ -41,8 +43,8 @@ public class UnitStats : MonoBehaviour
     [HideInInspector] public int _LUCK; // generally hidden. Useful in perks
     [HideInInspector] public int _MULTISTRIKE; // used in Engagement.Process()
 
-    [HideInInspector] public int BRAWN;
-    [HideInInspector] public int FINESSE;
+    public int BRAWN;
+    public int FINESSE;
 
     [HideInInspector] public int _CURRENT_HP;
 
@@ -118,6 +120,16 @@ public class UnitStats : MonoBehaviour
         UpdateDexterityEvent?.Invoke(newValue);
     }
 
+    public void UpdateBrawn(int newValue) {
+        BRAWN = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
+        UpdateBrawnEvent?.Invoke(newValue);
+    }
+
+    public void UpdateFinesse(int newValue) {
+        FINESSE = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
+        UpdateFinesseEvent?.Invoke(newValue);
+    }
+
     public void UpdateReflex(int newValue) {
         REFLEX = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateReflexEvent?.Invoke(newValue);
@@ -143,24 +155,30 @@ public class UnitStats : MonoBehaviour
         UpdateMultistrikeEvent?.Invoke(newValue);
     }
 
-    public void ModifyStat(UpdateableStat targetStat, int modifier) {
+    public void ModifyStat(UpdatableStat targetStat, int modifier) {
         switch (targetStat) {
-			case UpdateableStat.Vitality:
+			case UpdatableStat.Vitality:
 				UpdateVitality(VITALITY + modifier);
-				break;				
-			case UpdateableStat.Strength:
+				break;			
+            case UpdatableStat.Brawn:
+				UpdateBrawn(BRAWN + modifier);
+				break;	
+			case UpdatableStat.Finesse:
+				UpdateFinesse(FINESSE + modifier);
+				break;		
+			case UpdatableStat.Strength:
 				UpdateStrength(STRENGTH + modifier);
 				break;	
-			case UpdateableStat.Dexterity:
+			case UpdatableStat.Dexterity:
 				UpdateDexterity(DEXTERITY + modifier);
 				break;	
-			case UpdateableStat.Defense:
+			case UpdatableStat.Defense:
                 UpdateDefense(DEFENSE + modifier);
 				break;	
-			case UpdateableStat.Move:
+			case UpdatableStat.Move:
 				UpdateMove(MOVE + modifier);
 				break;	
-			case UpdateableStat.Multistrike:
+			case UpdatableStat.Multistrike:
 				UpdateMultistrike(_MULTISTRIKE + modifier);
 				break;	
 		}

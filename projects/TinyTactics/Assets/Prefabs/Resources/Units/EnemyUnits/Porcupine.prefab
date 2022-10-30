@@ -38,6 +38,7 @@ MonoBehaviour:
   <moveAvailable>k__BackingField: 0
   <counterAttackAvailable>k__BackingField: 1
   assignedPod: {fileID: 0}
+  experienceReward: 1
   moveTileVisuals: {fileID: 11400000, guid: d869f387131ad9f4ea9f7643facbf3c4, type: 2}
   attackTileVisuals: {fileID: 11400000, guid: 18a134b39d11303498e3d4a6c247b6a8, type: 2}
 --- !u!114 &4572328887851550332
@@ -56,6 +57,7 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
+  loweredTerrainCostOverride: 0
 --- !u!114 &7306625105998242541
 MonoBehaviour:
   m_ObjectHideFlags: 0

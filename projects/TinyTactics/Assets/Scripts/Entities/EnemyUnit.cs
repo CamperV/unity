@@ -7,10 +7,11 @@ using Extensions;
 [RequireComponent(typeof(EnemyBrain))]
 public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
 {
-    // additional components
+    // additional components/attributes
     private EnemyBrain brain;
     [HideInInspector] public BrainPod assignedPod;
     public int Initiative => brain.CalculateInitiative();
+    public int experienceReward;
 
     [SerializeField] private TileVisuals moveTileVisuals;
     [SerializeField] private TileVisuals attackTileVisuals;

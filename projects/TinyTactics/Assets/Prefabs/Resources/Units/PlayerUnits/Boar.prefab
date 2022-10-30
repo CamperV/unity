@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5195399058359528727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3515736596147313042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 005c1e99a1de1c74eaae0a4ccf6d3337, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EXPERIENCE: 0
+  LEVEL: 0
+  levelingScale: {fileID: 11400000, guid: bd0d76a78e6ebd44c87dc4cd6d73cb1a, type: 2}
+  levelProgression: {fileID: 11400000, guid: fcbdb695c3ce2ce45aabb4f07f1e6511, type: 2}
 --- !u!114 &-3102811991686954599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,11 +66,15 @@ MonoBehaviour:
   archetypes:
   - {fileID: 11400000, guid: 77bd89e400101ca4a955427ec05a303a, type: 2}
   - {fileID: 11400000, guid: 123d5550d9da4f64a956378cca72b9f7, type: 2}
+  mutArchetypes:
+  - {fileID: 11400000, guid: 2c21546f4dca7db44bd0920c2939f2fa, type: 2}
+  - {fileID: 11400000, guid: 909f8acd455d14f4ebb1e889adaf4c23, type: 2}
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
   <counterAttackAvailable>k__BackingField: 1
   unitCommandSystem: {fileID: 0}
+  experienceSystem: {fileID: 0}
 --- !u!114 &3481298471748592242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,6 +122,7 @@ MonoBehaviour:
   _terrainCostOverrides: 
   moveThroughEnemiesOverride: 0
   moveThroughTerrainOverride: 0
+  loweredTerrainCostOverride: 0
 --- !u!114 &7269259801965446423
 MonoBehaviour:
   m_ObjectHideFlags: 0

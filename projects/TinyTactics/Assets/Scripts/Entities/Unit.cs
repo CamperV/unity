@@ -40,9 +40,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public event OnAction OnMiss;
 
     public delegate void OnTargetedAction(Unit thisUnit, Unit other);
-    public event OnTargetedAction OnHit;
-    public event OnTargetedAction OnCritical;
-    public event OnTargetedAction OnHurtBy;
+    public event OnTargetedAction OnHitTarget;
+    public event OnTargetedAction OnCriticalTarget;
+    public event OnTargetedAction OnHurtByTarget;
+    public event OnTargetedAction OnDefeatTarget;
 
     public delegate void Movement(Unit thisUnit, Path<GridPosition> path);
     public event Movement OnMove;
@@ -84,6 +85,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     // for knowing which bag of perks to grab from
     public ArchetypeData[] archetypes;
+    public MutationArchetype[] mutArchetypes;
 
     // debug
     public DebugStateLabel debugStateLabel;
@@ -401,9 +403,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public void FireOnMissEvent() => OnMiss?.Invoke();
     
     // targeted versions
-    public void FireOnHitEvent(Unit target) => OnHit?.Invoke(this, target);
-    public void FireOnCriticalEvent(Unit target) => OnCritical?.Invoke(this, target);
-    public void FireOnHurtByEvent(Unit other) => OnHurtBy?.Invoke(this, other);
+    public void FireOnHitTargetEvent(Unit target) => OnHitTarget?.Invoke(this, target);
+    public void FireOnCriticalTargetEvent(Unit target) => OnCriticalTarget?.Invoke(this, target);
+    public void FireOnHurtByTargetEvent(Unit other) => OnHurtByTarget?.Invoke(this, other);
+    public void FireOnDefeatTargetEvent(Unit target) => OnDefeatTarget?.Invoke(this, target);
 
     public void FireOnMoveEvent(Path<GridPosition> pathTaken) => OnMove?.Invoke(this, pathTaken);
 
