@@ -10,16 +10,22 @@ public class PortraitComboAttackDisplay : UIComboAttackDisplay
     [SerializeField] private GameObject container;
     [SerializeField] private PortraitComboAttackItem itemPrefab;
 
-    public override void DisplayComboAttacks(List<ComboAttack> comboAttacks) {
+    public override void DisplayComboAttacks(Engagement engagement) {
         Clear();
 
-        if (comboAttacks.Count > 0) {
+        if (engagement.comboAttacks.Count > 0) {
             container.SetActive(true);
             
-            foreach (ComboAttack comboAttack in comboAttacks) {
+            foreach (ComboAttack comboAttack in engagement.comboAttacks) {
                 PortraitComboAttackItem item = Instantiate(itemPrefab, container.transform);
                 item.SetPortrait(comboAttack.unit.portraitSprite);
-                item.SetText($"+{comboAttack.damage}");
+
+                int finalDamage = Mathf.Clamp(comboAttack.damage - engagement.defense.damageReduction, 0, 99);
+                if (finalDamage > 0) {
+                    item.SetText($"+{finalDamage}");
+                } else {
+                    item.SetText($"<color=#ff0000>n/a</color>");
+                }
             }
         }
     }

@@ -90,12 +90,14 @@ public sealed class UIManager : MonoBehaviour
 		// DisableEngagementPreviewEvent += () => Destroy(miniPreview_Defender.gameObject);
 
 		// visualize certain values, and ensure the previews are reverted when the EngagementPreview proper is disabled
-		potentialEngagement.aggressor.GetComponentInChildren<MiniHealthBar>()?.PreviewDamage(
-			enemyPreviewStats.finalDamageContext.Max*(potentialEngagement.defender.unitStats._MULTISTRIKE+1)
-		);
-		potentialEngagement.defender.GetComponentInChildren<MiniHealthBar>()?.PreviewDamage(
-			playerPreviewStats.finalDamageContext.Max*(potentialEngagement.aggressor.unitStats._MULTISTRIKE+1)
-		);
+		int finalProjectedDamage_fromEnemy = enemyPreviewStats.finalDamageContext.Max*(potentialEngagement.defender.unitStats._MULTISTRIKE+1);
+		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max*(potentialEngagement.aggressor.unitStats._MULTISTRIKE+1);
+		foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
+			finalProjectedDamage_fromPlayer += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
+		}
+
+		potentialEngagement.aggressor.GetComponentInChildren<MiniHealthBar>()?.PreviewDamage(finalProjectedDamage_fromEnemy);
+		potentialEngagement.defender.GetComponentInChildren<MiniHealthBar>()?.PreviewDamage(finalProjectedDamage_fromPlayer);
 		DisableEngagementPreviewEvent += () => potentialEngagement.aggressor.GetComponentInChildren<MiniHealthBar>()?.RevertPreview();
 		DisableEngagementPreviewEvent += () => potentialEngagement.defender.GetComponentInChildren<MiniHealthBar>()?.RevertPreview();
 	}

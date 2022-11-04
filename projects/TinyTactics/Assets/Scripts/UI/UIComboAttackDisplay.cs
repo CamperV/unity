@@ -5,5 +5,5 @@ using UnityEngine;
 
 public abstract class UIComboAttackDisplay : MonoBehaviour
 {
-    public abstract void DisplayComboAttacks(List<ComboAttack> comboAttacks);
+    public abstract void DisplayComboAttacks(Engagement engagement);
 }

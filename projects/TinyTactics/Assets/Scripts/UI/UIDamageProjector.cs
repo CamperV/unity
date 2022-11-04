@@ -7,4 +7,5 @@ public abstract class UIDamageProjector : MonoBehaviour
 {
     public abstract void DisplayDamageProjection(EngagementStats engagementProjection);
     public virtual void DisplayDamageProjection(EngagementStats engagementProjection, int multistrikeValue){}
+    public virtual void DisplayDamageProjection(Engagement potentialEngagement, EngagementStats engagementProjection, int multistrikeValue){}
 }

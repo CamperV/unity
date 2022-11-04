@@ -38,7 +38,7 @@ public class EngagementPreviewBar : MonoBehaviour
 		portrait_Player.sprite = potentialEngagement.aggressor.portraitSprite;
 
 		// get the simulated damage and display it (w/ mutlistrike)
-		projectedDamage_Player.DisplayDamageProjection(playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE);
+		projectedDamage_Player.DisplayDamageProjection(potentialEngagement, playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE);
 
 		List<string> playerUnitMutators = new List<string>(potentialEngagement.attack.mutators);
 		if (potentialEngagement.counterDefense != null) {
@@ -54,7 +54,11 @@ public class EngagementPreviewBar : MonoBehaviour
 		portrait_Enemy.sprite = potentialEngagement.defender.portraitSprite;
 
 		// how much damage can we do to the Enemy? (need to do this AFTER the health bar is attached to the enemy)
-		healthBar_Enemy.PreviewDamage(playerPreviewStats.finalDamageContext.Max * (potentialEngagement.aggressor.unitStats._MULTISTRIKE+1));
+		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max * (potentialEngagement.aggressor.unitStats._MULTISTRIKE+1);
+		foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
+			finalProjectedDamage_fromPlayer += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
+		}
+		healthBar_Enemy.PreviewDamage(finalProjectedDamage_fromPlayer);
 
 		// get the simulated damage and display it (w/ mutlistrike)
 		projectedDamage_Enemy.DisplayDamageProjection(enemyPreviewStats, potentialEngagement.defender.unitStats._MULTISTRIKE);
@@ -79,6 +83,6 @@ public class EngagementPreviewBar : MonoBehaviour
 		// disadvantageIndicator_Enemy.SetActive(enemyPreviewStats.hasDisadvantage);
 
 		// SUPER Finally: include any combo-able allies and their attacks
-		comboAttackDisplay.DisplayComboAttacks(potentialEngagement.comboAttacks);
+		comboAttackDisplay.DisplayComboAttacks(potentialEngagement);
 	}
 }
