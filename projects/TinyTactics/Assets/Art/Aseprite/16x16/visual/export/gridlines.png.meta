@@ -1,10 +1,7 @@
 fileFormatVersion: 2
-guid: c85a084f5547c4b4d8ac0c1af92ece1c
+guid: 9ab786dc447108b44b76aee6d56dfce2
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 709443105954848274
-    second: advantage_arrow_0
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -44,13 +41,13 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 32
-  spriteBorder: {x: 8, y: 6, z: 8, w: 6}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -104,28 +101,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: advantage_arrow_0
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 6
-        width: 16
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 21ed9cefeb278d900800000000000000
-      internalID: 709443105954848274
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []

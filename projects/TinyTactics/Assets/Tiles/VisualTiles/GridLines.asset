@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 101db4cdc6bc94e4fbaa86e0aa9f0d30, type: 3}
   m_Name: GridLines
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: 89523858782aa494981f5a9ed5d4baa1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9ab786dc447108b44b76aee6d56dfce2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

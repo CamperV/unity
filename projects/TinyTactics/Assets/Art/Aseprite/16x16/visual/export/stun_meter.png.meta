@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: c85a084f5547c4b4d8ac0c1af92ece1c
+guid: 2c3554729a1aea041b59a5c57680deaf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 709443105954848274
-    second: advantage_arrow_0
+      213: 7533176731764133630
+    second: stun_meter_0
+  - first:
+      213: -4108732467898504041
+    second: stun_meter_1
+  - first:
+      213: 4033718175343609745
+    second: stun_meter_2
+  - first:
+      213: 184229621391532024
+    second: stun_meter_3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -45,12 +54,12 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 32
-  spriteBorder: {x: 8, y: 6, z: 8, w: 6}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -106,22 +115,85 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: advantage_arrow_0
+      name: stun_meter_0
       rect:
         serializedVersion: 2
-        x: 8
+        x: 5
         y: 6
-        width: 16
-        height: 20
+        width: 4
+        height: 9
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 21ed9cefeb278d900800000000000000
-      internalID: 709443105954848274
+      spriteID: efe0a0733583b8860800000000000000
+      internalID: 7533176731764133630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stun_meter_1
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 7
+        width: 2
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79cabc5e699daf6c0800000000000000
+      internalID: -4108732467898504041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stun_meter_2
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 8
+        width: 17
+        height: 4
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19784651f45aaf730800000000000000
+      internalID: 4033718175343609745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stun_meter_3
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 9
+        width: 15
+        height: 2
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ff95245dd38e8200800000000000000
+      internalID: 184229621391532024
       vertices: []
       indices: 
       edges: []
