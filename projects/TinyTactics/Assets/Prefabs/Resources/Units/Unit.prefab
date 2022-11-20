@@ -412,8 +412,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2389193319765324094, guid: 0a7ee8ed268c14d42b95617e61eeb948, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 5718684783786638178, guid: 94c0f59283011ec46ad46762936a3909, type: 3}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1238,7 +1238,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7722340475526740209}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1709,7 +1709,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8797163021859522572, guid: 01c1fa5e69a8e80449656d3590d3c784, type: 3}
       propertyPath: m_Alpha
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5255619732151086085, guid: 01c1fa5e69a8e80449656d3590d3c784, type: 3}
