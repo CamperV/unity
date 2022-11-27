@@ -15,6 +15,7 @@ using TMPro;
 public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagged, IGUID
 {
     [SerializeField] public string displayName;
+    [SerializeField] public Sprite portraitSprite;
 
     [field: SerializeField] public GridPosition gridPosition { get; set; }
     protected GridPosition _reservedGridPosition; // this is for maintaining state while animating/moving
@@ -67,7 +68,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public StatusSystem statusSystem;
     [HideInInspector] public SpriteOutline spriteOutline;
     [HideInInspector] public Inventory inventory;
-    [HideInInspector] public Sprite portraitSprite;
     
     // I don't love this, but it makes things much cleaner.
     [HideInInspector] public PlayerUnitController playerUnitController;
@@ -117,7 +117,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         statusSystem = GetComponent<StatusSystem>();
         spriteOutline = GetComponent<SpriteOutline>();
         inventory = GetComponent<Inventory>();
-        portraitSprite = GetComponentInChildren<SpriteRenderer>().sprite;
+
+        if (portraitSprite == null) {
+            portraitSprite = GetComponentInChildren<SpriteRenderer>().sprite;
+        }
 
         // debug
         debugStateLabel = GetComponent<DebugStateLabel>();
@@ -144,6 +147,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         unitStats.UpdateReflex(unitStats.REFLEX);
         unitStats.UpdateDefense(unitStats.DEFENSE);
         unitStats.UpdateMove(unitStats.MOVE);
+
+        unitStats.UpdateBrawn(unitStats.BRAWN);
+        unitStats.UpdateFinesse(unitStats.FINESSE);
+        unitStats.UpdateBreak(unitStats.BRAWN, unitStats.BRAWN);
 
         // call this Init here, instead of MS's own Start(), to avoid races
         mutationSystem.Initialize();
@@ -280,8 +287,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage, unitStats.VITALITY);
 		bool survived = unitStats._CURRENT_HP > 0;
 
-        UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] suffers YELLOW@[{incomingDamage}] damage.");
-
         // ded
         if (!survived) TriggerDeath();
         return survived;
@@ -305,7 +310,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         // yield return new WaitWhile(personalAudioFX.IsPlaying);
 
         // after animating:
-        UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] is KEYWORD@[destroyed].");
         gameObject.SetActive(false);
 
         // playerUnitController checks endPhase here
@@ -328,7 +332,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
             );
 
             unitStats.UpdateHP(unitStats._CURRENT_HP + healAmount, unitStats.VITALITY);
-            UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] healed for GREEN@[{healAmount}].");
         }
     }
 
@@ -395,7 +398,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     public void FireOnAvoidEvent() {
         TriggerMissAnimation();
-		UIManager.inst.combatLog.AddEntry($"{logTag}@[{displayName}] KEYWORD@[avoided] the attack.");
 
         OnAvoid?.Invoke();
     }

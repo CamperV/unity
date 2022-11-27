@@ -10,6 +10,7 @@ public class UnitStats : MonoBehaviour
     // publicly visible events for UIs etc to key off of
 	public delegate void StatRatioChange(int newValue, int maxValue);
     public event StatRatioChange UpdateHPEvent;
+    public event StatRatioChange UpdateBreakEvent;
 
     public delegate void StatChange(int newValue);
     public event StatChange UpdateVitalityEvent;
@@ -47,6 +48,7 @@ public class UnitStats : MonoBehaviour
     public int FINESSE;
 
     [HideInInspector] public int _CURRENT_HP;
+    [HideInInspector] public int _CURRENT_BREAK;
 
     [Serializable]
     public struct BaseStats {
@@ -120,9 +122,15 @@ public class UnitStats : MonoBehaviour
         UpdateDexterityEvent?.Invoke(newValue);
     }
 
+    public void UpdateBreak(int newValue, int maxValue) {
+        _CURRENT_BREAK = Mathf.Clamp(newValue, 0, maxValue);
+        UpdateBreakEvent?.Invoke(_CURRENT_BREAK, maxValue);
+    }
+
     public void UpdateBrawn(int newValue) {
         BRAWN = Mathf.Clamp(newValue, 0, _MAX_STAT_VALUE);
         UpdateBrawnEvent?.Invoke(newValue);
+        UpdateBreak(_CURRENT_BREAK, newValue);
     }
 
     public void UpdateFinesse(int newValue) {

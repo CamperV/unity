@@ -41,7 +41,6 @@ public class TurnManager : MonoBehaviour
     private IEnumerator Loop() {
         while (enable) {
             turnCount++;
-            UIManager.inst.combatLog.AddEntry($"Beginning PURPLE@[Turn {turnCount}].");
 
             NewTurnEvent?.Invoke(turnCount);
             yield return ExecutePhases(playerPhase, enemyPhase);
@@ -58,9 +57,6 @@ public class TurnManager : MonoBehaviour
             // this will suspend and allow resumption
             if (suspend) yield return new WaitUntil(() => suspend == false);
 
-            string phaseTag = (phase.name == "Player") ? "PLAYER_UNIT" : "ENEMY_UNIT";
-            UIManager.inst.combatLog.AddEntry($"Beginning {phaseTag}@[{phase.name}] KEYWORD@[Phase].");
-
             currentPhase = phase;
             NewPhaseEvent(currentPhase);
 
@@ -73,8 +69,6 @@ public class TurnManager : MonoBehaviour
             yield return new WaitUntil(() => phase.state == Phase.PhaseState.Complete || enable == false);
 
             if (enable) {
-                UIManager.inst.combatLog.AddEntry($"Ended {phaseTag}@[{phase.name}] KEYWORD@[Phase].");
-
                 // post-phase delay
                 yield return new WaitForSeconds(endPhaseDelay);
             }

@@ -5,13 +5,13 @@ using UnityEngine.UI;
 using TMPro;
 
 [RequireComponent(typeof(UIBobber))]
-public class BasicAttackInspection : MonoBehaviour
+public class BasicAttackInspection : UnitInspector
 {
 	public TextMeshProUGUI atkValue;
 	public GameObject critContainer;
 	public TextMeshProUGUI critValue;
 
-	public void SetUnitInfo(Unit unit) {
+	public override void SetUnitInfo(Unit unit) {
 		// stats first
 		Pair<int, int> dmgRange = unit.EquippedWeapon.DamageRange(unit);
 		if (dmgRange.First == dmgRange.Second) {
@@ -28,7 +28,8 @@ public class BasicAttackInspection : MonoBehaviour
 			critContainer.SetActive(false);
 		}
 
-		// then, position yourself above the unit
-		// transform.position = unit.transform.position + Vector3.up;
+		// then, position yourself above the unit				
+		GetComponent<UIBobber>().TrackAnchor(unit.transform);
+		GetComponent<UIBobber>().MoveAnchorOffset(unit.transform.position, 1.0f*Vector3.up);
 	}
 }

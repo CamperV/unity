@@ -40,13 +40,11 @@ public abstract class ValuedStatus : Status
         SetValuesAndReapply(nextIncr);
 
         if (modifierValue == 0) {
-            UIManager.inst.combatLog.AddEntry($"{target.logTag}@[{target.displayName}]'s BLUE@[{displayName}] expired.");
             Destroy(this);
         }
     }
 
     protected void ExpireImmediately(Unit target) {
-        UIManager.inst.combatLog.AddEntry($"{target.logTag}@[{target.displayName}]'s BLUE@[{displayName}] expired. (One-Time)");
         Destroy(this);
     }
 }

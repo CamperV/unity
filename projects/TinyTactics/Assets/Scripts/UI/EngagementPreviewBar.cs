@@ -29,7 +29,9 @@ public class EngagementPreviewBar : MonoBehaviour
 
 	void OnDisable() {
 		healthBar_Player.Clear();
+		healthBar_Player.Detach();
 		healthBar_Enemy.Clear();
+		healthBar_Enemy.Detach();
 	}
 
 	public void SetEngagementStats(Engagement potentialEngagement, EngagementStats playerPreviewStats, EngagementStats enemyPreviewStats) {

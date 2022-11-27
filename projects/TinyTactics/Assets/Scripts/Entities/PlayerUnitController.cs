@@ -53,9 +53,9 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     }
 
     void Update() {
-        if (currentSelection != null && currentSelection.turnActive == false) {
-            ClearSelection();
-        }   
+        // if (currentSelection != null && currentSelection.turnActive == false) {
+        //     ClearSelection();
+        // }   
     }
 
     public void Lock() => selectionLocked = true;
@@ -170,8 +170,11 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     }
 
     public void ClearSelection() {
-        if (currentSelection != null && currentSelection.turnActive) {
-            currentSelection.RevertTurn();
+        if (currentSelection != null) {
+            if (currentSelection.turnActive) {
+                currentSelection.RevertTurn();
+            }
+            currentSelection.OnClearInteract();
         }
         SetCurrentSelection(null);
     }

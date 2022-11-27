@@ -27,9 +27,9 @@ public class BrawnWeapon : Weapon
 
     public override string DisplayRawDamage(Unit thisUnit) {
         if (MIN_MIGHT != MAX_MIGHT) {
-            return $"{MIN_MIGHT} - {MAX_MIGHT} + [BRAWN]";
+            return $"{MIN_MIGHT} - {MAX_MIGHT} + BR";
         } else {
-            return $"{MIN_MIGHT} + [BRAWN]";
+            return $"{MIN_MIGHT} + BR";
         }
     }
 

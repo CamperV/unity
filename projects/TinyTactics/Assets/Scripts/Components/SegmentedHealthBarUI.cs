@@ -21,6 +21,10 @@ public class SegmentedHealthBarUI : MonoBehaviour
     [SerializeField] private GameObject combinedLevelContainer;
     [SerializeField] private TextMeshProUGUI combinedPreviewValue;
 
+    // optional
+    [SerializeField] private TextMeshProUGUI hpValue;
+    [SerializeField] private TextMeshProUGUI drValue;
+
     [SerializeField] private GameObject barSegmentPrefab;
     [SerializeField] private GameObject armorSegmentPrefab;
 
@@ -32,6 +36,9 @@ public class SegmentedHealthBarUI : MonoBehaviour
 
     private Color barColor;
 
+    // don't love this, but the best way to clear for right now
+    private Unit? attachedUnit;
+
     void Awake() {
         healthSegments = new List<GameObject>();
     }
@@ -42,6 +49,14 @@ public class SegmentedHealthBarUI : MonoBehaviour
         //
         thisUnit.unitStats.UpdateHPEvent += UpdateHealthAndRedraw;
         thisUnit.unitStats.UpdateDefenseEvent += UpdateArmorAndRedraw;
+
+        attachedUnit = thisUnit;
+    }
+
+    public void Detach() {
+        attachedUnit.unitStats.UpdateHPEvent -= UpdateHealthAndRedraw;
+        attachedUnit.unitStats.UpdateDefenseEvent -= UpdateArmorAndRedraw;
+        attachedUnit = null;
     }
 
     private void UpdateHealthAndRedraw(int val, int max) {
@@ -64,7 +79,7 @@ public class SegmentedHealthBarUI : MonoBehaviour
             Destroy(bar.gameObject);
         }
 
-        combinedPreviewValue.SetText($"");
+        combinedPreviewValue?.SetText($"");
     }
 
     private void UpdateAll() {
@@ -84,7 +99,8 @@ public class SegmentedHealthBarUI : MonoBehaviour
         }
 
         // set Health value in text
-        combinedPreviewValue.SetText($"<color=#05D97A>{currVal_Health}</color>");
+        combinedPreviewValue?.SetText($"<color=#05D97A>{currVal_Health}</color>");
+        hpValue?.SetText($"{currVal_Health}");
 
         // now set armor, if you dare
         if (currVal_Armor > 0) {
@@ -92,7 +108,8 @@ public class SegmentedHealthBarUI : MonoBehaviour
                 Instantiate(armorSegmentPrefab, combinedLevelContainer.transform);
             }
 
-            combinedPreviewValue.SetText($"{combinedPreviewValue.text} <color=#DE9E41>({currVal_Armor})</color>");
+            combinedPreviewValue?.SetText($"{combinedPreviewValue.text} <color=#DE9E41>({currVal_Armor})</color>");
+            drValue?.SetText($"{currVal_Armor}");
         }
     }
 
@@ -115,7 +132,8 @@ public class SegmentedHealthBarUI : MonoBehaviour
         string currentColor_Hex = ColorUtility.ToHtmlStringRGB(currentColor);
         string previewColor_Hex = ColorUtility.ToHtmlStringRGB(previewColor);
         // combinedPreviewValue.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color>\u2192<color=#{previewColor_Hex}>{previewHealth}</color>");
-        combinedPreviewValue.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color>");
+        combinedPreviewValue?.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color>");
+        hpValue?.SetText($"<color=#{currentColor_Hex}>{currVal_Health}</color>");
     }
 
     private void StartFlashSegments(int numSegmentsFromBack) {

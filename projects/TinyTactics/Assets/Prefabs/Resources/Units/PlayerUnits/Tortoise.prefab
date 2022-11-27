@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb1cb1c4ef25854096b14b492813d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: Tortoise
+  displayName: Turtoise
+  portraitSprite: {fileID: 21300000, guid: 356dcdb931fb5e747809c2ef03043b20, type: 3}
   <gridPosition>k__BackingField:
     x: 0
     y: 0
@@ -60,10 +61,11 @@ MonoBehaviour:
   statusSystem: {fileID: 0}
   spriteOutline: {fileID: 0}
   inventory: {fileID: 0}
-  portraitSprite: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
-  <tags>k__BackingField: []
+  <tags>k__BackingField:
+  - Reptile
+  - Armored
   archetypes:
   - {fileID: 11400000, guid: fd4cd4e8a8eca4d4e929fa363144de76, type: 2}
   mutArchetypes:
@@ -90,21 +92,6 @@ MonoBehaviour:
   LEVEL: 0
   levelingScale: {fileID: 11400000, guid: bd0d76a78e6ebd44c87dc4cd6d73cb1a, type: 2}
   levelProgression: {fileID: 11400000, guid: fcbdb695c3ce2ce45aabb4f07f1e6511, type: 2}
---- !u!114 &1227350494584791455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6309928346669176807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 632900d65b63a6b43ac35911668ac90c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  origin: {fileID: 0}
-  randomSaltFlag: 0
-  messagePrefabs: []
 --- !u!114 &6992608897359903800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,6 +115,7 @@ MonoBehaviour:
   BRAWN: 0
   FINESSE: 0
   _CURRENT_HP: 0
+  _CURRENT_BREAK: 0
   baseStats:
     VITALITY: 15
     BRAWN: 2
@@ -357,6 +345,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6745699711657946681, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6755446072113470606, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8421
+      objectReference: {fileID: 0}
+    - target: {fileID: 6755446072113470606, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.0289
+      objectReference: {fileID: 0}
+    - target: {fileID: 6755446072113470606, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.183
+      objectReference: {fileID: 0}
+    - target: {fileID: 6807299549594369295, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7419503456615491691, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}

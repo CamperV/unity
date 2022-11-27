@@ -11,8 +11,8 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private GameObject startBattleButtonContainer;
 
 	[SerializeField] private TerrainEffectPanel terrainEffectPanel;
-	[SerializeField] private BasicAttackInspection unitInspector;
 	[SerializeField] private UnitCommandPanel unitCommandPanel;
+	[SerializeField] private UnitInspector[] unitInspectors;
 
 	[SerializeField] private EngagementPreviewBar engagementPreviewBar;
 	[SerializeField] private MiniEngagementPreview miniEngagementPreviewPrefab;
@@ -21,8 +21,6 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private EndgameStatsPanel defeatPanel;
 
 	[SerializeField] private GameObject menuButtons;
-
-	public CombatLog combatLog;
 
 	// for binding UI, etc
     public delegate void EngagementPreviewEvent();
@@ -39,8 +37,11 @@ public sealed class UIManager : MonoBehaviour
 		}
 
 		startBattleButtonContainer.SetActive(true);
-		unitInspector.gameObject.SetActive(false);
 		engagementPreviewBar.gameObject.SetActive(false);
+
+		foreach (UnitInspector unitInspector in unitInspectors) {
+			unitInspector?.gameObject.SetActive(false);
+		}
     }
 
 	public void UpdateTerrainEffectPanel(GridPosition _, TerrainTile terrainAt) {
@@ -56,17 +57,18 @@ public sealed class UIManager : MonoBehaviour
 	public void EnableUnitDetail(Unit unit) {
 		// menuButtons.SetActive(false);
 		//
-		unitInspector.gameObject.SetActive(true);
-		unitInspector.SetUnitInfo(unit);
-		
-		unitInspector.GetComponent<UIBobber>().TrackAnchor(unit.transform);
-		unitInspector.GetComponent<UIBobber>().MoveAnchorOffset(unit.transform.position, 1.0f*Vector3.up);
+		foreach (UnitInspector unitInspector in unitInspectors) {
+			unitInspector?.gameObject.SetActive(true);
+			unitInspector?.SetUnitInfo(unit);
+		}
 	}
 
 	public void DisableUnitDetail() {
 		// menuButtons.SetActive(true);
 		//
-		unitInspector.gameObject.SetActive(false);
+		foreach (UnitInspector unitInspector in unitInspectors) {
+			unitInspector?.gameObject.SetActive(false);
+		}
 	}
 
 	public void EnableEngagementPreview(Engagement potentialEngagement) {

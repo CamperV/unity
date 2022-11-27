@@ -24,7 +24,7 @@ public class FinesseWeapon : Weapon
     }
 
     public override string DisplayRawDamage(Unit thisUnit) {
-        return $"{MIGHT} + [FINESSE]";
+        return $"{MIGHT} + FN";
     }
 
     public override Dictionary<int, float> GenerateProjection(Unit thisUnit) {

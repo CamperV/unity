@@ -58,6 +58,10 @@ public class WeaponSwitcher : MonoBehaviour
 		}
 	}
 
+	public void AttachTo(Unit thisUnit) {
+		
+	}
+
 	public void NextWeapon() {
 		boundUnit.inventory.NextWeapon();
 		UpdateVisual(boundUnit);

@@ -193,8 +193,7 @@ public class Engagement
         // hit/crit
         if (isCrit) {
             A.FireOnCriticalTargetEvent(B);
-            A.personalAudioFX.PlayCriticalFX();
-            UIManager.inst.combatLog.AddEntry("YELLOW@[Critical Hit!]");          
+            A.personalAudioFX.PlayCriticalFX();        
         }
 
         // then the meat

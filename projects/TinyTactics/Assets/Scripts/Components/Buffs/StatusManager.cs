@@ -31,11 +31,9 @@ public class StatusManager : MonoBehaviour
         // T mutatorComp = GetComponent<T>();
 
         if (modifierValue > 0) {
-            UIManager.inst.combatLog.AddEntry($"BLUE@[{provider}] applied a YELLOW@[+{modifierValue} {typeof(T).Name}] to {thisUnit.logTag}@[{thisUnit.displayName}].");
             // thisUnit.messageEmitter.Emit(MessageEmitter.MessageType.Buff, $"+{mutatorComp.affectedStat}");
 
         } else {
-            UIManager.inst.combatLog.AddEntry($"BLUE@[{provider}] applied a YELLOW@[{modifierValue} {typeof(T).Name}] to {thisUnit.logTag}@[{thisUnit.displayName}].");
             // thisUnit.messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"-{mutatorComp.affectedStat}");
         }
     }

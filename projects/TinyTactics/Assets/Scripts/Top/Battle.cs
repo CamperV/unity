@@ -69,7 +69,6 @@ public class Battle : MonoBehaviour
         bool enemyUnitsAlive = enemyUnitController.activeUnits.Any();
 
         if (!enemyUnitsAlive) {
-            UIManager.inst.combatLog.AddEntry($"GREEN@[VICTORY!]");
             EndBattle(true);
         }
     }
@@ -79,7 +78,6 @@ public class Battle : MonoBehaviour
         bool playerUnitsAlive = playerUnitController.activeUnits.Any();
 
         if (!playerUnitsAlive) {
-            UIManager.inst.combatLog.AddEntry($"RED@[Y O U  D I E D]");
             EndBattle(false);
         }
     }
