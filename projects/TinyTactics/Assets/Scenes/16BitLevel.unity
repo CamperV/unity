@@ -7136,6 +7136,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2273258156929544787, guid: d7a22bfa83f709348a1215d33ea7887f, type: 3}
+      propertyPath: playerInputController
+      value: 
+      objectReference: {fileID: 1490333195}
     - target: {fileID: 3319294414049294835, guid: d7a22bfa83f709348a1215d33ea7887f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

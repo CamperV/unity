@@ -1023,8 +1023,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: WeaponSwitcher, Assembly-CSharp
+      - m_Target: {fileID: 2273258156929544787}
+        m_TargetAssemblyTypeName: WeaponSwitcherUI, Assembly-CSharp
         m_MethodName: NextWeapon
         m_Mode: 1
         m_Arguments:
@@ -1091,7 +1091,7 @@ MonoBehaviour:
     m_Left: 10
     m_Right: 10
     m_Top: 10
-    m_Bottom: 35
+    m_Bottom: 25
   m_ChildAlignment: 3
   m_Spacing: 10
   m_ChildForceExpandWidth: 0
@@ -1133,6 +1133,7 @@ MonoBehaviour:
   weaponDamage_TMP: {fileID: 8222490980404133037}
   weaponRange_TMP: {fileID: 13628408581826493}
   weaponCrit_TMP: {fileID: 6403670297509120002}
+  weaponSwitcher: {fileID: 2273258156929544787}
 --- !u!1 &5403817693082093509
 GameObject:
   m_ObjectHideFlags: 0

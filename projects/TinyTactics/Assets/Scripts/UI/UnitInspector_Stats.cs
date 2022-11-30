@@ -14,7 +14,15 @@ public class UnitInspector_Stats : UnitInspector
 	[SerializeField] private TextMeshProUGUI weaponRange_TMP;
 	[SerializeField] private TextMeshProUGUI weaponCrit_TMP;
 
+	[SerializeField] private WeaponSwitcherUI weaponSwitcher;
+
 	public override void SetUnitInfo(Unit unit) {
+		RefreshUnitInfo(unit);
+		weaponSwitcher.AttachTo(unit);
+	}
+
+	// separated because WeaponSwitcher will call this
+	public void RefreshUnitInfo(Unit unit) {
 		weaponImage.sprite = unit.EquippedWeapon.sprite;
 		weaponName_TMP.SetText(unit.EquippedWeapon.name);
 

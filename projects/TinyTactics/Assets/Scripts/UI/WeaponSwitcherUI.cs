@@ -10,7 +10,7 @@ using Extensions;
 public class WeaponSwitcherUI : MonoBehaviour
 {
 	[SerializeField] private PlayerInputController playerInputController;
-	[SerializeField] private UnitInspector unitInspector;
+	[SerializeField] private UnitInspector_Stats unitInspector;
 
 	[SerializeField] private GameObject switchRight;
 	[SerializeField] private GameObject switchLeft;
@@ -46,6 +46,7 @@ public class WeaponSwitcherUI : MonoBehaviour
 		//
 		// boundCommand.Deactivate(boundUnit);
 		// boundCommand.Activate(boundUnit);
+		Debug.Log($"{boundUnit}'s new equip {boundUnit.EquippedWeapon}");
 	}
 
 	public void PrevWeapon() {
@@ -57,6 +58,6 @@ public class WeaponSwitcherUI : MonoBehaviour
 	}
 
 	private void UpdateVisual(Unit boundUnit) {
-		unitInspector.SetUnitInfo(boundUnit);
+		unitInspector.RefreshUnitInfo(boundUnit);
 	}
 }
