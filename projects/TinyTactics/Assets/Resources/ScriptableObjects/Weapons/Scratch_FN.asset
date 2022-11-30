@@ -20,6 +20,7 @@ MonoBehaviour:
   MIN_RANGE: 1
   MAX_RANGE: 1
   CRITICAL: 15
-  attachedMutations: []
+  attachedMutations:
+  - {fileID: 11400000, guid: aca1a83a23de25c4798093b707db6eef, type: 2}
   attachedStatuses: []
   MIGHT: 2

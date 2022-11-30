@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 134e583c5c4a79043a3f84b6eae46598, type: 3}
+  m_Name: CritBoostMut
+  m_EditorClassIdentifier: 
+  name: Crit Boost
+  description: Boost CRIT by the relative FINESSE of the user and target. +[FN *
+    (FN - target!FN)]
+  sprite: {fileID: 21300000, guid: 74d5b9f49abcb2646aedaf6922873867, type: 3}
+  archetype: {fileID: 11400000, guid: ad0256de67a9b3148b20e7056e6f4d3d, type: 2}

@@ -32,24 +32,4 @@ public class FinesseWeapon : Weapon
         damageProjection[RollDamage(thisUnit)] = 1f;
         return damageProjection;
     }
-
-
-    // IEquipable
-    public override void Equip(Unit thisUnit) {
-        base.Equip(thisUnit);
-        thisUnit.OnAttack += CritBoost;
-    }
-
-    // IEquipable
-    public override void Unequip(Unit thisUnit) {
-        base.Unequip(thisUnit);
-        thisUnit.OnAttack -= CritBoost;
-    }
-
-    private void CritBoost(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
-        int boost = thisUnit.unitStats.FINESSE - target.unitStats.FINESSE;
-        if (boost > 0) {
-            mutAtt.critRate += thisUnit.unitStats.FINESSE * boost;   
-        }
-    }
 }
