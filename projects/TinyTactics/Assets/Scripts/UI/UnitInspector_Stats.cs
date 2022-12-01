@@ -16,6 +16,9 @@ public class UnitInspector_Stats : UnitInspector
 
 	[SerializeField] private WeaponSwitcherUI weaponSwitcher;
 
+	[SerializeField] private GameObject mutationContainer;
+	[SerializeField] private MutationVisual mutationVisualPrefab;
+
 	public override void SetUnitInfo(Unit unit) {
 		RefreshUnitInfo(unit);
 		weaponSwitcher.AttachTo(unit);
@@ -39,5 +42,15 @@ public class UnitInspector_Stats : UnitInspector
 		weaponRange_TMP.SetText(rng);
 
 		weaponCrit_TMP.SetText($"{unit.EquippedWeapon.CRITICAL}");
+
+		// finally, mutation container
+		// quick clear, then:
+		foreach (Transform t in mutationContainer.transform) {
+			Destroy(t.gameObject);
+		}
+		foreach (Mutation mut in unit.mutationSystem.mutations) {
+			MutationVisual mutationVisual = Instantiate(mutationVisualPrefab, mutationContainer.transform);
+			mutationVisual.SetInfo(mut);
+		}
 	}
 }

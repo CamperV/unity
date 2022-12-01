@@ -15,6 +15,7 @@ using TMPro;
 public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagged, IGUID
 {
     [SerializeField] public string displayName;
+    [HideInInspector] public Sprite mainSprite;
     [SerializeField] public Sprite portraitSprite;
 
     [field: SerializeField] public GridPosition gridPosition { get; set; }
@@ -118,9 +119,11 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         spriteOutline = GetComponent<SpriteOutline>();
         inventory = GetComponent<Inventory>();
 
+        mainSprite = GetComponentInChildren<SpriteRenderer>().sprite;
         if (portraitSprite == null) {
-            portraitSprite = GetComponentInChildren<SpriteRenderer>().sprite;
+            portraitSprite = mainSprite;
         }
+        
 
         // debug
         debugStateLabel = GetComponent<DebugStateLabel>();

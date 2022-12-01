@@ -18,7 +18,7 @@ public class PortraitComboAttackDisplay : UIComboAttackDisplay
             
             foreach (ComboAttack comboAttack in engagement.comboAttacks) {
                 PortraitComboAttackItem item = Instantiate(itemPrefab, container.transform);
-                item.SetPortrait(comboAttack.unit.portraitSprite);
+                item.SetPortrait(comboAttack.unit.mainSprite);
 
                 int finalDamage = Mathf.Clamp(comboAttack.damage - engagement.defense.damageReduction, 0, 99);
                 if (finalDamage > 0) {

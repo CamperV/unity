@@ -37,7 +37,7 @@ public class EngagementPreviewBar : MonoBehaviour
 	public void SetEngagementStats(Engagement potentialEngagement, EngagementStats playerPreviewStats, EngagementStats enemyPreviewStats) {
 		// player-side first
 		healthBar_Player.AttachTo(potentialEngagement.aggressor);
-		portrait_Player.sprite = potentialEngagement.aggressor.portraitSprite;
+		portrait_Player.sprite = potentialEngagement.aggressor.mainSprite;
 
 		// get the simulated damage and display it (w/ mutlistrike)
 		projectedDamage_Player.DisplayDamageProjection(potentialEngagement, playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE);
@@ -53,7 +53,7 @@ public class EngagementPreviewBar : MonoBehaviour
 		// then enemy-side
 		//
 		healthBar_Enemy.AttachTo(potentialEngagement.defender);
-		portrait_Enemy.sprite = potentialEngagement.defender.portraitSprite;
+		portrait_Enemy.sprite = potentialEngagement.defender.mainSprite;
 
 		// how much damage can we do to the Enemy? (need to do this AFTER the health bar is attached to the enemy)
 		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max * (potentialEngagement.aggressor.unitStats._MULTISTRIKE+1);

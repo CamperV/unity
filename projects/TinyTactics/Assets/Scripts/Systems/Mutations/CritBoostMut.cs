@@ -16,7 +16,8 @@ public class CritBoostMut : Mutation
     private void Boost(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         int boost = thisUnit.unitStats.FINESSE - target.unitStats.FINESSE;
         if (boost > 0) {
-            mutAtt.critRate += thisUnit.unitStats.FINESSE * boost;   
+            mutAtt.critRate += thisUnit.unitStats.FINESSE * boost;
+            mutAtt.AddMutator(this);
         }
     }
 }
