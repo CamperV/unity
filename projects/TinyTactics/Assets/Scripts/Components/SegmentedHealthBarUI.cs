@@ -54,8 +54,10 @@ public class SegmentedHealthBarUI : MonoBehaviour
     }
 
     public void Detach() {
-        attachedUnit.unitStats.UpdateHPEvent -= UpdateHealthAndRedraw;
-        attachedUnit.unitStats.UpdateDefenseEvent -= UpdateArmorAndRedraw;
+        if (attachedUnit != null) {
+            attachedUnit.unitStats.UpdateHPEvent -= UpdateHealthAndRedraw;
+            attachedUnit.unitStats.UpdateDefenseEvent -= UpdateArmorAndRedraw;
+        }
         attachedUnit = null;
     }
 

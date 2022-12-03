@@ -12,16 +12,12 @@ public class UnitUI : MonoBehaviour
 
     private Unit boundUnit;
 
-    public void Update() {
-        // if (boundUnit != null) {
-        //     transform.position = Camera.main.WorldToScreenPoint(boundUnit.transform.position);
-        // }
+    void Awake() {
+        boundUnit = GetComponentInParent<Unit>();
     }
 
-	public void AttachTo(Unit unit) {
-        healthBar.AttachTo(unit);
-        breakBar.AttachTo(unit);
-
-        boundUnit = unit;
+    void Start() {
+        healthBar.AttachTo(boundUnit);
+        breakBar.AttachTo(boundUnit);
     }
 }

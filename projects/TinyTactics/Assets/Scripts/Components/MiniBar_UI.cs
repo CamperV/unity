@@ -30,6 +30,7 @@ public class MiniBar_UI : MonoBehaviour
     [SerializeField] private Image backgroundImage;
     [SerializeField] private Image barImage;
     [SerializeField] private Image borderImage;
+    [SerializeField] private GameObject animBar;
 
     public void AttachTo(Unit thisUnit) {
         switch (registerTo) {
@@ -63,15 +64,8 @@ public class MiniBar_UI : MonoBehaviour
     }
 
     public IEnumerator AnimateBar(Vector3 fromScale, Vector3 toScale, Color color, float delayTime, float fixedTime) {
-		GameObject go = new GameObject($"AnimBar", typeof(Image));
-
-        Image goSR = go.GetComponent<Image>();
-        goSR.sprite = barImage.sprite;
-        goSR.color = color;
-
-        go.transform.SetParent(barLevel.parent);
-        go.transform.localPosition = barLevel.localPosition;
-        go.transform.localScale = fromScale;
+        animBar.gameObject.SetActive(true);
+        animBar.transform.localScale = fromScale;
 
         // wait
         yield return new WaitForSeconds(delayTime);
@@ -81,11 +75,11 @@ public class MiniBar_UI : MonoBehaviour
 		
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
-            go.transform.localScale = Vector3.Lerp(fromScale, toScale, timeRatio);
+            animBar.transform.localScale = Vector3.Lerp(fromScale, toScale, timeRatio);
 			yield return null;
 		}
 
-        Destroy(go);
+        animBar.gameObject.SetActive(false);
     }
 
     // visually flash the bar to demonstrate the health loss
@@ -93,6 +87,7 @@ public class MiniBar_UI : MonoBehaviour
     [SerializeField] private MiniBarAnimator_UI flashingBarPrefab;
 
     public void PreviewDamage(int damageAmountPreview) {
+        return;
         float previewHealthRatio = (float)Mathf.Max(0, currVal - damageAmountPreview)/(float)maxVal;
 
         Image levelImage = barLevel.GetComponent<Image>();
@@ -126,6 +121,8 @@ public class MiniBar_UI : MonoBehaviour
     private void ScaleBar(float ratio) {
         Vector3 toScale = new Vector3(ratio, 1f, 1f);
         barLevel.transform.localScale = toScale;
+        barColor = HueSatLerp(color_0, color_1, ratio*ratio);
+        barImage.color = barColor;
         if (useRatioColor) {
             barColor = HueSatLerp(color_0, color_1, ratio*ratio);
             barImage.color = barColor;

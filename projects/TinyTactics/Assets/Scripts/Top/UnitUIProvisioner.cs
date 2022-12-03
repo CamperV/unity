@@ -22,7 +22,7 @@ public sealed class UnitUIProvisioner : MonoBehaviour
 
 	public void ProvisionUI(Unit unit) {
         UnitUI unitUI = Instantiate(unitUIPrefab, transform);
-        unitUI.AttachTo(unit);
+        // unitUI.AttachTo(unit);
 
         activeUIs.Add(unitUI);
     }

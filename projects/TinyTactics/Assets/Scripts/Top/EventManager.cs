@@ -19,7 +19,6 @@ public sealed class EventManager : MonoBehaviour
     public BattleMap battleMap;
     public PlayerUnitController playerUnitController;
     public EnemyUnitController enemyUnitController;
-    public UnitUIProvisioner unitUIProvisioner;
 	
     void Awake() {
         // only allow one EventManager to exist at any time
