@@ -11,6 +11,9 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
     public delegate void UnitSelection(EnemyUnit selection);
     public event UnitSelection NewEnemyUnitControllerSelection;
 
+    public delegate void RegistrationState(Unit unit);
+    public event RegistrationState RegisteredUnit;
+
     public static float timeBetweenUnitActions = 0.75f; // seconds
 
     [SerializeField] private List<EnemyUnit> _activeUnits;
@@ -34,6 +37,7 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
         // this accounts for all in-scene activeUnits, not instatiated prefabs
         foreach (EnemyUnit en in GetComponentsInChildren<EnemyUnit>()) {
             _activeUnits.Add(en);
+            RegisteredUnit?.Invoke( (en as Unit) );
         }
     }
 

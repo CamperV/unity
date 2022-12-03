@@ -19,6 +19,7 @@ public sealed class EventManager : MonoBehaviour
     public BattleMap battleMap;
     public PlayerUnitController playerUnitController;
     public EnemyUnitController enemyUnitController;
+    public UnitUIProvisioner unitUIProvisioner;
 	
     void Awake() {
         // only allow one EventManager to exist at any time
@@ -70,8 +71,8 @@ public sealed class EventManager : MonoBehaviour
         battleMap.TerrainChangeEvent += unitMap.ApplyTerrainEffects;
 
         // unit controller events
-        // playerUnitController.NewPlayerUnitControllerSelection += u => cameraManager.AcquireTrackingTarget(u?.transform);
-        // enemyUnitController.NewEnemyUnitControllerSelection += u => cameraManager.AcquireTrackingTarget(u?.transform);
+        playerUnitController.NewPlayerUnitControllerSelection += u => cameraManager.AcquireTrackingTarget(u?.transform);
+        enemyUnitController.NewEnemyUnitControllerSelection += u => cameraManager.AcquireTrackingTarget(u?.transform);
 
         playerUnitController.NewPlayerUnitControllerSelection += uiManager.EnableUnitCommandPanel;
         playerUnitController.ClearPlayerUnitControllerSelection += uiManager.CleanUpUnitCommandPanel;

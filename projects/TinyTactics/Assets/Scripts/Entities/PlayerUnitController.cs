@@ -12,6 +12,9 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     public event UnitSelection NewPlayerUnitControllerSelection;
     public event UnitSelection ClearPlayerUnitControllerSelection;
 
+    public delegate void RegistrationState(Unit unit);
+    public event RegistrationState RegisteredUnit;
+
     // this is done by certain unit actions, so that you don't switch units when trying to heal them
     public bool selectionLocked = false;
 
@@ -36,11 +39,11 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     void Start() {
         // this accounts for all in-scene activeUnits, not instatiated prefabs
         // useful for Demo content
-        foreach (PlayerUnit en in GetComponentsInChildren<PlayerUnit>()) {
+        foreach (PlayerUnit playerUnit in GetComponentsInChildren<PlayerUnit>()) {
             if (Campaign.active == null) {
-                _activeUnits.Add(en);
+                RegisterUnit(playerUnit);
             } else {
-                Destroy(en.gameObject);
+                Destroy(playerUnit.gameObject);
             }
         }
 
@@ -61,7 +64,10 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
     public void Lock() => selectionLocked = true;
     public void Unlock() => selectionLocked = false;
 
-    public void RegisterUnit(PlayerUnit unit) => _activeUnits.Add(unit);
+    public void RegisterUnit(PlayerUnit unit) {
+        _activeUnits.Add(unit);
+        RegisteredUnit?.Invoke( (unit as Unit) );
+    }
 
     public void TriggerPhase() {
         // re-focus the camera on the centroid of your units
