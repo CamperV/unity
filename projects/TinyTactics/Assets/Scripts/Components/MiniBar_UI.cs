@@ -31,6 +31,7 @@ public class MiniBar_UI : MonoBehaviour
     [SerializeField] private Image barImage;
     [SerializeField] private Image borderImage;
     [SerializeField] private GameObject animBar;
+    [SerializeField] private MiniBarAnimator_UI flashingBar;
 
     public void AttachTo(Unit thisUnit) {
         switch (registerTo) {
@@ -83,23 +84,16 @@ public class MiniBar_UI : MonoBehaviour
     }
 
     // visually flash the bar to demonstrate the health loss
-    private MiniBarAnimator_UI flashingBar;
-    [SerializeField] private MiniBarAnimator_UI flashingBarPrefab;
-
     public void PreviewDamage(int damageAmountPreview) {
-        return;
-        float previewHealthRatio = (float)Mathf.Max(0, currVal - damageAmountPreview)/(float)maxVal;
-
-        Image levelImage = barLevel.GetComponent<Image>();
-        flashingBar = Instantiate(flashingBarPrefab, barLevel.parent);
-        flashingBar.Reposition(barLevel.localPosition, barLevel.localScale);
+        flashingBar.gameObject.SetActive(true);
         flashingBar.InfiniFlash();
-
+        
+        float previewHealthRatio = (float)Mathf.Max(0, currVal - damageAmountPreview)/(float)maxVal;
         ScaleBar(previewHealthRatio);
     }
 
     public void RevertPreview() {
-        Destroy(flashingBar.gameObject);
+        flashingBar.gameObject.SetActive(false);
         ScaleBar(ratio);
     }
 
@@ -121,11 +115,12 @@ public class MiniBar_UI : MonoBehaviour
     private void ScaleBar(float ratio) {
         Vector3 toScale = new Vector3(ratio, 1f, 1f);
         barLevel.transform.localScale = toScale;
-        barColor = HueSatLerp(color_0, color_1, ratio*ratio);
-        barImage.color = barColor;
+
         if (useRatioColor) {
             barColor = HueSatLerp(color_0, color_1, ratio*ratio);
             barImage.color = barColor;
+        } else {
+            barImage.color = color_0;
         }
     }
 }

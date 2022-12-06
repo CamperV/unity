@@ -18,11 +18,6 @@ public class MiniBarAnimator_UI : MonoBehaviour
         image = GetComponent<Image>();
     }
 
-    public void Reposition(Vector3 atPosition, Vector3 atScale) {
-        transform.localPosition = atPosition;
-        transform.localScale = atScale;
-    }
-
     public void InfiniFlash() => StartCoroutine( _Flash() );
     private IEnumerator _Flash() {
         float fixedTime = 0.5f;

@@ -98,10 +98,10 @@ public sealed class UIManager : MonoBehaviour
 			finalProjectedDamage_fromPlayer += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
 		}
 
-		potentialEngagement.aggressor.GetComponentInChildren<MiniHealthBar>()?.PreviewDamage(finalProjectedDamage_fromEnemy);
-		potentialEngagement.defender.GetComponentInChildren<MiniHealthBar>()?.PreviewDamage(finalProjectedDamage_fromPlayer);
-		DisableEngagementPreviewEvent += () => potentialEngagement.aggressor.GetComponentInChildren<MiniHealthBar>()?.RevertPreview();
-		DisableEngagementPreviewEvent += () => potentialEngagement.defender.GetComponentInChildren<MiniHealthBar>()?.RevertPreview();
+		potentialEngagement.aggressor.GetComponentInChildren<MiniBar_UI>()?.PreviewDamage(finalProjectedDamage_fromEnemy);
+		potentialEngagement.defender.GetComponentInChildren<MiniBar_UI>()?.PreviewDamage(finalProjectedDamage_fromPlayer);
+		DisableEngagementPreviewEvent += () => potentialEngagement.aggressor.GetComponentInChildren<MiniBar_UI>()?.RevertPreview();
+		DisableEngagementPreviewEvent += () => potentialEngagement.defender.GetComponentInChildren<MiniBar_UI>()?.RevertPreview();
 	}
 
 	public void DisableEngagementPreview() {
