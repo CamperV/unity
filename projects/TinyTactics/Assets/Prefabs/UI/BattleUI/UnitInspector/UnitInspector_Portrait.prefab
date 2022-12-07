@@ -2691,6 +2691,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6238054307333044481}
     m_Modifications:
+    - target: {fileID: 628174198476112741, guid: 7baffe2fbf2c3fb4c9fe0e98ee535e0d, type: 3}
+      propertyPath: reverseChildrenOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1435983677823396684, guid: 7baffe2fbf2c3fb4c9fe0e98ee535e0d, type: 3}
       propertyPath: m_CellSize.x
       value: 50
@@ -2717,11 +2721,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2605720145955135407, guid: 7baffe2fbf2c3fb4c9fe0e98ee535e0d, type: 3}
       propertyPath: m_Pivot.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2605720145955135407, guid: 7baffe2fbf2c3fb4c9fe0e98ee535e0d, type: 3}
       propertyPath: m_Pivot.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2605720145955135407, guid: 7baffe2fbf2c3fb4c9fe0e98ee535e0d, type: 3}
       propertyPath: m_RootOrder
@@ -2899,12 +2903,15 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5838068607951649783, guid: 7baffe2fbf2c3fb4c9fe0e98ee535e0d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6240730924040499968, guid: 7baffe2fbf2c3fb4c9fe0e98ee535e0d, type: 3}
       propertyPath: m_Name
       value: StatusBar_UI
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5838068607951649783, guid: 7baffe2fbf2c3fb4c9fe0e98ee535e0d, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7baffe2fbf2c3fb4c9fe0e98ee535e0d, type: 3}
 --- !u!114 &6933171050854825440 stripped
 MonoBehaviour:

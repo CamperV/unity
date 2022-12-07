@@ -24,6 +24,7 @@ public class StatusSystem : MonoBehaviour
     private Dictionary<string, int> expireTimers = new Dictionary<string, int>();
     //
     public IEnumerable<so_Status> Statuses => statuses.Values.ToList().AsEnumerable(); // for iterating + removing
+    public IEnumerable<so_Status> StatusesReverse => statuses.Values.ToList().AsEnumerable().Reverse(); // for iterating + removing
 
     public bool enableLegibleStatuses;
     public List<string>  legibleStatuses;

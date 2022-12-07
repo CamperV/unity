@@ -33,6 +33,10 @@ public class MiniBar_UI : MonoBehaviour
     [SerializeField] private GameObject animBar;
     [SerializeField] private MiniBarAnimator_UI flashingBar;
 
+    // void Awake() {
+    //     GetComponent<UIAnchoredBobber>()?.SetPhase(10f * transform.GetSiblingIndex());
+    // }
+
     public void AttachTo(Unit thisUnit) {
         switch (registerTo) {
             case RegistrationOptions.UpdateHPEvent:
@@ -86,6 +90,7 @@ public class MiniBar_UI : MonoBehaviour
     // visually flash the bar to demonstrate the health loss
     public void PreviewDamage(int damageAmountPreview) {
         flashingBar.gameObject.SetActive(true);
+        flashingBar.transform.localScale = barLevel.transform.localScale;
         flashingBar.InfiniFlash();
         
         float previewHealthRatio = (float)Mathf.Max(0, currVal - damageAmountPreview)/(float)maxVal;

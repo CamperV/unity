@@ -34,4 +34,6 @@ public class UIAnchoredBobber : MonoBehaviour
 		amplitude = a;
 		phase = p;
 	}
+
+	public void SetPhase(float p) => phase = p;
 }

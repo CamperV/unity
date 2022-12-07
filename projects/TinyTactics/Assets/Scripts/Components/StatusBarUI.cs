@@ -16,6 +16,8 @@ public class StatusBarUI : MonoBehaviour
     [SerializeField] private Sprite debuffSprite;
     [SerializeField] private Sprite defaultSprite;
 
+    [SerializeField] private bool reverseChildrenOrder;
+
     // don't love this, but the best way to clear for right now
     private Unit? attachedUnit;
 
@@ -48,7 +50,8 @@ public class StatusBarUI : MonoBehaviour
     private void _UpdateBar() {
         ClearBar();
 
-        foreach (so_Status status in attachedUnit.statusSystem.Statuses) {
+        var statusIterator = (reverseChildrenOrder) ? attachedUnit.statusSystem.Statuses : attachedUnit.statusSystem.StatusesReverse;
+        foreach (so_Status status in statusIterator) {
             StatusVisual sv = Instantiate(statusVisualPrefab, panelContainer.transform);
             sv.SetImage( (status.statusCode == so_Status.StatusCode.Buff) ? buffSprite : debuffSprite );
         }
