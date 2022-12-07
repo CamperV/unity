@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fea9025439cc1f4f9963b8464e4a4cf, type: 3}
   m_Name: GunkBuff
   m_EditorClassIdentifier: 
+  statusCode: 0
   name: Gunk
-  sprite: {fileID: 21300000, guid: c85a084f5547c4b4d8ac0c1af92ece1c, type: 3}
+  sprite: {fileID: 21300000, guid: 12eb85734f6c3344fa96335bf4de0850, type: 3}
   stackable: 0
   registerTo: 1
   modifyStat: 2

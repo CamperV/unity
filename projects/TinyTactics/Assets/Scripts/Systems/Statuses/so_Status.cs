@@ -9,6 +9,12 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
 		return $"{status.name}@{provider.GUID.ToString()}";
 	}
 
+	public enum StatusCode {
+		Buff,
+		Debuff
+	}
+	public StatusCode statusCode;
+
     // assign this in the inspector
     public new string name;
 	public Sprite sprite;

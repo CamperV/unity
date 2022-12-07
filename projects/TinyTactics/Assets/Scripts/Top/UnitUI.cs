@@ -9,6 +9,7 @@ public class UnitUI : MonoBehaviour
 {
     [SerializeField] private MiniBar_UI healthBar;
     [SerializeField] private MiniBar_UI breakBar;
+    [SerializeField] private StatusBarUI statusBar;
 
     private Unit boundUnit;
 
@@ -19,5 +20,6 @@ public class UnitUI : MonoBehaviour
     void Start() {
         healthBar.AttachTo(boundUnit);
         breakBar.AttachTo(boundUnit);
+        statusBar.AttachTo(boundUnit);
     }
 }

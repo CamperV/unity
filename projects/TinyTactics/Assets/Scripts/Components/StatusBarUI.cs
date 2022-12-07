@@ -12,6 +12,10 @@ public class StatusBarUI : MonoBehaviour
     [SerializeField] private GameObject panelContainer;
     [SerializeField] private StatusVisual statusVisualPrefab;
 
+    [SerializeField] private Sprite buffSprite;
+    [SerializeField] private Sprite debuffSprite;
+    [SerializeField] private Sprite defaultSprite;
+
     // don't love this, but the best way to clear for right now
     private Unit? attachedUnit;
 
@@ -46,9 +50,20 @@ public class StatusBarUI : MonoBehaviour
 
         foreach (so_Status status in attachedUnit.statusSystem.Statuses) {
             StatusVisual sv = Instantiate(statusVisualPrefab, panelContainer.transform);
-            sv.SetImage(status.sprite);
+            sv.SetImage( (status.statusCode == so_Status.StatusCode.Buff) ? buffSprite : debuffSprite );
         }
 
         CheckHide();
+    }
+
+    private Sprite _GetSprite(so_Status.StatusCode statusCode) {
+        switch (statusCode) {
+            case so_Status.StatusCode.Buff:
+                return buffSprite;
+            case so_Status.StatusCode.Debuff:
+                return debuffSprite;
+            default:
+                return defaultSprite;
+        }
     }
 }
