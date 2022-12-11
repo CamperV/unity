@@ -213,9 +213,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panelContainer: {fileID: 6240730924040499968}
   statusVisualPrefab: {fileID: 3264997224558775936, guid: 726060d2112dcae49b1bea5502d2b891, type: 3}
-  buffSprite: {fileID: 709443105954848274, guid: c85a084f5547c4b4d8ac0c1af92ece1c, type: 3}
-  debuffSprite: {fileID: -6398463788190436441, guid: 367f37cfb5bed464bb23bba1db443285, type: 3}
+  buffSprite: {fileID: 5394638881828160046, guid: 03ae028ad7fe99e4c9acffa741a1ea38, type: 3}
+  debuffSprite: {fileID: -3918669726602016230, guid: d72f555ed8d8b1b44ad47908a1db9daa, type: 3}
   defaultSprite: {fileID: 0}
+  reverseChildrenOrder: 0
 --- !u!1001 &8615313283973954732
 PrefabInstance:
   m_ObjectHideFlags: 0
