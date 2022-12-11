@@ -11,7 +11,8 @@ public class MiniBar_UI : MonoBehaviour
 {	
     public enum RegistrationOptions {
         UpdateHPEvent,
-        UpdateBreakEvent
+        UpdateBreakEvent,
+        UpdateDefenseEvent
     };
     [SerializeField] private RegistrationOptions registerTo;
 
@@ -47,6 +48,11 @@ public class MiniBar_UI : MonoBehaviour
             case RegistrationOptions.UpdateBreakEvent:
                 UpdateBar(thisUnit.unitStats.BRAWN, thisUnit.unitStats.BRAWN);
                 thisUnit.unitStats.UpdateBreakEvent += UpdateBar;
+                break;
+
+            case RegistrationOptions.UpdateDefenseEvent:
+                UpdateBar(thisUnit.unitStats.DEFENSE, thisUnit.unitStats.DEFENSE);
+                thisUnit.unitStats.UpdateDefenseEvent += d => UpdateBar(d, 0);
                 break;
 
             default:
