@@ -62,7 +62,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public SpriteAnimator spriteAnimator;
     [HideInInspector] public UnitPathfinder unitPathfinder;
     [HideInInspector] public UnitStats unitStats;
-    [HideInInspector] public StatusManager statusManager;
     [HideInInspector] public PersonalAudioFX personalAudioFX;
     [HideInInspector] public MessageEmitter messageEmitter;
     [HideInInspector] public MutationSystem mutationSystem;
@@ -111,7 +110,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         spriteAnimator = GetComponent<SpriteAnimator>();
         unitPathfinder = GetComponent<UnitPathfinder>();
         unitStats = GetComponent<UnitStats>();
-        statusManager = GetComponent<StatusManager>();
         personalAudioFX = GetComponent<PersonalAudioFX>();
         messageEmitter = GetComponent<MessageEmitter>();
         mutationSystem = GetComponent<MutationSystem>();
