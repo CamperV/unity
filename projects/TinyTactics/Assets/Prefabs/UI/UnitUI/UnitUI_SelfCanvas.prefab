@@ -789,7 +789,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3389122709978797776
 RectTransform:
   m_ObjectHideFlags: 0
@@ -892,15 +892,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4965021230501278931, guid: a8d618afdd138d84696acb4e5fa4645c, type: 3}
       propertyPath: color_0.b
-      value: 0.4392157
+      value: 0.6156863
       objectReference: {fileID: 0}
     - target: {fileID: 4965021230501278931, guid: a8d618afdd138d84696acb4e5fa4645c, type: 3}
       propertyPath: color_0.g
-      value: 0.75686276
+      value: 0.6862745
       objectReference: {fileID: 0}
     - target: {fileID: 4965021230501278931, guid: a8d618afdd138d84696acb4e5fa4645c, type: 3}
       propertyPath: color_0.r
-      value: 0.9098039
+      value: 0.41568628
       objectReference: {fileID: 0}
     - target: {fileID: 4965021230501278931, guid: a8d618afdd138d84696acb4e5fa4645c, type: 3}
       propertyPath: color_1.b
@@ -1410,27 +1410,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5635205436007892067, guid: ee0dfc4a52e05ad4c80036cc5b91cbb2, type: 3}
       propertyPath: color_0.b
-      value: 0.16862746
+      value: 0.4117647
       objectReference: {fileID: 0}
     - target: {fileID: 5635205436007892067, guid: ee0dfc4a52e05ad4c80036cc5b91cbb2, type: 3}
       propertyPath: color_0.g
-      value: 0.16862746
+      value: 0.19215687
       objectReference: {fileID: 0}
     - target: {fileID: 5635205436007892067, guid: ee0dfc4a52e05ad4c80036cc5b91cbb2, type: 3}
       propertyPath: color_0.r
-      value: 0.54901963
+      value: 0.654902
       objectReference: {fileID: 0}
     - target: {fileID: 5635205436007892067, guid: ee0dfc4a52e05ad4c80036cc5b91cbb2, type: 3}
       propertyPath: color_1.b
-      value: 0.47843137
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5635205436007892067, guid: ee0dfc4a52e05ad4c80036cc5b91cbb2, type: 3}
       propertyPath: color_1.g
-      value: 0.8509804
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5635205436007892067, guid: ee0dfc4a52e05ad4c80036cc5b91cbb2, type: 3}
       propertyPath: color_1.r
-      value: 0.019607844
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5635205436007892067, guid: ee0dfc4a52e05ad4c80036cc5b91cbb2, type: 3}
+      propertyPath: useRatioColor
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6059275400237188504, guid: ee0dfc4a52e05ad4c80036cc5b91cbb2, type: 3}
       propertyPath: m_Name

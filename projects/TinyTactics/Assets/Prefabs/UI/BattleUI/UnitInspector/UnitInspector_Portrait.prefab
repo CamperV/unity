@@ -498,10 +498,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1659dc258795e2949939ef45bdbba0ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color_0: {r: 0.54901963, g: 0.16862746, b: 0.16862746, a: 1}
-  color_1: {r: 0.019607844, g: 0.8509804, b: 0.47843137, a: 1}
+  color_0: {r: 0.654902, g: 0.19215687, b: 0.4117647, a: 1}
+  color_1: {r: 0, g: 0, b: 0, a: 1}
   dimColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   threatenedColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
+  useRatioColor: 0
   combinedLevelContainer: {fileID: 946770708438429383}
   combinedPreviewValue: {fileID: 0}
   hpValue: {fileID: 603148390340683280}
@@ -1379,7 +1380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   barSegmentPrefab: {fileID: 404759038597838123, guid: 59ce760e46c74b94ab753a2ab02812d9, type: 3}
-  color_0: {r: 1, g: 0.7607843, b: 0.47843137, a: 1}
+  color_0: {r: 0.41568628, g: 0.6862745, b: 0.6156863, a: 1}
   color_1: {r: 1, g: 0.7607843, b: 0.47843137, a: 1}
   dimColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
   container: {fileID: 4858891499959232279}
@@ -2167,6 +2168,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7743362617407363099, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
+      propertyPath: m_Color.b
+      value: 0.6156863
+      objectReference: {fileID: 0}
+    - target: {fileID: 7743362617407363099, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
+      propertyPath: m_Color.g
+      value: 0.6862745
+      objectReference: {fileID: 0}
+    - target: {fileID: 7743362617407363099, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
+      propertyPath: m_Color.r
+      value: 0.41568628
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
 --- !u!224 &3218652017299758619 stripped
@@ -2184,6 +2197,18 @@ PrefabInstance:
     - target: {fileID: 2414611784902963789, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
       propertyPath: m_Name
       value: BarSegment_UnitInspector (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.b
+      value: 0.4117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.g
+      value: 0.19215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.r
+      value: 0.654902
       objectReference: {fileID: 0}
     - target: {fileID: 8216615159389780204, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
       propertyPath: m_Pivot.x
@@ -2371,6 +2396,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7743362617407363099, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
+      propertyPath: m_Color.b
+      value: 0.6156863
+      objectReference: {fileID: 0}
+    - target: {fileID: 7743362617407363099, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
+      propertyPath: m_Color.g
+      value: 0.6862745
+      objectReference: {fileID: 0}
+    - target: {fileID: 7743362617407363099, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
+      propertyPath: m_Color.r
+      value: 0.41568628
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
 --- !u!224 &6577216570597742193 stripped
@@ -2388,6 +2425,18 @@ PrefabInstance:
     - target: {fileID: 2414611784902963789, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
       propertyPath: m_Name
       value: BarSegment_UnitInspector (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.b
+      value: 0.4117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.g
+      value: 0.19215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.r
+      value: 0.654902
       objectReference: {fileID: 0}
     - target: {fileID: 8216615159389780204, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
       propertyPath: m_Pivot.x
@@ -2490,6 +2539,18 @@ PrefabInstance:
     - target: {fileID: 2414611784902963789, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
       propertyPath: m_Name
       value: BarSegment_UnitInspector (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.b
+      value: 0.4117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.g
+      value: 0.19215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.r
+      value: 0.654902
       objectReference: {fileID: 0}
     - target: {fileID: 8216615159389780204, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
       propertyPath: m_Pivot.x
@@ -2676,6 +2737,18 @@ PrefabInstance:
     - target: {fileID: 1998936389382864726, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7743362617407363099, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
+      propertyPath: m_Color.b
+      value: 0.6156863
+      objectReference: {fileID: 0}
+    - target: {fileID: 7743362617407363099, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
+      propertyPath: m_Color.g
+      value: 0.6862745
+      objectReference: {fileID: 0}
+    - target: {fileID: 7743362617407363099, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
+      propertyPath: m_Color.r
+      value: 0.41568628
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87e34d0c771819148a1ea4879f5b1307, type: 3}
@@ -2939,6 +3012,18 @@ PrefabInstance:
     - target: {fileID: 2414611784902963789, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
       propertyPath: m_Name
       value: BarSegment_UnitInspector
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.b
+      value: 0.4117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.g
+      value: 0.19215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045430651908848076, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
+      propertyPath: m_Color.r
+      value: 0.654902
       objectReference: {fileID: 0}
     - target: {fileID: 8216615159389780204, guid: 57cd490eaf830c842a83a05400bdc012, type: 3}
       propertyPath: m_Pivot.x

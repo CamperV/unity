@@ -18,6 +18,8 @@ public class SegmentedHealthBarUI : MonoBehaviour
     [SerializeField] private Color dimColor;
     [SerializeField] private Color threatenedColor;
 
+    [SerializeField] private bool useRatioColor = true;
+
     [SerializeField] private GameObject combinedLevelContainer;
     [SerializeField] private TextMeshProUGUI combinedPreviewValue;
 
@@ -197,6 +199,6 @@ public class SegmentedHealthBarUI : MonoBehaviour
     }
 
     private Color RatioColor(float ratio) {
-        return HueSatLerp(color_0, color_1, ratio*ratio);
+        return (useRatioColor) ? HueSatLerp(color_0, color_1, ratio*ratio) : color_0;
     }
 }
