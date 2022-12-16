@@ -55,9 +55,9 @@ MonoBehaviour:
   spriteAnimator: {fileID: 0}
   unitPathfinder: {fileID: 0}
   unitStats: {fileID: 0}
-  statusManager: {fileID: 0}
   personalAudioFX: {fileID: 0}
   messageEmitter: {fileID: 0}
+  statSystem: {fileID: 0}
   mutationSystem: {fileID: 0}
   statusSystem: {fileID: 0}
   spriteOutline: {fileID: 0}
@@ -299,6 +299,22 @@ PrefabInstance:
     - target: {fileID: 4999721314890446701, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: baseStats.MOVE
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: baseStats.MAX_HP
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: baseStats.MAX_POISE
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
+      propertyPath: baseStats.DAMAGE_REDUCTION
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5726798676220975912, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_AnchorMax.y

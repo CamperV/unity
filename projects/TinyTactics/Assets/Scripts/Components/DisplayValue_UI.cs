@@ -11,8 +11,8 @@ public class DisplayValue_UI : MonoBehaviour
 {	
     public enum RegistrationOptions {
         UpdateHPEvent,
-        UpdateBreakEvent,
-        UpdateDefenseEvent
+        UpdatePoiseEvent,
+        UpdateDamageReductionEvent
     };
     [SerializeField] private RegistrationOptions registerTo;
 
@@ -22,18 +22,18 @@ public class DisplayValue_UI : MonoBehaviour
     public void AttachTo(Unit thisUnit) {
         switch (registerTo) {
             case RegistrationOptions.UpdateHPEvent:
-                UpdateValue(thisUnit.unitStats.VITALITY, thisUnit.unitStats.VITALITY);
-                thisUnit.unitStats.UpdateHPEvent += UpdateValue;
+                UpdateValue(thisUnit.statSystem.CURRENT_HP, thisUnit.statSystem.MAX_HP);
+                thisUnit.statSystem.UpdateHPEvent += UpdateValue;
                 break;
 
-            case RegistrationOptions.UpdateBreakEvent:
-                UpdateValue(thisUnit.unitStats.BRAWN, thisUnit.unitStats.BRAWN);
-                thisUnit.unitStats.UpdateBreakEvent += UpdateValue;
+            case RegistrationOptions.UpdatePoiseEvent:
+                UpdateValue(thisUnit.statSystem.CURRENT_POISE, thisUnit.statSystem.MAX_POISE);
+                thisUnit.statSystem.UpdatePoiseEvent += UpdateValue;
                 break;
 
-            case RegistrationOptions.UpdateDefenseEvent:
-                UpdateValue(thisUnit.unitStats.DEFENSE, thisUnit.unitStats.DEFENSE);
-                thisUnit.unitStats.UpdateDefenseEvent += d => UpdateValue(d, 0);
+            case RegistrationOptions.UpdateDamageReductionEvent:
+                UpdateValue(thisUnit.statSystem.DAMAGE_REDUCTION, thisUnit.statSystem.DAMAGE_REDUCTION);
+                thisUnit.statSystem.UpdateDamageReductionEvent += d => UpdateValue(d, 0);
                 break;
 
             default:

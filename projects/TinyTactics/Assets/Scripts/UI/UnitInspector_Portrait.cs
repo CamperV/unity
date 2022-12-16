@@ -14,7 +14,7 @@ public class UnitInspector_Portrait : UnitInspector
 	[SerializeField] private TextMeshProUGUI break_TMP;
 
 	[SerializeField] private SegmentedHealthBarUI healthBar;
-	[SerializeField] private BreakBarUI breakBar;
+	[SerializeField] private PoiseBar_UI poiseBar;
 	[SerializeField] private StatusBarUI statusBar;
 
 
@@ -24,11 +24,11 @@ public class UnitInspector_Portrait : UnitInspector
 		tags_TMP.SetText( string.Join(", ", unit.tags) );
 
 		healthBar.AttachTo(unit);
-		breakBar.AttachTo(unit);
+		poiseBar.AttachTo(unit);
 		statusBar.AttachTo(unit);
 
-		health_TMP.SetText($"{unit.unitStats._CURRENT_HP}/{unit.unitStats.VITALITY}");
-		damageReduction_TMP.SetText($"{unit.unitStats.DEFENSE}");
-		break_TMP.SetText($"{unit.unitStats._CURRENT_BREAK}/{unit.unitStats.BRAWN}");
+		health_TMP.SetText($"{unit.statSystem.CURRENT_HP}/{unit.statSystem.MAX_HP}");
+		damageReduction_TMP.SetText($"{unit.statSystem.DAMAGE_REDUCTION}");
+		break_TMP.SetText($"{unit.statSystem.CURRENT_POISE}/{unit.statSystem.MAX_POISE}");
 	}
 }

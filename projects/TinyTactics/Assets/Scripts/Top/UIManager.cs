@@ -15,7 +15,7 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private UnitInspector[] unitInspectors;
 
 	[SerializeField] private EngagementPreviewBar engagementPreviewBar;
-	[SerializeField] private MiniEngagementPreview miniEngagementPreviewPrefab;
+	// [SerializeField] private MiniEngagementPreview miniEngagementPreviewPrefab;
 
 	[SerializeField] private EndgameStatsPanel victoryPanel;
 	[SerializeField] private EndgameStatsPanel defeatPanel;
@@ -37,7 +37,7 @@ public sealed class UIManager : MonoBehaviour
 		}
 
 		startBattleButtonContainer.SetActive(true);
-		engagementPreviewBar.gameObject.SetActive(false);
+		engagementPreviewBar?.gameObject.SetActive(false);
 
 		foreach (UnitInspector unitInspector in unitInspectors) {
 			unitInspector?.gameObject.SetActive(false);
@@ -72,13 +72,13 @@ public sealed class UIManager : MonoBehaviour
 	}
 
 	public void EnableEngagementPreview(Engagement potentialEngagement) {
-		engagementPreviewBar.gameObject.SetActive(true);
-		engagementPreviewBar.GetComponent<UIAnchoredSlider>().SetActive(true, teleportInactiveFirst: true);
+		engagementPreviewBar?.gameObject.SetActive(true);
+		engagementPreviewBar?.GetComponent<UIAnchoredSlider>().SetActive(true, teleportInactiveFirst: true);
 
 		
 		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
 		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
-		engagementPreviewBar.SetEngagementStats(potentialEngagement, playerPreviewStats, enemyPreviewStats);
+		engagementPreviewBar?.SetEngagementStats(potentialEngagement, playerPreviewStats, enemyPreviewStats);
 
 		// also, create a little in-situ display
 		// cross'd PreviewStats because they are displaying the damage they might *receive*
@@ -105,8 +105,8 @@ public sealed class UIManager : MonoBehaviour
 	}
 
 	public void DisableEngagementPreview() {
-		engagementPreviewBar.gameObject.SetActive(false);
-		engagementPreviewBar.GetComponent<UIAnchoredSlider>().SetActive(false);
+		engagementPreviewBar?.gameObject.SetActive(false);
+		engagementPreviewBar?.GetComponent<UIAnchoredSlider>().SetActive(false);
 
 		// invoke and immediately clear invocation list
 		// this is to clear all the anon functions we put on this from the MiniPreviews

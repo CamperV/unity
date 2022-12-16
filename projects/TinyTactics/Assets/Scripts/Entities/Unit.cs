@@ -64,6 +64,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public UnitStats unitStats;
     [HideInInspector] public PersonalAudioFX personalAudioFX;
     [HideInInspector] public MessageEmitter messageEmitter;
+    [HideInInspector] public StatSystem statSystem;
     [HideInInspector] public MutationSystem mutationSystem;
     [HideInInspector] public StatusSystem statusSystem;
     [HideInInspector] public SpriteOutline spriteOutline;
@@ -112,6 +113,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         unitStats = GetComponent<UnitStats>();
         personalAudioFX = GetComponent<PersonalAudioFX>();
         messageEmitter = GetComponent<MessageEmitter>();
+        statSystem = GetComponent<StatSystem>();
         mutationSystem = GetComponent<MutationSystem>();
         statusSystem = GetComponent<StatusSystem>();
         spriteOutline = GetComponent<SpriteOutline>();
@@ -141,19 +143,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     }
 
     protected virtual void Start() {
-        // some init things that need to be taken care of
-        unitStats.UpdateHP(unitStats.VITALITY, unitStats.VITALITY);
-        unitStats.UpdateStrength(unitStats.STRENGTH);
-        unitStats.UpdateDexterity(unitStats.DEXTERITY);
-        unitStats.UpdateReflex(unitStats.REFLEX);
-        unitStats.UpdateDefense(unitStats.DEFENSE);
-        unitStats.UpdateMove(unitStats.MOVE);
-
-        unitStats.UpdateBrawn(unitStats.BRAWN);
-        unitStats.UpdateFinesse(unitStats.FINESSE);
-        unitStats.UpdateBreak(unitStats.BRAWN, unitStats.BRAWN);
-
         // call this Init here, instead of MS's own Start(), to avoid races
+        statSystem.Initialize();
         mutationSystem.Initialize();
         statusSystem.Initialize();
         inventory.Initialize();
