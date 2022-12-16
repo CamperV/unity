@@ -11,8 +11,8 @@ public class SegBar_UI : MonoBehaviour
 {	
     public enum RegistrationOptions {
         UpdateHPEvent,
-        UpdateBreakEvent,
-        UpdateDefenseEvent
+        UpdatePoiseEvent,
+        UpdateDamageReductionEvent
     };
     [SerializeField] private RegistrationOptions registerTo;
 
@@ -26,18 +26,18 @@ public class SegBar_UI : MonoBehaviour
     public void AttachTo(Unit thisUnit) {
         switch (registerTo) {
             case RegistrationOptions.UpdateHPEvent:
-                UpdateBar(thisUnit.unitStats.VITALITY, thisUnit.unitStats.VITALITY);
-                thisUnit.unitStats.UpdateHPEvent += UpdateBar;
+                UpdateBar(thisUnit.statSystem.MAX_HP, thisUnit.statSystem.MAX_HP);
+                thisUnit.statSystem.UpdateHPEvent += UpdateBar;
                 break;
 
-            case RegistrationOptions.UpdateBreakEvent:
-                UpdateBar(thisUnit.unitStats.BRAWN, thisUnit.unitStats.BRAWN);
-                thisUnit.unitStats.UpdateBreakEvent += UpdateBar;
+            case RegistrationOptions.UpdatePoiseEvent:
+                UpdateBar(thisUnit.statSystem.MAX_POISE, thisUnit.statSystem.MAX_POISE);
+                thisUnit.statSystem.UpdatePoiseEvent += UpdateBar;
                 break;
 
-            case RegistrationOptions.UpdateDefenseEvent:
-                UpdateBar(thisUnit.unitStats.DEFENSE, thisUnit.unitStats.DEFENSE);
-                thisUnit.unitStats.UpdateDefenseEvent += d => UpdateBar(d, 0);
+            case RegistrationOptions.UpdateDamageReductionEvent:
+                UpdateBar(thisUnit.statSystem.DAMAGE_REDUCTION, thisUnit.statSystem.DAMAGE_REDUCTION);
+                thisUnit.statSystem.UpdateDamageReductionEvent += d => UpdateBar(d, 0);
                 break;
 
             default:

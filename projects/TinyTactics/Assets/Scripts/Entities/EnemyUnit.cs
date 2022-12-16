@@ -173,7 +173,7 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
                 // basically, keep checking until we have a valid path to a square in our moveRange
                 // if you never find one... check the next DamagePackage
                 // if THAT never resolves, the EnemyUnit will do nothing at all
-                for (int checkingRadius = 1; checkingRadius < unitStats.MOVE; checkingRadius++) {
+                for (int checkingRadius = 1; checkingRadius < statSystem.MOVE; checkingRadius++) {
 
                     // the newPotentialEndpoint will NOT include the original maskedPathTo.End area, because we start at 1
                     foreach (GridPosition newPotentialEndpoint in maskedPathTo.End.Radiate(checkingRadius, min: checkingRadius-1)) {

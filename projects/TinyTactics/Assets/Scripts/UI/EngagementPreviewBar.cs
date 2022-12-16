@@ -40,7 +40,7 @@ public class EngagementPreviewBar : MonoBehaviour
 		portrait_Player.sprite = potentialEngagement.aggressor.mainSprite;
 
 		// get the simulated damage and display it (w/ mutlistrike)
-		projectedDamage_Player.DisplayDamageProjection(potentialEngagement, playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE);
+		projectedDamage_Player.DisplayDamageProjection(potentialEngagement, playerPreviewStats, potentialEngagement.aggressor.statSystem.MULTISTRIKE);
 
 		List<string> playerUnitMutators = new List<string>(potentialEngagement.attack.mutators);
 		if (potentialEngagement.counterDefense != null) {
@@ -56,14 +56,14 @@ public class EngagementPreviewBar : MonoBehaviour
 		portrait_Enemy.sprite = potentialEngagement.defender.mainSprite;
 
 		// how much damage can we do to the Enemy? (need to do this AFTER the health bar is attached to the enemy)
-		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max * (potentialEngagement.aggressor.unitStats._MULTISTRIKE+1);
+		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max * (potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
 		foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
 			finalProjectedDamage_fromPlayer += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
 		}
 		healthBar_Enemy.PreviewDamage(finalProjectedDamage_fromPlayer);
 
 		// get the simulated damage and display it (w/ mutlistrike)
-		projectedDamage_Enemy.DisplayDamageProjection(enemyPreviewStats, potentialEngagement.defender.unitStats._MULTISTRIKE);
+		projectedDamage_Enemy.DisplayDamageProjection(enemyPreviewStats, potentialEngagement.defender.statSystem.MULTISTRIKE);
 
 		// list of perks that were relevant for this Defense & potentially, counterAttack
 		List<string> enemyUnitMutators = new List<string>(potentialEngagement.defense.mutators);
@@ -75,7 +75,7 @@ public class EngagementPreviewBar : MonoBehaviour
 
 		// how much damage can we do to the Player?
 		if (!enemyPreviewStats.Empty) {
-			healthBar_Player.PreviewDamage(enemyPreviewStats.finalDamageContext.Max * (potentialEngagement.defender.unitStats._MULTISTRIKE+1));
+			healthBar_Player.PreviewDamage(enemyPreviewStats.finalDamageContext.Max * (potentialEngagement.defender.statSystem.MULTISTRIKE+1));
 		}
 
 		// Finally:

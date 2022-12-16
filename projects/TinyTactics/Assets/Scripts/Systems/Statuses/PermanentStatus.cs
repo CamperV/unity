@@ -11,15 +11,15 @@ public class PermanentStatus : so_Status, IValueStatus
 	[field: SerializeField] public int value { get; set; }
 
 	// assign in inspector
-	public UnitStats.UpdatableStat targetStat;
+	public StatSystem.UpdatableStat targetStat;
 
     public override void OnAcquire(Unit thisUnit) {
 		base.OnAcquire(thisUnit);
-		thisUnit.unitStats.ModifyStat(targetStat, value);
+		thisUnit.statSystem.ModifyStat(targetStat, value);
 	}
 	
     public override void OnExpire(Unit thisUnit){
 		base.OnExpire(thisUnit);
-		thisUnit.unitStats.ModifyStat(targetStat, -value);
+		thisUnit.statSystem.ModifyStat(targetStat, -value);
 	}
 }

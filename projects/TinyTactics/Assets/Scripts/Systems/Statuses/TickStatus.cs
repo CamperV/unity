@@ -7,7 +7,7 @@ using UnityEngine;
 public class TickStatus : so_Status, IValueStatus, IExpireStatus
 {
 	// assign in inspector
-	public UnitStats.UpdatableStat targetStat;
+	public StatSystem.UpdatableStat targetStat;
     
 	// IValueStatus
 	[field: SerializeField] public int value { get; set; }
@@ -24,6 +24,6 @@ public class TickStatus : so_Status, IValueStatus, IExpireStatus
 	}
 
 	public void Apply(Unit thisUnit, int _value) {
-		thisUnit.unitStats.ModifyStat(targetStat, _value);
+		thisUnit.statSystem.ModifyStat(targetStat, _value);
 	}
 }

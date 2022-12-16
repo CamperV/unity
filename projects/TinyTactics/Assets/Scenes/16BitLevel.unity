@@ -10611,12 +10611,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7122154712425112021, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: weapons.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7122154712425112021, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: weapons.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 80e5b240769ae364cb30cf9eef5fa1d7, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7170590886680883339, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

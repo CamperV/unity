@@ -14,7 +14,7 @@ public class ImmediateValueStatus : so_Status, IValueStatus, IImmediateStatus, I
 	}
 
 	// assign in inspector
-	public UnitStats.UpdatableStat targetStat;
+	public StatSystem.UpdatableStat targetStat;
     
 	// IValueStatus
 	[field: SerializeField] public int value { get; set; }
@@ -30,10 +30,10 @@ public class ImmediateValueStatus : so_Status, IValueStatus, IImmediateStatus, I
 
     public override void OnAcquire(Unit thisUnit) {
 		base.OnAcquire(thisUnit);
-		thisUnit.unitStats.ModifyStat(targetStat, value);
+		thisUnit.statSystem.ModifyStat(targetStat, value);
 	}
     public override void OnExpire(Unit thisUnit){
 		base.OnExpire(thisUnit);
-		thisUnit.unitStats.ModifyStat(targetStat, -value);
+		thisUnit.statSystem.ModifyStat(targetStat, -value);
 	}
 }

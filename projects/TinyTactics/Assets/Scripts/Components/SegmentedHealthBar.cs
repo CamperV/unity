@@ -45,10 +45,10 @@ public class SegmentedHealthBar : MonoBehaviour
     }
 
     void Start() {
-        UpdateBar(boundUnit.unitStats.VITALITY, boundUnit.unitStats.VITALITY);
+        UpdateBar(boundUnit.statSystem.MAX_HP, boundUnit.statSystem.MAX_HP);
         //
-        boundUnit.unitStats.UpdateHPEvent += UpdateBar;
-        boundUnit.unitStats.UpdateDefenseEvent += UpdateArmor;
+        boundUnit.statSystem.UpdateHPEvent += UpdateBar;
+        boundUnit.statSystem.UpdateDamageReductionEvent += UpdateArmor;
     }
 
     private void UpdateBar(int val, int max) {

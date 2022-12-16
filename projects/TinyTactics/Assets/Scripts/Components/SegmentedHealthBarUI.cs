@@ -46,19 +46,19 @@ public class SegmentedHealthBarUI : MonoBehaviour
     }
 
     public void AttachTo(Unit thisUnit) {
-        UpdateHealthAndRedraw(thisUnit.unitStats._CURRENT_HP, thisUnit.unitStats.VITALITY);
-        UpdateArmorAndRedraw(thisUnit.unitStats.DEFENSE);
+        UpdateHealthAndRedraw(thisUnit.statSystem.CURRENT_HP, thisUnit.statSystem.MAX_HP);
+        UpdateArmorAndRedraw(thisUnit.statSystem.DAMAGE_REDUCTION);
         //
-        thisUnit.unitStats.UpdateHPEvent += UpdateHealthAndRedraw;
-        thisUnit.unitStats.UpdateDefenseEvent += UpdateArmorAndRedraw;
+        thisUnit.statSystem.UpdateHPEvent += UpdateHealthAndRedraw;
+        thisUnit.statSystem.UpdateDamageReductionEvent += UpdateArmorAndRedraw;
 
         attachedUnit = thisUnit;
     }
 
     public void Detach() {
         if (attachedUnit != null) {
-            attachedUnit.unitStats.UpdateHPEvent -= UpdateHealthAndRedraw;
-            attachedUnit.unitStats.UpdateDefenseEvent -= UpdateArmorAndRedraw;
+            attachedUnit.statSystem.UpdateHPEvent -= UpdateHealthAndRedraw;
+            attachedUnit.statSystem.UpdateDamageReductionEvent -= UpdateArmorAndRedraw;
         }
         attachedUnit = null;
     }

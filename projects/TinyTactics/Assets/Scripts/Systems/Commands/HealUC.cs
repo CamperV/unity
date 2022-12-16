@@ -16,7 +16,7 @@ public class HealUC : TargetableUC
 
     protected override bool ValidTarget(PlayerUnit thisUnit, GridPosition interactAt) {
         PlayerUnit ally = AllyAt(thisUnit, interactAt);
-        return thisUnit.attackRange.ValidTarget(interactAt) && ally != null && ally.unitStats.MissingHP() > 0;
+        return thisUnit.attackRange.ValidTarget(interactAt) && ally != null && ally.statSystem.MissingHP > 0;
     }
 
     protected override void Execute(PlayerUnit thisUnit, GridPosition interactAt) {

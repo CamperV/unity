@@ -196,7 +196,7 @@ public class MoveUC : UnitCommand
             _pathSegments.Add(pathSegment);
             _waypoints.Add(gp);
             
-            int remainingMovement = thisUnit.unitStats.MOVE - _pathSegments.Sum(pathSeg => pathSeg.Count-1);
+            int remainingMovement = thisUnit.statSystem.MOVE - _pathSegments.Sum(pathSeg => pathSeg.Count-1);
             _activeMoveRange = thisUnit.unitPathfinder.GenerateFlowField<MoveRange>(_waypoints.Last(), range: remainingMovement);
             _activeMoveRange.RegisterValidMoveToFunc(thisUnit.unitMap.CanMoveInto);
 

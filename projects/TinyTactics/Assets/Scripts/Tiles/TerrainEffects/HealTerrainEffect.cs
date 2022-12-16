@@ -39,7 +39,7 @@ public class HealTerrainEffect : TerrainEffect, IToolTip
     }
 
     private void HealPercentage(Unit target) {
-        int healAmount = (int)(0.25f * target.unitStats.VITALITY);
+        int healAmount = (int)(0.25f * target.statSystem.MAX_HP);
         target.HealAmount(healAmount);
     }
 }

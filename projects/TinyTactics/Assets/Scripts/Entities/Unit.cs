@@ -6,7 +6,7 @@ using TMPro;
 
 [RequireComponent(typeof(SpriteAnimator))]
 [RequireComponent(typeof(UnitPathfinder))]
-[RequireComponent(typeof(UnitStats))]
+[RequireComponent(typeof(statSystem))]
 [RequireComponent(typeof(MessageEmitter))]
 [RequireComponent(typeof(MutationSystem))]
 [RequireComponent(typeof(StatusSystem))]
@@ -61,7 +61,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public BattleMap battleMap;
     [HideInInspector] public SpriteAnimator spriteAnimator;
     [HideInInspector] public UnitPathfinder unitPathfinder;
-    [HideInInspector] public UnitStats unitStats;
     [HideInInspector] public PersonalAudioFX personalAudioFX;
     [HideInInspector] public MessageEmitter messageEmitter;
     [HideInInspector] public StatSystem statSystem;
@@ -110,7 +109,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     protected virtual void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
         unitPathfinder = GetComponent<UnitPathfinder>();
-        unitStats = GetComponent<UnitStats>();
         personalAudioFX = GetComponent<PersonalAudioFX>();
         messageEmitter = GetComponent<MessageEmitter>();
         statSystem = GetComponent<StatSystem>();
@@ -155,7 +153,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     // However, MoveRange doesn't know what tiles it cannot stand on
     // we pass it a UnitAt lambda to tell it you can't validly stand on occupied tiles
     public void UpdateThreatRange(bool standing = false, int minRange = -1, int maxRange = -1) {
-        int movement = (moveAvailable && standing == false) ? unitStats.MOVE : 0;
+        int movement = (moveAvailable && standing == false) ? statSystem.MOVE : 0;
         moveRange = unitPathfinder.GenerateFlowField<MoveRange>(gridPosition, range: movement);
         moveRange.RegisterValidMoveToFunc(unitMap.CanMoveInto);
 
@@ -276,8 +274,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
             }
         }
 
-        unitStats.UpdateHP(unitStats._CURRENT_HP - incomingDamage, unitStats.VITALITY);
-		bool survived = unitStats._CURRENT_HP > 0;
+        statSystem.UpdateHP(statSystem.CURRENT_HP - incomingDamage, statSystem.MAX_HP);
+		bool survived = statSystem.CURRENT_HP > 0;
 
         // ded
         if (!survived) TriggerDeath();
@@ -312,7 +310,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     }
 
     public void HealAmount(int healAmount) {
-        if (unitStats._CURRENT_HP < unitStats.VITALITY) {
+        if (statSystem.CURRENT_HP < statSystem.MAX_HP) {
             messageEmitter.Emit(MessageEmitter.MessageType.Heal, $"+{healAmount}");
 
             // queue the sound and animation for after it is done animating the Hurt animation
@@ -323,7 +321,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
                 }
             );
 
-            unitStats.UpdateHP(unitStats._CURRENT_HP + healAmount, unitStats.VITALITY);
+            statSystem.UpdateHP(statSystem.CURRENT_HP + healAmount, statSystem.MAX_HP);
         }
     }
 

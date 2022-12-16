@@ -73,7 +73,7 @@ public class Engagement
 
         // animate, then create a little pause before counterattacking
         // ReceiveAttack contains logic for animation processing
-        int numStrikes = 1 + aggressor.unitStats._MULTISTRIKE;
+        int numStrikes = 1 + aggressor.statSystem.MULTISTRIKE;
         while (numStrikes > 0 && defenderSurvived) {
             defenderSurvived = ProcessAttack(aggressor, defender, attack, defense);
             //
@@ -100,7 +100,7 @@ public class Engagement
 
         // if we can counterattack:
         if (defenderSurvived && counterAttack != null) {            
-            int numCounterStrikes = 1 + defender.unitStats._MULTISTRIKE;
+            int numCounterStrikes = 1 + defender.statSystem.MULTISTRIKE;
             while (numCounterStrikes > 0 && aggressorSurvived) {
                 aggressorSurvived = ProcessAttack(defender, aggressor, counterAttack.Value, counterDefense.Value);            
                 ///
@@ -138,7 +138,7 @@ public class Engagement
         MutableAttack mutableAttack = new MutableAttack(
             damageContext,                      // DamageContext to emit a real value and hold info about it
             generator.EquippedWeapon.CRITICAL,  // crit rate of course
-            generator.unitStats.DEXTERITY       // advantage rate
+            0
         );
         
         // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
@@ -148,9 +148,9 @@ public class Engagement
 
     private Defense GenerateDefense(Unit generator, Unit attacker) {
          MutableDefense mutableDefense = new MutableDefense(
-            generator.unitStats.DEFENSE,    // reduce incoming damage
-            generator.unitStats.FINESSE,     // crit avoid rate
-            generator.unitStats.REFLEX      // advantage rate
+            generator.statSystem.DAMAGE_REDUCTION,    // reduce incoming damage
+            0,  // crit avoid rate
+            0   // advantage rate
         );
 
         // THIS WILL MODIFY THE OUTGOING DEFENSE PACKAGE

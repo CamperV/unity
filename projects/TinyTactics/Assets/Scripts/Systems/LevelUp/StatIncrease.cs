@@ -7,11 +7,11 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(menuName = "UnitData/StatIncrease")]
 public class StatIncrease : LevelUp
 {
-    public UnitStats.UpdatableStat stat;
+    public StatSystem.UpdatableStat stat;
     public int value;
 
     public override void Apply(Unit thisUnit) {
         Debug.Log($"{thisUnit} is gaining {value} in {stat}");
-        thisUnit.unitStats.ModifyStat(stat, value);
+        thisUnit.statSystem.ModifyStat(stat, value);
     }
 }

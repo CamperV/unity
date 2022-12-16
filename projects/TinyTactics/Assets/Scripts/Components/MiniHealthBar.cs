@@ -36,8 +36,8 @@ public class MiniHealthBar : MonoBehaviour
     }
 
     void Start() {
-        UpdateBar(boundUnit.unitStats.VITALITY, boundUnit.unitStats.VITALITY);
-        boundUnit.unitStats.UpdateHPEvent += UpdateBar;
+        UpdateBar(boundUnit.statSystem.MAX_HP, boundUnit.statSystem.MAX_HP);
+        boundUnit.statSystem.UpdateHPEvent += UpdateBar;
     }
 
     private void SetAlpha(float alpha) {

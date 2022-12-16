@@ -14,15 +14,15 @@ public class CountdownStatus : so_Status, IValueStatus, IExpireStatus
 	[field: SerializeField] public int expireTimer { get; set; }
 
 	// assign in inspector
-	public UnitStats.UpdatableStat targetStat;
+	public StatSystem.UpdatableStat targetStat;
 
     public override void OnAcquire(Unit thisUnit) {
 		base.OnAcquire(thisUnit);
-		thisUnit.unitStats.ModifyStat(targetStat, value);
+		thisUnit.statSystem.ModifyStat(targetStat, value);
 	}
 	
     public override void OnExpire(Unit thisUnit){
 		base.OnExpire(thisUnit);
-		thisUnit.unitStats.ModifyStat(targetStat, -value);
+		thisUnit.statSystem.ModifyStat(targetStat, -value);
 	}
 }

@@ -86,14 +86,14 @@ public sealed class UIManager : MonoBehaviour
 		// MiniEngagementPreview miniPreview_Defender  = Instantiate(miniEngagementPreviewPrefab, potentialEngagement.defender.transform);
 
 		// // set appropriate values, and ensure the previews are destroyed when the EngagementPreview proper is disabled
-		// miniPreview_Aggressor.SetEngagementStats(enemyPreviewStats, potentialEngagement.defender.unitStats._MULTISTRIKE+1);
-		// miniPreview_Defender.SetEngagementStats(playerPreviewStats, potentialEngagement.aggressor.unitStats._MULTISTRIKE+1);
+		// miniPreview_Aggressor.SetEngagementStats(enemyPreviewStats, potentialEngagement.defender.statSystem.MULTISTRIKE+1);
+		// miniPreview_Defender.SetEngagementStats(playerPreviewStats, potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
 		// DisableEngagementPreviewEvent += () => Destroy(miniPreview_Aggressor.gameObject);
 		// DisableEngagementPreviewEvent += () => Destroy(miniPreview_Defender.gameObject);
 
 		// visualize certain values, and ensure the previews are reverted when the EngagementPreview proper is disabled
-		int finalProjectedDamage_fromEnemy = enemyPreviewStats.finalDamageContext.Max*(potentialEngagement.defender.unitStats._MULTISTRIKE+1);
-		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max*(potentialEngagement.aggressor.unitStats._MULTISTRIKE+1);
+		int finalProjectedDamage_fromEnemy = enemyPreviewStats.finalDamageContext.Max*(potentialEngagement.defender.statSystem.MULTISTRIKE+1);
+		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max*(potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
 		foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
 			finalProjectedDamage_fromPlayer += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
 		}

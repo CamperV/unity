@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class UnitStats : MonoBehaviour
+public class statSystem : MonoBehaviour
 {
     // publicly visible events for UIs etc to key off of
 	public delegate void StatRatioChange(int newValue, int maxValue);
@@ -90,12 +90,12 @@ public class UnitStats : MonoBehaviour
     }
 
     public void ApplyNature(CampaignUnitGenerator.NatureData natureStats) {
-        VITALITY  += natureStats.m_VITALITY;
-        STRENGTH  += natureStats.m_STRENGTH;
-        DEXTERITY += natureStats.m_DEXTERITY;
-        REFLEX    += natureStats.m_REFLEX;
-        DEFENSE   += natureStats.m_DEFENSE;
-        MOVE      += natureStats.m_MOVE;
+        // VITALITY  += natureStats.m_VITALITY;
+        // STRENGTH  += natureStats.m_STRENGTH;
+        // DEXTERITY += natureStats.m_DEXTERITY;
+        // REFLEX    += natureStats.m_REFLEX;
+        // DEFENSE   += natureStats.m_DEFENSE;
+        // MOVE      += natureStats.m_MOVE;
     }
 
     public int MissingHP() {

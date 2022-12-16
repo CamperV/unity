@@ -11,11 +11,11 @@ public class CampaignUnitGenerator
 		public string name;
 		public string description;
 
-		public int m_VITALITY;
+		public int m_MAX_HP;
 		public int m_STRENGTH;
 		public int m_DEXTERITY;
 		public int m_REFLEX;
-		public int m_DEFENSE;
+		public int m_DAMAGE_REDUCTION;
 		public int m_MOVE;
 
 		public NatureData(string n, string theGood, string theBad, int v=0, int s=0, int dex=0, int r=0, int def=0, int m=0) {
@@ -30,11 +30,11 @@ public class CampaignUnitGenerator
 				description = $"<b>{name}</b>";
 			}
 			//
-			m_VITALITY = v;
+			m_MAX_HP = v;
 			m_STRENGTH = s;
 			m_DEXTERITY = dex;
 			m_REFLEX = r;
-			m_DEFENSE = def;
+			m_DAMAGE_REDUCTION = def;
 			m_MOVE = m;
 		}
 	}
