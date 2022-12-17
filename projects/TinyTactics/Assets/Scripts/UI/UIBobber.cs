@@ -23,6 +23,7 @@ public class UIBobber : MonoBehaviour
 
 	public bool lockOntoX;
 	public bool randomPhaseSalt;
+	public bool noSmoothing;
 
 	void Start() {
 		anchor = transform.position;
@@ -46,7 +47,13 @@ public class UIBobber : MonoBehaviour
 		Vector3 yComponent = amplitude * (Mathf.Sin( (freq*Time.time) + phase)) * Vector3.up;
 		Vector3 xComponent = xDamping * amplitude * (Mathf.Cos( (freq*Time.time) + phase)) * Vector3.right;
 		anchor = anchor + staticOffset;
-		transform.position = Vector3.Lerp(transform.position, anchor + yComponent + xComponent, 10f*Time.deltaTime);
+
+		if (noSmoothing) {
+			transform.position = anchor + yComponent + xComponent;
+		} else {
+			transform.position = Vector3.Lerp(transform.position, anchor + yComponent + xComponent, 10f*Time.deltaTime);
+		}
+		
 	}
 
 	public void MoveAnchor(Vector3 inputWorldAnchor) {
@@ -73,7 +80,7 @@ public class UIBobber : MonoBehaviour
 		}
 	}
 
-	public void TrackAnchor(Transform _anchoredTransform) {
+	public void AnchorTo(Transform _anchoredTransform) {
 		anchoredTransform = _anchoredTransform;
 	}
 }

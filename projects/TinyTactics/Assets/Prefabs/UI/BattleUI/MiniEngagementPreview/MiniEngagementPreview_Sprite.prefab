@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2936651881560290750}
-  - component: {fileID: 2397650293953728768}
+  - component: {fileID: -7499002284576069761}
   m_Layer: 0
-  m_Name: MiniEngagementPreview
+  m_Name: MiniEngagementPreview_Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,7 +38,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0.45}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2397650293953728768
+--- !u!114 &-7499002284576069761
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2066889130146040373}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adb784dbe3dff3340a9e82601e1347e3, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d32f23ceb810d8408a55988f5180cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damagePreview: {fileID: 6642814863815750658}
@@ -359,7 +359,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5660722665480556962
 RectTransform:
   m_ObjectHideFlags: 0
@@ -419,12 +419,12 @@ SpriteRenderer:
   m_SortingLayerID: 1244534209
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: d476132d3b09f144fa4eccf38082d723, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.29803923}
+  m_Sprite: {fileID: 21300000, guid: 566682406dfa9dc418afacdcd1e43e0c, type: 3}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.49803922}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
