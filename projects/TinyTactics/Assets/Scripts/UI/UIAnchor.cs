@@ -8,6 +8,7 @@ public class UIAnchor : MonoBehaviour
 {
 	[HideInInspector] public Vector3 anchor; // this is in world-space
 	private Transform anchoredTransform;
+	private Transform rotateTowards;
 
 	[SerializeField] public float minViewportBound = 0f;
 	[SerializeField] public float maxViewportBound = 1f;
@@ -35,6 +36,10 @@ public class UIAnchor : MonoBehaviour
 			transform.position = anchor;
 		}
 		
+		if (rotateTowards != null) {
+			Vector3 relativeVector = rotateTowards.position - transform.position;
+			transform.rotation = Quaternion.LookRotation(relativeVector);
+		}
 	}
 
 	public void MoveAnchor(Vector3 inputWorldAnchor) {
@@ -47,5 +52,9 @@ public class UIAnchor : MonoBehaviour
 
 	public void AnchorTo(Transform _anchoredTransform) {
 		anchoredTransform = _anchoredTransform;
+	}
+
+	public void AnchorRotationTowards(Transform _rotateTowards) {
+		rotateTowards = _rotateTowards;
 	}
 }

@@ -28,7 +28,9 @@ public class MiniEngagementPreview : MonoBehaviour
 		arrowGameObjects.Add(arrowBody);
 
 		arrowHead.GetComponent<UIAnchor>().AnchorTo(to);
+		arrowHead.GetComponent<UIAnchor>().AnchorRotationTowards(from);
 		arrowBody.GetComponent<UIAnchor>().AnchorTo(from);
+		arrowBody.GetComponent<UIAnchor>().AnchorRotationTowards(to);
 	}
 
 	public void SetEngagementStats(EngagementStats previewStats, int numStrikes) {

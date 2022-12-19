@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color_0: {r: 1, g: 0.40784314, b: 0, a: 1}
-  color_1: {r: 1, g: 0.40784314, b: 0, a: 0.5019608}
+  color_1: {r: 1, g: 0.40784314, b: 0, a: 0.49803922}
 --- !u!222 &4407973953830089822
 CanvasRenderer:
   m_ObjectHideFlags: 0
