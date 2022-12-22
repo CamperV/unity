@@ -5439,7 +5439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4664869208400446149, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.825
+      value: 0.8249999
       objectReference: {fileID: 0}
     - target: {fileID: 4664869208400446149, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -43403,7 +43403,7 @@ Tilemap:
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 0.4, g: 0.4, b: 0.4, a: 1}
+  m_Color: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   m_Origin: {x: -23, y: -19, z: 0}
   m_Size: {x: 58, y: 54, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}

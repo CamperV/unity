@@ -162,11 +162,6 @@ public class CameraManager : MonoBehaviour
 
 		minBounds = _minBounds;
 		maxBounds = _maxBounds;
-
-		Debug.Log($"minBounds: {minBounds}");
-		Debug.Log($"maxBounds: {maxBounds}");
-		Debug.Log($"camera: {Camera.main.transform.position}");
-		Debug.Log($"cam size: {Camera.main.orthographicSize}");
 	}
 
 	private Vector3 OrthographicBounds() {

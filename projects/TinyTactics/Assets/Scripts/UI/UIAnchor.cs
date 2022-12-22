@@ -37,17 +37,9 @@ public class UIAnchor : MonoBehaviour
 		}
 		
 		if (rotateTowards != null) {
-			Vector3 relativeVector = rotateTowards.position - transform.position;
-			transform.rotation = Quaternion.LookRotation(relativeVector);
+			Vector3 relativeVector = rotateTowards.position - anchor;
+			transform.rotation = Quaternion.LookRotation(relativeVector, Vector3.forward);
 		}
-	}
-
-	public void MoveAnchor(Vector3 inputWorldAnchor) {
-		Vector3 cameraSpaceAnchor = Camera.main.WorldToViewportPoint(inputWorldAnchor);
-		// cameraSpaceAnchor.y = Mathf.Clamp(cameraSpaceAnchor.y, minViewportBound, maxViewportBound);
-		Vector3 worldSpaceAnchor = Camera.main.ViewportToWorldPoint(cameraSpaceAnchor);
-		
-		anchor = new Vector3(worldSpaceAnchor.x, worldSpaceAnchor.y, transform.position.z);	
 	}
 
 	public void AnchorTo(Transform _anchoredTransform) {
