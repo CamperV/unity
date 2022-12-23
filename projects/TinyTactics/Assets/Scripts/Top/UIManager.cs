@@ -102,21 +102,23 @@ public sealed class UIManager : MonoBehaviour
 		miniPreview_Defender.GetComponent<UIAnchor>().AnchorTo(potentialEngagement.defender.transform);
 
 		// set appropriate values, and ensure the previews are destroyed when the EngagementPreview proper is disabled
-		miniPreview_Aggressor.SetEngagementStats(enemyPreviewStats, potentialEngagement.defender.statSystem.MULTISTRIKE+1);
-		miniPreview_Defender.SetEngagementStats(playerPreviewStats, potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
+		// miniPreview_Aggressor.SetEngagementStats(enemyPreviewStats, potentialEngagement.defender.statSystem.MULTISTRIKE+1);
+		// miniPreview_Defender.SetEngagementStats(playerPreviewStats, potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
+		miniPreview_Aggressor.SetEngagementStats(potentialEngagement, playerPreviewStats, true);
+		miniPreview_Defender.SetEngagementStats(potentialEngagement, enemyPreviewStats, false);
 		DisableEngagementPreviewEvent += () => Destroy(miniPreview_Aggressor.gameObject);
 		DisableEngagementPreviewEvent += () => Destroy(miniPreview_Defender.gameObject);
 
-		miniPreview_Aggressor.DrawPreviewArrow(
-			potentialEngagement.aggressor.transform,
-			potentialEngagement.defender.transform
-		);
-		foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
-			miniPreview_Aggressor.DrawPreviewArrow(
-				combo.unit.transform,
-				potentialEngagement.defender.transform
-			);
-		}
+		// miniPreview_Aggressor.DrawPreviewArrow(
+		// 	potentialEngagement.aggressor.transform,
+		// 	potentialEngagement.defender.transform
+		// );
+		// foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
+		// 	miniPreview_Aggressor.DrawPreviewArrow(
+		// 		combo.unit.transform,
+		// 		potentialEngagement.defender.transform
+		// 	);
+		// }
 	}
 
 	public void DisableEngagementPreview() {

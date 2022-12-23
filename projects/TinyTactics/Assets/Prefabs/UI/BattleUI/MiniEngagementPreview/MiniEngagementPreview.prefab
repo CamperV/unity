@@ -1,5 +1,40 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5024822175269839982
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2597861184132390218}
+  m_Layer: 5
+  m_Name: ArrowContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2597861184132390218
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5024822175269839982}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6077564232028830144}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6770213741364705193
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,6 +48,7 @@ GameObject:
   - component: {fileID: 6908158140661548851}
   - component: {fileID: 5135110688103981634}
   - component: {fileID: 22596699552483757}
+  - component: {fileID: 7424066591341763867}
   m_Layer: 5
   m_Name: DamageValue
   m_TagString: Untagged
@@ -36,7 +72,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 75, y: 0}
   m_SizeDelta: {x: 150, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8088966361553454610
@@ -94,8 +130,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -149,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerAnimPlayerOnChange: 0
-  effectIntensityMultiplier: 50
+  effectIntensityMultiplier: 15
   appearancesContainer:
     tagsFallback_Appearances:
     - size
@@ -214,7 +250,7 @@ MonoBehaviour:
   scriptable_globalAppearancesValues: {fileID: 0}
   useDynamicScaling: 0
   referenceFontSize: -1
-  isResettingEffectsOnNewText: 1
+  isResettingEffectsOnNewText: 0
   timeScale: 0
 --- !u!114 &22596699552483757
 MonoBehaviour:
@@ -256,6 +292,20 @@ MonoBehaviour:
   useTypewriterWaitForDisappearances: 1
   disappearanceWaitTime: 0.015
   disappearanceSpeedMultiplier: 1
+--- !u!114 &7424066591341763867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6770213741364705193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 0
 --- !u!1 &7064131446959431333
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,6 +431,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 2597861184132390218}
   - {fileID: 1729752257601310460}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -403,8 +454,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damagePreview: {fileID: 6908158140661548851}
+  arrowContainer: {fileID: 5024822175269839982}
   arrowHeadPrefab: {fileID: 7544038316291497120, guid: ad5f0a6d63fa67a48ad1e86c800d17da, type: 3}
   arrowBodyPrefab: {fileID: 6081007144153412463, guid: b28224a44b3f0fd4ea985890e04de15c, type: 3}
+  arrowBody_ComboPrefab: {fileID: 6390942043938721955, guid: 72454b7adc2784242807c448f8f389e4, type: 3}
+  arrowBody_CounterPrefab: {fileID: 4911118773321682401, guid: 94a0a40edaa13a842b192e89ae69153b, type: 3}
 --- !u!114 &-1747344898227701365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -454,11 +508,11 @@ RectTransform:
   - {fileID: 5498963759877907092}
   - {fileID: 7303108879267768330}
   m_Father: {fileID: 6077564232028830144}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 50}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7448093120014573368

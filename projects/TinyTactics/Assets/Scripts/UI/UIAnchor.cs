@@ -10,12 +10,14 @@ public class UIAnchor : MonoBehaviour
 	private Transform anchoredTransform;
 	private Transform rotateTowards;
 	private Transform scaleTowards;
+	private float sizeDeltaOffset;
 	private Vector2 originalSizeDelta;
 
 	[SerializeField] public float minViewportBound = 0f;
 	[SerializeField] public float maxViewportBound = 1f;
 	
 	[SerializeField] private Vector3 staticOffset;
+	[SerializeField] private Vector3 staticOffset_RotationAnchor;
 	[SerializeField] private bool smooth;
 
 	public Vector3 ZeroZAnchor => new Vector3(anchor.x, anchor.y, 0f);
@@ -27,15 +29,9 @@ public class UIAnchor : MonoBehaviour
 	void Update() {
 		// position update loop
 		if (anchoredTransform != null) {
-			// Vector3 cameraSpaceAnchor = Camera.main.WorldToViewportPoint(anchoredTransform.position);
-			// // cameraSpaceAnchor.y = Mathf.Clamp(cameraSpaceAnchor.y, minViewportBound, maxViewportBound);
-			// Vector3 worldSpaceAnchor = Camera.main.ViewportToWorldPoint(cameraSpaceAnchor);
-			// Debug.Assert(worldSpaceAnchor == anchoredTransform.position);
 			Vector3 worldSpaceAnchor = anchoredTransform.position;
-			
 			anchor = new Vector3(worldSpaceAnchor.x, worldSpaceAnchor.y, transform.position.z) + staticOffset;	
 		}
-
 		if (smooth) {
 			transform.position = Vector3.Lerp(transform.position, anchor, 10f*Time.deltaTime);
 		} else {
@@ -44,33 +40,20 @@ public class UIAnchor : MonoBehaviour
 		
 		// rotation update loop
 		if (rotateTowards != null) {
-			Vector3 relativeVector = rotateTowards.position - anchor;
-			transform.rotation = Quaternion.LookRotation(relativeVector, Vector3.forward);
+			Vector3 relativeRotationVector = (rotateTowards.position + staticOffset_RotationAnchor) - anchor;
+			transform.rotation = Quaternion.LookRotation(relativeRotationVector, Vector3.forward);
 		}
 
 		// scale update loop
 		if (scaleTowards != null) {
-			RectTransform canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
- 
-			//0,0 for the canvas is at the center of the screen,
-			// whereas WorldToViewPortPoint treats the lower left corner as 0,0.
-			// Because of this, you need to subtract the height / width of the canvas * 0.5 to get the correct position.
+			Canvas canvas = GetComponentInParent<Canvas>();
+			Vector2 canvasSpaceTo = CanvasSpace(scaleTowards.position, canvas);
+			Vector2 canvasSpaceAnchor = CanvasSpace(ZeroZAnchor, canvas);
 
- 			Vector2 viewportSpaceTo = Camera.main.WorldToViewportPoint(scaleTowards.position);
-			Vector2 screenSpaceTo = new Vector2(
-				(viewportSpaceTo.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x*0.5f),
- 				(viewportSpaceTo.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y*0.5f)
-			);
-			Debug.Log($"screen space to : {screenSpaceTo}");
-		 	Vector2 viewportSpaceAnchor = Camera.main.WorldToViewportPoint(ZeroZAnchor);
-			Vector2 screenSpaceAnchor = new Vector2(
-				(viewportSpaceAnchor.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x*0.5f),
- 				(viewportSpaceAnchor.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y*0.5f)
-			);
-
-			float canvasSpaceDistance = (screenSpaceTo - screenSpaceAnchor).magnitude;
-			// float canvasSpaceDistance = (screenSpaceTo = screenSpaceAnchor).magnitude;
-			GetComponent<RectTransform>().sizeDelta = new Vector2(originalSizeDelta.x, canvasSpaceDistance);
+			// scale based on canvas-space distance, but don't shrink past original size
+			float canvasSpaceDistance = (canvasSpaceTo - canvasSpaceAnchor).magnitude;
+			float scaledDelta = Mathf.Max((canvasSpaceDistance - sizeDeltaOffset), originalSizeDelta.y);
+			GetComponent<RectTransform>().sizeDelta = new Vector2(originalSizeDelta.x, scaledDelta);
 		}
 	}
 
@@ -82,8 +65,30 @@ public class UIAnchor : MonoBehaviour
 		rotateTowards = _rotateTowards;
 	}
 
-	public void ScaleTowards(Transform _scaleTowards) {
+	public void ScaleTowards(Transform _scaleTowards, float sizeDeltaOffset = 0f) {
 		scaleTowards = _scaleTowards;
+		this.sizeDeltaOffset = sizeDeltaOffset;
 		originalSizeDelta = GetComponent<RectTransform>().sizeDelta;
+	}
+
+	public void ShiftAnchorOffset(Vector3 direction, float magnitude, bool shiftRotationAnchor = false) {
+		staticOffset += magnitude*direction;
+
+		if (shiftRotationAnchor) {
+			staticOffset_RotationAnchor += (1.5f*magnitude)*direction;
+		}
+	}
+
+	private Vector2 CanvasSpace(Vector3 worldPosition, Canvas canvas) {
+		RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+
+		// 0,0 for the canvas is at the center of the screen,
+		// whereas WorldToViewPortPoint treats the lower left corner as 0,0.
+		// Because of this, you need to subtract the height / width of the canvas * 0.5 to get the correct position.
+		Vector2 viewportPosition = Camera.main.WorldToViewportPoint(worldPosition);
+		return new Vector2(
+			(viewportPosition.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x*0.5f),
+			(viewportPosition.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y*0.5f)
+		);
 	}
 }
