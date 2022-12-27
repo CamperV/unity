@@ -79,46 +79,21 @@ public sealed class UIManager : MonoBehaviour
 		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
 		engagementPreviewBar?.SetEngagementStats(potentialEngagement, playerPreviewStats, enemyPreviewStats);
 
-		// visualize certain values, and ensure the previews are reverted when the EngagementPreview proper is disabled
-		int finalProjectedDamage_fromEnemy = enemyPreviewStats.finalDamageContext.Max*(potentialEngagement.defender.statSystem.MULTISTRIKE+1);
-		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max*(potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
-		foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
-			finalProjectedDamage_fromPlayer += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
-		}
-
-		potentialEngagement.aggressor.GetComponentInChildren<MiniBar_UI>()?.PreviewDamage(finalProjectedDamage_fromEnemy);
-		potentialEngagement.defender.GetComponentInChildren<MiniBar_UI>()?.PreviewDamage(finalProjectedDamage_fromPlayer);
-		DisableEngagementPreviewEvent += () => potentialEngagement.aggressor.GetComponentInChildren<MiniBar_UI>()?.RevertPreview();
-		DisableEngagementPreviewEvent += () => potentialEngagement.defender.GetComponentInChildren<MiniBar_UI>()?.RevertPreview();
-
-		// finally, draw some ugly arrows that we'll make pretty later
-		// also, create a little in-situ display
-		// cross'd PreviewStats because they are displaying the damage they might *receive*
-		MiniEngagementPreview miniPreview_Aggressor = Instantiate(miniEngagementPreviewPrefab, transform);
-		MiniEngagementPreview miniPreview_Defender  = Instantiate(miniEngagementPreviewPrefab, transform);
+		// // finally, draw some ugly arrows that we'll make pretty later
+		// // also, create a little in-situ display
+		// // cross'd PreviewStats because they are displaying the damage they might *receive*
+		// MiniEngagementPreview miniPreview_Aggressor = Instantiate(miniEngagementPreviewPrefab, transform);
+		// MiniEngagementPreview miniPreview_Defender  = Instantiate(miniEngagementPreviewPrefab, transform);
 		
-		// then, position yourself above the unit				
-		miniPreview_Aggressor.GetComponent<UIAnchor>().AnchorTo(potentialEngagement.aggressor.transform);
-		miniPreview_Defender.GetComponent<UIAnchor>().AnchorTo(potentialEngagement.defender.transform);
+		// // then, position yourself above the unit				
+		// miniPreview_Aggressor.GetComponent<UIAnchor>().AnchorTo(potentialEngagement.aggressor.transform);
+		// miniPreview_Defender.GetComponent<UIAnchor>().AnchorTo(potentialEngagement.defender.transform);
 
-		// set appropriate values, and ensure the previews are destroyed when the EngagementPreview proper is disabled
-		// miniPreview_Aggressor.SetEngagementStats(enemyPreviewStats, potentialEngagement.defender.statSystem.MULTISTRIKE+1);
-		// miniPreview_Defender.SetEngagementStats(playerPreviewStats, potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
-		miniPreview_Aggressor.SetEngagementStats(potentialEngagement, playerPreviewStats, true);
-		miniPreview_Defender.SetEngagementStats(potentialEngagement, enemyPreviewStats, false);
-		DisableEngagementPreviewEvent += () => Destroy(miniPreview_Aggressor.gameObject);
-		DisableEngagementPreviewEvent += () => Destroy(miniPreview_Defender.gameObject);
-
-		// miniPreview_Aggressor.DrawPreviewArrow(
-		// 	potentialEngagement.aggressor.transform,
-		// 	potentialEngagement.defender.transform
-		// );
-		// foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
-		// 	miniPreview_Aggressor.DrawPreviewArrow(
-		// 		combo.unit.transform,
-		// 		potentialEngagement.defender.transform
-		// 	);
-		// }
+		// // set appropriate values, and ensure the previews are destroyed when the EngagementPreview proper is disabled
+		// miniPreview_Aggressor.SetEngagementStats(potentialEngagement, playerPreviewStats, true);
+		// miniPreview_Defender.SetEngagementStats(potentialEngagement, enemyPreviewStats, false);
+		// DisableEngagementPreviewEvent += () => Destroy(miniPreview_Aggressor.gameObject);
+		// DisableEngagementPreviewEvent += () => Destroy(miniPreview_Defender.gameObject);
 	}
 
 	public void DisableEngagementPreview() {
