@@ -35,7 +35,7 @@ public class FollowMousePosition : MonoBehaviour
 	}
 
 	private Vector3 GetWorldPosition(Vector3 screenPosition) {
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition + (Vector3)staticOffset);
 		return new Vector3(worldPosition.x, worldPosition.y, transform.position.z);
 	}
 
@@ -48,7 +48,6 @@ public class FollowMousePosition : MonoBehaviour
 		// if (smooth > 0f && (newPosition - transform.position).magnitude < snapMagnitude) {
 		if (smooth > 0f) {
 			transform.position = Vector3.Lerp(transform.position, newPosition, (smooth)*Time.deltaTime);
-			Debug.Log($"new pos {transform.position}");
 		} else {
 			transform.position = newPosition;
 		}

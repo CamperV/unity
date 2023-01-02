@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 7019174220414442522}
   - component: {fileID: 5787914176019680915}
   - component: {fileID: 5265861390517995802}
+  - component: {fileID: 3346256300491190546}
+  - component: {fileID: 7937135152743317945}
   m_Layer: 0
   m_Name: EngagementPreviewWindow
   m_TagString: Untagged
@@ -104,6 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelPrefab: {fileID: 2249782192452120844, guid: e37c631da51e87d489a357d561b4d959, type: 3}
+  panelPrefab_Counter: {fileID: 8867314951444644303, guid: 6e89b84d9fba03b4e91644dbfcc57b35, type: 3}
 --- !u!114 &5787914176019680915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +143,30 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!225 &3346256300491190546
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2150183646148600000}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &7937135152743317945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2150183646148600000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90ce0707fc893f4f8a7b1c9c9c3c306, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &220455901931009007
 PrefabInstance:
   m_ObjectHideFlags: 0

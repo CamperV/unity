@@ -50,6 +50,6 @@ public class EngagementPreviewSystem : MonoBehaviour
             DisablePreviewEvent?.Invoke(currentEngagement);
         }
 
-        // otherwise do nothing
+        currentEngagement = null;
     }
 }

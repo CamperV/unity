@@ -8,6 +8,7 @@ using TMPro;
 public class EngagementPreviewWindow : MonoBehaviour
 {
     [SerializeField] private GameObject panelPrefab;
+	[SerializeField] private GameObject panelPrefab_Counter;
 
 	public void SetEngagementStats(Engagement potentialEngagement) {
 		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
@@ -35,6 +36,8 @@ public class EngagementPreviewWindow : MonoBehaviour
 	}
 
 	private void PopulatePanels(Engagement potentialEngagement, EngagementStats previewStats, bool isCounter = false) {
+		GameObject panelToInstantiate = (isCounter == false) ? panelPrefab : panelPrefab_Counter;
+		
 		// be mindful of multistrike
 		//		for simulating: for each Attack, simulate
 		int numStrikes = (isCounter == false) ? potentialEngagement.aggressor.statSystem.MULTISTRIKE+1 : potentialEngagement.defender.statSystem.MULTISTRIKE+1;
@@ -43,22 +46,21 @@ public class EngagementPreviewWindow : MonoBehaviour
 
 		string damage = $"{min}";
 		if (min != max) damage += $" - {max}";
-		CreateAndSet($"{damage} damage");
+		CreateAndSet($"{damage} damage", panelToInstantiate);
 
 		// if there's crit, set that too
 		if (previewStats.critRate > 0) {
-			CreateAndSet($"{previewStats.critRate}% critical");
+			CreateAndSet($"{previewStats.critRate}% critical", panelToInstantiate);
 		}
 
 		// also any attack mutators and their values
 		foreach (string mutator in previewStats.mutators) {
-			CreateAndSet(mutator);
+			CreateAndSet(mutator, panelToInstantiate);
 		}
 	}
 
-	private void CreateAndSet(string message) {
-		GameObject panel = Instantiate(panelPrefab, transform);
+	private void CreateAndSet(string message, GameObject prefab) {
+		GameObject panel = Instantiate(prefab, transform);
 		panel.GetComponentInChildren<TextMeshProUGUI>().SetText(message);
-		// LayoutRebuilder.ForceRebuildLayoutImmediate(panel.GetComponent<RectTransform>());
 	}
 }
