@@ -27,6 +27,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: BasicPanel_Counter
       objectReference: {fileID: 0}
+    - target: {fileID: 2249782192452120844, guid: e37c631da51e87d489a357d561b4d959, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133312249582113204, guid: e37c631da51e87d489a357d561b4d959, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4988420975609988287, guid: e37c631da51e87d489a357d561b4d959, type: 3}
       propertyPath: m_Color.b
       value: 0.43137255

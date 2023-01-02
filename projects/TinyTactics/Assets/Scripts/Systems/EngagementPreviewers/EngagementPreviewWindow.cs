@@ -10,6 +10,9 @@ public class EngagementPreviewWindow : MonoBehaviour
     [SerializeField] private GameObject panelPrefab;
 	[SerializeField] private GameObject panelPrefab_Counter;
 
+	[SerializeField] private GameObject panelContainer;
+	[SerializeField] private GameObject panelContainer_Counter;
+
 	public void SetEngagementStats(Engagement potentialEngagement) {
 		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
 		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
@@ -20,24 +23,24 @@ public class EngagementPreviewWindow : MonoBehaviour
 
 		// finally, deal with Unity wonkiness
 		foreach (ContentSizeFitter csf in GetComponentsInChildren<ContentSizeFitter>().Reverse()) {
+			Debug.Log($"Rebuilding {csf}");
 			LayoutRebuilder.ForceRebuildLayoutImmediate(csf.GetComponent<RectTransform>());
 		}
-		// foreach (LayoutGroup layout in GetComponentsInChildren<LayoutGroup>()) {
-		// 	layout.enabled = false;
-		// 	layout.enabled = true;
-		// }
-		// Canvas.ForceUpdateCanvases();
 	}
 
 	private void Clear() {
-		foreach (Transform child in transform) {
+		foreach (Transform child in panelContainer.transform) {
+			Destroy(child.gameObject);
+		}
+		foreach (Transform child in panelContainer_Counter.transform) {
 			Destroy(child.gameObject);
 		}
 	}
 
 	private void PopulatePanels(Engagement potentialEngagement, EngagementStats previewStats, bool isCounter = false) {
 		GameObject panelToInstantiate = (isCounter == false) ? panelPrefab : panelPrefab_Counter;
-		
+		GameObject container = (isCounter == false) ? panelContainer : panelContainer_Counter;
+
 		// be mindful of multistrike
 		//		for simulating: for each Attack, simulate
 		int numStrikes = (isCounter == false) ? potentialEngagement.aggressor.statSystem.MULTISTRIKE+1 : potentialEngagement.defender.statSystem.MULTISTRIKE+1;
@@ -46,21 +49,21 @@ public class EngagementPreviewWindow : MonoBehaviour
 
 		string damage = $"{min}";
 		if (min != max) damage += $" - {max}";
-		CreateAndSet($"{damage} damage", panelToInstantiate);
+		CreateAndSet($"{damage} damage", panelToInstantiate, container);
 
 		// if there's crit, set that too
 		if (previewStats.critRate > 0) {
-			CreateAndSet($"{previewStats.critRate}% critical", panelToInstantiate);
+			CreateAndSet($"{previewStats.critRate}% critical", panelToInstantiate, container);
 		}
 
 		// also any attack mutators and their values
 		foreach (string mutator in previewStats.mutators) {
-			CreateAndSet(mutator, panelToInstantiate);
+			CreateAndSet(mutator, panelToInstantiate, container);
 		}
 	}
 
-	private void CreateAndSet(string message, GameObject prefab) {
-		GameObject panel = Instantiate(prefab, transform);
+	private void CreateAndSet(string message, GameObject prefab, GameObject container) {
+		GameObject panel = Instantiate(prefab, container.transform);
 		panel.GetComponentInChildren<TextMeshProUGUI>().SetText(message);
 	}
 }
