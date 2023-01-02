@@ -11,7 +11,7 @@ public class MiniEngagementPreview : MonoBehaviour
 
 	public void SetEngagementStats(Engagement potentialEngagement, EngagementStats previewStats, bool isAggressor) {
 		damagePreview.SetText("");
-		int numStrikes = (isAggressor) ? potentialEngagement.aggressor.statSystem.MULTISTRIKE+1 : potentialEngagement.aggressor.statSystem.MULTISTRIKE+1;
+		int numStrikes = (isAggressor) ? potentialEngagement.aggressor.statSystem.MULTISTRIKE+1 : potentialEngagement.defender.statSystem.MULTISTRIKE+1;
 
 		// set damage value
 		if (!previewStats.Empty) {
