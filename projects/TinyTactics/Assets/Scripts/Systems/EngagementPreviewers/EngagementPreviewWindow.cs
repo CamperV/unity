@@ -23,11 +23,7 @@ public class EngagementPreviewWindow : MonoBehaviour
 		PopulatePanels(potentialEngagement, enemyPreviewStats, isCounter: true);
 
 		// finally, deal with Unity wonkiness
-		// foreach (ContentSizeFitter csf in GetComponentsInChildren<ContentSizeFitter>().Reverse()) {
-		// 	LayoutRebuilder.ForceRebuildLayoutImmediate(csf.GetComponent<RectTransform>());
-		// }
-		foreach (ContentSizeFitter csf in GetComponentsInChildrenBFS<ContentSizeFitter>(gameObject)) {
-			Debug.Log($"csf {csf}");
+		foreach (ContentSizeFitter csf in GetComponentsInChildren<ContentSizeFitter>()) {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(csf.GetComponent<RectTransform>());
 		}
 	}
@@ -71,22 +67,22 @@ public class EngagementPreviewWindow : MonoBehaviour
 		panel.GetComponentInChildren<TextMeshProUGUI>().SetText(message);
 	}
 
-	private List<T> GetComponentsInChildrenBFS<T>(GameObject root) {
-		List<T> retval = new List<T>();
-		List<Transform> queue = new List<Transform>{root.transform};
+	// private List<T> GetComponentsInChildrenBFS<T>(GameObject root) {
+	// 	List<T> retval = new List<T>();
+	// 	List<Transform> queue = new List<Transform>{root.transform};
 
-		while (queue.Count > 0) {
-			Transform current = queue.PopAt(0);
+	// 	while (queue.Count > 0) {
+	// 		Transform current = queue.PopAt(0);
 
-			T comp = current.gameObject.GetComponent<T>();
-			if (comp != null) retval.Add(comp);
+	// 		T comp = current.gameObject.GetComponent<T>();
+	// 		if (comp != null) retval.Add(comp);
 
-			// all immediate children
-			foreach (Transform child in current) {
-				queue.Add(child);
-			}
-		}
+	// 		// all immediate children
+	// 		foreach (Transform child in current) {
+	// 			queue.Add(child);
+	// 		}
+	// 	}
 
-		return retval;
-	}
+	// 	return retval;
+	// }
 }
