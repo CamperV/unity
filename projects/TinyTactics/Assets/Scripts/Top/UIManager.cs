@@ -23,9 +23,9 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private GameObject menuButtons;
 
 	// for binding UI, etc
-    public delegate void EngagementPreviewEvent();
-	public event EngagementPreviewEvent EnableEngagementPreviewEvent;
-    public event EngagementPreviewEvent DisableEngagementPreviewEvent;
+    // public delegate void EngagementPreviewEvent();
+	// public event EngagementPreviewEvent EnableEngagementPreviewEvent;
+    // public event EngagementPreviewEvent DisableEngagementPreviewEvent;
 	
     void Awake() {
         // only allow one UIManager to exist at any time
@@ -71,48 +71,24 @@ public sealed class UIManager : MonoBehaviour
 		}
 	}
 
-	public void EnableEngagementPreview(Engagement potentialEngagement) {
-		engagementPreviewBar?.gameObject.SetActive(true);
-		engagementPreviewBar?.GetComponent<UIAnchoredSlider>().SetActive(true, teleportInactiveFirst: true);
+	// public void EnableEngagementPreview(Engagement potentialEngagement) {
+	// 	engagementPreviewBar?.gameObject.SetActive(true);
+	// 	engagementPreviewBar?.GetComponent<UIAnchoredSlider>().SetActive(true, teleportInactiveFirst: true);
 
-		
-		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
-		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
-		engagementPreviewBar?.SetEngagementStats(potentialEngagement, playerPreviewStats, enemyPreviewStats);
+	// 	EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
+	// 	EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
+	// 	engagementPreviewBar?.SetEngagementStats(potentialEngagement, playerPreviewStats, enemyPreviewStats);
+	// }
 
-		// also, create a little in-situ display
-		// cross'd PreviewStats because they are displaying the damage they might *receive*
-		// MiniEngagementPreview miniPreview_Aggressor = Instantiate(miniEngagementPreviewPrefab, potentialEngagement.aggressor.transform);
-		// MiniEngagementPreview miniPreview_Defender  = Instantiate(miniEngagementPreviewPrefab, potentialEngagement.defender.transform);
+	// public void DisableEngagementPreview() {
+	// 	engagementPreviewBar?.gameObject.SetActive(false);
+	// 	engagementPreviewBar?.GetComponent<UIAnchoredSlider>().SetActive(false);
 
-		// // set appropriate values, and ensure the previews are destroyed when the EngagementPreview proper is disabled
-		// miniPreview_Aggressor.SetEngagementStats(enemyPreviewStats, potentialEngagement.defender.statSystem.MULTISTRIKE+1);
-		// miniPreview_Defender.SetEngagementStats(playerPreviewStats, potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
-		// DisableEngagementPreviewEvent += () => Destroy(miniPreview_Aggressor.gameObject);
-		// DisableEngagementPreviewEvent += () => Destroy(miniPreview_Defender.gameObject);
-
-		// visualize certain values, and ensure the previews are reverted when the EngagementPreview proper is disabled
-		int finalProjectedDamage_fromEnemy = enemyPreviewStats.finalDamageContext.Max*(potentialEngagement.defender.statSystem.MULTISTRIKE+1);
-		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max*(potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
-		foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
-			finalProjectedDamage_fromPlayer += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
-		}
-
-		potentialEngagement.aggressor.GetComponentInChildren<MiniBar_UI>()?.PreviewDamage(finalProjectedDamage_fromEnemy);
-		potentialEngagement.defender.GetComponentInChildren<MiniBar_UI>()?.PreviewDamage(finalProjectedDamage_fromPlayer);
-		DisableEngagementPreviewEvent += () => potentialEngagement.aggressor.GetComponentInChildren<MiniBar_UI>()?.RevertPreview();
-		DisableEngagementPreviewEvent += () => potentialEngagement.defender.GetComponentInChildren<MiniBar_UI>()?.RevertPreview();
-	}
-
-	public void DisableEngagementPreview() {
-		engagementPreviewBar?.gameObject.SetActive(false);
-		engagementPreviewBar?.GetComponent<UIAnchoredSlider>().SetActive(false);
-
-		// invoke and immediately clear invocation list
-		// this is to clear all the anon functions we put on this from the MiniPreviews
-		DisableEngagementPreviewEvent?.Invoke();
-		DisableEngagementPreviewEvent = null;
-	}
+	// 	// invoke and immediately clear invocation list
+	// 	// this is to clear all the anon functions we put on this from the MiniPreviews
+	// 	DisableEngagementPreviewEvent?.Invoke();
+	// 	DisableEngagementPreviewEvent = null;
+	// }
 
 	public void CreateVictoryPanel(int enemiesDefeated, int survivingUnits, int turnsElapsed) {
 		victoryPanel.gameObject.SetActive(true);

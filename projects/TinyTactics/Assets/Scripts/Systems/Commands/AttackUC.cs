@@ -30,7 +30,7 @@ public class AttackUC : TargetableUC
         thisUnit.battleMap.ResetHighlight();
         //
         UIManager.inst.DisableUnitDetail();
-        UIManager.inst.DisableEngagementPreview();
+        EngagementPreviewSystem.inst.DisablePreview(null);
     }
 
     protected override bool ValidTarget(PlayerUnit thisUnit, GridPosition interactAt) {
@@ -38,11 +38,12 @@ public class AttackUC : TargetableUC
     }
 
     protected override void Execute(PlayerUnit thisUnit, GridPosition interactAt) {
+        EngagementPreviewSystem.inst.DisablePreview(null);
+
         EnemyUnit enemy = EnemyAt(thisUnit, interactAt);
 
         _engagementResolveFlag = true;
         Engagement engagement = new Engagement(thisUnit, enemy);
-        UIManager.inst.DisableEngagementPreview();
 
         Utils.DelegateCoroutineTo(thisUnit,
             engagement.Resolve()
@@ -60,7 +61,7 @@ public class AttackUC : TargetableUC
 
     protected override void ResetValidMouseOver(PlayerUnit thisUnit) {
         DisplayTargetRange(thisUnit);
-        UIManager.inst.DisableEngagementPreview();
+        EngagementPreviewSystem.inst.DisablePreview(null);
     }
 
     protected override void ValidMouseOver(PlayerUnit thisUnit, GridPosition hoverOver) {        
@@ -68,7 +69,7 @@ public class AttackUC : TargetableUC
 
         // create and display EngagementPreviews here
         EnemyUnit enemy = EnemyAt(thisUnit, hoverOver);
-        UIManager.inst.EnableEngagementPreview( new Engagement(thisUnit, enemy) );
+        EngagementPreviewSystem.inst.EnablePreview(new Engagement(thisUnit, enemy));
     }
 
     ////////////////////////////////////////////////////////////////////

@@ -5,23 +5,51 @@ using UnityEngine.InputSystem;
 
 public class FollowMousePosition : MonoBehaviour
 {
-    private MouseInput mouseInput;
+	private Vector3 currentMousePosition;
+	private bool initialized = false;
+	[SerializeField] private Vector2 staticOffset;
 
-	void Awake() {
-		mouseInput = new MouseInput();
-	}
+	[Range(0f, 50f)]
+	[SerializeField] private float smooth;
+
+	[Range(0f, 10f)]
+	[SerializeField] private float snapMagnitude;
 	
 	void OnEnable() {
-		mouseInput.Enable();
+		EventManager.inst.inputController.MousePositionEvent += UpdateMousePosition;
 	}
+
 	void OnDisable() {
-		mouseInput.Disable();
+		EventManager.inst.inputController.MousePositionEvent -= UpdateMousePosition;
+		initialized = false;
+	}
+
+	private void UpdateMousePosition(Vector3 screenPosition) {
+		currentMousePosition = screenPosition;
+		
+		// if you've been un-inited, re-snap to the mouse position
+		if (!initialized) {
+			initialized = true;
+			transform.position = GetWorldPosition(currentMousePosition);
+		}
+	}
+
+	private Vector3 GetWorldPosition(Vector3 screenPosition) {
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition + (Vector3)staticOffset);
+		return new Vector3(worldPosition.x, worldPosition.y, transform.position.z);
 	}
 
 	// always update the position event for listeners
 	void Update() {
-        Vector3 screenPosition = mouseInput.MouseActionMap.MousePosition.ReadValue<Vector2>();
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
-        transform.position = new Vector3(worldPosition.x, worldPosition.y, 0);
+		if (!initialized) return;
+
+		Vector3 newPosition = GetWorldPosition(currentMousePosition);
+		// snap if too far away
+		// if (smooth > 0f && (newPosition - transform.position).magnitude < snapMagnitude) {
+		if (smooth > 0f) {
+			transform.position = Vector3.Lerp(transform.position, newPosition, (smooth)*Time.deltaTime);
+		} else {
+			transform.position = newPosition;
+		}
 	}
 }

@@ -10,10 +10,6 @@ public class CameraManager : MonoBehaviour
 	private Vector3 minBounds;
 	private Vector3 maxBounds;
 
-	// THIS NEEDS TO BE SCALED TO ORTHOGRAPHIC SIZE
-	// private readonly Vector3 fixedBoxOffset = new Vector3(3, 3, 0);
-	private Vector3 fixedBoxOffset => new Vector3(-2 + camera.orthographicSize, -2 + camera.orthographicSize, 0);
-
 	private Vector3 trackingPosition;
 	private Transform trackingTarget;
 	public bool cameraLock = true;
@@ -42,7 +38,7 @@ public class CameraManager : MonoBehaviour
 		trackingPosition = transform.position;
 		
 		// initial bounds calculation
-		SetDefaultBounds();
+		CalculateTilemapBounds();
 
 		// init for scrolling
 		zoomLevel = camera.orthographicSize;
@@ -73,19 +69,18 @@ public class CameraManager : MonoBehaviour
 			if (zoomVec.y != 0) UpdateZoomLevel(zoomVec);
 		}
 
-
 		// update this each frame, but don't update the input each frame
 		camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, zoomLevel, Time.deltaTime*zoomSpeed);
+
+		// recalculate every frame for zoom input
+		// could do this on demand, but if we have a tracking target, we're doing this anyway
+		CalculateTilemapBounds();
 
 		// if we have a tracking target, make a smaller box around it so that it is "focused"
 		// trackingTargets are acquired via Events + the UnitControllers
 		if (trackingTarget != null && cameraLock) {
-			SetDefaultBounds();
-
-			// Vector3 minTrackingBox = trackingTarget.position - 0.5f*fitToTilemap.localBounds.extents;
-			// Vector3 maxTrackingBox = trackingTarget.position + 0.5f*fitToTilemap.localBounds.extents;
-			Vector3 minTrackingBox = trackingTarget.position - fixedBoxOffset;
-			Vector3 maxTrackingBox = trackingTarget.position + fixedBoxOffset;
+			Vector3 minTrackingBox = trackingTarget.position - OrthographicBounds();
+			Vector3 maxTrackingBox = trackingTarget.position + OrthographicBounds();
 
 			minBounds = new Vector3(
 				Mathf.Max(minTrackingBox.x, minBounds.x),
@@ -97,16 +92,6 @@ public class CameraManager : MonoBehaviour
 				Mathf.Min(maxTrackingBox.y, maxBounds.x),
 				Mathf.Min(maxTrackingBox.z, maxBounds.z)
 			);
-
-		
-			Vector3 bl = minBounds;
-			Vector3 br = new Vector3(maxBounds.x, minBounds.y, 0);
-			Vector3 tl = new Vector3(minBounds.x, maxBounds.y, 0);
-			Vector3 tr = maxBounds;
-			Debug.DrawLine(bl, br, Color.green, Time.deltaTime, false);
-			Debug.DrawLine(br, tr, Color.green, Time.deltaTime, false);
-			Debug.DrawLine(tr, tl, Color.green, Time.deltaTime, false);
-			Debug.DrawLine(tl, bl, Color.green, Time.deltaTime, false);
 		}
 		
 		// move the tracking position based on movement and clamp it into bounds
@@ -130,20 +115,62 @@ public class CameraManager : MonoBehaviour
 
 		// use the assigned tilemap to find the bounds
 		} else {
-			SetDefaultBounds();
+			CalculateTilemapBounds();
 			trackingTarget = null;
 		}
 	}
 
+	public void FocusTarget(Transform? selection) {
+		if (selection == null) return;
+		
+		// dont' actually track this target - move the camera if necessary, but then let it be free
+		trackingTarget = null;
+
+		trackingPosition = new Vector3(
+			Mathf.Clamp(selection.position.x, minBounds.x, maxBounds.x),
+			Mathf.Clamp(selection.position.y, minBounds.y, maxBounds.y),
+			transform.position.z
+		);
+	}
+
 	public void ToggleCameraLock() {
-		SetDefaultBounds();
+		CalculateTilemapBounds();
 		// trackingTarget = null;
 		//
 		cameraLock = !cameraLock;
 	}
 
-	private void SetDefaultBounds() {
-		minBounds = fitToTilemap.LocalToWorld(fitToTilemap.localBounds.min) + fixedBoxOffset;
-		maxBounds = fitToTilemap.LocalToWorld(fitToTilemap.localBounds.max) - fixedBoxOffset;
+	private void CalculateTilemapBounds() {
+		Vector3 _minBounds = fitToTilemap.LocalToWorld(fitToTilemap.localBounds.min) + OrthographicBounds();
+		Vector3 _maxBounds = fitToTilemap.LocalToWorld(fitToTilemap.localBounds.max) - OrthographicBounds();
+
+		// need to determine whether the bounds are overlapping with one another;
+		// ie, if orthographic.x > 1/2 of the tilemap extents, we max out at "tilemap extents"
+		// constrain to within the center
+		// could probably do this via Clamping min/maxBounds to the center of 
+		// fitToTilemap.LocalToWorld, but too lazy
+		if (_minBounds.x > _maxBounds.x) {
+			float swp = _minBounds.x;
+			_minBounds.x = _maxBounds.x;
+			_maxBounds.x = swp;
+		}
+		if (_minBounds.y > _maxBounds.y) {
+			float swp = _minBounds.y;
+			_minBounds.y = _maxBounds.y;
+			_maxBounds.y = swp;
+		}
+
+		minBounds = _minBounds;
+		maxBounds = _maxBounds;
+	}
+
+	private Vector3 OrthographicBounds() {
+		// return Vector3.zero;
+		// the bounds moved "inwards"
+		return new Vector3(
+			(camera.orthographicSize*camera.aspect) - 2,
+			(camera.orthographicSize) - 2,
+			0
+		);
 	}
 }

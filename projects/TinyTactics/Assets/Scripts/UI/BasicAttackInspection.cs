@@ -29,7 +29,7 @@ public class BasicAttackInspection : UnitInspector
 		}
 
 		// then, position yourself above the unit				
-		GetComponent<UIBobber>().TrackAnchor(unit.transform);
+		GetComponent<UIBobber>().AnchorTo(unit.transform);
 		GetComponent<UIBobber>().MoveAnchorOffset(unit.transform.position, 1.0f*Vector3.up);
 	}
 }
