@@ -479,15 +479,21 @@ namespace Extensions
         }
 
         // string
-        public static string RichTextTags(
+        public static string RichTextTags_TMP(
             this string s,
             bool bold = false,
             bool italics = false,
-            bool underline = false
+            bool underline = false,
+            string color = "",
+            int fontSize = 0,
+            string align = ""
         ) {
             if (bold) s = $"<b>{s}</b>";
             if (italics) s = $"<i>{s}</i>";
             if (underline) s = $"<u>{s}</u>";
+            if (color != "") s = $"<color=#{color}>{s}</color>";
+            if (fontSize > 0) s = $"<size={fontSize}>{s}</size>";
+            if (align != "") s = $"<align={align}>{s}</align>";
             return s;
         }
     }

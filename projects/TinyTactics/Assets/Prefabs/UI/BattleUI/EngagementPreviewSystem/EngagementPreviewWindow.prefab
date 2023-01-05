@@ -175,6 +175,8 @@ MonoBehaviour:
   panelPrefab_Counter: {fileID: 8867314951444644303, guid: 6e89b84d9fba03b4e91644dbfcc57b35, type: 3}
   panelContainer: {fileID: 1194207897328411721}
   panelContainer_Counter: {fileID: 6263293710487785233}
+  smallWidth: 200
+  largeWidth: 300
 --- !u!114 &5787914176019680915
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,7 +19,7 @@ MonoBehaviour:
   audioFXBundle_Equip: {fileID: 11400000, guid: c6cec7b0e41d6354584dd58ae5d8684c, type: 2}
   MIN_RANGE: 1
   MAX_RANGE: 1
-  CRITICAL: 0
+  CRITICAL: 15
   attachedMutations: []
   attachedStatuses: []
   MIN_ATK: 3
