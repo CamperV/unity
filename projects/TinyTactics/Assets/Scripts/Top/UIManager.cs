@@ -48,7 +48,7 @@ public sealed class UIManager : MonoBehaviour
 		terrainEffectPanel.tileValue.sprite = terrainAt.sprite;
 
 		if (terrainAt.HasTerrainEffect) {
-			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: {terrainAt.terrainEffect.shortDisplayName}");
+			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: {terrainAt.terrainEffect.mutatorDisplayData.name}");
 		} else {
 			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: --");	
 		}

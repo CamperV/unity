@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public abstract class Perk : MonoBehaviour, IMutatorComponent
+public abstract class Perk : MonoBehaviour
 {
     public Unit boundUnit { get; set; }
-    public abstract string displayName { get; set; }
 
     // set in inspector
     // OR

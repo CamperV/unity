@@ -42,12 +42,11 @@ public class EngagementPreviewBar : MonoBehaviour
 		// get the simulated damage and display it (w/ mutlistrike)
 		projectedDamage_Player.DisplayDamageProjection(potentialEngagement, playerPreviewStats, potentialEngagement.aggressor.statSystem.MULTISTRIKE);
 
-		List<string> playerUnitMutators = new List<string>(potentialEngagement.attack.mutators);
+		List<MutatorDisplayData> playerUnitMutators = new List<MutatorDisplayData>(potentialEngagement.attack.mutators);
 		if (potentialEngagement.counterDefense != null) {
 			playerUnitMutators = playerUnitMutators.Concat(potentialEngagement.counterDefense.Value.mutators).ToList();
 		}
-		playerUnitMutators = playerUnitMutators.Concat(playerPreviewStats.mutators).ToList();
-		mutatorDisplay_Player.DisplayMutators(playerUnitMutators);
+		mutatorDisplay_Player.DisplayMutators(playerUnitMutators.Select(it => it.name).ToList());
 
 		//
 		// then enemy-side
@@ -66,12 +65,11 @@ public class EngagementPreviewBar : MonoBehaviour
 		projectedDamage_Enemy.DisplayDamageProjection(enemyPreviewStats, potentialEngagement.defender.statSystem.MULTISTRIKE);
 
 		// list of perks that were relevant for this Defense & potentially, counterAttack
-		List<string> enemyUnitMutators = new List<string>(potentialEngagement.defense.mutators);
+		List<MutatorDisplayData> enemyUnitMutators = new List<MutatorDisplayData>(potentialEngagement.defense.mutators);
 		if (potentialEngagement.counterAttack != null) {
 			enemyUnitMutators = enemyUnitMutators.Concat(potentialEngagement.counterAttack.Value.mutators).ToList();
 		}
-		enemyUnitMutators = enemyUnitMutators.Concat(enemyPreviewStats.mutators).ToList();
-		mutatorDisplay_Enemy.DisplayMutators(enemyUnitMutators);	
+		mutatorDisplay_Enemy.DisplayMutators(enemyUnitMutators.Select(it => it.name).ToList());	
 
 		// how much damage can we do to the Player?
 		if (!enemyPreviewStats.Empty) {

@@ -14,16 +14,12 @@ public struct EngagementStats {
     public bool hasAdvantage;
     public bool hasDisadvantage;
 
-    public List<string> mutators;
-
     public EngagementStats(MutableEngagementStats mutES) {
         finalDamageContext = mutES.finalDamageContext;
         critRate = mutES.critRate;
         advantageRate = mutES.advantageRate;
         hasAdvantage = mutES.HasAdvantage;
         hasDisadvantage = mutES.HasDisadvantage;
-        //
-        mutators = new List<string>(mutES.mutators);
     }
 
     public EngagementStats(int cr, int adv) {
@@ -32,8 +28,6 @@ public struct EngagementStats {
         advantageRate = adv;
         hasAdvantage = false;
         hasDisadvantage = false;
-        //
-        mutators = new List<string>();
     }
     public bool Empty => critRate == -1 && advantageRate == -1;
 }
@@ -45,7 +39,6 @@ public class MutableEngagementStats {
     public DamageContext finalDamageContext;
     public int critRate;
     public int advantageRate;
-    public List<string> mutators;
 
         // this can be negative. If negative, you're taking the lower roll
     private readonly int advantageThreshold = 3;
@@ -69,13 +62,6 @@ public class MutableEngagementStats {
             ModifyProjection(a.damageContext.Projection, -d.damageReduction),
             _DamageResolver
         );
-
-        //
-        mutators = new List<string>();
-    }
-
-    public void AddMutator(IMutatorComponent mc) {
-        mutators.Add(mc.displayName);
     }
 
     private Dictionary<int, float> ModifyProjection(Dictionary<int, float> projection, int modifier) {

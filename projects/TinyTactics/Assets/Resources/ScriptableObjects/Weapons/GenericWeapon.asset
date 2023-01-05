@@ -18,10 +18,9 @@ MonoBehaviour:
   audioFXBundle_Attack: {fileID: 11400000, guid: 8e0ed2b5c7c27544ba217af8d22c00d4, type: 2}
   audioFXBundle_Equip: {fileID: 11400000, guid: c6cec7b0e41d6354584dd58ae5d8684c, type: 2}
   MIN_RANGE: 1
-  MAX_RANGE: 4
+  MAX_RANGE: 1
   CRITICAL: 0
-  attachedMutations:
-  - {fileID: 11400000, guid: aca1a83a23de25c4798093b707db6eef, type: 2}
+  attachedMutations: []
   attachedStatuses: []
   MIN_ATK: 3
   MAX_ATK: 5

@@ -9,8 +9,6 @@ public class GunkTerrainEffect : TerrainEffect
     public so_Status gunkBuff;
     public so_Status gunkDebuff;
 
-    public override string shortDisplayName { get; set; } = "-3 DR";
-
     public override void OnEnterTerrain(Unit targetUnit) {
         if (targetUnit.HasTagMatch("Gunk Enthusiast")) {
             targetUnit.statusSystem.AddStatus(gunkBuff, so_Status.CreateStatusProviderID(targetUnit, gunkBuff));

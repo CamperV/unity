@@ -38,12 +38,20 @@ public class EngagementPreviewWindow : MonoBehaviour
 	}
 
 	private void PopulatePanels(Engagement potentialEngagement, EngagementStats previewStats, bool isCounter = false) {
-		GameObject panelToInstantiate = (isCounter == false) ? panelPrefab : panelPrefab_Counter;
-		GameObject container = (isCounter == false) ? panelContainer : panelContainer_Counter;
+		GameObject panelToInstantiate;
+		GameObject container;
+		int numStrikes;
 
-		// be mindful of multistrike
-		//		for simulating: for each Attack, simulate
-		int numStrikes = (isCounter == false) ? potentialEngagement.aggressor.statSystem.MULTISTRIKE+1 : potentialEngagement.defender.statSystem.MULTISTRIKE+1;
+		if (isCounter == false) {
+			panelToInstantiate = panelPrefab;
+			container = panelContainer;
+			numStrikes = potentialEngagement.aggressor.statSystem.MULTISTRIKE+1;
+		} else {
+			panelToInstantiate = panelPrefab_Counter;
+			container = panelContainer_Counter;
+			numStrikes = potentialEngagement.defender.statSystem.MULTISTRIKE+1;
+		}
+
 		int min = previewStats.finalDamageContext.Min * numStrikes;
 		int max = previewStats.finalDamageContext.Max * numStrikes;
 
@@ -57,14 +65,37 @@ public class EngagementPreviewWindow : MonoBehaviour
 		}
 
 		// also any attack mutators and their values
-		foreach (string mutator in previewStats.mutators) {
-			CreateAndSet(mutator, panelToInstantiate, container);
+		foreach (MutatorDisplayData mutator in BuildMutatorList(potentialEngagement, previewStats, isCounter: isCounter)) {
+			string message = $"{mutator.name.RichTextTags(bold: true)}";
+			if (mutator.description != "") message += $"\n{mutator.description.RichTextTags(italics: true)}";
+			CreateAndSet(message, panelToInstantiate, container);
 		}
 	}
 
 	private void CreateAndSet(string message, GameObject prefab, GameObject container) {
 		GameObject panel = Instantiate(prefab, container.transform);
 		panel.GetComponentInChildren<TextMeshProUGUI>().SetText(message);
+	}
+
+	private IEnumerable<MutatorDisplayData> BuildMutatorList(Engagement potentialEngagement, EngagementStats previewStats, bool isCounter = false) {
+		List<MutatorDisplayData> mutators = new List<MutatorDisplayData>();
+
+		if (isCounter == false) {
+			mutators = potentialEngagement.attack.mutators;
+			if (potentialEngagement.counterDefense != null) {
+				mutators = mutators.Concat(potentialEngagement.counterDefense.Value.mutators).ToList();
+			}
+
+		} else {
+			mutators = potentialEngagement.defense.mutators;
+			if (potentialEngagement.counterAttack != null) {
+				mutators = mutators.Concat(potentialEngagement.counterAttack.Value.mutators).ToList();
+			}
+		}
+
+		foreach (MutatorDisplayData mut in mutators) {
+			yield return mut;
+		}
 	}
 
 	// private List<T> GetComponentsInChildrenBFS<T>(GameObject root) {

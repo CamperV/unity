@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: SeeingRedMark
   m_EditorClassIdentifier: 
   statusCode: 1
-  name: Seeing Red Target
-  sprite: {fileID: 21300000, guid: f71053e9446063c4ba8f0d66f0bacd74, type: 3}
   stackable: 1
+  <mutatorDisplayData>k__BackingField:
+    name: Marked
+    description: 
+  sprite: {fileID: 21300000, guid: f71053e9446063c4ba8f0d66f0bacd74, type: 3}
   <value>k__BackingField: 1
   <expireTimer>k__BackingField: 0
   targetStat: 0

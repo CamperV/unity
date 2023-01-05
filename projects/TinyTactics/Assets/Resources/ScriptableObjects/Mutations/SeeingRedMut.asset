@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72482f1f32398f44c8da5be755351d41, type: 3}
   m_Name: SeeingRedMut
   m_EditorClassIdentifier: 
-  name: Seeing Red
-  description: Deal x2 damage to units who attacked this unit.
+  <mutatorDisplayData>k__BackingField:
+    name: Seeing Red
+    description: Apply a mark to the enemy who last hit this unit. This unit deals
+      increased damage to marked units.
   sprite: {fileID: 21300000, guid: a218edae4e493b749a2db714f2618676, type: 3}
   archetype: {fileID: 11400000, guid: 2c21546f4dca7db44bd0920c2939f2fa, type: 2}
   markStatus: {fileID: 11400000, guid: 4019ea92814ca244fa4c10fdb92f7e9b, type: 2}

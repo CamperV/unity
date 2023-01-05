@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: GunkDebuff
   m_EditorClassIdentifier: 
   statusCode: 1
-  name: Gunk
-  sprite: {fileID: 21300000, guid: 12eb85734f6c3344fa96335bf4de0850, type: 3}
   stackable: 0
+  <mutatorDisplayData>k__BackingField:
+    name: Gunk
+    description: Reduce defense when standing in Gunk.
+  sprite: {fileID: 21300000, guid: 12eb85734f6c3344fa96335bf4de0850, type: 3}
   registerTo: 1
   modifyStat: 2
   <value>k__BackingField: -3

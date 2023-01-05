@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe0fbf33ff2fb6845907df923278d445, type: 3}
   m_Name: ScurryBuff
   m_EditorClassIdentifier: 
-  name: Scurry
-  sprite: {fileID: 21300000, guid: 28833eb632d77bd4c949d16fb767a02d, type: 3}
+  statusCode: 0
   stackable: 1
+  <mutatorDisplayData>k__BackingField:
+    name: Scurry
+    description: Pass through enemies, and gain multistrike for each enemy passed
+      through.
+  sprite: {fileID: 21300000, guid: 28833eb632d77bd4c949d16fb767a02d, type: 3}
   targetStat: 7
   <value>k__BackingField: 1
   <revertWithMovement>k__BackingField: 1

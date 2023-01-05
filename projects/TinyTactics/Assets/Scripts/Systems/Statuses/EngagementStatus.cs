@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public abstract class EngagementStatus : so_Status, IValueStatus, IMutatorComponent
+public abstract class EngagementStatus : so_Status, IValueStatus
 {
     public enum RegisterMode {
         OnAttack,
@@ -21,12 +21,6 @@ public abstract class EngagementStatus : so_Status, IValueStatus, IMutatorCompon
 
     // IValueStatus
 	[field: SerializeField] public int value { get; set; }
-
-    // IMutatorComponent
-	public string displayName {
-		get => $"{name} (+{value})";
-		set {}
-	}
 
     public override void OnAcquire(Unit thisUnit) {
         base.OnAcquire(thisUnit);

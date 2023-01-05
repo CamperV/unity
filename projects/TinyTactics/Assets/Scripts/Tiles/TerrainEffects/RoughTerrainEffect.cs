@@ -12,8 +12,6 @@ public class RoughTerrainEffect : TerrainEffect, IToolTip
     public string tooltipName { get; set; } = "Rough Terrain";
     public string tooltip { get; set; } = "+15 AVOID.";
 
-    public override string shortDisplayName { get; set; } = "+15 AVO";
-
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/RoughTerrainEffect", false, 1)]
 	private static void Create() {
@@ -40,8 +38,5 @@ public class RoughTerrainEffect : TerrainEffect, IToolTip
 
     private void GrantAvoid(Unit thisUnit, ref MutableDefense mutDef, Unit target) {
         // mutDef.avoidRate += 15;
-        //
-        displayName = "Rough Terrain Bonus (does nothing)";
-        mutDef.AddMutator(this);
     }
 }

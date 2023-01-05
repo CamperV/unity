@@ -477,5 +477,18 @@ namespace Extensions
             }
             return f;
         }
+
+        // string
+        public static string RichTextTags(
+            this string s,
+            bool bold = false,
+            bool italics = false,
+            bool underline = false
+        ) {
+            if (bold) s = $"<b>{s}</b>";
+            if (italics) s = $"<i>{s}</i>";
+            if (underline) s = $"<u>{s}</u>";
+            return s;
+        }
     }
 }

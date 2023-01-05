@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 084dc797b44c28641908c49b0438660b, type: 3}
   m_Name: GunkEnthusiastMut
   m_EditorClassIdentifier: 
-  name: Gunk Enthusiast
-  description: Create a Gunk tile on death.
+  <mutatorDisplayData>k__BackingField:
+    name: Gunk Enthusiast
+    description: Gain defensive bonus when standing in Gunk.
   sprite: {fileID: 21300000, guid: 12eb85734f6c3344fa96335bf4de0850, type: 3}
   archetype: {fileID: 11400000, guid: fc3a0474b3f9c1c4990fab9a7a413bd0, type: 2}
   gunkTerrain: {fileID: 11400000, guid: 770df71ee2e513c4098333fbf8ac849c, type: 2}

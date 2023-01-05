@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Statuses/ImmediateValueStatus")]
-public class ImmediateValueStatus : so_Status, IValueStatus, IImmediateStatus, IMutatorComponent
+public class ImmediateValueStatus : so_Status, IValueStatus, IImmediateStatus
 {
 	public static ImmediateValueStatus CloneWithValue(ImmediateValueStatus fromStatus, int newValue) {
 		ImmediateValueStatus ivs = Instantiate(fromStatus);
@@ -21,12 +21,6 @@ public class ImmediateValueStatus : so_Status, IValueStatus, IImmediateStatus, I
 
     // IImmediateStatus
 	[field: SerializeField] public bool revertWithMovement { get; set; }
-
-    // IMutatorComponent
-	public string displayName {
-		get => $"{name} (+{value})";
-		set {}
-	}
 
     public override void OnAcquire(Unit thisUnit) {
 		base.OnAcquire(thisUnit);

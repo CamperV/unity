@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d88145fee3d77744b827de8ec1d8dd0f, type: 3}
   m_Name: WithdrawMut
   m_EditorClassIdentifier: 
-  name: Withdraw
-  description: Add +3 DEF, but cannot counterattack.
+  <mutatorDisplayData>k__BackingField:
+    name: Withdraw
+    description: (Not Implemented Yet) Spend all of this unit's Poise to gain an
+      equal amount of Defense.
   sprite: {fileID: 21300000, guid: 617a66654b4047445828865e1b2b1a59, type: 3}
   archetype: {fileID: 11400000, guid: 533c712093a18474da024bb00d4aaceb, type: 2}
   unitCommand: {fileID: 11400000, guid: e5fb47d1f56bb054e9b4e9a668fb488e, type: 2}

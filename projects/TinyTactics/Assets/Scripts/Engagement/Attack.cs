@@ -13,7 +13,7 @@ public struct Attack
     public int critRate;
     public int advantageRate;
     //
-    public List<string> mutators;
+    public List<MutatorDisplayData> mutators;
 
     public Attack(MutableAttack mutAtt) {
         damageContext = mutAtt.damageContext;
@@ -21,7 +21,7 @@ public struct Attack
         critRate = mutAtt.critRate;
         advantageRate = mutAtt.advantageRate;
         //
-        mutators = new List<string>(mutAtt.mutators);
+        mutators = new List<MutatorDisplayData>(mutAtt.mutators);
     }
 }
 
@@ -37,7 +37,7 @@ public class MutableAttack
     public int advantageRate;
 
     //
-    public List<string> mutators;
+    public List<MutatorDisplayData> mutators;
 
     public MutableAttack(DamageContext dc, int crit, int adv) {
         damageContext = new DamageContext(
@@ -48,11 +48,11 @@ public class MutableAttack
         critRate = crit;
         advantageRate = adv;
         //
-        mutators = new List<string>();
+        mutators = new List<MutatorDisplayData>();
     }
 
     public void AddMutator(IMutatorComponent mc) {
-        mutators.Add(mc.displayName);
+        mutators.Add(mc.mutatorDisplayData);
     }
 
     public void AddBonusDamage(int add) {

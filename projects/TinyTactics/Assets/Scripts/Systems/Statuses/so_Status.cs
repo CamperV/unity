@@ -15,28 +15,24 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
 	}
 	public StatusCode statusCode;
 
-    // assign this in the inspector
-    public new string name;
-	public Sprite sprite;
-
 	// other valuable data
 	public bool stackable;
 
     // IMutatorComponent
-	public string displayName {
-		get => name;
-		set => name = value;
-	}
+    [field: SerializeField] public MutatorDisplayData mutatorDisplayData { get; set; }
+	
+    // assign this in the inspector
+	public Sprite sprite;
 
     public virtual void OnAcquire(Unit thisUnit) {
-		thisUnit.OnAttack += DisplayModifiedAttack;
+		thisUnit.OnAttack += DisplayOnAttack;
     }
 
     public virtual void OnExpire(Unit thisUnit) {
-		thisUnit.OnAttack -= DisplayModifiedAttack;
+		thisUnit.OnAttack -= DisplayOnAttack;
 	}
 
-	private void DisplayModifiedAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
+	private void DisplayOnAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         mutAtt.AddMutator(this);
 	}
 }
