@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a36a9c03043d3443beca33243bea948, type: 3}
-  m_Name: BoarCharge
+  m_Name: BoarTusk
   m_EditorClassIdentifier: 
-  name: Boar Charge
+  name: Boar Tusk
   sprite: {fileID: 21300000, guid: 9d748a4fe522b954895a734c3a490d10, type: 3}
   <tags>k__BackingField: []
   audioFXBundle_Attack: {fileID: 11400000, guid: e93ded6ccafb0d9439347f4c3beeaaf6, type: 2}
@@ -20,8 +20,7 @@ MonoBehaviour:
   MIN_RANGE: 1
   MAX_RANGE: 1
   CRITICAL: 0
-  attachedMutations:
-  - {fileID: 11400000, guid: c90beef71a381a84bb8d0660c197f418, type: 2}
+  attachedMutations: []
   attachedStatuses: []
   MIN_ATK: 1
   MAX_ATK: 3

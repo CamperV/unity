@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1a548892d5b6774a835d7059775f2bf, type: 3}
   m_Name: WithdrawUC
   m_EditorClassIdentifier: 
-  name: Wait - Withdraw
+  name: Withdraw
   sprite: {fileID: 21300000, guid: 617a66654b4047445828865e1b2b1a59, type: 3}
   executionType: 1
   commandCategory: 3

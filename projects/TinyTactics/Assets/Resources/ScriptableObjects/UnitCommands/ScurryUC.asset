@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae738f2ddae76bd4abf7c0ef0400abbe, type: 3}
   m_Name: ScurryUC
   m_EditorClassIdentifier: 
-  name: Move - Scurry
+  name: Scurry
   sprite: {fileID: 21300000, guid: 28833eb632d77bd4c949d16fb767a02d, type: 3}
   executionType: 0
   commandCategory: 1

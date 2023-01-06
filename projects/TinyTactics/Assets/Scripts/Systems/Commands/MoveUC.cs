@@ -29,7 +29,6 @@ public class MoveUC : UnitCommand
 
         // re-calc move range, and display it
         Utils.DelegateLateFrameTo(thisUnit, () => DisplayMoveRange(thisUnit, thisUnit.moveRange));
-        UIManager.inst.EnableUnitDetail(thisUnit);
 
         _waypoints = new List<GridPosition>{thisUnit.gridPosition};
         _pathSegments = new List<Path<GridPosition>>();

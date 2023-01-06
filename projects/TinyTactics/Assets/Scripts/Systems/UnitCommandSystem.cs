@@ -177,8 +177,6 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     // find the closest command with the same category, and add it to that
     public void AddCommand(UnitCommand command) {
-        Debug.Log($"adding {command}");
-
         // first, check if you're replacing something
         if (command.replaceDefault != UnitCommand.CommandCategory.None) {
             RemoveCommand(categoryDefaults[command.replaceDefault]);
@@ -198,7 +196,6 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     }
 
     public void RemoveCommand(UnitCommand command) {
-        Debug.Log($"removing {command}");
         unitCommands.Remove(command);
         //
         commandAvailable.Remove(command.name);
@@ -295,6 +292,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     public void Interact(GridPosition interactAt, bool auxiliaryInteract) {
         auxiliaryInteractFlag = auxiliaryInteract;
+        Debug.Log($"my state {this} - {state}");
 
         switch(state) {
             case State.Idle:

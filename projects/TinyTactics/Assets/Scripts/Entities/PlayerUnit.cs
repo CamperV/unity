@@ -32,13 +32,9 @@ public sealed class PlayerUnit : Unit
         UnitName = unitData.unitName;
     }
 
-    public void OnInteract(GridPosition gp, bool auxiliaryInteract) { 
-        if (turnActive) {
-            unitCommandSystem.Interact(gp, auxiliaryInteract);
-        } else {
-            Debug.Log($"Hello");
-            UIManager.inst.EnableUnitDetail(this);
-        }
+    public void OnInteract(GridPosition gp, bool auxiliaryInteract) {
+        UIManager.inst.EnableUnitDetail(this);
+        if (turnActive) unitCommandSystem.Interact(gp, auxiliaryInteract);
     }
 
     public void OnClearInteract() {

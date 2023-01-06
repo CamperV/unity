@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e90af2ac6d8fbf940a59eec6906ab6bb, type: 3}
   m_Name: ChargeUC
   m_EditorClassIdentifier: 
-  name: Move - Charge
+  name: Charge
   sprite: {fileID: 21300000, guid: 0a1d2c6e23d933c4aa296488cd67017d, type: 3}
   executionType: 0
   commandCategory: 1
