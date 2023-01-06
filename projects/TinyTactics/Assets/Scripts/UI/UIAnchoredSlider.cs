@@ -47,7 +47,9 @@ public class UIAnchoredSlider : MonoBehaviour
 	// this creates a cascading effect, where a parent slider must complete their slide
 	// before this slider tries to slide.
 	private IEnumerator WaitForCascade() {
-		yield return new WaitUntil(() => cascadeAfter?.InPosition == true);
+		if (cascadeAfter != null) 
+			yield return new WaitUntil(() => cascadeAfter.InPosition == true);
+		
 		if (slideOnEnableDelay > 0f)
 			yield return new WaitForSeconds(slideOnEnableDelay);
 

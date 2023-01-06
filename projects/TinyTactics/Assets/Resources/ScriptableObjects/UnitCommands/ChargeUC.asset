@@ -15,11 +15,15 @@ MonoBehaviour:
   name: Charge
   sprite: {fileID: 21300000, guid: 0a1d2c6e23d933c4aa296488cd67017d, type: 3}
   executionType: 0
-  commandCategory: 0
+  commandCategory: 1
+  panelCategory: 1
+  panelSlot: 1
+  unitCommandVisualPrefab: {fileID: 0}
   requiresConfirm: 0
   revertable: 1
   limitType: 0
-  cooldown: 1
+  cooldown: 0
   remainingUses: 0
+  replaceDefault: 1
   tileVisuals: {fileID: 11400000, guid: 5da2c718e955057428b4579ec4c47404, type: 2}
   chargeBuff: {fileID: 11400000, guid: b38dc0bd9709d0449a12b61e8fed9830, type: 2}

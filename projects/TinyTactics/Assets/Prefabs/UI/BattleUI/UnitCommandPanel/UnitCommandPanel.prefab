@@ -183,11 +183,13 @@ MonoBehaviour:
   useHeight: 0
   startInactive: 1
   snappiness: 25
-  slideOnEnable: 0
+  slideOnEnable: 1
   slideOnEnableDelay: 0
   cascadeAfter: {fileID: 0}
   activePosition: {x: 0, y: 0}
   inactivePosition: {x: 0, y: 0}
+  destination: {x: 0, y: 0}
+  active: 0
 --- !u!1 &3325604678882994809
 GameObject:
   m_ObjectHideFlags: 0

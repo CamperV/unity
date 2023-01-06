@@ -106,11 +106,9 @@ public sealed class UIManager : MonoBehaviour
 
 	public void EnableUnitCommandPanel(PlayerUnit unit) {
 		if (unit == null) {
-			unitCommandPanel.GetComponent<UIAnchoredSlider>().SetActive(false);
 			unitCommandPanel.gameObject.SetActive(false);
 		} else {
 			unitCommandPanel.gameObject.SetActive(true);
-			unitCommandPanel.GetComponent<UIAnchoredSlider>().SetActive(true, teleportInactiveFirst: true);
 			unitCommandPanel.SetUnitInfo(unit);
 		}
 	}

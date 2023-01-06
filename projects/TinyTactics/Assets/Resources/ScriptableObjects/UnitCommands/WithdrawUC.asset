@@ -15,11 +15,15 @@ MonoBehaviour:
   name: Withdraw
   sprite: {fileID: 21300000, guid: 617a66654b4047445828865e1b2b1a59, type: 3}
   executionType: 1
-  commandCategory: 2
+  commandCategory: 3
+  panelCategory: 2
+  panelSlot: 0
+  unitCommandVisualPrefab: {fileID: 0}
   requiresConfirm: 0
   revertable: 0
   limitType: 0
-  cooldown: 1
+  cooldown: 0
   remainingUses: 0
+  replaceDefault: 3
   audioFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
   withdrawBuff: {fileID: 11400000, guid: ca07cfc7fa870f549aad13feca7fc7eb, type: 2}

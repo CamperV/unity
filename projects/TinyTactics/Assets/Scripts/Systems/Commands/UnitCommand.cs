@@ -27,9 +27,10 @@ public abstract class UnitCommand : ScriptableObject
     public ExecutionType executionType; // fillable via ScriptableObject interface
 
     public enum CommandCategory {
+        None,
         Movement,
         Attack,
-        Other
+        Wait
     }
     public CommandCategory commandCategory; // fillable via ScriptableObject interface
 
@@ -47,6 +48,25 @@ public abstract class UnitCommand : ScriptableObject
 
     // this is optional. AttackUC has a custom one, so the weapon switcher can activate
     public UnitCommandVisual unitCommandVisualPrefab;
+    
+    public bool requiresConfirm; // fillable via ScriptableObject interface
+    public bool revertable; // fillable via ScriptableObject interface
+
+    // i don't like this but I'm also on a plane. Make this an interface IRevertable or something
+    public virtual void Revert(PlayerUnit thisUnit){}
+
+    public enum LimitType {
+        Unlimited,
+        Cooldown,
+        LimitedUse
+    }
+    public LimitType limitType;
+
+    public int cooldown; // default 0, which means no cooldowns
+    public int remainingUses; // only necessary if LimitedUse is selected 
+
+    // some commands can replace the default in the category; i.e ChargeUC replacing MoveUC
+    public CommandCategory replaceDefault;
 
     public abstract void Activate(PlayerUnit thisUnit); /* Initial activation */
     public abstract void Deactivate(PlayerUnit thisUnit); /* De-activation, ie Cancel */
@@ -58,19 +78,4 @@ public abstract class UnitCommand : ScriptableObject
     // this is an optional method for specifying other ways a command can't be available.
     // For example, DefaultAttack can't be available unless there are targetable enemies in range
     public virtual bool IsAvailableAux(PlayerUnit thisUnit) => true;
-    
-    public bool requiresConfirm; // fillable via ScriptableObject interface
-    public bool revertable; // fillable via ScriptableObject interface
-
-    // i don't like this but I'm also on a plane. Make this an interface IRevertable or something
-    public virtual void Revert(PlayerUnit thisUnit){}
-
-    public enum LimitType {
-        Cooldown,
-        LimitedUse
-    }
-    public LimitType limitType;
-
-    public int cooldown; // default 0, which means no cooldowns
-    public int remainingUses; // only necessary if LimitedUse is selected 
 }

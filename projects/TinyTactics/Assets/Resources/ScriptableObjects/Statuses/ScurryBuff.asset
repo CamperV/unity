@@ -19,6 +19,6 @@ MonoBehaviour:
     description: Pass through enemies, and gain multistrike for each enemy passed
       through.
   sprite: {fileID: 21300000, guid: 28833eb632d77bd4c949d16fb767a02d, type: 3}
-  targetStat: 7
+  targetStat: 6
   <value>k__BackingField: 1
   <revertWithMovement>k__BackingField: 1

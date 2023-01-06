@@ -29,7 +29,6 @@ public class MoveUC : UnitCommand
 
         // re-calc move range, and display it
         Utils.DelegateLateFrameTo(thisUnit, () => DisplayMoveRange(thisUnit, thisUnit.moveRange));
-        UIManager.inst.EnableUnitDetail(thisUnit);
 
         _waypoints = new List<GridPosition>{thisUnit.gridPosition};
         _pathSegments = new List<Path<GridPosition>>();
@@ -148,6 +147,7 @@ public class MoveUC : UnitCommand
         _waypoints = null;
     }
 
+    // just an additional hook to extend child classes, like ChargeUC
     protected virtual void ExecuteAdditionalOnMove(PlayerUnit thisUnit, Path<GridPosition> pathTaken) {}
 
     protected virtual void DisplayMoveRange(PlayerUnit thisUnit, MoveRange moveRange) {   

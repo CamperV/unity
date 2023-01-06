@@ -40,7 +40,6 @@ public class ExperienceSystem : MonoBehaviour
 
         // check level thresholds for experience
         int level = levelingScale.Match(EXPERIENCE);
-        Debug.Log($"Starting at level {LEVEL}, found match {level} for {EXPERIENCE}");
         
         for (int lvl = LEVEL; lvl < level; lvl++) {
             Debug.Log($"{lvl} is providing {levelProgression.levelUpProgression[lvl]}");
@@ -52,6 +51,6 @@ public class ExperienceSystem : MonoBehaviour
     }
 
     private void DefaultExperienceGain(Unit thisUnit, Unit targetUnit) {
-        GainExperience( (targetUnit as EnemyUnit).experienceReward );
+        // GainExperience( (targetUnit as EnemyUnit).experienceReward );
     }
 }

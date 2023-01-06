@@ -33,6 +33,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     [SerializeField] private List<UnitCommand> unitCommands;
     public IEnumerable<UnitCommand> Commands => unitCommands;
+    private Dictionary<UnitCommand.CommandCategory, UnitCommand> categoryDefaults;
 
     // "can I currently use this command", not necessarily dependent on usage
     private Dictionary<string, bool> commandAvailable = new Dictionary<string, bool>();
@@ -55,11 +56,14 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     private bool IsAvailableLimitType(UnitCommand uc) {
         switch (uc.limitType) {
+            case UnitCommand.LimitType.Unlimited:
+                return true;
             case UnitCommand.LimitType.Cooldown:
                 return commandCooldowns[uc.name] == 0;
             case UnitCommand.LimitType.LimitedUse:
                 return commandUses[uc.name] > 0;
             default:
+                Debug.LogError($"UC {uc} of limitType {uc.limitType} cannot be used.");
                 return false;
         }
     }
@@ -75,6 +79,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     void Awake() {
         boundUnit = GetComponent<PlayerUnit>();
         executedStack = new List<UnitCommand>();
+        categoryDefaults = new Dictionary<UnitCommand.CommandCategory, UnitCommand>();
 
         // load in the defaults here in unitCommands
         // No way to add custom commands. Do that via MutationSystem
@@ -83,9 +88,11 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         // MUST iterate here, cannot do "unitCommands = defaultPool.unitCommands;"
         // if you do that, unitCommands becomes a reference to a ScriptableObject field, meaning you
         // lose instance-level information for unitCommandSystems everywhere
+        // ALSO don't use AddCommand, that function assumes you've already inserted default commands
         foreach (UnitCommand uc in defaultPool.unitCommands) {
             unitCommands.Add(uc);
             InitCommandUsageData(uc);
+            categoryDefaults[uc.commandCategory] = uc;
         }
 
         if (unitCommands.Count == 0) Debug.LogError($"No commands set for {this}/{boundUnit}");
@@ -175,17 +182,28 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     // find the closest command with the same category, and add it to that
     public void AddCommand(UnitCommand command) {
+        // insert into "like" commands
         int mostRecent = 0;
-        for (int i = 0; i < unitCommands.Count; i++) {
-            if (unitCommands[i].commandCategory == command.commandCategory)
-                mostRecent = i;
+        if (command.commandCategory == UnitCommand.CommandCategory.None) {
+            mostRecent = unitCommands.Count;
+        } else {
+            for (int i = 0; i < unitCommands.Count; i++) {
+                Debug.Log($"{boundUnit}:{this} checking {unitCommands[i]}/{unitCommands[i].commandCategory}");
+                if (unitCommands[i].commandCategory == command.commandCategory)
+                    mostRecent = i;
+            }
         }
 
         // never insert after "wait", which is last
-        int at = Mathf.Min(unitCommands.Count - 1, mostRecent + 1);
+        int at = Mathf.Max(0, Mathf.Min(unitCommands.Count - 1, mostRecent + 1));
         unitCommands.Insert(at, command);
 
         InitCommandUsageData(command);
+
+        // finally, check if you're replacing something
+        if (command.replaceDefault != UnitCommand.CommandCategory.None) {
+            RemoveCommand(categoryDefaults[command.replaceDefault]);
+        }
     }
 
     public void RemoveCommand(UnitCommand command) {
@@ -198,10 +216,18 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         //
         if (commandUses.ContainsKey(command.name)) commandUses.Remove(command.name);
         if (_shadowUses.ContainsKey(command.name)) _shadowUses.Remove(command.name);
+
+        // final check
+        // this command has already replaced a default
+        // so after removing it, restore the default
+        if (command.replaceDefault != UnitCommand.CommandCategory.None) {
+            AddCommand(categoryDefaults[command.replaceDefault]);
+        }
     }
 
     // this can happen from a user clicking on a button, or PlayerUnit calling it directly by default (ie MoveUC)
     public void TryIssueCommand(UnitCommand command) {
+        Debug.Log($"Trying to issue command {command}");
         if (command == null) return;
         if (!IsCommandAvailable(command)) return;
 
@@ -278,6 +304,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     public void Interact(GridPosition interactAt, bool auxiliaryInteract) {
         auxiliaryInteractFlag = auxiliaryInteract;
+        Debug.Log($"my state {this} - {state}");
 
         switch(state) {
             case State.Idle:
