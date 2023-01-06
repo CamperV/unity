@@ -21,4 +21,4 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 617a66654b4047445828865e1b2b1a59, type: 3}
   <value>k__BackingField: 3
   <expireTimer>k__BackingField: 1
-  targetStat: 5
+  targetStat: 4

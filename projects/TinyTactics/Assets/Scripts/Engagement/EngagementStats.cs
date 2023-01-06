@@ -86,17 +86,13 @@ public class MutableEngagementStats {
         return finalProjection;
     }
 
-    private int RollWithAdvantage(Func<int> DamageRoller) {
-        string printString = $"Roll: ";
-        printString += $"adv: {NumRerolls} => (";
-        
+    private int RollWithAdvantage(Func<int> DamageRoller) {       
         int numRolls = 1 + Mathf.Abs(NumRerolls);
 
         int highestRoll = Int32.MinValue;
         int lowestRoll = Int32.MaxValue;
         while (numRolls > 0) {
             int rollValue = DamageRoller();
-            printString += $" {rollValue} ";
 
             highestRoll = Mathf.Max(rollValue, highestRoll);
             lowestRoll = Mathf.Min(rollValue, lowestRoll);
@@ -106,11 +102,6 @@ public class MutableEngagementStats {
         
         // if you're at adv/disadv, return different rolls
         // if there IS no advantage, highestRoll == lowestRoll anyway
-        int sel = (HasAdvantage) ? highestRoll : lowestRoll;
-        //
-        printString += $") :: {sel}";
-        Debug.Log(printString);
-        //
-        return sel;
+        return (HasAdvantage) ? highestRoll : lowestRoll;
     }
 }

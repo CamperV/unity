@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: MoveRange
   m_EditorClassIdentifier: 
   color: {r: 0, g: 0.3, b: 0.75, a: 0.7490196}
-  altColor: {r: 0, g: 0.3, b: 0.75, a: 0.7490196}
+  altColor: {r: 0.29803923, g: 0.3, b: 0.75, a: 0.7490196}
   tile: {fileID: 11400000, guid: 282d2986733540b45af28eaf1fbdb67e, type: 2}

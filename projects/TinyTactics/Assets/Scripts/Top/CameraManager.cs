@@ -56,12 +56,7 @@ public class CameraManager : MonoBehaviour
 		movementVector = new Vector3(cameraSpeed.x*directionalInput.x, cameraSpeed.y*directionalInput.y, 0);
 	}
 
-	public void UpdateZoomLevel(Vector2 mouseScrollInput) {
-		float newZoom = mouseScrollInput.y / scrollTick;
-		zoomLevel = Mathf.Clamp(camera.orthographicSize - newZoom, minOrthographicSize, maxOrthographicSize);
-	}
-
-	public void LateUpdate() {
+	public void CalculateZoomUpdate() {
 		// MOUSEINPUT FOR SCROLLING SEEMS TO BE BROKEN IN UNITY
 		// use this in the meantime:
 		if (_cachedEventManager.inputController.gameObject.activeInHierarchy) {
@@ -71,6 +66,15 @@ public class CameraManager : MonoBehaviour
 
 		// update this each frame, but don't update the input each frame
 		camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, zoomLevel, Time.deltaTime*zoomSpeed);
+	}
+
+	public void UpdateZoomLevel(Vector2 mouseScrollInput) {
+		float newZoom = mouseScrollInput.y / scrollTick;
+		zoomLevel = Mathf.Clamp(camera.orthographicSize - newZoom, minOrthographicSize, maxOrthographicSize);
+	}
+
+	public void LateUpdate() {
+		// CheckZoomUpdate();
 
 		// recalculate every frame for zoom input
 		// could do this on demand, but if we have a tracking target, we're doing this anyway
