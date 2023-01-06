@@ -33,6 +33,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     [SerializeField] private List<UnitCommand> unitCommands;
     public IEnumerable<UnitCommand> Commands => unitCommands;
+    private Dictionary<UnitCommand.CommandCategory, UnitCommand> categoryDefaults;
 
     // "can I currently use this command", not necessarily dependent on usage
     private Dictionary<string, bool> commandAvailable = new Dictionary<string, bool>();
@@ -75,6 +76,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
     void Awake() {
         boundUnit = GetComponent<PlayerUnit>();
         executedStack = new List<UnitCommand>();
+        categoryDefaults = new Dictionary<UnitCommand.CommandCategory, UnitCommand>();
 
         // load in the defaults here in unitCommands
         // No way to add custom commands. Do that via MutationSystem
@@ -84,8 +86,8 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         // if you do that, unitCommands becomes a reference to a ScriptableObject field, meaning you
         // lose instance-level information for unitCommandSystems everywhere
         foreach (UnitCommand uc in defaultPool.unitCommands) {
-            unitCommands.Add(uc);
-            InitCommandUsageData(uc);
+            AddCommand(uc);
+            categoryDefaults[uc.commandCategory] = uc;
         }
 
         if (unitCommands.Count == 0) Debug.LogError($"No commands set for {this}/{boundUnit}");
@@ -175,6 +177,13 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     // find the closest command with the same category, and add it to that
     public void AddCommand(UnitCommand command) {
+        Debug.Log($"adding {command}");
+
+        // first, check if you're replacing something
+        if (command.replaceDefault != UnitCommand.CommandCategory.None) {
+            RemoveCommand(categoryDefaults[command.replaceDefault]);
+        }
+
         int mostRecent = 0;
         for (int i = 0; i < unitCommands.Count; i++) {
             if (unitCommands[i].commandCategory == command.commandCategory)
@@ -182,13 +191,14 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         }
 
         // never insert after "wait", which is last
-        int at = Mathf.Min(unitCommands.Count - 1, mostRecent + 1);
+        int at = Mathf.Max(0, Mathf.Min(unitCommands.Count - 1, mostRecent + 1));
         unitCommands.Insert(at, command);
 
         InitCommandUsageData(command);
     }
 
     public void RemoveCommand(UnitCommand command) {
+        Debug.Log($"removing {command}");
         unitCommands.Remove(command);
         //
         commandAvailable.Remove(command.name);
@@ -198,6 +208,13 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         //
         if (commandUses.ContainsKey(command.name)) commandUses.Remove(command.name);
         if (_shadowUses.ContainsKey(command.name)) _shadowUses.Remove(command.name);
+
+        // final check
+        // this command has already replaced a default
+        // so after removing it, restore the default
+        if (command.replaceDefault != UnitCommand.CommandCategory.None) {
+            AddCommand(categoryDefaults[command.replaceDefault]);
+        }
     }
 
     // this can happen from a user clicking on a button, or PlayerUnit calling it directly by default (ie MoveUC)

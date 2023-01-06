@@ -148,6 +148,7 @@ public class MoveUC : UnitCommand
         _waypoints = null;
     }
 
+    // just an additional hook to extend child classes, like ChargeUC
     protected virtual void ExecuteAdditionalOnMove(PlayerUnit thisUnit, Path<GridPosition> pathTaken) {}
 
     protected virtual void DisplayMoveRange(PlayerUnit thisUnit, MoveRange moveRange) {   
