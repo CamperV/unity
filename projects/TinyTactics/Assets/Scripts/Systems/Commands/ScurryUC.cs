@@ -29,8 +29,10 @@ public class ScurryUC : MoveUC
             if (EnemyAt(thisUnit, gp)) passedEnemies++;
         }
     
-        ImmediateValueStatus clonedScurryBuff = ImmediateValueStatus.CloneWithValue(scurryBuff, passedEnemies);
-        thisUnit.statusSystem.AddStatus(clonedScurryBuff, so_Status.CreateStatusProviderID(thisUnit, clonedScurryBuff));
+        if (passedEnemies > 0) {
+            ImmediateValueStatus clonedScurryBuff = ImmediateValueStatus.CloneWithValue(scurryBuff, passedEnemies);
+            thisUnit.statusSystem.AddStatus(clonedScurryBuff, so_Status.CreateStatusProviderID(thisUnit, clonedScurryBuff));
+        }
     }
 
     // this ignores auxiliaryInteract, so you can't accidentally immediately Wait

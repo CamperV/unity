@@ -188,7 +188,6 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
             mostRecent = unitCommands.Count;
         } else {
             for (int i = 0; i < unitCommands.Count; i++) {
-                Debug.Log($"{boundUnit}:{this} checking {unitCommands[i]}/{unitCommands[i].commandCategory}");
                 if (unitCommands[i].commandCategory == command.commandCategory)
                     mostRecent = i;
             }
@@ -304,7 +303,6 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     public void Interact(GridPosition interactAt, bool auxiliaryInteract) {
         auxiliaryInteractFlag = auxiliaryInteract;
-        Debug.Log($"my state {this} - {state}");
 
         switch(state) {
             case State.Idle:

@@ -19,17 +19,16 @@ public class EngagementPreview_UnitUI : MonoBehaviour, IEngagementPreviewer
 			finalProjectedDamage_fromPlayer += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
 		}
 
-		// make sure you store them for later so we can clear them properly
-		MiniBar_UI aggBar = potentialEngagement.aggressor.GetComponentInChildren<MiniBar_UI>();
-		MiniBar_UI defBar = potentialEngagement.defender.GetComponentInChildren<MiniBar_UI>();
+		UnitUI aggUI = potentialEngagement.aggressor.GetComponentInChildren<UnitUI>();
+		UnitUI defUI = potentialEngagement.defender.GetComponentInChildren<UnitUI>();
 
 		// show the damage on the health bars proper
-		aggBar.PreviewDamage(finalProjectedDamage_fromEnemy);
-		defBar.PreviewDamage(finalProjectedDamage_fromPlayer);
+		aggUI.PreviewDamage(finalProjectedDamage_fromEnemy);
+		defUI.PreviewDamage(finalProjectedDamage_fromPlayer);
 	}
 
 	public void DisablePreview(Engagement potentialEngagement) {
-		potentialEngagement.aggressor.GetComponentInChildren<MiniBar_UI>().RevertPreview();
-		potentialEngagement.defender.GetComponentInChildren<MiniBar_UI>().RevertPreview();
+		potentialEngagement.aggressor.GetComponentInChildren<UnitUI>().RevertPreview();
+		potentialEngagement.defender.GetComponentInChildren<UnitUI>().RevertPreview();
 	}
 }

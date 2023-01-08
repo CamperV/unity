@@ -65,6 +65,7 @@ public class AttackUC : TargetableUC
     }
 
     protected override void ValidMouseOver(PlayerUnit thisUnit, GridPosition hoverOver) {        
+        // highlight the ground beneath
         thisUnit.battleMap.Highlight(hoverOver, tileVisuals.altColor);
 
         // create and display EngagementPreviews here

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using Extensions;
 using TMPro;
@@ -11,9 +12,11 @@ using TMPro;
 public class UIAnimator : MonoBehaviour
 {
 	private CanvasGroup canvasGroup;
+	private Image image;
 
 	void Awake() {
 		canvasGroup = GetComponent<CanvasGroup>();
+		image = GetComponent<Image>();
 	}
 
 	private int _animationStack;
@@ -136,6 +139,29 @@ public class UIAnimator : MonoBehaviour
 		animationStack--;
 		PostExec();
 	}
+
+    public IEnumerator Flash(Color color_0, Color color_1) {
+        float fixedTime = 0.5f;
+		float timeRatio = 0.0f;
+
+        while (true) {
+            // to dim
+            timeRatio = 0.0f;
+            while (timeRatio < 1.0f) {
+                timeRatio += (Time.deltaTime / fixedTime);
+                image.color = Color.Lerp(color_0, color_1, timeRatio);
+                yield return null;
+            }
+
+            // and then back up to normal color
+            timeRatio = 0.0f;
+            while (timeRatio < 1.0f) {
+                timeRatio += (Time.deltaTime / fixedTime);
+                image.color = Color.Lerp(color_1, color_0, timeRatio);
+                yield return null;
+            }
+        }
+    }
 
 	public void TriggerFadeDown(float fadeTime) {
 		StopAllCoroutines();

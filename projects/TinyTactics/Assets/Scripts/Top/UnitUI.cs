@@ -13,6 +13,7 @@ public class UnitUI : MonoBehaviour
     [SerializeField] private StatusBarUI statusBar;
 
     [SerializeField] private DisplayValue_UI healthValueDisplay;
+    [SerializeField] private GameObject deathIndicator;
 
     private Unit boundUnit;
 
@@ -27,5 +28,19 @@ public class UnitUI : MonoBehaviour
         statusBar.AttachTo(boundUnit);
 
         healthValueDisplay.AttachTo(boundUnit);
+    }
+
+    public void PreviewDamage(int damageAmountPreview) {
+        healthBar.PreviewDamage(damageAmountPreview);
+
+        // if you're gonna die
+        if (damageAmountPreview >= boundUnit.statSystem.CURRENT_HP) {
+            deathIndicator.gameObject.SetActive(true);
+        }
+    }
+
+    public void RevertPreview() {
+        healthBar.RevertPreview();
+        deathIndicator.gameObject.SetActive(false);
     }
 }
