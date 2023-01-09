@@ -60,13 +60,13 @@ public class AttackUC : TargetableUC
     }
 
     protected override void ResetValidMouseOver(PlayerUnit thisUnit) {
-        DisplayTargetRange(thisUnit);
+        base.ResetValidMouseOver(thisUnit);
+        
         EngagementPreviewSystem.inst.DisablePreview(null);
     }
 
     protected override void ValidMouseOver(PlayerUnit thisUnit, GridPosition hoverOver) {        
-        // highlight the ground beneath
-        thisUnit.battleMap.Highlight(hoverOver, tileVisuals.altColor);
+        base.ValidMouseOver(thisUnit, hoverOver);
 
         // create and display EngagementPreviews here
         EnemyUnit enemy = EnemyAt(thisUnit, hoverOver);

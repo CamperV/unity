@@ -23,7 +23,7 @@ public class EngagementPreview_UnitUI : MonoBehaviour, IEngagementPreviewer
 		UnitUI defUI = potentialEngagement.defender.GetComponentInChildren<UnitUI>();
 
 		// show the damage on the health bars proper
-		aggUI.PreviewDamage(finalProjectedDamage_fromEnemy);
+		aggUI.PreviewDamage(finalProjectedDamage_fromEnemy, isAggressor: true);
 		defUI.PreviewDamage(finalProjectedDamage_fromPlayer);
 	}
 

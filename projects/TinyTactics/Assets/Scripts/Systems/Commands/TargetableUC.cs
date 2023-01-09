@@ -66,8 +66,17 @@ public abstract class TargetableUC : UnitCommand
         }
     }
 
-    protected abstract void ResetValidMouseOver(PlayerUnit thisUnit);
-    protected abstract void ValidMouseOver(PlayerUnit thisUnit, GridPosition hoverOver);
+    protected virtual void ResetValidMouseOver(PlayerUnit thisUnit) {
+        DisplayTargetRange(thisUnit);
+
+        // and also other virtual stuff
+    }
+    protected virtual void ValidMouseOver(PlayerUnit thisUnit, GridPosition hoverOver) {
+        // highlight the ground beneath
+        thisUnit.battleMap.Highlight(hoverOver, tileVisuals.altColor);
+
+        // and also do other virtual stuff
+    }
 
     protected virtual void DisplayTargetRange(PlayerUnit thisUnit) {
         thisUnit.attackRange.Display(thisUnit.battleMap, tileVisuals.color, tileVisuals.tile);

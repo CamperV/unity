@@ -109,7 +109,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 204242868514942329}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c229e5a6fb460140837c021a73b91b2, type: 3}
   m_Name: 
@@ -375,8 +375,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.5}
-  m_SizeDelta: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0.100000024}
+  m_SizeDelta: {x: 1, y: 0.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2761010643013347938
 CanvasRenderer:
@@ -436,7 +436,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 0.65, y: 0.65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3135595812408977656
 CanvasRenderer:
@@ -507,13 +507,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2362348179892633918}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c229e5a6fb460140837c021a73b91b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   color_0: {r: 1, g: 1, b: 1, a: 1}
-  color_1: {r: 0.5, g: 0.5, b: 0.5, a: 0.5019608}
+  color_1: {r: 1, g: 1, b: 1, a: 0.2509804}
 --- !u!1 &2371235466516539730
 GameObject:
   m_ObjectHideFlags: 0
@@ -1215,6 +1215,7 @@ MonoBehaviour:
   breakBar: {fileID: 5419339397004876919}
   statusBar: {fileID: 3347291979242397711}
   healthValueDisplay: {fileID: 5836994994063986692}
+  targetIndicator: {fileID: 5043515702835595185}
   deathIndicator: {fileID: 1669182137919726143}
 --- !u!1 &8271643372689919796
 GameObject:

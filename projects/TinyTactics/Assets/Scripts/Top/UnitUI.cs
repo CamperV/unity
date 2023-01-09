@@ -13,6 +13,7 @@ public class UnitUI : MonoBehaviour
     [SerializeField] private StatusBarUI statusBar;
 
     [SerializeField] private DisplayValue_UI healthValueDisplay;
+    [SerializeField] private GameObject targetIndicator;
     [SerializeField] private GameObject deathIndicator;
 
     private Unit boundUnit;
@@ -30,17 +31,26 @@ public class UnitUI : MonoBehaviour
         healthValueDisplay.AttachTo(boundUnit);
     }
 
-    public void PreviewDamage(int damageAmountPreview) {
-        healthBar.PreviewDamage(damageAmountPreview);
+    public void PreviewDamage(int damageAmountPreview, bool isAggressor = false) {
+        // if you're going to take damage
+        if (damageAmountPreview > 0) {
+            healthBar.PreviewDamage(damageAmountPreview);
+        }
 
         // if you're gonna die
         if (damageAmountPreview >= boundUnit.statSystem.CURRENT_HP) {
             deathIndicator.gameObject.SetActive(true);
         }
+
+        // these are not technically mutually exclusive, but they occupy the same zone for now
+        // } else if (!isAggressor) {
+        //     targetIndicator.gameObject.SetActive(true);
+        // }
     }
 
     public void RevertPreview() {
         healthBar.RevertPreview();
+        // targetIndicator.gameObject.SetActive(false);
         deathIndicator.gameObject.SetActive(false);
     }
 }
