@@ -52,6 +52,8 @@ public class StatusBarUI : MonoBehaviour
 
         var statusIterator = (reverseChildrenOrder) ? attachedUnit.statusSystem.Statuses : attachedUnit.statusSystem.StatusesReverse;
         foreach (so_Status status in statusIterator) {
+            if (status.hidden) continue;
+            
             StatusVisual sv = Instantiate(statusVisualPrefab, panelContainer.transform);
             sv.SetImage( (status.statusCode == so_Status.StatusCode.Buff) ? buffSprite : debuffSprite );
         }

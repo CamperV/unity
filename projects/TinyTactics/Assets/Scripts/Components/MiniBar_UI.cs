@@ -56,39 +56,6 @@ public class MiniBar_UI : MonoBehaviour
         }
     }
 
-    private void UpdateBar(int val, int max) {
-        currVal = val;
-        maxVal = max;
-        ratio = (float)currVal/(float)maxVal;
-        Vector3 toScale = new Vector3(ratio, 1.0f, 1.0f);
-
-        StartCoroutine(
-            Utils.QueueCoroutines(
-                _UpdateBarVisual(ratio),
-                AnimateBar(barLevel.transform.localScale, toScale, Color.white, 1.0f, 1.0f)
-            )
-        );
-    }
-
-    public IEnumerator AnimateBar(Vector3 fromScale, Vector3 toScale, Color color, float delayTime, float fixedTime) {
-        animBar.gameObject.SetActive(true);
-        animBar.transform.localScale = fromScale;
-
-        // wait
-        yield return new WaitForSeconds(delayTime);
-
-        // ...then animate
-		float timeRatio = 0.0f;
-		
-		while (timeRatio < 1.0f) {
-			timeRatio += (Time.deltaTime / fixedTime);
-            animBar.transform.localScale = Vector3.Lerp(fromScale, toScale, timeRatio);
-			yield return null;
-		}
-
-        animBar.gameObject.SetActive(false);
-    }
-
     // visually flash the bar to demonstrate the health loss
     public void PreviewDamage(int damageAmountPreview) {
         flashingBar.gameObject.SetActive(true);
@@ -104,14 +71,39 @@ public class MiniBar_UI : MonoBehaviour
         ScaleBar(ratio);
     }
 
-    private static Color HueSatLerp(Color A, Color B, float ratio) {
-        float AH, AS, AV, BH, BS, BV;
-        Color.RGBToHSV(A, out AH, out AS, out AV);
-        Color.RGBToHSV(B, out BH, out BS, out BV);
+    private void UpdateBar(int val, int max) {
+        currVal = val;
+        maxVal = max;
+        ratio = (float)currVal/(float)maxVal;
+        Vector3 toScale = new Vector3(ratio, 1.0f, 1.0f);
 
-        float _H = Mathf.Lerp(AH, BH, ratio);
-        float _S = Mathf.Lerp(AS, BS, ratio);
-        return Color.HSVToRGB(_H, _S, 1f);
+        StopAllCoroutines();
+        StartCoroutine(
+            Utils.QueueCoroutines(
+                _UpdateBarVisual(ratio),
+                AnimateBar(barLevel.transform.localScale, toScale, Color.white, 1.0f, 1.0f)
+            )
+        );
+    }
+
+    private IEnumerator AnimateBar(Vector3 fromScale, Vector3 toScale, Color color, float delayTime, float fixedTime) {
+        animBar.gameObject.SetActive(true);
+        // animBar.transform.localScale = fromScale;
+        Vector3 originalScale = animBar.transform.localScale;
+
+        // wait
+        yield return new WaitForSeconds(delayTime);
+
+        // ...then animate
+		float timeRatio = 0.0f;
+		
+		while (timeRatio < 1.0f) {
+			timeRatio += (Time.deltaTime / fixedTime);
+            animBar.transform.localScale = Vector3.Lerp(originalScale, toScale, timeRatio);
+			yield return null;
+		}
+
+        animBar.gameObject.SetActive(false);
     }
 
     private IEnumerator _UpdateBarVisual(float ratio) {
@@ -129,5 +121,15 @@ public class MiniBar_UI : MonoBehaviour
         } else {
             barImage.color = color_0;
         }
+    }
+
+    private static Color HueSatLerp(Color A, Color B, float ratio) {
+        float AH, AS, AV, BH, BS, BV;
+        Color.RGBToHSV(A, out AH, out AS, out AV);
+        Color.RGBToHSV(B, out BH, out BS, out BV);
+
+        float _H = Mathf.Lerp(AH, BH, ratio);
+        float _S = Mathf.Lerp(AS, BS, ratio);
+        return Color.HSVToRGB(_H, _S, 1f);
     }
 }

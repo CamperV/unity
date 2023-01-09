@@ -17,6 +17,10 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
 
 	// other valuable data
 	public bool stackable;
+	
+	// hidden statuses are granted by weapons and the like
+	// they are supposed to be "internal" to the weapon, so don't always show them as a buff
+	public bool hidden;	
 
     // IMutatorComponent
     [field: SerializeField] public MutatorDisplayData mutatorDisplayData { get; set; }
