@@ -13,18 +13,23 @@ public class EngagementPreview_UnitUI : MonoBehaviour, IEngagementPreviewer
 		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
 		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
 
-		int finalProjectedDamage_fromEnemy = enemyPreviewStats.finalDamageContext.Max*(potentialEngagement.defender.statSystem.MULTISTRIKE+1);
-		int finalProjectedDamage_fromPlayer = playerPreviewStats.finalDamageContext.Max*(potentialEngagement.aggressor.statSystem.MULTISTRIKE+1);
+		int comboDamage = 0;
 		foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
-			finalProjectedDamage_fromPlayer += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
+			comboDamage += Mathf.Clamp(combo.damage - potentialEngagement.defense.damageReduction, 0, 99);
 		}
+
+		int minFromEnemy = enemyPreviewStats.finalDamageContext.Min*(potentialEngagement.defender.statSystem.MULTISTRIKE+1);
+		int minFromPlayer = playerPreviewStats.finalDamageContext.Min*(potentialEngagement.aggressor.statSystem.MULTISTRIKE+1) + comboDamage;
+
+		int maxFromEnemy = enemyPreviewStats.finalDamageContext.Max*(potentialEngagement.defender.statSystem.MULTISTRIKE+1);
+		int maxFromPlayer = playerPreviewStats.finalDamageContext.Max*(potentialEngagement.aggressor.statSystem.MULTISTRIKE+1) + comboDamage;
 
 		UnitUI aggUI = potentialEngagement.aggressor.GetComponentInChildren<UnitUI>();
 		UnitUI defUI = potentialEngagement.defender.GetComponentInChildren<UnitUI>();
 
 		// show the damage on the health bars proper
-		aggUI.PreviewDamage(finalProjectedDamage_fromEnemy, isAggressor: true);
-		defUI.PreviewDamage(finalProjectedDamage_fromPlayer);
+		aggUI.PreviewDamage(minFromEnemy, maxFromEnemy, isAggressor: true);
+		defUI.PreviewDamage(minFromPlayer, maxFromPlayer);
 	}
 
 	public void DisablePreview(Engagement potentialEngagement) {

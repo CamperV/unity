@@ -31,14 +31,14 @@ public class UnitUI : MonoBehaviour
         healthValueDisplay.AttachTo(boundUnit);
     }
 
-    public void PreviewDamage(int damageAmountPreview, bool isAggressor = false) {
+    public void PreviewDamage(int minDamage, int maxDamage, bool isAggressor = false) {
         // if you're going to take damage
-        if (damageAmountPreview > 0) {
-            healthBar.PreviewDamage(damageAmountPreview);
+        if (maxDamage > 0) {
+            healthBar.PreviewDamage(minDamage, maxDamage);
         }
 
-        // if you're gonna die
-        if (damageAmountPreview >= boundUnit.statSystem.CURRENT_HP) {
+        // if you're DEFINITELY gonna die
+        if (minDamage >= boundUnit.statSystem.CURRENT_HP) {
             deathIndicator.gameObject.SetActive(true);
         }
 

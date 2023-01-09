@@ -33,6 +33,7 @@ public class MiniBar_UI : MonoBehaviour
     [SerializeField] private Image borderImage;
     [SerializeField] private GameObject animBar;
     [SerializeField] private MiniBarAnimator_UI flashingBar;
+    [SerializeField] private MiniBarAnimator_UI flashingDamageRangeBar;
 
     public void AttachTo(Unit thisUnit) {
         switch (registerTo) {
@@ -58,16 +59,37 @@ public class MiniBar_UI : MonoBehaviour
 
     // visually flash the bar to demonstrate the health loss
     public void PreviewDamage(int damageAmountPreview) {
+        // flash the full value of health loss
         flashingBar.gameObject.SetActive(true);
         flashingBar.transform.localScale = barLevel.transform.localScale;
         flashingBar.InfiniFlash();
         
+        // update bar value to scale with the preview, and "reveal" the flashing underneath
         float previewHealthRatio = (float)Mathf.Max(0, currVal - damageAmountPreview)/(float)maxVal;
         ScaleBar(previewHealthRatio);
     }
 
+    // visually flash the bar to demonstrate the health loss
+    public void PreviewDamage(int minDamage, int maxDamage) {
+        // flash the full value of health loss
+        flashingBar.gameObject.SetActive(true);
+        flashingBar.transform.localScale = barLevel.transform.localScale;
+        flashingBar.InfiniFlash();
+
+        // flash the loss if "min" damage
+        flashingDamageRangeBar.gameObject.SetActive(true);
+        float minRatio = (float)Mathf.Max(0, currVal - minDamage)/(float)maxVal;
+        flashingDamageRangeBar.transform.localScale = new Vector3(minRatio, 1f, 1f);
+        // flashingDamageRangeBar.InfiniFlash();
+        
+        // update bar value to scale with the preview, and "reveal" the flashing underneath
+        float maxRatio = (float)Mathf.Max(0, currVal - maxDamage)/(float)maxVal;
+        ScaleBar(maxRatio);
+    }
+
     public void RevertPreview() {
         flashingBar.gameObject.SetActive(false);
+        flashingDamageRangeBar.gameObject.SetActive(false);
         ScaleBar(ratio);
     }
 

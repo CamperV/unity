@@ -25,4 +25,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 03b7a8ce984bc84438777d2204895823, type: 2}
   MIN_ATK: 2
   MAX_ATK: 2
-  COMBO_ATK: 10
+  COMBO_ATK: 2
