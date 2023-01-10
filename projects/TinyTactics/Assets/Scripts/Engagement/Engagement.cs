@@ -44,10 +44,6 @@ public class Engagement
         comboAttacks = comboAllies.Select(ally => GenerateComboAttack(ally, defender)).ToList();
     }
 
-    public static Engagement Create(Unit a, Unit b) {
-        return new Engagement(a, b);
-    }
-
     public static bool CounterAttackPossible(Unit agg, Unit def) {
         TargetRange defenderTargetRange = TargetRange.Standing(
             def.gridPosition,

@@ -23,6 +23,6 @@ MonoBehaviour:
   attachedMutations: []
   attachedStatuses:
   - {fileID: 11400000, guid: 03b7a8ce984bc84438777d2204895823, type: 2}
-  MIN_ATK: 2
-  MAX_ATK: 2
+  MIN_ATK: 20
+  MAX_ATK: 20
   COMBO_ATK: 2
