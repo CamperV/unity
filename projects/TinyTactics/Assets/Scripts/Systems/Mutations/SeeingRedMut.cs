@@ -8,16 +8,16 @@ public class SeeingRedMut : Mutation
 {
     // apply a marked status to any unit that hits you
     public so_Status markStatus;
-    public float damageMultiplier;
+    public int bonusDamage;
 
     public override void OnAcquire(Unit thisUnit) {
         thisUnit.OnHurtByTarget += ApplyMarkToAttacker;
-        thisUnit.OnAttack += BonusDamageAgainstMark;
+        thisUnit.OnAttackGeneration += BonusDamageAgainstMark;
     }
 
     public override void OnRemove(Unit thisUnit) {
         thisUnit.OnHurtByTarget -= ApplyMarkToAttacker;
-        thisUnit.OnAttack -= BonusDamageAgainstMark;
+        thisUnit.OnAttackGeneration -= BonusDamageAgainstMark;
     }
 
     private void ApplyMarkToAttacker(Unit thisUnit, Unit target) {
@@ -32,8 +32,8 @@ public class SeeingRedMut : Mutation
 
     private void BonusDamageAgainstMark(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         if (target.statusSystem.HasStatus(so_Status.CreateStatusProviderID(thisUnit, markStatus))) {
-            mutAtt.AddBonusDamageMultiplier(damageMultiplier);
-            mutAtt.AddMutator(this);
+            mutAtt.damage.Add(bonusDamage);
+            mutAtt.AddAttackMutator(this);
         }
     }
 }

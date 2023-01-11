@@ -44,19 +44,12 @@ public class AttackUC : TargetableUC
 
         _engagementResolveFlag = true;
         Engagement engagement = new Engagement(thisUnit, enemy);
-
-        Utils.DelegateCoroutineTo(thisUnit,
-            engagement.Resolve()
-        );
+        EngagementSystem.inst.Resolve(engagement);
 
         // wait until the engagement has ended
         // once the engagement has processed, resolve the casualties
         // once the casualties are resolved, EndTurnSelectedUnit()
-        Utils.DelegateCoroutineTo(thisUnit,
-            engagement.ExecuteAfterResolving(() => {
-                _engagementResolveFlag = false;
-            })
-        );
+        EngagementSystem.inst.ExecuteAfterResolving(() => _engagementResolveFlag = false);
     }
 
     protected override void ResetValidMouseOver(PlayerUnit thisUnit) {

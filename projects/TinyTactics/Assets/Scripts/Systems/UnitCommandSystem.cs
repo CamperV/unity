@@ -226,7 +226,6 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     // this can happen from a user clicking on a button, or PlayerUnit calling it directly by default (ie MoveUC)
     public void TryIssueCommand(UnitCommand command) {
-        Debug.Log($"Trying to issue command {command}");
         if (command == null) return;
         if (!IsCommandAvailable(command)) return;
 

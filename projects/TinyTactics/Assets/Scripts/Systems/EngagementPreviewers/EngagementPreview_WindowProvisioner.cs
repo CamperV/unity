@@ -18,7 +18,7 @@ public class EngagementPreview_WindowProvisioner : MonoBehaviour, IEngagementPre
 		previewWindow.GetComponent<UIAnimator>().TriggerFadeUp(0.1f);
 	}
 
-	public void DisablePreview(Engagement potentialEngagement) {
+	public void DisablePreview(Engagement _) {
 		// cancel any fade ups, start fade down
 		// after fade down, set active false
 		previewWindow.GetComponent<UIAnimator>().TriggerFadeDownDisable(0.1f);

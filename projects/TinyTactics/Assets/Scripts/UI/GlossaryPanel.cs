@@ -16,11 +16,6 @@ public class GlossaryPanel : MonoBehaviour
 	private void UpdateActiveGlossaryText() {
 		// for all IToolTip MBs
 		List<IToolTip> toolTippers = FindObjectsOfType<MonoBehaviour>().OfType<IToolTip>().ToList();
-
-		// for all IToolTip SOs
-		// TODO WOW this sucks
-		toolTippers.Add(ScriptableObject.CreateInstance<HealTerrainEffect>());
-		toolTippers.Add(ScriptableObject.CreateInstance<RoughTerrainEffect>());
 		
 		List<string> textLines = new List<string>();
 

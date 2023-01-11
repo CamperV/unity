@@ -14,18 +14,10 @@ public sealed class UIManager : MonoBehaviour
 	[SerializeField] private UnitCommandPanel unitCommandPanel;
 	[SerializeField] private UnitInspector[] unitInspectors;
 
-	[SerializeField] private EngagementPreviewBar engagementPreviewBar;
-	// [SerializeField] private MiniEngagementPreview miniEngagementPreviewPrefab;
-
 	[SerializeField] private EndgameStatsPanel victoryPanel;
 	[SerializeField] private EndgameStatsPanel defeatPanel;
 
 	[SerializeField] private GameObject menuButtons;
-
-	// for binding UI, etc
-    // public delegate void EngagementPreviewEvent();
-	// public event EngagementPreviewEvent EnableEngagementPreviewEvent;
-    // public event EngagementPreviewEvent DisableEngagementPreviewEvent;
 	
     void Awake() {
         // only allow one UIManager to exist at any time
@@ -37,7 +29,6 @@ public sealed class UIManager : MonoBehaviour
 		}
 
 		startBattleButtonContainer.SetActive(true);
-		engagementPreviewBar?.gameObject.SetActive(false);
 
 		foreach (UnitInspector unitInspector in unitInspectors) {
 			unitInspector?.gameObject.SetActive(false);
@@ -70,25 +61,6 @@ public sealed class UIManager : MonoBehaviour
 			unitInspector?.gameObject.SetActive(false);
 		}
 	}
-
-	// public void EnableEngagementPreview(Engagement potentialEngagement) {
-	// 	engagementPreviewBar?.gameObject.SetActive(true);
-	// 	engagementPreviewBar?.GetComponent<UIAnchoredSlider>().SetActive(true, teleportInactiveFirst: true);
-
-	// 	EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
-	// 	EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
-	// 	engagementPreviewBar?.SetEngagementStats(potentialEngagement, playerPreviewStats, enemyPreviewStats);
-	// }
-
-	// public void DisableEngagementPreview() {
-	// 	engagementPreviewBar?.gameObject.SetActive(false);
-	// 	engagementPreviewBar?.GetComponent<UIAnchoredSlider>().SetActive(false);
-
-	// 	// invoke and immediately clear invocation list
-	// 	// this is to clear all the anon functions we put on this from the MiniPreviews
-	// 	DisableEngagementPreviewEvent?.Invoke();
-	// 	DisableEngagementPreviewEvent = null;
-	// }
 
 	public void CreateVictoryPanel(int enemiesDefeated, int survivingUnits, int turnsElapsed) {
 		victoryPanel.gameObject.SetActive(true);

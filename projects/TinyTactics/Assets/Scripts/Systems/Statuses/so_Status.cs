@@ -29,14 +29,14 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
 	public Sprite sprite;
 
     public virtual void OnAcquire(Unit thisUnit) {
-		thisUnit.OnAttack += DisplayOnAttack;
+		thisUnit.OnAttackGeneration += DisplayOnAttack;
     }
 
     public virtual void OnExpire(Unit thisUnit) {
-		thisUnit.OnAttack -= DisplayOnAttack;
+		thisUnit.OnAttackGeneration -= DisplayOnAttack;
 	}
 
 	private void DisplayOnAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
-        mutAtt.AddMutator(this);
+        mutAtt.AddAttackMutator(this);
 	}
 }

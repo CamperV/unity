@@ -22,12 +22,9 @@ public class EngagementPreviewWindow : MonoBehaviour
 	public void SetEngagementStats(Engagement potentialEngagement) {
 		Clear();
 
-		EngagementStats playerPreviewStats = potentialEngagement.SimulateAttack();
-		EngagementStats enemyPreviewStats = potentialEngagement.SimulateCounterAttack();
-
 		// then create panels and populate info
-		PopulatePanels(potentialEngagement, playerPreviewStats);
-		PopulatePanels(potentialEngagement, enemyPreviewStats, isCounter: true);
+		PopulatePanels(potentialEngagement);
+		PopulatePanels(potentialEngagement, isCounter: true);
 
 		// resize based on mutator descriptions
 		ResizePanels(potentialEngagement);
@@ -47,7 +44,7 @@ public class EngagementPreviewWindow : MonoBehaviour
 		}
 	}
 
-	private void PopulatePanels(Engagement potentialEngagement, EngagementStats previewStats, bool isCounter = false) {
+	private void PopulatePanels(Engagement potentialEngagement, bool isCounter = false) {
 		GameObject panelToInstantiate;
 		GameObject container;
 		int numStrikes;
@@ -55,11 +52,11 @@ public class EngagementPreviewWindow : MonoBehaviour
 		if (isCounter == false) {
 			panelToInstantiate = panelPrefab;
 			container = panelContainer;
-			numStrikes = potentialEngagement.aggressor.statSystem.MULTISTRIKE+1;
+			numStrikes = potentialEngagement.A.statSystem.MULTISTRIKE+1;
 		} else {
 			panelToInstantiate = panelPrefab_Counter;
 			container = panelContainer_Counter;
-			numStrikes = potentialEngagement.defender.statSystem.MULTISTRIKE+1;
+			numStrikes = potentialEngagement.B.statSystem.MULTISTRIKE+1;
 		}
 
 		// attack/counter
@@ -67,21 +64,16 @@ public class EngagementPreviewWindow : MonoBehaviour
 		if (numStrikes > 1) title += $" (x{numStrikes})".RichTextTags_TMP(color: "FFC27A");
 		CreateAndSet($"{title}".RichTextTags_TMP(bold: true, fontSize: 20), panelToInstantiate, container);
 
-		// damage setting
-		int min = previewStats.finalDamageContext.Min;
-		int max = previewStats.finalDamageContext.Max;
-		string damage = $"{min}";
-		if (min != max) damage += $" - {max}";
-
-		damage = damage.RichTextTags_TMP(color: "FFC27A");
-		for (int n = 0; n < numStrikes; n++) {
+		List<Attack> attacks = (isCounter == false) ? potentialEngagement.attacks : potentialEngagement.counterAttacks;
+		foreach (Attack attack in attacks) {
+			string damage = $"{attack.damage}".RichTextTags_TMP(color: "FFC27A");
 			CreateAndSet($"{damage} dmg".RichTextTags_TMP(bold: true), panelToInstantiate, container);
-		}
 
-		// if there's crit, set that too
-		if (previewStats.critRate > 0) {
-			string critical = $"{previewStats.critRate}%".RichTextTags_TMP(color: "FFC27A");
-			CreateAndSet($"{critical} crit".RichTextTags_TMP(bold: true), panelToInstantiate, container);
+			// if there's crit, set that too
+			if (attack.critRate > 0) {
+				string critical = $"{attack.critRate}%".RichTextTags_TMP(color: "FFC27A");
+				CreateAndSet($"{critical} crit".RichTextTags_TMP(bold: true), panelToInstantiate, container);
+			}
 		}
 
 		// also any attack mutators and their values
@@ -116,15 +108,27 @@ public class EngagementPreviewWindow : MonoBehaviour
 		List<MutatorDisplayData> mutators = new List<MutatorDisplayData>();
 
 		if (isCounter == false) {
-			mutators = potentialEngagement.attack.mutators;
-			if (potentialEngagement.counterDefense != null) {
-				mutators = mutators.Concat(potentialEngagement.counterDefense.Value.mutators).ToList();
+			foreach (Attack attack in potentialEngagement.attacks) {
+				foreach (MutatorDisplayData mdd in attack.attackMutators) {
+					mutators.Add(mdd);
+				}
+			}
+			foreach (Attack counterAttack in potentialEngagement.counterAttacks) {
+				foreach (MutatorDisplayData mdd in counterAttack.defenseMutators) {
+					mutators.Add(mdd);
+				}
 			}
 
 		} else {
-			mutators = potentialEngagement.defense.mutators;
-			if (potentialEngagement.counterAttack != null) {
-				mutators = mutators.Concat(potentialEngagement.counterAttack.Value.mutators).ToList();
+			foreach (Attack counterAttack in potentialEngagement.counterAttacks) {
+				foreach (MutatorDisplayData mdd in counterAttack.attackMutators) {
+					mutators.Add(mdd);
+				}
+			}
+			foreach (Attack attack in potentialEngagement.attacks) {
+				foreach (MutatorDisplayData mdd in attack.defenseMutators) {
+					mutators.Add(mdd);
+				}
 			}
 		}
 
@@ -137,23 +141,4 @@ public class EngagementPreviewWindow : MonoBehaviour
 		foreach (var mut in BuildMutatorList(potentialEngagement, isCounter: false)) yield return mut;
 		foreach (var mut in BuildMutatorList(potentialEngagement, isCounter: true)) yield return mut;
 	}
-
-	// private List<T> GetComponentsInChildrenBFS<T>(GameObject root) {
-	// 	List<T> retval = new List<T>();
-	// 	List<Transform> queue = new List<Transform>{root.transform};
-
-	// 	while (queue.Count > 0) {
-	// 		Transform current = queue.PopAt(0);
-
-	// 		T comp = current.gameObject.GetComponent<T>();
-	// 		if (comp != null) retval.Add(comp);
-
-	// 		// all immediate children
-	// 		foreach (Transform child in current) {
-	// 			queue.Add(child);
-	// 		}
-	// 	}
-
-	// 	return retval;
-	// }
 }

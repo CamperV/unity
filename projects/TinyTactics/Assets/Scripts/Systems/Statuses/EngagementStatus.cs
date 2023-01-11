@@ -5,14 +5,9 @@ using UnityEngine;
 
 public abstract class EngagementStatus : so_Status, IValueStatus
 {
-    public enum RegisterMode {
-        OnAttack,
-        OnDefend
-    };
-    public RegisterMode registerTo;
-
     public enum ModifyStat {
         Damage,
+        PoiseDamage,
         CriticalRate,
         DamageReduction,
         CriticalAvoid
@@ -24,60 +19,38 @@ public abstract class EngagementStatus : so_Status, IValueStatus
 
     public override void OnAcquire(Unit thisUnit) {
         base.OnAcquire(thisUnit);
-        
-		switch (registerTo) {
-            case RegisterMode.OnAttack:
-                thisUnit.OnAttack += ModifyAttack;
-                break;
-
-            case RegisterMode.OnDefend:
-                thisUnit.OnDefend += ModifyDefend;
-                break;
-        }
+        thisUnit.OnAttackGeneration += ModifyAttack;
 	}
 
     public override void OnExpire(Unit thisUnit) {
         base.OnExpire(thisUnit);
-
-        switch (registerTo) {
-            case RegisterMode.OnAttack:
-                thisUnit.OnAttack -= ModifyAttack;
-                break;
-
-            case RegisterMode.OnDefend:
-                thisUnit.OnDefend -= ModifyDefend;
-                break;
-        }
+        thisUnit.OnAttackGeneration -= ModifyAttack;
     }
 
     private void ModifyAttack(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         switch (modifyStat) {
             case ModifyStat.Damage:
-                mutAtt.AddBonusDamage(value);
+                mutAtt.damage.Add(value);
+                break;
+
+            case ModifyStat.PoiseDamage:
+                mutAtt.poiseDamage.Add(value);
                 break;
 
             case ModifyStat.CriticalRate:
                 mutAtt.critRate += value;
                 break;
 
-            default:
-                Debug.LogError($"Invalid configuration. ImmediateEngagementStatus cannot have modify type {modifyStat} with register mode {registerTo}");
-                break;
-        }
-    }
-
-    private void ModifyDefend(Unit thisUnit, ref MutableDefense mutDef, Unit attacker) {
-        switch (modifyStat) {
             case ModifyStat.DamageReduction:
-                mutDef.damageReduction += value;
+                mutAtt.damageReduction += value;
                 break;
 
             case ModifyStat.CriticalAvoid:
-                mutDef.critAvoidRate += value;
+                mutAtt.critAvoidRate += value;
                 break;
-            
+
             default:
-                Debug.LogError($"Invalid configuration. ImmediateEngagementStatus cannot have modify type {modifyStat} with register mode {registerTo}");
+                Debug.LogError($"Invalid configuration. ImmediateEngagementStatus cannot have modify type {modifyStat}");
                 break;
         }
     }

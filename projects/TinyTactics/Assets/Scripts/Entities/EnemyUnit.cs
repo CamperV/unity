@@ -219,12 +219,8 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
             ChangeState(EnemyUnitFSM.Attacking);
             //
             engagementResolveFlag = true;
-            StartCoroutine( engagement.Resolve() );
-            StartCoroutine(
-                engagement.ExecuteAfterResolving(() => {
-                    engagementResolveFlag = false;
-                })
-            );
+            EngagementSystem.inst.Resolve(engagement);
+            EngagementSystem.inst.ExecuteAfterResolving(() => engagementResolveFlag = false);
 
             // WAIT FOR ENGAGEMENT TO RESOLVE
             yield return new WaitUntil(() => state == EnemyUnitFSM.Idle);

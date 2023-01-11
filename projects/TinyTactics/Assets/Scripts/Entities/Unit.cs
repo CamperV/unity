@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 using TMPro;
 
 [RequireComponent(typeof(SpriteAnimator))]
 [RequireComponent(typeof(UnitPathfinder))]
-[RequireComponent(typeof(statSystem))]
+[RequireComponent(typeof(StatSystem))]
 [RequireComponent(typeof(MessageEmitter))]
 [RequireComponent(typeof(MutationSystem))]
 [RequireComponent(typeof(StatusSystem))]
@@ -23,17 +24,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     protected GridPosition _startingGridPosition; // this is for maintaining a revertable state when prevewing Engagements, etc
 
     // these are used so that our various components can modify the mutable Attack/Defenses that are created during an Engagement
-    public delegate void AttackGeneration(Unit thisUnit, ref MutableAttack mutAtt, Unit target);
-    public event AttackGeneration OnAttack;
-
-    public delegate void DefenseGeneration(Unit thisUnit, ref MutableDefense mutDef, Unit attacker);
-    public event DefenseGeneration OnDefend;
-
-    public delegate void ComboAttackGeneration(Unit thisUnit, ref MutableComboAttack mutCombo, Unit target);
-    public event ComboAttackGeneration OnComboAttack;
-
-    public delegate void FinalEngagementGeneration(ref MutableEngagementStats mutES);
-    public event FinalEngagementGeneration OnFinalEngagementGeneration;
+    public delegate void AttackGeneration(Unit thisUnit, ref MutableAttack mutAtt, Unit other);
+    public event AttackGeneration OnAttackGeneration;
+    public event AttackGeneration OnDefenseGeneration;
 
     // simply used to signal when a unit has been hit, dodged. etc
     public delegate void OnAction();
@@ -258,18 +251,23 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         FireOnFinishTurnEvent();
     }
 
-	public bool SufferDamage(int incomingDamage, Vector3 fromSource, bool isCritical = false) {
+    public bool SufferPoiseDamage(int incomingDamage, GameObject fromSource) {
+        statSystem.UpdatePoise(statSystem.CURRENT_POISE - incomingDamage, statSystem.MAX_POISE);
+        return statSystem.CURRENT_POISE > 0;    // can you counterattack
+    }
+
+	public bool SufferDamage(int incomingDamage, GameObject fromSource, bool isCritical = false) {
         if (isCritical) {
-            messageEmitter.EmitTowards(MessageEmitter.MessageType.CritDamage, $"{incomingDamage}!", fromSource);
+            messageEmitter.EmitTowards(MessageEmitter.MessageType.CritDamage, $"{incomingDamage}!", fromSource.transform.position);
             TriggerVeryHurtAnimation();
 
         } else {
             if (incomingDamage > 0) {
-                messageEmitter.EmitTowards(MessageEmitter.MessageType.Damage, $"{incomingDamage}", fromSource);
+                messageEmitter.EmitTowards(MessageEmitter.MessageType.Damage, $"{incomingDamage}", fromSource.transform.position);
                 TriggerHurtAnimation();
 
             } else {
-                messageEmitter.EmitTowards(MessageEmitter.MessageType.NoDamage, $"{incomingDamage}", fromSource);
+                messageEmitter.EmitTowards(MessageEmitter.MessageType.NoDamage, $"{incomingDamage}", fromSource.transform.position);
                 TriggerNoDamageHurtAnimation();
             }
         }
@@ -381,14 +379,11 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         StartCoroutine( spriteAnimator.SmoothCosX(32f, 0.015f, 0f, 1.0f) );
     }
 
-    public void FireOnAttackEvent(ref MutableAttack mutAtt, Unit target) => OnAttack?.Invoke(this, ref mutAtt, target);
-    public void FireOnDefendEvent(ref MutableDefense mutDef, Unit attacker) => OnDefend?.Invoke(this, ref mutDef, attacker);
-    public void FireOnComboAttackEvent(ref MutableComboAttack mutCombo, Unit target) => OnComboAttack?.Invoke(this, ref mutCombo, target);
-    public void FireOnFinalEngagementGeneration(ref MutableEngagementStats mutES) => OnFinalEngagementGeneration?.Invoke(ref mutES);
+    public void FireOnAttackGenerationEvent(ref MutableAttack mutAtt, Unit other) => OnAttackGeneration?.Invoke(this, ref mutAtt, other);
+    public void FireOnDefenseGenerationEvent(ref MutableAttack mutAtt, Unit other) => OnDefenseGeneration?.Invoke(this, ref mutAtt, other);
 
     public void FireOnAvoidEvent() {
         TriggerMissAnimation();
-
         OnAvoid?.Invoke();
     }
     public void FireOnWaitEvent() => OnWait?.Invoke();

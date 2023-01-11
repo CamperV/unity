@@ -110,17 +110,18 @@ public class EnemyBrain : MonoBehaviour
 		GridPosition savedGridPosition = thisUnit.gridPosition;
 
 		thisUnit.gridPosition = fromPosition;
+		// TODO: fire OnMove event here
+
 		Engagement potentialEngagement = new Engagement(thisUnit, target);
-		EngagementStats finalStats = potentialEngagement.SimulateAttack();
+		int meanDamage = potentialEngagement.attacks.Sum(a => a.damage.Mean);
 
 		thisUnit.gridPosition = savedGridPosition;
 		Debug.Assert(thisUnit.gridPosition == savedGridPosition);
 
-		float medianDamage = (finalStats.finalDamageContext.Min + finalStats.finalDamageContext.Max) / 2f;
-		return (int)medianDamage;
+		return meanDamage;
 	}
 
-	private bool CounterAttackPossible(DamagePackage dp) => Engagement.CounterAttackPossible(thisUnit, dp.target, dp.fromPosition);
+	private bool CounterAttackPossible(DamagePackage dp) => EngagementSystem.CounterAttackPossible(thisUnit, dp.target, dp.fromPosition);
 	private int  PotentialDamage(DamagePackage dp)       => dp.potentialDamage;
 	private int  ClosestPosition(DamagePackage dp) 		 => thisUnit.gridPosition.ManhattanDistance(dp.fromPosition);
 	private int  FarthestRange(DamagePackage dp)   		 => dp.target.gridPosition.ManhattanDistance(dp.fromPosition);

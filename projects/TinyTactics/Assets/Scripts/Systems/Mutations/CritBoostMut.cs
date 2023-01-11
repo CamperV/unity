@@ -7,14 +7,14 @@ using UnityEngine;
 public class CritBoostMut : Mutation
 {
     public override void OnAcquire(Unit thisUnit) {
-        thisUnit.OnAttack += Boost;
+        thisUnit.OnAttackGeneration += Boost;
 	}
     public override void OnRemove(Unit thisUnit) {
-        thisUnit.OnAttack -= Boost;
+        thisUnit.OnAttackGeneration -= Boost;
 	}
 
     private void Boost(Unit thisUnit, ref MutableAttack mutAtt, Unit target) {
         mutAtt.critRate += 25;
-        mutAtt.AddMutator(this);
+        mutAtt.AddAttackMutator(this);
     }
 }
