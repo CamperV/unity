@@ -51,6 +51,7 @@ public class Engagement
     private Attack GenerateAttack(Unit generator, Unit receiver) {
         MutableAttack mutableAttack = new MutableAttack(
             new Damage(generator.EquippedWeapon.DamageRange),   // from attacker
+            new Damage(generator.EquippedWeapon.POISE_ATK),
             generator.EquippedWeapon.CRITICAL,                  // from attacker
             receiver.statSystem.DAMAGE_REDUCTION                // from defender
         );

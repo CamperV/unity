@@ -70,7 +70,9 @@ public class MiniBar_UI : MonoBehaviour
     }
 
     // visually flash the bar to demonstrate the health loss
-    public void PreviewDamage(int minDamage, int maxDamage) {
+    public void PreviewDamage(int minDamage, int maxDamage) =>_PreviewDamage(minDamage, maxDamage);
+    public void PreviewDamage(Damage damage) => _PreviewDamage(damage.min, damage.max);
+    private void _PreviewDamage(int minDamage, int maxDamage) {
         // flash the full value of health loss
         flashingBar.gameObject.SetActive(true);
         flashingBar.transform.localScale = barLevel.transform.localScale;

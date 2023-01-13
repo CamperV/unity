@@ -83,10 +83,6 @@ public class EngagementSystem : MonoBehaviour
             A.personalAudioFX.PlayCriticalFX();        
         }
 
-        // then the meat
-        // first, poise damage
-        B.SufferPoiseDamage(attackResolution.poiseDamageDealt, A.gameObject);
-
         // then real damage
         // ouchies, play the animations for hurt
         bool survived = B.SufferDamage(attackResolution.damageDealt, A.gameObject, isCritical: attackResolution.isCrit);
@@ -95,6 +91,9 @@ public class EngagementSystem : MonoBehaviour
         } else {
             A.FireOnDefeatTargetEvent(B);
         }
+
+        // then do poise damage
+        B.SufferPoiseDamage(attackResolution.poiseDamageDealt, A.gameObject);
         
         // fire the event after suffering damage, so the animations are queued in the right order
         // this also means you will not be debuffed or anything if you die

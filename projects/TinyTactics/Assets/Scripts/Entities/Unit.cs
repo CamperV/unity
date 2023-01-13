@@ -95,6 +95,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     // convenience
     public bool MouseHovering => battleMap.CurrentMouseGridPosition == gridPosition;
+    public bool Alive => statSystem.CURRENT_HP > 0;
 
     protected virtual void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
@@ -251,31 +252,54 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     }
 
     public void SufferPoiseDamage(int incomingDamage, GameObject fromSource) {
-        statSystem.UpdatePoise(statSystem.CURRENT_POISE - incomingDamage, statSystem.MAX_POISE);
+        // only animate if you're alive and you're going from Some -> None, not if you're already empty of Poise
+        if (statSystem.CounterAttackAvailable) {
+            statSystem.UpdatePoise(statSystem.CURRENT_POISE - incomingDamage, statSystem.MAX_POISE);
+            if (Alive && !statSystem.CounterAttackAvailable) TriggerPoiseBreak();
+        }
+    }
+
+    public void TriggerPoiseBreak() {
+        StartCoroutine( PoiseBreak() );
+    }
+
+    private IEnumerator PoiseBreak() {
+        personalAudioFX.PlayBreakFX();
+        messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"BREAK");
+
+        StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorIndigo) );
+        StartCoroutine( spriteAnimator.SmoothCosX(32f, 0.015f, 0f, 1.0f) );
+        yield break;
     }
 
 	public bool SufferDamage(int incomingDamage, GameObject fromSource, bool isCritical = false) {
+        // animation + message control
         if (isCritical) {
             messageEmitter.EmitTowards(MessageEmitter.MessageType.CritDamage, $"{incomingDamage}!", fromSource.transform.position);
             TriggerVeryHurtAnimation();
 
         } else {
+            // normal damage
             if (incomingDamage > 0) {
                 messageEmitter.EmitTowards(MessageEmitter.MessageType.Damage, $"{incomingDamage}", fromSource.transform.position);
                 TriggerHurtAnimation();
 
+            // no damage
             } else {
                 messageEmitter.EmitTowards(MessageEmitter.MessageType.NoDamage, $"{incomingDamage}", fromSource.transform.position);
                 TriggerNoDamageHurtAnimation();
             }
         }
 
+        // perform actual subtraction
         statSystem.UpdateHP(statSystem.CURRENT_HP - incomingDamage, statSystem.MAX_HP);
-		bool survived = statSystem.CURRENT_HP > 0;
 
-        // ded
-        if (!survived) TriggerDeath();
-        return survived;
+        // lethal
+        if (!Alive) {
+            TriggerDeath();
+            personalAudioFX.PlayLethalDamageFX();   // this is different than DeathFX
+        }
+        return Alive;
 	}
 
     public void TriggerDeath() {

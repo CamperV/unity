@@ -9,7 +9,7 @@ public class UnitUI : MonoBehaviour
 {
     [SerializeField] private MiniBar_UI healthBar;
     [SerializeField] private SegBar_UI damageReductionBar;
-    [SerializeField] private MiniBar_UI breakBar;
+    [SerializeField] private MiniBar_UI poiseBar;
     [SerializeField] private StatusBarUI statusBar;
 
     [SerializeField] private DisplayValue_UI healthValueDisplay;
@@ -25,20 +25,20 @@ public class UnitUI : MonoBehaviour
     void Start() {
         healthBar.AttachTo(boundUnit);
         damageReductionBar.AttachTo(boundUnit);
-        breakBar.AttachTo(boundUnit);
+        poiseBar.AttachTo(boundUnit);
         statusBar.AttachTo(boundUnit);
 
         healthValueDisplay.AttachTo(boundUnit);
     }
 
-    public void PreviewDamage(int minDamage, int maxDamage, bool isAggressor = false) {
+    public void PreviewDamage(Damage damage, Damage poiseDamage, bool isAggressor = false) {
         // if you're going to take damage
-        if (maxDamage > 0) {
-            healthBar.PreviewDamage(minDamage, maxDamage);
+        if (damage.max > 0) {
+            healthBar.PreviewDamage(damage);
         }
 
         // if you're DEFINITELY gonna die
-        if (minDamage >= boundUnit.statSystem.CURRENT_HP) {
+        if (damage.min >= boundUnit.statSystem.CURRENT_HP) {
             deathIndicator.gameObject.SetActive(true);
         }
 
@@ -46,10 +46,16 @@ public class UnitUI : MonoBehaviour
         // } else if (!isAggressor) {
         //     targetIndicator.gameObject.SetActive(true);
         // }
+
+        // and also poise
+        if (poiseDamage.max > 0) {
+            poiseBar.PreviewDamage(poiseDamage);
+        }
     }
 
     public void RevertPreview() {
         healthBar.RevertPreview();
+        poiseBar.RevertPreview();
         // targetIndicator.gameObject.SetActive(false);
         deathIndicator.gameObject.SetActive(false);
     }

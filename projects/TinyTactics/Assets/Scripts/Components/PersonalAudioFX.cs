@@ -15,8 +15,10 @@ public class PersonalAudioFX : MonoBehaviour
     public AudioFXBundle avoidAudioFXBundle;
     public AudioFXBundle healAudioFXBundle;
     public AudioFXBundle deathAudioFXBundle;
+    public AudioFXBundle breakAudioFXBundle;
     public AudioFXBundle criticalAudioFXBundle;
     public AudioFXBundle blockAudioFXBundle;
+    public AudioFXBundle lethalAudioFXBundle;
 
     public bool IsPlaying() => audioSource.isPlaying;
 
@@ -57,6 +59,14 @@ public class PersonalAudioFX : MonoBehaviour
 
     public void PlayBlockFX() {
         audioSource.PlayOneShot(blockAudioFXBundle.RandomClip(), 1f);
+    }
+
+    public void PlayBreakFX() {
+        audioSource.PlayOneShot(breakAudioFXBundle.RandomClip(), 1f);
+    }
+
+    public void PlayLethalDamageFX() {
+        audioSource.PlayOneShot(lethalAudioFXBundle.RandomClip(), 1f);
     }
 
     // from the weapon itself

@@ -11,7 +11,7 @@ public class Weapon : Item, IEquipable
 
     public int MIN_ATK;
     public int MAX_ATK;
-    public int POISE_ATK;
+    public int POISE_ATK = 1;
     public int COMBO_ATK;
     public int MIN_RANGE;
     public int MAX_RANGE;
