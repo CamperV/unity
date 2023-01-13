@@ -13,11 +13,11 @@ public class EngagementPreview_UnitUI : MonoBehaviour, IEngagementPreviewer
 		UnitUI aggUI = potentialEngagement.A.GetComponentInChildren<UnitUI>();
 		UnitUI defUI = potentialEngagement.B.GetComponentInChildren<UnitUI>();
 
-		Damage fromEnemy_Health = potentialEngagement.counterAttacks.Select(ca => ca.damage).Aggregate((a, b) => a + b);
-		Damage fromEnemy_Poise = potentialEngagement.counterAttacks.Select(ca => ca.poiseDamage).Aggregate((a, b) => a + b);
+		Damage fromEnemy_Health = potentialEngagement.TotalDamage(counter: true);
+		Damage fromEnemy_Poise = potentialEngagement.TotalPoiseDamage(counter: true);
 		//
-		Damage fromPlayer_Health = potentialEngagement.attacks.Select(a => a.damage).Aggregate((a, b) => a + b);
-		Damage fromPlayer_Poise = potentialEngagement.attacks.Select(a => a.poiseDamage).Aggregate((a, b) => a + b);
+		Damage fromPlayer_Health = potentialEngagement.TotalDamage();
+		Damage fromPlayer_Poise = potentialEngagement.TotalPoiseDamage();
 
 		// show the damage on the health bars proper
 		aggUI.PreviewDamage(fromEnemy_Health, fromEnemy_Poise, isAggressor: true);

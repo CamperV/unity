@@ -48,6 +48,16 @@ public class Engagement
         }
     }
 
+    public Damage TotalDamage(bool counter = false) {
+        if (counter) return counterAttacks.Select(ca => ca.damage).Aggregate((a, b) => a + b);
+        else return attacks.Select(ca => ca.damage).Aggregate((a, b) => a + b);
+    }
+
+    public Damage TotalPoiseDamage(bool counter = false) {
+        if (counter) return counterAttacks.Select(ca => ca.poiseDamage).Aggregate((a, b) => a + b);
+        else return attacks.Select(ca => ca.poiseDamage).Aggregate((a, b) => a + b);
+    }
+
     private Attack GenerateAttack(Unit generator, Unit receiver) {
         MutableAttack mutableAttack = new MutableAttack(
             new Damage(generator.EquippedWeapon.DamageRange),   // from attacker
