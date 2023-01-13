@@ -37,6 +37,7 @@ public class StatSystem : MonoBehaviour
     public int MULTISTRIKE;
 
     public int MissingHP => (MAX_HP - CURRENT_HP);
+    public bool CounterAttackAvailable => (CURRENT_POISE > 0);
 
     [Serializable]
     public struct BaseStats {
@@ -73,9 +74,19 @@ public class StatSystem : MonoBehaviour
         UpdateHPEvent?.Invoke(CURRENT_HP, MAX_HP);       
     }
 
+    public void UpdateHP(int newValue) {
+        CURRENT_HP = Mathf.Clamp(newValue, 0, MAX_HP);
+        UpdateHPEvent?.Invoke(CURRENT_HP, MAX_HP);       
+    }
+
     public void UpdatePoise(int newValue, int maxValue) {
         CURRENT_POISE = Mathf.Clamp(newValue, 0, maxValue);
         MAX_POISE = Mathf.Clamp(maxValue, 0, _MAX_STAT_VALUE);
+        UpdatePoiseEvent?.Invoke(CURRENT_POISE, MAX_POISE);
+    }
+
+    public void UpdatePoise(int newValue) {
+        CURRENT_POISE = Mathf.Clamp(newValue, 0, MAX_POISE);
         UpdatePoiseEvent?.Invoke(CURRENT_POISE, MAX_POISE);
     }
 

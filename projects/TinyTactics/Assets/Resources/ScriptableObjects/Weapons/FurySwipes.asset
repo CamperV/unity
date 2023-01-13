@@ -9,18 +9,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1df54d04c8f949f45b432bbf23a36bdf, type: 3}
-  m_Name: Scratch_D4
+  m_Script: {fileID: 11500000, guid: afbe29b033452c04091fda6d4c049d73, type: 3}
+  m_Name: FurySwipes
   m_EditorClassIdentifier: 
-  name: Scratch
+  name: Fury Swipes
   sprite: {fileID: 21300000, guid: b654a18b119453b46a5198a845cda52b, type: 3}
   <tags>k__BackingField: []
   audioFXBundle_Attack: {fileID: 11400000, guid: 8e0ed2b5c7c27544ba217af8d22c00d4, type: 2}
   audioFXBundle_Equip: {fileID: 11400000, guid: 8e0ed2b5c7c27544ba217af8d22c00d4, type: 2}
+  MIN_ATK: 2
+  MAX_ATK: 2
+  POISE_ATK: 1
+  COMBO_ATK: 2
   MIN_RANGE: 1
   MAX_RANGE: 1
-  CRITICAL: 0
+  CRITICAL: 10
   attachedMutations: []
-  attachedStatuses: []
-  dice:
-  - {fileID: 11400000, guid: ab11394dc2875a346aaabaa288bb3750, type: 2}
+  attachedStatuses:
+  - {fileID: 11400000, guid: 03b7a8ce984bc84438777d2204895823, type: 2}

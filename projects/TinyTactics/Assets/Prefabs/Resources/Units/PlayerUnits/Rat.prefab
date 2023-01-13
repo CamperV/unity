@@ -40,7 +40,6 @@ MonoBehaviour:
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
-  <counterAttackAvailable>k__BackingField: 1
   unitCommandSystem: {fileID: 0}
   experienceSystem: {fileID: 0}
 --- !u!114 &2210107795537413021
@@ -117,7 +116,7 @@ PrefabInstance:
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: fca85ddffa539d64db5dfa28e31d149a, type: 2}
+      objectReference: {fileID: 11400000, guid: a695202b7832f2548b651bfbc9508428, type: 2}
     - target: {fileID: -2537640162373992601, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: weapons.Array.data[1]
       value: 

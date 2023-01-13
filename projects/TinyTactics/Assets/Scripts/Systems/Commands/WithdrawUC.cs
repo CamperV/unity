@@ -22,7 +22,7 @@ public class WithdrawUC : UnitCommand
             () => thisUnit.TriggerBuffAnimation(audioFXBundle.RandomClip(), "DEF")
         );
         thisUnit.statusSystem.AddStatus(withdrawBuff, so_Status.CreateStatusProviderID(thisUnit, withdrawBuff));
-        thisUnit.counterAttackAvailable = false; // until it starts its turn again
+        thisUnit.statSystem.UpdatePoise(0);
 
         return ExitSignal.ForceFinishTurn;
     }

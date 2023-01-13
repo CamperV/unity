@@ -87,7 +87,6 @@ MonoBehaviour:
   debugStateLabel: {fileID: 0}
   <turnActive>k__BackingField: 0
   <moveAvailable>k__BackingField: 0
-  <counterAttackAvailable>k__BackingField: 1
   unitCommandSystem: {fileID: 0}
   experienceSystem: {fileID: 0}
 --- !u!1001 &8953324308557356850

@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public abstract class Weapon : Item, IEquipable
+[CreateAssetMenu (menuName = "Items/Weapon")]
+public class Weapon : Item, IEquipable
 {
     public AudioFXBundle audioFXBundle_Attack;
     public AudioFXBundle audioFXBundle_Equip;
 
+    public int MIN_ATK;
+    public int MAX_ATK;
+    public int POISE_ATK;
+    public int COMBO_ATK;
     public int MIN_RANGE;
     public int MAX_RANGE;
     public int CRITICAL;
@@ -17,6 +22,8 @@ public abstract class Weapon : Item, IEquipable
     // use this to differentiate some weapons. For example, a "heavy" weapon might reduce REFLEX
     public List<Mutation> attachedMutations;
     public List<so_Status> attachedStatuses;
+
+    public Pair<int, int> DamageRange => new Pair<int, int>(MIN_ATK, MAX_ATK);
 
     // IEquipable
     public virtual void Equip(Unit thisUnit) {
@@ -40,9 +47,11 @@ public abstract class Weapon : Item, IEquipable
         }
     }
 
-    public abstract Pair<int, int> DamageRange(Unit thisUnit);
-    public abstract int RollDamage(Unit thisUnit);
-    public abstract int ComboDamage(Unit thisUnit);
-    public abstract string DisplayRawDamage(Unit thisUnit);
-    public abstract Dictionary<int, float> GenerateProjection(Unit thisUnit);
+    public string DisplayDamageRange() {
+        if (MIN_ATK == MAX_ATK) {
+            return $"{MIN_ATK}";
+        } else {
+            return $"{MIN_ATK} - {MAX_ATK}";
+        }
+    }
 }

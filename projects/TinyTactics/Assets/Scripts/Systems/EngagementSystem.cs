@@ -46,12 +46,15 @@ public class EngagementSystem : MonoBehaviour
         //
 
         // if we can counterattack:
+        // we check inside the loop, because theoretically a counter attack can drain POISE, which will remove the ability to counter
         if (defenderSurvived) {
             foreach (Attack counterAttack in engagement.counterAttacks) {
-                aggressorSurvived = ProcessAttack(engagement.B, engagement.A, counterAttack);
-                if (!aggressorSurvived) break;
+                if (engagement.B.statSystem.CounterAttackAvailable) {
+                    aggressorSurvived = ProcessAttack(engagement.B, engagement.A, counterAttack);
+                    if (!aggressorSurvived) break;
 
-                yield return new WaitForSeconds(delayBetweenAttacks);
+                    yield return new WaitForSeconds(delayBetweenAttacks);
+                }
             }
         }
         
@@ -82,7 +85,7 @@ public class EngagementSystem : MonoBehaviour
 
         // then the meat
         // first, poise damage
-        bool _ = B.SufferPoiseDamage(attackResolution.poiseDamageDealt, A.gameObject);
+        B.SufferPoiseDamage(attackResolution.poiseDamageDealt, A.gameObject);
 
         // then real damage
         // ouchies, play the animations for hurt
@@ -136,7 +139,7 @@ public class EngagementSystem : MonoBehaviour
             def.EquippedWeapon.MIN_RANGE,
             def.EquippedWeapon.MAX_RANGE
         );
-        return defenderTargetRange.ValidTarget(agg.gridPosition) && def.counterAttackAvailable;
+        return defenderTargetRange.ValidTarget(agg.gridPosition) && def.statSystem.CounterAttackAvailable;
     }
 
     public static bool CounterAttackPossible(Unit agg, Unit def, GridPosition fromPosition) {
@@ -145,6 +148,6 @@ public class EngagementSystem : MonoBehaviour
             def.EquippedWeapon.MIN_RANGE,
             def.EquippedWeapon.MAX_RANGE
         );
-        return defenderTargetRange.ValidTarget(fromPosition) && def.counterAttackAvailable;
+        return defenderTargetRange.ValidTarget(fromPosition) && def.statSystem.CounterAttackAvailable;
     }
 }

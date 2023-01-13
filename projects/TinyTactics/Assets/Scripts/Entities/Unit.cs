@@ -89,15 +89,12 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     // IUnitPhaseInfo
     [field: SerializeField] public bool turnActive { get; set; } = false;
     [field: SerializeField] public bool moveAvailable { get; set; } = false;
-    [field: SerializeField] public bool counterAttackAvailable { get; set; } = true;
-
+    
     // IGUID
     public Guid GUID { get; set; }
 
-    protected Color originalColor = Color.magenta; // aka no texture, lol
-
+    // convenience
     public bool MouseHovering => battleMap.CurrentMouseGridPosition == gridPosition;
-    public string logTag => (GetType() == typeof(PlayerUnit)) ? "PLAYER_UNIT" : "ENEMY_UNIT";
 
     protected virtual void Awake() {
         spriteAnimator = GetComponent<SpriteAnimator>();
@@ -234,7 +231,9 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     public virtual void StartTurn() {
         turnActive = true;
-        counterAttackAvailable = true;
+        
+        // regain poise
+        statSystem.UpdatePoise(statSystem.MAX_POISE, statSystem.MAX_POISE);
 
         // finally, store your starting location
         // this is relevant for RevertTurn calls
@@ -251,9 +250,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         FireOnFinishTurnEvent();
     }
 
-    public bool SufferPoiseDamage(int incomingDamage, GameObject fromSource) {
+    public void SufferPoiseDamage(int incomingDamage, GameObject fromSource) {
         statSystem.UpdatePoise(statSystem.CURRENT_POISE - incomingDamage, statSystem.MAX_POISE);
-        return statSystem.CURRENT_POISE > 0;    // can you counterattack
     }
 
 	public bool SufferDamage(int incomingDamage, GameObject fromSource, bool isCritical = false) {

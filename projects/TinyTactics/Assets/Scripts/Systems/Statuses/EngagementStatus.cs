@@ -9,8 +9,7 @@ public abstract class EngagementStatus : so_Status, IValueStatus
         Damage,
         PoiseDamage,
         CriticalRate,
-        DamageReduction,
-        CriticalAvoid
+        DamageReduction
     };
     public ModifyStat modifyStat;
 
@@ -43,10 +42,6 @@ public abstract class EngagementStatus : so_Status, IValueStatus
 
             case ModifyStat.DamageReduction:
                 mutAtt.damageReduction += value;
-                break;
-
-            case ModifyStat.CriticalAvoid:
-                mutAtt.critAvoidRate += value;
                 break;
 
             default:

@@ -15,7 +15,6 @@ public struct Attack
 
     // from the defender
     public int damageReduction;
-    public int critAvoidRate;
     //
     public List<MutatorDisplayData> attackMutators;
     public List<MutatorDisplayData> defenseMutators;
@@ -25,7 +24,6 @@ public struct Attack
         poiseDamage = mutAtt.poiseDamage;
         critRate = mutAtt.critRate;
         damageReduction = mutAtt.damageReduction;
-        critAvoidRate = mutAtt.critAvoidRate;
         //
         attackMutators = new List<MutatorDisplayData>(mutAtt.attackMutators);
         defenseMutators = new List<MutatorDisplayData>(mutAtt.defenseMutators);
@@ -38,7 +36,7 @@ public struct Attack
         int baseDamageDealt = damage.Resolve();
         int poiseDamageDealt = poiseDamage.Resolve();
 
-        bool isCrit = Random.Range(0, 100) < (critRate - critAvoidRate);
+        bool isCrit = Random.Range(0, 100) < critRate;
         int outgoingDamage = (isCrit) ? baseDamageDealt*2 : baseDamageDealt;
         int damageDealt = (int)Mathf.Max(0, outgoingDamage - damageReduction);
 
@@ -58,27 +56,24 @@ public class MutableAttack
 
     // from the defender
     public int damageReduction;
-    public int critAvoidRate;  
     //
     public List<MutatorDisplayData> attackMutators;
     public List<MutatorDisplayData> defenseMutators;
 
-    public MutableAttack(Damage d, int crit, int dr, int critAvo) {
+    public MutableAttack(Damage d, int crit, int dr) {
         damage = d;
         poiseDamage = new Damage(1);
         critRate = crit;
         damageReduction = dr;
-        critAvoidRate = critAvo;
         //
         attackMutators = new List<MutatorDisplayData>();
         defenseMutators = new List<MutatorDisplayData>();
     }
-    public MutableAttack(Damage d, Damage pd, int crit, int dr, int critAvo) {
+    public MutableAttack(Damage d, Damage pd, int crit, int dr) {
         damage = d;
         poiseDamage = pd;
         critRate = crit;
         damageReduction = dr;
-        critAvoidRate = critAvo;
         //
         attackMutators = new List<MutatorDisplayData>();
         defenseMutators = new List<MutatorDisplayData>();

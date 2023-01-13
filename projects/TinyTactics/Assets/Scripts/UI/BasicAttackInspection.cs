@@ -13,7 +13,7 @@ public class BasicAttackInspection : UnitInspector
 
 	public override void SetUnitInfo(Unit unit) {
 		// stats first
-		Pair<int, int> dmgRange = unit.EquippedWeapon.DamageRange(unit);
+		Pair<int, int> dmgRange = unit.EquippedWeapon.DamageRange;
 		if (dmgRange.First == dmgRange.Second) {
 			atkValue.SetText($"{dmgRange.First}");
 		} else {

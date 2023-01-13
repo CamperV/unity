@@ -34,7 +34,7 @@ public class UnitInspector_Stats : UnitInspector
 		weaponTags_TMP.SetText(string.Join(", ", tags));
 
 		// stats
-		weaponDamage_TMP.SetText(unit.EquippedWeapon.DisplayRawDamage(unit));
+		weaponDamage_TMP.SetText(unit.EquippedWeapon.DisplayDamageRange());
 		
 		Pair<int, int> range = new Pair<int, int>(unit.EquippedWeapon.MIN_RANGE, unit.EquippedWeapon.MAX_RANGE);
 		string rangeExt = (range.First == range.Second) ? "" : $" - {range.Second}";
