@@ -40,6 +40,7 @@ public struct Attack
         int outgoingDamage = (isCrit) ? baseDamageDealt*2 : baseDamageDealt;
         int damageDealt = (int)Mathf.Max(0, outgoingDamage - damageReduction);
 
+        // written this way to reserve space for firing an optional event
         MutableAttackResolution mutableAttackResolution = new MutableAttackResolution(damageDealt, poiseDamageDealt, isCrit);
         return new AttackResolution(mutableAttackResolution);
     }

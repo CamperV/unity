@@ -59,7 +59,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 6d0f1d67b39c5a84699654d2b919f3ac, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1248,8 +1248,6 @@ MonoBehaviour:
   cascadeAfter: {fileID: 0}
   activePosition: {x: 0, y: 0}
   inactivePosition: {x: 0, y: 0}
-  destination: {x: 0, y: 0}
-  active: 0
 --- !u!1 &5787423317201146170
 GameObject:
   m_ObjectHideFlags: 0

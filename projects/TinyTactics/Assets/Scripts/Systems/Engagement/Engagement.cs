@@ -32,18 +32,12 @@ public class Engagement
         for (int s = 0; s < (A.statSystem.MULTISTRIKE+1); s++) {
             attacks.Add( GenerateAttack(A, B) );
 
-            // send out Engagement combo signal here
-            // ie, Broadcast to all Units - an Attack has been generated, please contribute if able
-            AttacksQueuedAgainst?.Invoke(B, ref attacks);
+            // generate potential combo here
         }
 
         if (EngagementSystem.CounterAttackPossible(A, B)) {
             for (int s = 0; s < (B.statSystem.MULTISTRIKE+1); s++) {
                 counterAttacks.Add( GenerateAttack(B, A) );
-                
-                // send out Engagement combo signal here
-                // ie, Broadcast to all Units - an Attack has been generated, please contribute if able
-                AttacksQueuedAgainst?.Invoke(A, ref counterAttacks);
             }
         }
     }
@@ -61,7 +55,7 @@ public class Engagement
     private Attack GenerateAttack(Unit generator, Unit receiver) {
         MutableAttack mutableAttack = new MutableAttack(
             new Damage(generator.EquippedWeapon.DamageRange),   // from attacker
-            new Damage(generator.EquippedWeapon.POISE_ATK),
+            new Damage(generator.EquippedWeapon.POISE_ATK),     // from attacker
             generator.EquippedWeapon.CRITICAL,                  // from attacker
             receiver.statSystem.DAMAGE_REDUCTION                // from defender
         );

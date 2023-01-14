@@ -43,7 +43,7 @@ public class AttackUC : TargetableUC
         EnemyUnit enemy = EnemyAt(thisUnit, interactAt);
 
         _engagementResolveFlag = true;
-        Engagement engagement = new Engagement(thisUnit, enemy);
+        Engagement engagement = EngagementSystem.CreateEngagement(thisUnit, enemy);
         EngagementSystem.inst.Resolve(engagement);
 
         // wait until the engagement has ended
@@ -63,7 +63,7 @@ public class AttackUC : TargetableUC
 
         // create and display EngagementPreviews here
         EnemyUnit enemy = EnemyAt(thisUnit, hoverOver);
-        EngagementPreviewSystem.inst.EnablePreview(new Engagement(thisUnit, enemy));
+        EngagementPreviewSystem.inst.EnablePreview(EngagementSystem.CreateEngagement(thisUnit, enemy));
     }
 
     ////////////////////////////////////////////////////////////////////

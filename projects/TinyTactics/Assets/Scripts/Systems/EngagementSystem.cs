@@ -4,11 +4,16 @@ using System;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class EngagementSystem : MonoBehaviour
 {
     // the class responsible for actually executing/resolving Engagements
     public static EngagementSystem inst = null; // enforces singleton behavior
+
+    // just a nice flag
+	public UnityEvent<Engagement> OnCreateEngagement;
 	
     void Awake() {
  		if (inst == null) {
@@ -21,6 +26,12 @@ public class EngagementSystem : MonoBehaviour
     [SerializeField] private float delayBetweenAttacks = 0.5f;
     [SerializeField] private float delayBeforeCounter = 1f;
     private bool resolvedFlag = false;
+
+    public static Engagement CreateEngagement(Unit a, Unit b) {
+        Engagement e = new Engagement(a, b);
+        EngagementSystem.inst.OnCreateEngagement?.Invoke(e);
+        return e;
+    }
 
     public void Resolve(Engagement engagement) => StartCoroutine(_Resolve(engagement));
     private IEnumerator _Resolve(Engagement engagement) {

@@ -112,7 +112,7 @@ public class EnemyBrain : MonoBehaviour
 		thisUnit.gridPosition = fromPosition;
 		// TODO: fire OnMove event here
 
-		Engagement potentialEngagement = new Engagement(thisUnit, target);
+		Engagement potentialEngagement = EngagementSystem.CreateEngagement(thisUnit, target);
 		int meanDamage = potentialEngagement.attacks.Sum(a => a.damage.Mean);
 
 		thisUnit.gridPosition = savedGridPosition;

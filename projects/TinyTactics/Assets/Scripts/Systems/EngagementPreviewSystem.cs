@@ -20,7 +20,6 @@ public class EngagementPreviewSystem : MonoBehaviour
     // to have children register themselves to various flags
     // this allows for nice, separable components
     public static EngagementPreviewSystem inst = null; // enforces singleton behavior
-
     public Engagement currentEngagement;
 	
     void Awake() {
@@ -31,9 +30,8 @@ public class EngagementPreviewSystem : MonoBehaviour
 		}
     }
 
-	[Serializable] public class EngagementPreviewEvent : UnityEvent<Engagement>{}
-	public EngagementPreviewEvent EnablePreviewEvent;
-	public EngagementPreviewEvent DisablePreviewEvent;
+	public UnityEvent<Engagement> EnablePreviewEvent;
+	public UnityEvent<Engagement> DisablePreviewEvent;
 
     public void EnablePreview(Engagement _engagement) {
         currentEngagement = _engagement;
