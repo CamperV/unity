@@ -52,11 +52,11 @@ public class EngagementPreviewWindow : MonoBehaviour
 		if (isCounter == false) {
 			panelToInstantiate = panelPrefab;
 			container = panelContainer;
-			numStrikes = potentialEngagement.A.statSystem.MULTISTRIKE+1;
+			numStrikes = potentialEngagement.initiator.statSystem.MULTISTRIKE+1;
 		} else {
 			panelToInstantiate = panelPrefab_Counter;
 			container = panelContainer_Counter;
-			numStrikes = potentialEngagement.B.statSystem.MULTISTRIKE+1;
+			numStrikes = potentialEngagement.targets[0].statSystem.MULTISTRIKE+1;
 		}
 
 		// attack/counter

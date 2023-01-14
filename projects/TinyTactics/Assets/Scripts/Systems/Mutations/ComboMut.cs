@@ -8,9 +8,9 @@ public class ComboMut : Mutation
 {
     public override void OnAcquire(Unit thisUnit) {
         // add thisUnit to the Combo Invocation list
-        // ComboSystem.inst.
+        EngagementSystem.inst.comboSystem.AddUnit(thisUnit);
 	}
     public override void OnRemove(Unit thisUnit) {
-        // thisUnit.OnAttackGeneration -= Boost;
+        EngagementSystem.inst.comboSystem.RemoveUnit(thisUnit);
 	}
 }

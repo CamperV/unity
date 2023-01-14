@@ -9,10 +9,10 @@ public class MiniEngagementPreview : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI damagePreview;
 
-	public void SetEngagementStats(Engagement potentialEngagement, bool isAggressor) {
+	public void SetEngagementStats(Engagement potentialEngagement, bool fromAggressor) {
 		damagePreview.SetText("");
 
-		List<Attack> attacks = (isAggressor) ? potentialEngagement.attacks : potentialEngagement.counterAttacks;
+		List<Attack> attacks = (fromAggressor) ? potentialEngagement.attacks : potentialEngagement.counterAttacks;
 		string damage = string.Join("\n", attacks.Select(a => a.damage.ToString()));
 
 		damagePreview.SetText($"<bounce>{damage}</bounce>");

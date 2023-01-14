@@ -14,6 +14,8 @@ public class EngagementSystem : MonoBehaviour
 
     // just a nice flag
 	public UnityEvent<Engagement> OnCreateEngagement;
+
+    public ComboSystem comboSystem;
 	
     void Awake() {
  		if (inst == null) {
@@ -42,7 +44,7 @@ public class EngagementSystem : MonoBehaviour
 
         // empty the entire aggressor Attack queue
         foreach (Attack attack in engagement.attacks) {
-            defenderSurvived = ProcessAttack(engagement.A, engagement.B, attack);
+            defenderSurvived = ProcessAttack(attack);
             if (!defenderSurvived) break;
 
             yield return new WaitForSeconds(delayBetweenAttacks);
@@ -51,17 +53,17 @@ public class EngagementSystem : MonoBehaviour
         // we do the subtraction here because for sure, you are going to perform delayBetweenAttacks
         yield return new WaitForSeconds(delayBeforeCounter - delayBetweenAttacks);
 
-        // before countering, make sure that there are no ongoing animations
-        yield return new WaitUntil(engagement.A.spriteAnimator.EmptyQueue);
-        yield return new WaitUntil(engagement.B.spriteAnimator.EmptyQueue);
+        // // before countering, make sure that there are no ongoing animations
+        // yield return new WaitUntil(engagement.A.spriteAnimator.EmptyQueue);
+        // yield return new WaitUntil(engagement.B.spriteAnimator.EmptyQueue);
         //
 
         // if we can counterattack:
         // we check inside the loop, because theoretically a counter attack can drain POISE, which will remove the ability to counter
         if (defenderSurvived) {
             foreach (Attack counterAttack in engagement.counterAttacks) {
-                if (engagement.B.statSystem.CounterAttackAvailable) {
-                    aggressorSurvived = ProcessAttack(engagement.B, engagement.A, counterAttack);
+                if (counterAttack.target.statSystem.CounterAttackAvailable) {
+                    aggressorSurvived = ProcessAttack(counterAttack);
                     if (!aggressorSurvived) break;
 
                     yield return new WaitForSeconds(delayBetweenAttacks);
@@ -69,15 +71,17 @@ public class EngagementSystem : MonoBehaviour
             }
         }
         
-        yield return new WaitUntil(() => AnimationFinished(engagement.A, engagement.B) );
+        yield return new WaitUntil(() => AnimationFinished(engagement.GetUnits()));
         resolvedFlag = true;
     }
 
-    private bool AnimationFinished(Unit A, Unit B) {
-        return A.spriteAnimator.DoneAnimating() && B.spriteAnimator.DoneAnimating();
+    private bool AnimationFinished(IEnumerable<Unit> units) {
+        return units.All(u => u.spriteAnimator.DoneAnimating());
     }
 
-    private bool ProcessAttack(Unit A, Unit B, Attack attack) {
+    private bool ProcessAttack(Attack attack) {
+        Unit A = attack.generator;
+        Unit B = attack.target;
         AttackResolution attackResolution = attack.Resolve();
         
         A.TriggerAttackAnimation(B.gridPosition);       
@@ -118,30 +122,6 @@ public class EngagementSystem : MonoBehaviour
         yield return new WaitUntil(() => resolvedFlag == true);
 		VoidAction();
 	}
-
-    // private bool ProcessCombo(Unit A, Unit B, ComboAttack _combo, Defense previousDefense) {        
-    //     A.TriggerAttackAnimation(B.gridPosition);
-
-    //     // now the theatrics
-    //     A.personalAudioFX.PlayWeaponAttackFX();
-
-    //     int sufferedDamage = (int)Mathf.Clamp((_combo.damage - previousDefense.damageReduction), 0f, 99f);
-       
-    //     // if the hit is... unimpressive, play a clang or something
-    //     if (sufferedDamage < 1) B.personalAudioFX.PlayBlockFX();
-
-    //     // ouchies, play the animations for hurt
-    //     bool survived = B.SufferDamage(sufferedDamage, A.gameObject);
-    //     if (survived) B.FireOnHurtByTargetEvent(A);
-        
-    //     // fire the event after suffering damage, so the animations are queued in the right order
-    //     // this also means you will not be debuffed or anything if you die
-    //     A.FireOnHitTargetEvent(B);
-
-	// 	return survived;
-	// }
-
-
 
     public static bool CounterAttackPossible(Unit agg, Unit def) {
         TargetRange defenderTargetRange = TargetRange.Standing(

@@ -11,16 +11,17 @@ public class EngagementPreview_DamageText : MonoBehaviour, IEngagementPreviewer
 	public MiniEngagementPreview miniEngagementPreviewPrefab;
 
 	public void EnablePreview(Engagement potentialEngagement) {
-		MiniEngagementPreview miniPreview_Aggressor = Instantiate(miniEngagementPreviewPrefab, transform);
-		MiniEngagementPreview miniPreview_Defender  = Instantiate(miniEngagementPreviewPrefab, transform);
-		
-		// then, position yourself above the unit				
-		miniPreview_Aggressor.GetComponent<UIAnchor>().AnchorTo(potentialEngagement.B.transform);
-		miniPreview_Defender.GetComponent<UIAnchor>().AnchorTo(potentialEngagement.A.transform);
+		// place text above all targets
+		foreach (Unit target in potentialEngagement.targets) {
+			MiniEngagementPreview miniPreview_Defender = Instantiate(miniEngagementPreviewPrefab, transform);
+			miniPreview_Defender.GetComponent<UIAnchor>().AnchorTo(target.transform);
+			miniPreview_Defender.SetEngagementStats(potentialEngagement, true);
+		}
 
-		// set appropriate values, and ensure the previews are destroyed when the EngagementPreview proper is disabled
-		miniPreview_Aggressor.SetEngagementStats(potentialEngagement, true);
-		miniPreview_Defender.SetEngagementStats(potentialEngagement, false);
+		// and on top of the initiator as well
+		MiniEngagementPreview miniPreview_Initiator = Instantiate(miniEngagementPreviewPrefab, transform);
+		miniPreview_Initiator.GetComponent<UIAnchor>().AnchorTo(potentialEngagement.initiator.transform);
+		miniPreview_Initiator.SetEngagementStats(potentialEngagement, false);
 
 		Canvas.ForceUpdateCanvases();
 	}

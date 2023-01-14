@@ -1576,7 +1576,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 925765858}
   m_Father: {fileID: 881456441}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1592,6 +1593,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 012bea1e01fd8bd4f9cfe79e13c4e865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnCreateEngagement:
+    m_PersistentCalls:
+      m_Calls: []
+  comboSystem: {fileID: 925765859}
   delayBetweenAttacks: 0.5
   delayBeforeCounter: 1
 --- !u!4 &729729325 stripped
@@ -5044,6 +5049,49 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &925765857
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 925765858}
+  - component: {fileID: 925765859}
+  m_Layer: 0
+  m_Name: ComboSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &925765858
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925765857}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 604710405}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &925765859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925765857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc97afa796626d840b2db8b57f673b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &950041290 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3412446321130552932, guid: 746dcb9b734de8c4a9c83e6d4f459138, type: 3}

@@ -8,8 +8,8 @@ using Random = UnityEngine.Random;
 // this class is created for an acutal battle between two Units
 public class Engagement
 {
-    public delegate void EngagementAttackEvent(Unit target, ref List<Attack> attackList);
-    public static event EngagementAttackEvent AttacksQueuedAgainst;
+    public delegate void EngagementAttackEvent(Unit A, Unit B, ref List<Attack> attackList);
+    public static event EngagementAttackEvent AttackGenerated;
 
     // an Engagement ALWAYS procedes:
     // 1) exhaust attacks
@@ -17,52 +17,75 @@ public class Engagement
     public List<Attack> attacks;
     public List<Attack> counterAttacks;
 
-    public Unit A; // A is always the initiator
-    public Unit B; // B is always the defender
+    public Unit initiator; // A is always the initiator
+    public List<Unit> targets; // B is always the defender
 
     public Engagement(Unit a, Unit b) {
-        A = a;
-        B = b;
+        initiator = a;
+        targets = new List<Unit>{b};
 
         attacks = new List<Attack>();
         counterAttacks = new List<Attack>();
 
-        // gather all attacks from A
-        // units that can Combo will add them to this List
-        for (int s = 0; s < (A.statSystem.MULTISTRIKE+1); s++) {
-            attacks.Add( GenerateAttack(A, B) );
+        // receive a counter from each target
+        // man that's rough though
+        // TODO: use the EquippedWeapon/Unit to maybe create an AoE to grab multiple targets
+        foreach (Unit target in targets) {
+            
+            // gather all attacks from Initiator
+            // units that can Combo will add them to this List
+            for (int s = 0; s < (initiator.statSystem.MULTISTRIKE+1); s++) {
+                attacks.Add( Attack.GenerateAttack(initiator, target) );
 
-            // generate potential combo here
-        }
+                // generate potential combo here
+                AttackGenerated?.Invoke(initiator, target, ref attacks);
+            }
 
-        if (EngagementSystem.CounterAttackPossible(A, B)) {
-            for (int s = 0; s < (B.statSystem.MULTISTRIKE+1); s++) {
-                counterAttacks.Add( GenerateAttack(B, A) );
+            // then generate all counters if possible
+            if (EngagementSystem.CounterAttackPossible(initiator, target)) {
+                for (int s = 0; s < (target.statSystem.MULTISTRIKE+1); s++) {
+                    counterAttacks.Add( Attack.GenerateAttack(target, initiator) );
+
+                    // generate potential combo here
+                    AttackGenerated?.Invoke(target, initiator, ref counterAttacks);
+                }
             }
         }
+
     }
 
     public Damage TotalDamage(bool counter = false) {
-        if (counter) return counterAttacks.Select(ca => ca.damage).Aggregate((a, b) => a + b);
-        else return attacks.Select(ca => ca.damage).Aggregate((a, b) => a + b);
+        if (counter && counterAttacks.Any()) {
+            return counterAttacks.Select(ca => ca.damage).Aggregate((a, b) => a + b);
+        } else if (attacks.Any()) {
+            return attacks.Select(ca => ca.damage).Aggregate((a, b) => a + b);
+        } else {
+            return new Damage(0);
+        } 
     }
 
     public Damage TotalPoiseDamage(bool counter = false) {
-        if (counter) return counterAttacks.Select(ca => ca.poiseDamage).Aggregate((a, b) => a + b);
-        else return attacks.Select(ca => ca.poiseDamage).Aggregate((a, b) => a + b);
+        if (counter && counterAttacks.Any()) {
+            return counterAttacks.Select(ca => ca.poiseDamage).Aggregate((a, b) => a + b);
+        } else if (attacks.Any()) {
+            return attacks.Select(ca => ca.poiseDamage).Aggregate((a, b) => a + b);
+        } else {
+            return new Damage(0);
+        } 
     }
 
-    private Attack GenerateAttack(Unit generator, Unit receiver) {
-        MutableAttack mutableAttack = new MutableAttack(
-            new Damage(generator.EquippedWeapon.DamageRange),   // from attacker
-            new Damage(generator.EquippedWeapon.POISE_ATK),     // from attacker
-            generator.EquippedWeapon.CRITICAL,                  // from attacker
-            receiver.statSystem.DAMAGE_REDUCTION                // from defender
-        );
-        
-        // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
-        generator.FireOnAttackGenerationEvent(ref mutableAttack, receiver);
-        receiver.FireOnDefenseGenerationEvent(ref mutableAttack, generator);
-        return new Attack(mutableAttack);
+    public Damage TotalDamageTargeting(Unit target) {
+        if (!attacks.Any()) return new Damage(0);
+        return attacks.Where(a => a.target == target).Select(a => a.damage).Aggregate((a, b) => a + b);
+    }
+
+    public Damage TotalPoiseDamageTargeting(Unit target) {
+        if (!attacks.Any()) return new Damage(0);
+        return attacks.Where(a => a.target == target).Select(a => a.poiseDamage).Aggregate((a, b) => a + b);
+    }
+
+    public IEnumerable<Unit> GetUnits() {
+        foreach (Unit u in targets) yield return u;
+        yield return initiator;
     }
 }

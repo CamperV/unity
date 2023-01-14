@@ -14,30 +14,16 @@ public class EngagementPreview_Arrows : MonoBehaviour, IEngagementPreviewer
 	[SerializeField] private GameObject arrowBody_CounterPrefab;
 
 	public void EnablePreview(Engagement potentialEngagement) {
-		DrawPreviewArrow(
-			potentialEngagement.A.transform,
-			potentialEngagement.B.transform,
-			arrowBodyPrefab,
-			// shiftRight: potentialEngagement.counterAttack != null
-			shiftRight: false
-		);
-		// foreach (ComboAttack combo in potentialEngagement.comboAttacks) {
-		// 	DrawPreviewArrow(
-		// 		combo.unit.transform,
-		// 		potentialEngagement.B.transform,
-		// 		arrowBody_ComboPrefab
-		// 	);
-		// }
+		foreach (Unit target in potentialEngagement.targets) {
+			DrawPreviewArrow(
+				potentialEngagement.initiator.transform,
+				target.transform,
+				arrowBodyPrefab,
+				// shiftRight: potentialEngagement.counterAttack != null
+				shiftRight: false
+			);
+		}
 
-		// and the counter-arrow
-		// counter-attack arrow
-		// shift it right to look alright
-		// DrawPreviewArrow(
-		// 	potentialEngagement.B.transform,
-		// 	potentialEngagement.A.transform,
-		// 	arrowBody_CounterPrefab,
-		// 	shiftRight: true
-		// );
 	}
 
 	public void DisablePreview(Engagement _) {
