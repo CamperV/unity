@@ -121,7 +121,9 @@ public class EnemyBrain : MonoBehaviour
 		return meanDamage;
 	}
 
-	private bool CounterAttackPossible(DamagePackage dp) => Engagement.CounterAttackPossible(thisUnit, dp.target, dp.fromPosition);
+	// ie. "can the target of the attack counter-attack *me* if I'm standing in *fromPosition*"
+	// so, prioiritize no counters. In the future, maybe change this to "smallest damage received"
+	private bool CounterAttackPossible(DamagePackage dp) => Engagement.CounterAttackPossible(dp.target, dp.fromPosition);
 	private int  PotentialDamage(DamagePackage dp)       => dp.potentialDamage;
 	private int  ClosestPosition(DamagePackage dp) 		 => thisUnit.gridPosition.ManhattanDistance(dp.fromPosition);
 	private int  FarthestRange(DamagePackage dp)   		 => dp.target.gridPosition.ManhattanDistance(dp.fromPosition);

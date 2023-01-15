@@ -35,16 +35,20 @@ public class Engagement
             // gather all attacks from Initiator
             // units that can Combo will add them to this List
             for (int s = 0; s < (initiator.statSystem.MULTISTRIKE+1); s++) {
-                attacks.Add( Attack.GenerateAttack(initiator, target) );
+                attacks.Add(
+                    Attack.GenerateAttack(initiator, target, Attack.AttackType.Normal, Attack.AttackDirection.Normal)
+                );
 
                 // generate potential combo here
                 AttackGenerated?.Invoke(initiator, target, ref attacks);
             }
 
             // then generate all counters if possible
-            if (CounterAttackPossible(initiator, target)) {
+            if (CounterAttackPossible(target, initiator.gridPosition)) {
                 for (int s = 0; s < (target.statSystem.MULTISTRIKE+1); s++) {
-                    counterAttacks.Add( Attack.GenerateAttack(target, initiator) );
+                    counterAttacks.Add(
+                        Attack.GenerateAttack(target, initiator, Attack.AttackType.Normal, Attack.AttackDirection.Counter)
+                    );
 
                     // generate potential combo here
                     AttackGenerated?.Invoke(target, initiator, ref counterAttacks);
@@ -54,34 +58,26 @@ public class Engagement
 
     }
 
-    public Damage TotalDamage(bool counter = false) {
-        if (counter && counterAttacks.Any()) {
-            return counterAttacks.Select(ca => ca.damage).Aggregate((a, b) => a + b);
-        } else if (attacks.Any()) {
-            return attacks.Select(ca => ca.damage).Aggregate((a, b) => a + b);
-        } else {
-            return new Damage(0);
-        } 
+    public Damage TotalDamageTargeting(
+        Unit target,
+        Attack.AttackDirection attackDirection = Attack.AttackDirection.Normal, // Normal/Counter
+        Damage.DamageType damageType = Damage.DamageType.Normal                 // Normal/Poise
+    ) {
+        Damage totalDamage = new Damage(0, _damageType: damageType);
+
+        // return every attack, from all lists
+        foreach (Attack a in GetAttacks()) {
+            if (a.target != target) continue;
+            if (a.attackDirection != attackDirection) continue;
+
+            totalDamage += (damageType == Damage.DamageType.Normal) ? a.damage : a.poiseDamage;
+        }
+        return totalDamage;
     }
 
-    public Damage TotalPoiseDamage(bool counter = false) {
-        if (counter && counterAttacks.Any()) {
-            return counterAttacks.Select(ca => ca.poiseDamage).Aggregate((a, b) => a + b);
-        } else if (attacks.Any()) {
-            return attacks.Select(ca => ca.poiseDamage).Aggregate((a, b) => a + b);
-        } else {
-            return new Damage(0);
-        } 
-    }
-
-    public Damage TotalDamageTargeting(Unit target) {
-        if (!attacks.Any()) return new Damage(0);
-        return attacks.Where(a => a.target == target).Select(a => a.damage).Aggregate((a, b) => a + b);
-    }
-
-    public Damage TotalPoiseDamageTargeting(Unit target) {
-        if (!attacks.Any()) return new Damage(0);
-        return attacks.Where(a => a.target == target).Select(a => a.poiseDamage).Aggregate((a, b) => a + b);
+    public IEnumerable<Attack> GetAttacks() {
+        foreach (Attack a in attacks) yield return a;
+        foreach (Attack ca in counterAttacks) yield return ca;
     }
 
     public IEnumerable<Unit> GetUnits() {
@@ -89,21 +85,12 @@ public class Engagement
         yield return initiator;
     }
 
-    public static bool CounterAttackPossible(Unit agg, Unit def) {
-        TargetRange defenderTargetRange = TargetRange.Standing(
-            def.gridPosition,
-            def.EquippedWeapon.MIN_RANGE,
-            def.EquippedWeapon.MAX_RANGE
+    public static bool CounterAttackPossible(Unit unit, GridPosition targetPosition) {
+        TargetRange targetRange = TargetRange.Standing(
+            unit.gridPosition,
+            unit.EquippedWeapon.MIN_RANGE,
+            unit.EquippedWeapon.MAX_RANGE
         );
-        return defenderTargetRange.ValidTarget(agg.gridPosition) && def.statSystem.CounterAttackAvailable;
-    }
-
-    public static bool CounterAttackPossible(Unit def, GridPosition fromPosition) {
-        TargetRange defenderTargetRange = TargetRange.Standing(
-            def.gridPosition,
-            def.EquippedWeapon.MIN_RANGE,
-            def.EquippedWeapon.MAX_RANGE
-        );
-        return defenderTargetRange.ValidTarget(fromPosition) && def.statSystem.CounterAttackAvailable;
+        return targetRange.ValidTarget(targetPosition) && unit.statSystem.CounterAttackAvailable;
     }
 }

@@ -53,16 +53,15 @@ public class EngagementSystem : MonoBehaviour
         // we do the subtraction here because for sure, you are going to perform delayBetweenAttacks
         yield return new WaitForSeconds(delayBeforeCounter - delayBetweenAttacks);
 
-        // // before countering, make sure that there are no ongoing animations
-        // yield return new WaitUntil(engagement.A.spriteAnimator.EmptyQueue);
-        // yield return new WaitUntil(engagement.B.spriteAnimator.EmptyQueue);
-        //
+        // before countering, make sure that there are no ongoing animations
+        foreach (Unit u in engagement.GetUnits())
+            yield return new WaitUntil(u.spriteAnimator.EmptyQueue);
 
         // if we can counterattack:
         // we check inside the loop, because theoretically a counter attack can drain POISE, which will remove the ability to counter
         if (defenderSurvived) {
             foreach (Attack counterAttack in engagement.counterAttacks) {
-                if (counterAttack.target.statSystem.CounterAttackAvailable) {
+                if (counterAttack.generator.statSystem.CounterAttackAvailable) {
                     aggressorSurvived = ProcessAttack(counterAttack);
                     if (!aggressorSurvived) break;
 

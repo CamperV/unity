@@ -8,6 +8,18 @@ using Random = UnityEngine.Random;
 [Serializable]
 public struct Attack
 {
+    public enum AttackType {
+        Normal,
+        Combo
+    };
+    public AttackType attackType;
+
+    public enum AttackDirection {
+        Normal,
+        Counter
+    };
+    public AttackDirection attackDirection;
+
     public Unit generator;
     public Unit target;
 
@@ -22,12 +34,15 @@ public struct Attack
     public List<MutatorDisplayData> attackMutators;
     public List<MutatorDisplayData> defenseMutators;
 
-    public Attack(MutableAttack mutAtt, Unit a, Unit b) {
+    public Attack(MutableAttack mutAtt, Unit a, Unit b, AttackType aType, AttackDirection aDirection) {
         // actually copy the units into the attack
         // this is because we want some Units to create multiple attacks
-        // from a single Engagm=ement
+        // from a single Engagement
         generator = a;
         target = b;
+
+        attackType = aType;
+        attackDirection = aDirection;
 
         damage = mutAtt.damage;
         poiseDamage = mutAtt.poiseDamage;
@@ -54,18 +69,24 @@ public struct Attack
         return new AttackResolution(mutableAttackResolution);
     }
 
-    public static Attack GenerateAttack(Unit generator, Unit target) {
+    public static Attack GenerateAttack(Unit generator, Unit target, AttackType aType, AttackDirection aDirection) {
         MutableAttack mutableAttack = new MutableAttack(
-            new Damage(generator.EquippedWeapon.DamageRange),   // from attacker
-            new Damage(generator.EquippedWeapon.POISE_ATK),     // from attacker
-            generator.EquippedWeapon.CRITICAL,                  // from attacker
-            target.statSystem.DAMAGE_REDUCTION                // from defender
+            // from attacker
+            new Damage(generator.EquippedWeapon.DamageRange),
+            new Damage(
+                generator.EquippedWeapon.POISE_ATK,
+                _damageType: Damage.DamageType.Poise
+            ), 
+            generator.EquippedWeapon.CRITICAL,
+
+            // from defender
+            target.statSystem.DAMAGE_REDUCTION
         );
         
         // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
         generator.FireOnAttackGenerationEvent(ref mutableAttack, target);
         target.FireOnDefenseGenerationEvent(ref mutableAttack, generator);
-        return new Attack(mutableAttack, generator, target);
+        return new Attack(mutableAttack, generator, target, aType, aDirection);
     }
 }
 
