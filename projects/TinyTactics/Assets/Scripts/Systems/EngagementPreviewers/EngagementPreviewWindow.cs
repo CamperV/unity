@@ -23,8 +23,9 @@ public class EngagementPreviewWindow : MonoBehaviour
 		Clear();
 
 		// then create panels and populate info
-		PopulatePanels(potentialEngagement);
-		PopulatePanels(potentialEngagement, isCounter: true);
+		PopulateAttackPanels(potentialEngagement);
+		if (potentialEngagement.counterAttacks.Count > 0)
+			PopulateCounterattackPanels(potentialEngagement);
 
 		// resize based on mutator descriptions
 		ResizePanels(potentialEngagement);
@@ -44,28 +45,17 @@ public class EngagementPreviewWindow : MonoBehaviour
 		}
 	}
 
-	private void PopulatePanels(Engagement potentialEngagement, bool isCounter = false) {
-		GameObject panelToInstantiate;
-		GameObject container;
-		int numStrikes;
-
-		if (isCounter == false) {
-			panelToInstantiate = panelPrefab;
-			container = panelContainer;
-			numStrikes = potentialEngagement.initiator.statSystem.MULTISTRIKE+1;
-		} else {
-			panelToInstantiate = panelPrefab_Counter;
-			container = panelContainer_Counter;
-			numStrikes = potentialEngagement.targets[0].statSystem.MULTISTRIKE+1;
-		}
+	private void PopulateAttackPanels(Engagement potentialEngagement) {
+		GameObject panelToInstantiate = panelPrefab;
+		GameObject container = panelContainer;
+		int numStrikes = potentialEngagement.initiator.statSystem.MULTISTRIKE+1;
 
 		// attack/counter
-		string title = (isCounter == false) ? "Attack" : "Counterattack";
+		string title = "Attack";
 		if (numStrikes > 1) title += $" (x{numStrikes})".RichTextTags_TMP(color: "FFC27A");
 		CreateAndSet($"{title}".RichTextTags_TMP(bold: true, fontSize: 20), panelToInstantiate, container);
 
-		List<Attack> attacks = (isCounter == false) ? potentialEngagement.attacks : potentialEngagement.counterAttacks;
-		foreach (Attack attack in attacks) {
+		foreach (Attack attack in potentialEngagement.attacks) {
 			string damage = $"{attack.damage}".RichTextTags_TMP(color: "FFC27A");
 			CreateAndSet($"{damage} dmg".RichTextTags_TMP(bold: true), panelToInstantiate, container);
 
@@ -77,7 +67,41 @@ public class EngagementPreviewWindow : MonoBehaviour
 		}
 
 		// also any attack mutators and their values
-		foreach (MutatorDisplayData mutator in BuildMutatorList(potentialEngagement, isCounter: isCounter)) {
+		foreach (MutatorDisplayData mutator in BuildMutatorList(potentialEngagement)) {
+			string message = $"{mutator.name.RichTextTags_TMP(bold: true)}";
+			if (mutator.description != "") {
+				message += $"\n{mutator.description.RichTextTags_TMP(italics: true)}";
+			}
+			CreateAndSet(message, panelToInstantiate, container);
+		}
+	}
+
+	private void PopulateCounterattackPanels(Engagement potentialEngagement) {
+		// only set up a preview with targets[0], ie the main target
+		// too much work to preview every single target
+		GameObject panelToInstantiate = panelPrefab_Counter;
+		GameObject container = panelContainer_Counter;
+		int numStrikes = potentialEngagement.targets[0].statSystem.MULTISTRIKE+1;
+
+
+		// attack/counter
+		string title = "Counterattack";
+		if (numStrikes > 1) title += $" (x{numStrikes})".RichTextTags_TMP(color: "FFC27A");
+		CreateAndSet($"{title}".RichTextTags_TMP(bold: true, fontSize: 20), panelToInstantiate, container);
+
+		foreach (Attack attack in potentialEngagement.counterAttacks) {
+			string damage = $"{attack.damage}".RichTextTags_TMP(color: "FFC27A");
+			CreateAndSet($"{damage} dmg".RichTextTags_TMP(bold: true), panelToInstantiate, container);
+
+			// if there's crit, set that too
+			if (attack.critRate > 0) {
+				string critical = $"{attack.critRate}%".RichTextTags_TMP(color: "FFC27A");
+				CreateAndSet($"{critical} crit".RichTextTags_TMP(bold: true), panelToInstantiate, container);
+			}
+		}
+
+		// also any attack mutators and their values
+		foreach (MutatorDisplayData mutator in BuildMutatorList(potentialEngagement, isCounter: true)) {
 			string message = $"{mutator.name.RichTextTags_TMP(bold: true)}";
 			if (mutator.description != "") {
 				message += $"\n{mutator.description.RichTextTags_TMP(italics: true)}";
@@ -132,7 +156,7 @@ public class EngagementPreviewWindow : MonoBehaviour
 			}
 		}
 
-		foreach (MutatorDisplayData mut in mutators) {
+		foreach (MutatorDisplayData mut in mutators.Distinct()) {
 			yield return mut;
 		}
 	}

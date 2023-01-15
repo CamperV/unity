@@ -122,22 +122,4 @@ public class EngagementSystem : MonoBehaviour
         yield return new WaitUntil(() => resolvedFlag == true);
 		VoidAction();
 	}
-
-    public static bool CounterAttackPossible(Unit agg, Unit def) {
-        TargetRange defenderTargetRange = TargetRange.Standing(
-            def.gridPosition,
-            def.EquippedWeapon.MIN_RANGE,
-            def.EquippedWeapon.MAX_RANGE
-        );
-        return defenderTargetRange.ValidTarget(agg.gridPosition) && def.statSystem.CounterAttackAvailable;
-    }
-
-    public static bool CounterAttackPossible(Unit agg, Unit def, GridPosition fromPosition) {
-        TargetRange defenderTargetRange = TargetRange.Standing(
-            def.gridPosition,
-            def.EquippedWeapon.MIN_RANGE,
-            def.EquippedWeapon.MAX_RANGE
-        );
-        return defenderTargetRange.ValidTarget(fromPosition) && def.statSystem.CounterAttackAvailable;
-    }
 }

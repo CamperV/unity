@@ -121,7 +121,7 @@ public class EnemyBrain : MonoBehaviour
 		return meanDamage;
 	}
 
-	private bool CounterAttackPossible(DamagePackage dp) => EngagementSystem.CounterAttackPossible(thisUnit, dp.target, dp.fromPosition);
+	private bool CounterAttackPossible(DamagePackage dp) => Engagement.CounterAttackPossible(thisUnit, dp.target, dp.fromPosition);
 	private int  PotentialDamage(DamagePackage dp)       => dp.potentialDamage;
 	private int  ClosestPosition(DamagePackage dp) 		 => thisUnit.gridPosition.ManhattanDistance(dp.fromPosition);
 	private int  FarthestRange(DamagePackage dp)   		 => dp.target.gridPosition.ManhattanDistance(dp.fromPosition);

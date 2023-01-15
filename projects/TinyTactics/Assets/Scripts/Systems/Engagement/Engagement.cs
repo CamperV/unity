@@ -42,7 +42,7 @@ public class Engagement
             }
 
             // then generate all counters if possible
-            if (EngagementSystem.CounterAttackPossible(initiator, target)) {
+            if (CounterAttackPossible(initiator, target)) {
                 for (int s = 0; s < (target.statSystem.MULTISTRIKE+1); s++) {
                     counterAttacks.Add( Attack.GenerateAttack(target, initiator) );
 
@@ -87,5 +87,23 @@ public class Engagement
     public IEnumerable<Unit> GetUnits() {
         foreach (Unit u in targets) yield return u;
         yield return initiator;
+    }
+
+    public static bool CounterAttackPossible(Unit agg, Unit def) {
+        TargetRange defenderTargetRange = TargetRange.Standing(
+            def.gridPosition,
+            def.EquippedWeapon.MIN_RANGE,
+            def.EquippedWeapon.MAX_RANGE
+        );
+        return defenderTargetRange.ValidTarget(agg.gridPosition) && def.statSystem.CounterAttackAvailable;
+    }
+
+    public static bool CounterAttackPossible(Unit def, GridPosition fromPosition) {
+        TargetRange defenderTargetRange = TargetRange.Standing(
+            def.gridPosition,
+            def.EquippedWeapon.MIN_RANGE,
+            def.EquippedWeapon.MAX_RANGE
+        );
+        return defenderTargetRange.ValidTarget(fromPosition) && def.statSystem.CounterAttackAvailable;
     }
 }
