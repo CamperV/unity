@@ -91,11 +91,15 @@ public class EngagementPreviewWindow : MonoBehaviour
 			string damage = $"{attack.damage}".RichTextTags_TMP(color: "FFC27A");
 			damage = $"{damage} dmg".RichTextTags_TMP(bold: true);
 
+			if (attack.attackType == Attack.AttackType.Combo) {
+				damage = $"   {damage}";
+			}
+
 			// if there's crit, set that too
 			if (attack.critRate > 0) {
 				string critical = $"{attack.critRate}%".RichTextTags_TMP(color: "FFC27A");
 				critical = $"{critical} crit".RichTextTags_TMP(bold: true);
-				damage = $"{damage} [{critical}]";
+				damage = $"{damage}, {critical}";
 			}
 			
 			damageCollector.Add(damage);
@@ -134,15 +138,20 @@ public class EngagementPreviewWindow : MonoBehaviour
 		mainPanel.sizeDelta = new Vector2(panelWidth, mainPanel.sizeDelta.y);
 	}
 
+	// for now, don't include mutators if they are coming from the comboing units
 	private IEnumerable<MutatorDisplayData> BuildMutatorList(Engagement potentialEngagement, Attack.AttackDirection attackDirection) {
 		List<MutatorDisplayData> mutators = new List<MutatorDisplayData>();
 
 		foreach (Attack attack in potentialEngagement.GetAttacks(attackDirection)) {
+			if (attack.attackType == Attack.AttackType.Combo) continue;
+
 			foreach (MutatorDisplayData mdd in attack.attackMutators) {
 				mutators.Add(mdd);
 			}			
 		}
 		foreach (Attack oppositeAttack in potentialEngagement.GetAttacks(Attack.OppositeDirection(attackDirection))) {
+			if (oppositeAttack.attackType == Attack.AttackType.Combo) continue;
+
 			foreach (MutatorDisplayData mdd in oppositeAttack.defenseMutators) {
 				mutators.Add(mdd);
 			}			

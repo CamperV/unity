@@ -70,9 +70,10 @@ public struct Attack
     }
 
     public static Attack GenerateAttack(Unit generator, Unit target, AttackType aType, AttackDirection aDirection) {
+        Damage attackDamage = (aType == AttackType.Normal) ? new Damage(generator.EquippedWeapon.DamageRange) : new Damage(generator.EquippedWeapon.COMBO_ATK);
         MutableAttack mutableAttack = new MutableAttack(
             // from attacker
-            new Damage(generator.EquippedWeapon.DamageRange),
+            attackDamage,
             new Damage(
                 generator.EquippedWeapon.POISE_ATK,
                 _damageType: Damage.DamageType.Poise

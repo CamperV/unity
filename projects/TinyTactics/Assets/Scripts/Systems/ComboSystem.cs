@@ -33,7 +33,6 @@ public class ComboSystem : MonoBehaviour
         foreach (Unit unit in comboUnits) {
             if (unit != aggressor && ValidComboTarget(unit, defender)) {
                 foreach (Attack comboAttack in unit.GenerateAttacks(defender, Attack.AttackType.Combo, Attack.AttackDirection.Normal)) {
-                    Debug.Log($"{unit} add combo {comboAttack}");
                     attackList.Add(comboAttack);
                 }
             }

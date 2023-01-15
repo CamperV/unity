@@ -38,7 +38,6 @@ public class Engagement
                 attacks.Add(attack);
 
                 // generate potential combo here
-                Debug.Log($"{initiator} generated {attack}");
                 AttackGenerated?.Invoke(initiator, target, ref attacks);
             }
 

@@ -18,9 +18,9 @@ MonoBehaviour:
   audioFXBundle_Attack: {fileID: 11400000, guid: 8e0ed2b5c7c27544ba217af8d22c00d4, type: 2}
   audioFXBundle_Equip: {fileID: 11400000, guid: 8e0ed2b5c7c27544ba217af8d22c00d4, type: 2}
   MIN_ATK: 2
-  MAX_ATK: 2
+  MAX_ATK: 3
   POISE_ATK: 1
-  COMBO_ATK: 2
+  COMBO_ATK: 1
   MIN_RANGE: 1
   MAX_RANGE: 1
   CRITICAL: 10
