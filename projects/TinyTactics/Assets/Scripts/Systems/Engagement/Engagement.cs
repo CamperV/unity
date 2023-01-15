@@ -34,21 +34,18 @@ public class Engagement
             
             // gather all attacks from Initiator
             // units that can Combo will add them to this List
-            for (int s = 0; s < (initiator.statSystem.MULTISTRIKE+1); s++) {
-                attacks.Add(
-                    Attack.GenerateAttack(initiator, target, Attack.AttackType.Normal, Attack.AttackDirection.Normal)
-                );
+            foreach (Attack attack in initiator.GenerateAttacks(target, Attack.AttackType.Normal, Attack.AttackDirection.Normal)) {
+                attacks.Add(attack);
 
                 // generate potential combo here
+                Debug.Log($"{initiator} generated {attack}");
                 AttackGenerated?.Invoke(initiator, target, ref attacks);
             }
 
             // then generate all counters if possible
             if (CounterAttackPossible(target, initiator.gridPosition)) {
-                for (int s = 0; s < (target.statSystem.MULTISTRIKE+1); s++) {
-                    counterAttacks.Add(
-                        Attack.GenerateAttack(target, initiator, Attack.AttackType.Normal, Attack.AttackDirection.Counter)
-                    );
+                foreach (Attack counterAttack in target.GenerateAttacks(initiator, Attack.AttackType.Normal, Attack.AttackDirection.Counter)) {
+                    counterAttacks.Add(counterAttack);
 
                     // generate potential combo here
                     AttackGenerated?.Invoke(target, initiator, ref counterAttacks);
@@ -78,6 +75,14 @@ public class Engagement
     public IEnumerable<Attack> GetAttacks() {
         foreach (Attack a in attacks) yield return a;
         foreach (Attack ca in counterAttacks) yield return ca;
+    }
+
+    public IEnumerable<Attack> GetAttacks(Attack.AttackDirection attackDirection) {
+        if (attackDirection == Attack.AttackDirection.Normal) {
+            foreach (Attack a in attacks) yield return a;
+        } else {
+            foreach (Attack ca in counterAttacks) yield return ca;
+        }
     }
 
     public IEnumerable<Unit> GetUnits() {

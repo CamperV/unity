@@ -34,20 +34,20 @@ public struct Attack
     public List<MutatorDisplayData> attackMutators;
     public List<MutatorDisplayData> defenseMutators;
 
-    public Attack(MutableAttack mutAtt, Unit a, Unit b, AttackType aType, AttackDirection aDirection) {
+    public Attack(MutableAttack mutAtt, Unit a, Unit b) {
         // actually copy the units into the attack
         // this is because we want some Units to create multiple attacks
         // from a single Engagement
         generator = a;
         target = b;
 
-        attackType = aType;
-        attackDirection = aDirection;
-
         damage = mutAtt.damage;
         poiseDamage = mutAtt.poiseDamage;
         critRate = mutAtt.critRate;
         damageReduction = mutAtt.damageReduction;
+    
+        attackType = mutAtt.attackType;
+        attackDirection = mutAtt.attackDirection;
         //
         attackMutators = new List<MutatorDisplayData>(mutAtt.attackMutators);
         defenseMutators = new List<MutatorDisplayData>(mutAtt.defenseMutators);
@@ -80,13 +80,22 @@ public struct Attack
             generator.EquippedWeapon.CRITICAL,
 
             // from defender
-            target.statSystem.DAMAGE_REDUCTION
+            target.statSystem.DAMAGE_REDUCTION,
+
+            // final info
+            aType,
+            aDirection
         );
         
         // THIS WILL MODIFY THE OUTGOING ATTACK PACKAGE
         generator.FireOnAttackGenerationEvent(ref mutableAttack, target);
         target.FireOnDefenseGenerationEvent(ref mutableAttack, generator);
-        return new Attack(mutableAttack, generator, target, aType, aDirection);
+        return new Attack(mutableAttack, generator, target);
+    }
+
+    public static AttackDirection OppositeDirection(AttackDirection ad) {
+        if (ad == AttackDirection.Normal) return AttackDirection.Counter;
+        else return AttackDirection.Normal;
     }
 }
 
@@ -94,6 +103,9 @@ public struct Attack
 // This is a class because I would like to mutate it via a Unit's stats, etc
 public class MutableAttack
 {
+    public Attack.AttackType attackType;
+    public Attack.AttackDirection attackDirection;
+
     // from the aggressor
     public Damage damage;
     public Damage poiseDamage;
@@ -105,20 +117,14 @@ public class MutableAttack
     public List<MutatorDisplayData> attackMutators;
     public List<MutatorDisplayData> defenseMutators;
 
-    public MutableAttack(Damage d, int crit, int dr) {
-        damage = d;
-        poiseDamage = new Damage(1);
-        critRate = crit;
-        damageReduction = dr;
-        //
-        attackMutators = new List<MutatorDisplayData>();
-        defenseMutators = new List<MutatorDisplayData>();
-    }
-    public MutableAttack(Damage d, Damage pd, int crit, int dr) {
+    public MutableAttack(Damage d, Damage pd, int crit, int dr, Attack.AttackType aType, Attack.AttackDirection aDirection) {
         damage = d;
         poiseDamage = pd;
         critRate = crit;
         damageReduction = dr;
+
+        attackType = aType;
+        attackDirection = aDirection;
         //
         attackMutators = new List<MutatorDisplayData>();
         defenseMutators = new List<MutatorDisplayData>();

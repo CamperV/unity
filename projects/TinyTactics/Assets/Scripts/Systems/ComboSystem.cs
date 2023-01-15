@@ -32,10 +32,10 @@ public class ComboSystem : MonoBehaviour
     public void AddComboAttacks(Unit aggressor, Unit defender, ref List<Attack> attackList) {
         foreach (Unit unit in comboUnits) {
             if (unit != aggressor && ValidComboTarget(unit, defender)) {
-                Debug.Log($"{aggressor} is attacking {defender}, {unit} is comboing");
-                attackList.Add(
-                    Attack.GenerateAttack(unit, defender, Attack.AttackType.Combo, Attack.AttackDirection.Normal)
-                );
+                foreach (Attack comboAttack in unit.GenerateAttacks(defender, Attack.AttackType.Combo, Attack.AttackDirection.Normal)) {
+                    Debug.Log($"{unit} add combo {comboAttack}");
+                    attackList.Add(comboAttack);
+                }
             }
         }
     }

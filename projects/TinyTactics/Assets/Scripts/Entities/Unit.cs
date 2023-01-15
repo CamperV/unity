@@ -223,6 +223,12 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         }
     }
 
+    public IEnumerable<Attack> GenerateAttacks(Unit target, Attack.AttackType aType, Attack.AttackDirection aDirection) {
+        for (int s = 0; s < (statSystem.MULTISTRIKE+1); s++) {
+            yield return Attack.GenerateAttack(this, target, aType, aDirection);
+        }
+    }
+
     // IUnitPhaseInfo
     public virtual void RefreshInfo() {
         moveAvailable = true;
