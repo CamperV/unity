@@ -463,7 +463,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7754110684890950106, guid: cc1d5d1c0bfe8f540bc0094e402d1d02, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.72499996
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7754110684890950106, guid: cc1d5d1c0bfe8f540bc0094e402d1d02, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -5314,7 +5314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5910868071268390516, guid: 98478d08c8aca5046a8dc5f037863f1e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.72499996
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5910868071268390516, guid: 98478d08c8aca5046a8dc5f037863f1e, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -10889,7 +10889,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.72499996
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -14449,7 +14449,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.72499996
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -22766,6 +22766,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2086149250}
   - component: {fileID: 2086149251}
+  - component: {fileID: 2086149252}
   m_Layer: 0
   m_Name: Previewer_WindowProvisioner
   m_TagString: Untagged
@@ -22805,8 +22806,104 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47312f6be16b8c84cbd09774555e158b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetCanvas: {fileID: 3975291740895947496}
   previewWindow: {fileID: 2026024685}
+  onEnableFX: {fileID: 11400000, guid: 6b0aa1125aa300440ab1061ebe23b92b, type: 2}
+--- !u!82 &2086149252
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2086149249}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &2124159766 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 707215024260249121, guid: c85180465fe982e4083d7888113fac22, type: 3}

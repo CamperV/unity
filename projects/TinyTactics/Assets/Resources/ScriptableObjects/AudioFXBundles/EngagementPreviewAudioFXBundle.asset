@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80f890c6062d4ba48bf1edbb6b29baad, type: 3}
+  m_Name: EngagementPreviewAudioFXBundle
+  m_EditorClassIdentifier: 
+  clipPool:
+  - {fileID: 8300000, guid: 09c4040f8b9125f45ae0a140125a7d08, type: 3}
+  - {fileID: 8300000, guid: 8dbf3593588a3464d965d135facd6bce, type: 3}
+  - {fileID: 8300000, guid: 55149df4ced8f6c4e8f0c8319749fc27, type: 3}
+  - {fileID: 8300000, guid: c8628de4bc5c89546ae90c03d4edbe09, type: 3}
+  - {fileID: 8300000, guid: 433238c7651618c4bbd5eeabfbcb9348, type: 3}

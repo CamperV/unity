@@ -85,9 +85,6 @@ public class PlayerInputController : MonoBehaviour
 
 		keyboardInput.KeyboardActionMap.NextWeapon.performed += ctx => NextWeaponEvent?.Invoke();
 		keyboardInput.KeyboardActionMap.PrevWeapon.performed += ctx => PrevWeaponEvent?.Invoke();
-
-		// DEBUGGING
-		keyboardInput.KeyboardActionMap.PrevWeapon.performed += ctx => OnMiddleMouseClick();
 	}
 
 	// always update the position event for listeners

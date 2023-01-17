@@ -13,12 +13,13 @@ public class SpriteAnimator : MonoBehaviour
 	public static float speedMultiplier = 1f;
 	public static float fixedTimePerTile { get => 0.10f / speedMultiplier; }
 	public static bool skipMovement = false;
-	public static Color Inactive => new Color(0.75f, 0.75f, 0.75f, 1.0f);
+
+	public static Color InactiveColor => new Color(0.75f, 0.75f, 0.75f, 1.0f);
 
 	public Action<Vector3> PositionUpdater;
 	[SerializeField] private SpriteRenderer spriteRenderer;
 	[SerializeField] private Transform spriteTransform;
-	private Color originalColor;
+	private Color _originalColor;
 	//
 	public Sprite MainSprite => spriteRenderer.sprite;
 	public Color MainColor => spriteRenderer.color;
@@ -52,7 +53,7 @@ public class SpriteAnimator : MonoBehaviour
 	public bool DoneAnimatingAndEmptyQueue() => DoneAnimating() && EmptyQueue();
 
 	void Awake() {
-		originalColor = spriteRenderer.color;
+		_originalColor = spriteRenderer.color;
 
 		// else if you don't have this component, construct a default Updater
 		PositionUpdater = v => transform.position = v;
@@ -104,9 +105,11 @@ public class SpriteAnimator : MonoBehaviour
 	///////////
 	public void SetColor(Color newColor) => spriteRenderer.color = newColor;
 	public void SetPosition(Vector3 newPos) => spriteTransform.position = newPos;
-	//
-    public void RevertColor() => SetColor(originalColor);
-    public void LerpInactiveColor(float lerpValue) => SetColor(Color.Lerp(originalColor, new Color(0.75f, 0.75f, 0.75f, 1f), lerpValue));
+    public void RevertColor() => SetColor(_originalColor);
+
+    public void LerpInactiveColor(float lerpValue) {
+		SetColor(Color.Lerp(spriteRenderer.color, InactiveColor, lerpValue));
+	}
 
 	public IEnumerator FadeDown(float fixedTime) {
 		animationStack++;
@@ -210,26 +213,10 @@ public class SpriteAnimator : MonoBehaviour
 		//
 		animationStack--;
 	}
-
-	public IEnumerator TweenColor(Color color, float fixedTime) {
-		animationStack++;
-		//
-
-		float timeRatio = 0.0f;
-		while (timeRatio < 1.0f) {
-			timeRatio += (Time.deltaTime / fixedTime);
-			SetColor(Color.Lerp(originalColor, color, timeRatio).WithAlpha(spriteRenderer.color.a));
-			yield return null;
-		}
-
-		//
-		animationStack--;
-	}
 	
-	public IEnumerator FlashColor(Color color) {
+	public IEnumerator FlashColorThenRevert(Color color) {
 		animationStack++;
 		//
-		Color startingColor = spriteRenderer.color;
 		
 		float fixedTime = 1.0f;
 		float timeRatio = 0.0f;
@@ -237,12 +224,14 @@ public class SpriteAnimator : MonoBehaviour
 		while (timeRatio < 1.0f) {
 			timeRatio += (Time.deltaTime / fixedTime);
 
-			var colorDiff = originalColor - ((1.0f - timeRatio) * (originalColor - color));
+			var colorDiff = _originalColor - ((1.0f - timeRatio) * (_originalColor - color));
 			SetColor(colorDiff.WithAlpha(1.0f));
 
 			yield return null;
 		}
-		SetColor(startingColor);
+
+		// finally
+		RevertColor();
 		
 		//
 		animationStack--;

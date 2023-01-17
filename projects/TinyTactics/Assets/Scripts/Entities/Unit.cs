@@ -252,7 +252,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public virtual void FinishTurn() {
         turnActive = false;
         moveAvailable = false;
-        spriteAnimator.SetColor(SpriteAnimator.Inactive);
+        spriteAnimator.SetColor(SpriteAnimator.InactiveColor);
 
         FireOnFinishTurnEvent();
     }
@@ -273,7 +273,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         personalAudioFX.PlayBreakFX();
         messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"BREAK");
 
-        StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorIndigo) );
+        StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.threatColorIndigo) );
         StartCoroutine( spriteAnimator.SmoothCosX(32f, 0.015f, 0f, 1.0f) );
         yield break;
     }
@@ -358,29 +358,29 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     }
 
     public void TriggerHurtAnimation() {
-		StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorRed) );
+		StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.threatColorRed) );
         StartCoroutine( spriteAnimator.Shake(0.075f, 3) );
     }
 
     // this is used for when no damage is taken, but a unit is hit
     public void TriggerNoDamageHurtAnimation() {
-		StartCoroutine( spriteAnimator.FlashColor(Palette.selectColorWhite) );
+		StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.selectColorWhite) );
         StartCoroutine( spriteAnimator.Shake(0.05f, 3) );
     }
 
     // this is used for Crits
     public void TriggerVeryHurtAnimation() {
-		StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorViolet) );
+		StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.threatColorViolet) );
         StartCoroutine( spriteAnimator.Shake(0.20f, 5) );
     }
 
     public void TriggerMissAnimation() {
-		StartCoroutine( spriteAnimator.FlashColor(Palette.selectColorWhite) );
+		StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.selectColorWhite) );
         StartCoroutine( spriteAnimator.SmoothBumpRandom(0.10f) );
     }
 
     public void TriggerHealAnimation() {
-		StartCoroutine( spriteAnimator.FlashColor(Palette.healColorGreen) );
+		StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.healColorGreen) );
     }
 
     public void TriggerDebuffAnimation(AudioClip playClip, params string[] affectedStats) {
@@ -392,7 +392,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
             }
         }
 
-        StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorIndigo) );
+        StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.threatColorIndigo) );
         StartCoroutine( spriteAnimator.SmoothCosX(18f, 0.03f, 0f, 1.0f) );
     }
 
@@ -403,7 +403,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
             messageEmitter.Emit(MessageEmitter.MessageType.Buff, $"+{affectedStat}");
         }
 
-        StartCoroutine( spriteAnimator.FlashColor(Palette.threatColorYellow) );
+        StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.threatColorYellow) );
         StartCoroutine( spriteAnimator.SmoothCosX(32f, 0.015f, 0f, 1.0f) );
     }
 

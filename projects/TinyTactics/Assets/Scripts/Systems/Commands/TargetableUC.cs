@@ -28,7 +28,7 @@ public abstract class TargetableUC : UnitCommand
         thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();
         //
-        UIManager.inst.DisableUnitDetail();
+        // UIManager.inst.DisableUnitDetail();
     }
 
     public override ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract) {
