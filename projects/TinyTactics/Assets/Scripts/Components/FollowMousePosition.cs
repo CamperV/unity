@@ -7,6 +7,10 @@ public class FollowMousePosition : MonoBehaviour
 {
 	private Vector3 currentMousePosition;
 	private bool initialized = false;
+	private Canvas parentCanvas;
+	private RectTransform rectTransform;
+
+	// input fields
 	[SerializeField] private Vector2 staticOffset;
 
 	[Range(0f, 50f)]
@@ -14,6 +18,13 @@ public class FollowMousePosition : MonoBehaviour
 
 	[Range(0f, 10f)]
 	[SerializeField] private float snapMagnitude;
+
+	[SerializeField] private bool keepInViewport;
+
+	void Awake() {
+		parentCanvas = GetComponentInParent<Canvas>();
+		rectTransform = GetComponent<RectTransform>();
+	}
 	
 	void OnEnable() {
 		EventManager.inst.inputController.MousePositionEvent += UpdateMousePosition;
@@ -50,6 +61,17 @@ public class FollowMousePosition : MonoBehaviour
 			transform.position = Vector3.Lerp(transform.position, newPosition, (smooth)*Time.deltaTime);
 		} else {
 			transform.position = newPosition;
+		}
+
+		if (keepInViewport && rectTransform != null) {
+			var sizeDelta = parentCanvas.rootCanvas.GetComponent<RectTransform>().sizeDelta - rectTransform.sizeDelta;
+			Debug.Log($"Got sizeDelta {sizeDelta} from {rectTransform.sizeDelta} / {parentCanvas.rootCanvas.GetComponent<RectTransform>().sizeDelta}");
+
+			Vector2 clampedPosition = new Vector2(
+				Mathf.Clamp(rectTransform.anchoredPosition.x, -sizeDelta.x * rectTransform.pivot.x, sizeDelta.x * (1 - rectTransform.pivot.x)),
+				Mathf.Clamp(rectTransform.anchoredPosition.y, -sizeDelta.y * rectTransform.pivot.y, sizeDelta.y * (1 - rectTransform.pivot.y))
+			);
+			rectTransform.anchoredPosition = clampedPosition;
 		}
 	}
 }
