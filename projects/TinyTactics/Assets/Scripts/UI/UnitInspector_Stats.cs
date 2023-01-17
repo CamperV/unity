@@ -41,7 +41,7 @@ public class UnitInspector_Stats : UnitInspector
 		string rng = $"{range.First}{rangeExt}";
 		weaponRange_TMP.SetText(rng);
 
-		weaponCrit_TMP.SetText($"{unit.EquippedWeapon.CRITICAL}");
+		weaponCrit_TMP.SetText($"{unit.EquippedWeapon.CRIT}");
 
 		// finally, mutation container
 		// quick clear, then:

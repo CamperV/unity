@@ -20,7 +20,7 @@ public class BasicAttackInspection : UnitInspector
 			atkValue.SetText($"{dmgRange.First} - {dmgRange.Second}");
 		}
 
-		int _critValue = unit.EquippedWeapon.CRITICAL;
+		int _critValue = unit.EquippedWeapon.CRIT;
 		if (_critValue > 0) {
 			critContainer.SetActive(true);
 			critValue.SetText($"{_critValue}");

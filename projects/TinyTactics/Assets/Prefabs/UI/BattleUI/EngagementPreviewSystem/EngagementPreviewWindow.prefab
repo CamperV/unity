@@ -172,7 +172,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelPrefab: {fileID: 2249782192452120844, guid: e37c631da51e87d489a357d561b4d959, type: 3}
+  attackPanelPrefab: {fileID: 4691703285414656308, guid: d25ee3f6ceec74346b7c8ce733bc0212, type: 3}
   panelPrefab_Counter: {fileID: 8867314951444644303, guid: 6e89b84d9fba03b4e91644dbfcc57b35, type: 3}
+  attackPanelPrefab_Counter: {fileID: 8184206715365601633, guid: 96d8b707f9f589742b032e3e7d86ec2d, type: 3}
   panelContainer: {fileID: 1194207897328411721}
   panelContainer_Counter: {fileID: 6263293710487785233}
   smallWidth: 200

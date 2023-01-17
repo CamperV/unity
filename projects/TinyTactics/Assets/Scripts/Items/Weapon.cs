@@ -15,7 +15,8 @@ public class Weapon : Item, IEquipable
     public int COMBO_ATK;
     public int MIN_RANGE;
     public int MAX_RANGE;
-    public int CRITICAL;
+    public int CRIT;
+    public int COMBO_CRIT;
 
     public static int _MAX_DAMAGE_VALUE = 99;
 
