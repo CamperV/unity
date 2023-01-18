@@ -34,8 +34,20 @@ public class UnitCommandPanel : MonoBehaviour, IUnitInspector
 	}
 
 	void OnEnable() {
-		foreach (var lc in GetComponentsInChildren<LayoutGroup>()) {
-			LayoutRebuilder.MarkLayoutForRebuild(lc.GetComponent<RectTransform>());
+		// foreach (var lc in GetComponentsInChildren<LayoutGroup>()) {
+		// 	LayoutRebuilder.MarkLayoutForRebuild(lc.GetComponent<RectTransform>());
+		// }
+		// deal with Unity wonkiness
+		foreach (ContentSizeFitter csf in GetComponentsInChildren<ContentSizeFitter>()) {
+			LayoutRebuilder.ForceRebuildLayoutImmediate(csf.GetComponent<RectTransform>());
+		}
+	}
+
+	public void ConditionallyInspectUnit(Unit unit) {
+		if (unit != null && unit.GetType() != typeof(PlayerUnit)) {
+			gameObject.SetActive(false);
+		} else {
+			InspectUnit(unit);
 		}
 	}
 
@@ -50,9 +62,6 @@ public class UnitCommandPanel : MonoBehaviour, IUnitInspector
 			boundUnit = null;
 			return;
 		}
-
-		if (unit.GetType() != typeof(PlayerUnit))
-			return;
 		
 		// now start the actual processing
 		boundUnit = (unit as PlayerUnit);

@@ -60,17 +60,6 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
 
     public void RefreshUnits() => activeUnits.ForEach(it => it.RefreshInfo());
 
-    public void Preview(EnemyUnit selection) {
-        selection.UpdateThreatRange();
-        selection.DisplayThreatRange();
-        selection.personalAudioFX.PlayWakeUpFX();
-    }
-
-    public void ClearPreview() {
-        battleMap.ResetHighlightTiles();
-        battleMap.ResetHighlight();
-    }
-
 	private IEnumerator TakeActionAll() {
         // first, try for any available Pods
         // they take their turns together, then take the stragglers

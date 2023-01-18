@@ -15,15 +15,16 @@ MonoBehaviour:
   name: Weapon
   sprite: {fileID: 21300000, guid: 6c4e1b1090f1cce429a4f5a7ba0c36d3, type: 3}
   <tags>k__BackingField: []
-  audioFXBundle_Attack: {fileID: 11400000, guid: 8e0ed2b5c7c27544ba217af8d22c00d4, type: 2}
-  audioFXBundle_Equip: {fileID: 11400000, guid: 8e0ed2b5c7c27544ba217af8d22c00d4, type: 2}
+  audioFXBundle_Attack: {fileID: 11400000, guid: e93ded6ccafb0d9439347f4c3beeaaf6, type: 2}
+  audioFXBundle_Equip: {fileID: 11400000, guid: e93ded6ccafb0d9439347f4c3beeaaf6, type: 2}
   MIN_ATK: 3
   MAX_ATK: 5
   POISE_ATK: 1
   COMBO_ATK: 3
   MIN_RANGE: 1
-  MAX_RANGE: 2
-  CRITICAL: 0
+  MAX_RANGE: 1
+  CRIT: 0
+  COMBO_CRIT: 0
   attachedMutations:
   - {fileID: 11400000, guid: 2f34a8e3a9ce1da47bfbf30cdb78917a, type: 2}
   attachedStatuses: []

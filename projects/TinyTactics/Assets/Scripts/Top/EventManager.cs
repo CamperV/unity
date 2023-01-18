@@ -17,6 +17,7 @@ public sealed class EventManager : MonoBehaviour
     public TurnManager turnManager;
     public UnitMap unitMap;
     public BattleMap battleMap;
+    public UnitSelectionSystem unitSelectionSystem;
     public PlayerUnitController playerUnitController;
     public EnemyUnitController enemyUnitController;
 	
@@ -43,8 +44,7 @@ public sealed class EventManager : MonoBehaviour
         inputController.LeftMouseClickEvent += battleMap.CheckLeftMouseClick;
 
         inputController.RightMouseClickEvent += battleMap.CheckRightMouseClick;
-        inputController.RightMouseClickEvent += _ => UnitSelectionSystem.inst.ClearSelection();
-        inputController.RightMouseClickEvent += _ => enemyUnitController.ClearPreview();
+        inputController.RightMouseClickEvent += _ => unitSelectionSystem.ClearSelection();
 
         inputController.MiddleMouseClickEvent += battleMap.CheckAuxiliaryInteract;
 
@@ -52,7 +52,7 @@ public sealed class EventManager : MonoBehaviour
         inputController.LeftMouseHoldEndEvent += battleMap.CheckLeftMouseHoldEnd;
 
         inputController.MainInteractButtonEvent += playerUnitController.ForceEndPlayerPhase;
-        inputController.SelectNextUnitEvent += UnitSelectionSystem.inst.SelectNextUnit;
+        inputController.SelectNextUnitEvent += unitSelectionSystem.SelectNextUnit;
         inputController.DirectionalInputEvent += cameraManager.UpdateMovementVector;
         inputController.MouseScrollEvent += cameraManager.UpdateZoomLevel;
 
@@ -60,11 +60,11 @@ public sealed class EventManager : MonoBehaviour
         topBattleRef.BattleStartEvent += turnManager.Enable;
 
         // battlemap events
-        battleMap.InteractEvent += UnitSelectionSystem.inst.SelectAt;
+        battleMap.InteractEvent += unitSelectionSystem.SelectAt;
 
         // battleMap.AuxiliaryInteractEvent_0 += // hold down
         // battleMap.AuxiliaryInteractEvent_1 += // release
-        battleMap.AuxiliaryInteractEvent_2 += UnitSelectionSystem.inst.SelectAt_Aux;  // middle-click (special interact)
+        battleMap.AuxiliaryInteractEvent_2 += unitSelectionSystem.SelectAt_Aux;  // middle-click (special interact)
 
         battleMap.TerrainMouseOverEvent += uiManager.UpdateTerrainEffectPanel;
         battleMap.TerrainChangeEvent += unitMap.ApplyTerrainEffects;
@@ -78,8 +78,8 @@ public sealed class EventManager : MonoBehaviour
         turnManager.NewPhaseEvent += _ => playerUnitController.RefreshUnits();
         turnManager.NewPhaseEvent += _ => enemyUnitController.RefreshUnits();
 
-        turnManager.playerPhase.StartEvent += () => UnitSelectionSystem.inst.gameObject.SetActive(true);
-        turnManager.playerPhase.EndEvent += () => UnitSelectionSystem.inst.gameObject.SetActive(false);
+        turnManager.playerPhase.StartEvent += () => unitSelectionSystem.gameObject.SetActive(true);
+        turnManager.playerPhase.EndEvent += () => unitSelectionSystem.gameObject.SetActive(false);
 
         // board state events
         unitMap.NewBoardStateEvent += () => playerUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());

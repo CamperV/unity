@@ -292,7 +292,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: baseStats.MAX_POISE
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: baseStats.DAMAGE_REDUCTION

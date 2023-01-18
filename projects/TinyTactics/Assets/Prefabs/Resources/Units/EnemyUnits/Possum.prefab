@@ -68,8 +68,6 @@ MonoBehaviour:
   <moveAvailable>k__BackingField: 0
   assignedPod: {fileID: 0}
   experienceReward: 12
-  moveTileVisuals: {fileID: 11400000, guid: d869f387131ad9f4ea9f7643facbf3c4, type: 2}
-  attackTileVisuals: {fileID: 11400000, guid: 18a134b39d11303498e3d4a6c247b6a8, type: 2}
 --- !u!114 &9216953301907127545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,7 +192,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: baseStats.MOVE
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: baseStats.MAX_HP
@@ -202,7 +200,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: baseStats.MAX_POISE
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5726798676220975912, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_AnchorMax.y

@@ -120,14 +120,6 @@ public class UnitSelectionSystem : MonoBehaviour
         // currentSelection?.OnInteract(nextUnit.gridPosition, false);
     }
 
-    public void SelectAt(GridPosition gp) {
-        if (gameObject.activeInHierarchy) _SelectAt(gp, false);
-    }
-
-    public void SelectAt_Aux(GridPosition gp) {
-        if (gameObject.activeInHierarchy) _SelectAt(gp, true);
-    }
-
     public void ClearSelection() {
         if (currentSelection != null) {
             if (currentSelection.turnActive) {
@@ -137,6 +129,22 @@ public class UnitSelectionSystem : MonoBehaviour
         SetCurrentSelection(null);
     }
 
+    private void SetCurrentSelection(Unit selection) {
+        currentSelection = selection;
+        CachedUnitEnumerator = GenerateCachedUnitEnumerator(mostRecentlySelectedUnit);
+        NewUnitSelection?.Invoke(selection);
+    }
+
+    public void SelectAt(GridPosition gp) {
+        if (gameObject.activeInHierarchy)
+            _SelectAt(gp, false);
+    }
+
+    public void SelectAt_Aux(GridPosition gp) {
+        if (gameObject.activeInHierarchy)
+            _SelectAt(gp, true);
+    }
+
     private void _SelectAt(GridPosition gp, bool auxiliaryInteract) {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // There are two things that can happen here:                                                             //
@@ -144,26 +152,11 @@ public class UnitSelectionSystem : MonoBehaviour
         //      2) If you don't, currentSelection will polymorphically decide what it wants to do (via its state) //
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Unit unit = unitMap.UnitAt(gp);
-
         if (unit != null && unit != currentSelection && !selectionLocked) {
             ClearSelection();
-            enemyUnitController.ClearPreview();
-
             SetCurrentSelection(unit);
-
-            if (unit is EnemyUnit) {
-                // enemyUnitController.Preview((unit as EnemyUnit));
-                Debug.Log($"I want to preview this enemy unit {unit}");
-            }
         }
 
         currentSelection?.OnInteract(gp, auxiliaryInteract);
-    }
-
-    private void SetCurrentSelection(Unit selection) {
-        Debug.Log($"setting selection, my current status is active={gameObject.activeInHierarchy}");
-        currentSelection = selection;
-        CachedUnitEnumerator = GenerateCachedUnitEnumerator(mostRecentlySelectedUnit);
-        NewUnitSelection?.Invoke(selection);
     }
 }

@@ -13,9 +13,6 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     public int Initiative => brain.CalculateInitiative();
     public int experienceReward;
 
-    [SerializeField] private TileVisuals moveTileVisuals;
-    [SerializeField] private TileVisuals attackTileVisuals;
-
     // IStateMachine<>
     public enum EnemyUnitFSM {
         Idle,
@@ -237,14 +234,5 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
     public override void RevertTurn() {
         if (state == EnemyUnitFSM.Idle) return;
         ChangeState(EnemyUnitFSM.Idle);
-    }
-
-    public void DisplayThreatRange() {
-        if (moveRange == null || attackRange == null) UpdateThreatRange();
-  
-        attackRange.Display(battleMap, attackTileVisuals.color, attackTileVisuals.tile);
-        moveRange.Display(battleMap, moveTileVisuals.color, moveTileVisuals.tile);
-        
-        battleMap.Highlight(gridPosition, Palette.selectColorWhite);
     }
 }

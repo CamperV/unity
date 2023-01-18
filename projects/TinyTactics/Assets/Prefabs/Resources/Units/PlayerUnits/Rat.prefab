@@ -343,7 +343,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: baseStats.MOVE
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: baseStats.MAX_HP
@@ -351,7 +351,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: baseStats.MAX_POISE
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5726798676220975912, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_AnchorMax.y
