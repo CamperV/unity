@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using Extensions;
 
-public class UnitCommandPanel : MonoBehaviour
+public class UnitCommandPanel : MonoBehaviour, IUnitInspector
 {
 	private PlayerUnit boundUnit;
 
@@ -39,15 +39,29 @@ public class UnitCommandPanel : MonoBehaviour
 		}
 	}
 
-	public void SetUnitInfo(PlayerUnit unit) {
-		boundUnit = unit;
-		//
+	public void InspectUnit(Unit unit) {
+		// "Clear"
+		// clear callbacks once you're no longer interacting with the UI
+		if (unit == null) {
+			boundUnit.unitCommandSystem.ActivateUC -= ActivateTrigger;
+			boundUnit.unitCommandSystem.DeactivateUC -= DeactivateTrigger;
+			boundUnit.unitCommandSystem.FinishUC -= FinishTrigger;
+			boundUnit.unitCommandSystem.RevertUC -= RevertTrigger;
+			boundUnit = null;
+			return;
+		}
+
+		if (unit.GetType() != typeof(PlayerUnit))
+			return;
+		
+		// now start the actual processing
+		boundUnit = (unit as PlayerUnit);
 		ClearUCs();
 
 		// determine slot numbers first, we need all UCVisuals to know about each other
 		UnitCommand[] ucSlotOrder = new UnitCommand[10];
 		//
-		foreach (UnitCommand uc in unit.unitCommandSystem.Commands.Where(it => it.panelSlot != -1)) {
+		foreach (UnitCommand uc in boundUnit.unitCommandSystem.Commands.Where(it => it.panelSlot != -1)) {
 			if (ucSlotOrder[uc.panelSlot] == null) {
 				ucSlotOrder[uc.panelSlot] = uc;
 			} else {
@@ -56,7 +70,7 @@ public class UnitCommandPanel : MonoBehaviour
 		}
 
 		// then, insert others at the minumum unoccupied slot
-		foreach (UnitCommand uc in unit.unitCommandSystem.Commands.Where(it => it.panelSlot == -1)) {
+		foreach (UnitCommand uc in boundUnit.unitCommandSystem.Commands.Where(it => it.panelSlot == -1)) {
 			// first index of unoccupied space
 			int firstIndex = ucSlotOrder.TakeWhile((it, index) => it != null || _reservedSlots.Contains(index)).Count();
 			ucSlotOrder[firstIndex] = uc;
@@ -70,30 +84,20 @@ public class UnitCommandPanel : MonoBehaviour
 		//
 		for (int s = 0; s < ucSlotOrder.Length; s++) {
 			if (ucSlotOrder[s] != null) {
-				AddToPanel(ucSlotOrder[s], unit.unitCommandSystem, s);
+				AddToPanel(ucSlotOrder[s], boundUnit.unitCommandSystem, s);
 			}
 		}
 
 		// now that the UnitCommandVisuals have been created, make them noisy
 		foreach (UnitCommandVisual ucv in mapping.Values) {
-			ucv.RegisterCommand(unit.personalAudioFX.PlayInteractFX);
+			ucv.RegisterCommand(boundUnit.personalAudioFX.PlayInteractFX);
 		}
 
 		// now... can we somehow bind functions here to uc.Activate()/uc.Deactivate() a la invocation list?
-		unit.unitCommandSystem.ActivateUC += ActivateTrigger;
-		unit.unitCommandSystem.DeactivateUC += DeactivateTrigger;
-		unit.unitCommandSystem.FinishUC += FinishTrigger;
-		unit.unitCommandSystem.RevertUC += RevertTrigger;
-	}
-
-	public void ClearUnitInfo(PlayerUnit unit) {
-		boundUnit = null;
-
-		// clear callbacks once you're no longer interacting with the UI
-		unit.unitCommandSystem.ActivateUC -= ActivateTrigger;
-		unit.unitCommandSystem.DeactivateUC -= DeactivateTrigger;
-		unit.unitCommandSystem.FinishUC -= FinishTrigger;
-		unit.unitCommandSystem.RevertUC -= RevertTrigger;
+		boundUnit.unitCommandSystem.ActivateUC += ActivateTrigger;
+		boundUnit.unitCommandSystem.DeactivateUC += DeactivateTrigger;
+		boundUnit.unitCommandSystem.FinishUC += FinishTrigger;
+		boundUnit.unitCommandSystem.RevertUC += RevertTrigger;
 	}
 
 	private void ClearUCs() {

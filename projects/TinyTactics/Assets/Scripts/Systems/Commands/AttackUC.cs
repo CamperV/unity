@@ -24,7 +24,7 @@ public class AttackUC : TargetableUC
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
-        thisUnit.playerUnitController.Unlock();
+        UnitSelectionSystem.inst.Unlock();
 
         thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();

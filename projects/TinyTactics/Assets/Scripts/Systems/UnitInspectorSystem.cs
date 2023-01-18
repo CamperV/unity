@@ -18,16 +18,7 @@ public class UnitInspectorSystem : MonoBehaviour
     // this class exists to be an active GameObject in the scene,
     // to have children register themselves to various flags
     // this allows for nice, separable components
-    public static UnitInspectorSystem inst = null; // enforces singleton behavior
     [HideInInspector] public Unit currentUnit;
-	
-    void Awake() {
- 		if (inst == null) {
-			inst = this;
-		} else if (inst != this) {
-			Destroy(gameObject);
-		}
-    }
 
 	public UnityEvent<Unit> EnableInspectionEvent;
 	public UnityEvent<Unit> DisableInspectionEvent;

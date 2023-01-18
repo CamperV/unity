@@ -53,17 +53,4 @@ public sealed class UIManager : MonoBehaviour
 		defeatPanel.survivingUnitsValue.SetText($"{survivingUnits}");
 		defeatPanel.turnsElapsedValue.SetText($"{turnsElapsed}");
 	}
-
-	public void EnableUnitCommandPanel(PlayerUnit unit) {
-		if (unit == null) {
-			unitCommandPanel.gameObject.SetActive(false);
-		} else {
-			unitCommandPanel.gameObject.SetActive(true);
-			unitCommandPanel.SetUnitInfo(unit);
-		}
-	}
-
-	public void CleanUpUnitCommandPanel(PlayerUnit droppedUnit) {
-		unitCommandPanel.ClearUnitInfo(droppedUnit);
-	}
 }

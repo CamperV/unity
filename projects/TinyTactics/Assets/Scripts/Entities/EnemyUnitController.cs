@@ -7,10 +7,6 @@ using UnityEngine.UI;
 
 public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
 {
-    // publicly acccessible events
-    public delegate void UnitSelection(EnemyUnit selection);
-    public event UnitSelection NewEnemyUnitControllerSelection;
-
     public delegate void RegistrationState(Unit unit);
     public event RegistrationState RegisteredUnit;
 
@@ -68,17 +64,11 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
         selection.UpdateThreatRange();
         selection.DisplayThreatRange();
         selection.personalAudioFX.PlayWakeUpFX();
-        //
-        UnitInspectorSystem.inst.InspectUnit(selection);
-
-        NewEnemyUnitControllerSelection?.Invoke(selection);
     }
 
     public void ClearPreview() {
         battleMap.ResetHighlightTiles();
         battleMap.ResetHighlight();
-        //
-        UnitInspectorSystem.inst.InspectUnit(null);
     }
 
 	private IEnumerator TakeActionAll() {
@@ -122,7 +112,7 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
             unit.FinishTurn();
 
             // uncomment to focus the camera when they decide not to move            
-            // NewEnemyUnitControllerSelection?.Invoke(unit);
+            // focus camera here
             // yield return new WaitForSeconds(timeBetweenUnitActions/4f);
 
         // otherwise, if they want to take an action:
@@ -130,7 +120,9 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
         // execute the dang thing
         // and wait the normal amount between turns
         } else {
-            NewEnemyUnitControllerSelection?.Invoke(unit);
+            //
+            // focus camera here
+            //
             //
             yield return unit.ExecuteDamagePackage(selectedDmgPkg.Value, pathTo);
             yield return new WaitForSeconds(timeBetweenUnitActions);

@@ -257,6 +257,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         FireOnFinishTurnEvent();
     }
 
+    public virtual void OnInteract(GridPosition gp, bool auxiliaryInteract) {}
+
     public void SufferPoiseDamage(int incomingDamage, GameObject fromSource) {
         // only animate if you're alive and you're going from Some -> None, not if you're already empty of Poise
         if (statSystem.CounterAttackAvailable) {

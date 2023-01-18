@@ -27,13 +27,12 @@ public class Phase
 
     public void TriggerStart() {
         state = PhaseState.Active;
-        StartEvent.Invoke();
+        StartEvent?.Invoke();
     }
 
     public void TriggerEnd() {
-        Debug.Log($"This end was triggered for {this}");
         state = PhaseState.Complete;
-        EndEvent.Invoke();
+        EndEvent?.Invoke();
     }
 
     public override string ToString() {

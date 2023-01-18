@@ -58,7 +58,7 @@ public class TurnManager : MonoBehaviour
             if (suspend) yield return new WaitUntil(() => suspend == false);
 
             currentPhase = phase;
-            NewPhaseEvent(currentPhase);
+            NewPhaseEvent?.Invoke(currentPhase);
 
             // allow the PhaseAnnouncement banner tot block here,
             yield return AnnounceNewPhase(currentPhase);

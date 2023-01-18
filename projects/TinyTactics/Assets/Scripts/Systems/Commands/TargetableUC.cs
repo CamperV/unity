@@ -23,7 +23,7 @@ public abstract class TargetableUC : UnitCommand
     }
 
     public override void Deactivate(PlayerUnit thisUnit) {
-        thisUnit.playerUnitController.Unlock();
+        UnitSelectionSystem.inst.Unlock();
 
         thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();
@@ -52,15 +52,13 @@ public abstract class TargetableUC : UnitCommand
             _previousMouseOver = thisUnit.battleMap.CurrentMouseGridPosition;
 
             ResetValidMouseOver(thisUnit);
-            thisUnit.playerUnitController.Unlock();
+            UnitSelectionSystem.inst.Unlock();
             
             if (ValidTarget(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition)) {
-                thisUnit.playerUnitController.Lock();
+                UnitSelectionSystem.inst.Lock();
                 //
                 ValidMouseOver(thisUnit, thisUnit.battleMap.CurrentMouseGridPosition);
             }
-        } else {
-            // Debug.Log($"Active, previous: {_previousMouseOver}");
         }
     }
 
