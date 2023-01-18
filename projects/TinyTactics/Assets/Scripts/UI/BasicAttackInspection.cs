@@ -5,13 +5,13 @@ using UnityEngine.UI;
 using TMPro;
 
 [RequireComponent(typeof(UIBobber))]
-public class BasicAttackInspection : UnitInspector
+public class BasicAttackInspection : MonoBehaviour, IUnitInspector
 {
 	public TextMeshProUGUI atkValue;
 	public GameObject critContainer;
 	public TextMeshProUGUI critValue;
 
-	public override void SetUnitInfo(Unit unit) {
+	public void InspectUnit(Unit unit) {
 		// stats first
 		Pair<int, int> dmgRange = unit.EquippedWeapon.DamageRange;
 		if (dmgRange.First == dmgRange.Second) {

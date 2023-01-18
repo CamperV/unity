@@ -1132,8 +1132,8 @@ GameObject:
   - component: {fileID: 5145964402553444113}
   - component: {fileID: 7497302281150745965}
   - component: {fileID: 2058145874859467222}
-  - component: {fileID: 1739504033915345823}
   - component: {fileID: 7628076139412794541}
+  - component: {fileID: 3701848986542669888}
   m_Layer: 5
   m_Name: UnitInspector_Portrait
   m_TagString: Untagged
@@ -1206,27 +1206,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
---- !u!114 &1739504033915345823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5145964402553444112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfc8cb82a4a3f594db4d75ed3c7a962d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  name_TMP: {fileID: 9035096876698428469}
-  portrait: {fileID: 9053330719958055501}
-  tags_TMP: {fileID: 2977069310987416236}
-  health_TMP: {fileID: 603148390340683280}
-  damageReduction_TMP: {fileID: 4823909421717939797}
-  break_TMP: {fileID: 5049391297577709504}
-  healthBar: {fileID: 1159492771164722828}
-  poiseBar: {fileID: 4168054740582060556}
-  statusBar: {fileID: 6933171050854825440}
 --- !u!114 &7628076139412794541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1248,6 +1227,27 @@ MonoBehaviour:
   cascadeAfter: {fileID: 0}
   activePosition: {x: 0, y: 0}
   inactivePosition: {x: 0, y: 0}
+--- !u!114 &3701848986542669888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5145964402553444112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ef99cbc9ec6cae4a80f0df0c5927fa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name_TMP: {fileID: 9035096876698428469}
+  portrait: {fileID: 9053330719958055501}
+  tags_TMP: {fileID: 2977069310987416236}
+  health_TMP: {fileID: 603148390340683280}
+  damageReduction_TMP: {fileID: 4823909421717939797}
+  break_TMP: {fileID: 3443626337248430022}
+  healthBar: {fileID: 1159492771164722828}
+  poiseBar: {fileID: 4168054740582060556}
+  statusBar: {fileID: 6933171050854825440}
 --- !u!1 &5787423317201146170
 GameObject:
   m_ObjectHideFlags: 0

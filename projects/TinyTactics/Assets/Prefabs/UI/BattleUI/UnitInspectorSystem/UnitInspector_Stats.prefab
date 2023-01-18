@@ -687,7 +687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInputController: {fileID: 0}
-  unitInspector: {fileID: 5972341583347549186}
+  unitInspector: {fileID: 8579121456124096088}
   switchRight: {fileID: 4828594342684454255}
   switchLeft: {fileID: 4828594342684454255}
 --- !u!1 &2635552439221023796
@@ -725,9 +725,9 @@ RectTransform:
   m_Father: {fileID: 3206095636236630592}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 62.5, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 72.5, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &869586575260384881
@@ -1123,9 +1123,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5145964402553444113}
   - component: {fileID: 2058145874859467222}
-  - component: {fileID: 5972341583347549186}
   - component: {fileID: 9092811798243915072}
   - component: {fileID: -2339752687150625737}
+  - component: {fileID: 8579121456124096088}
   m_Layer: 5
   m_Name: UnitInspector_Stats
   m_TagString: Untagged
@@ -1169,27 +1169,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
---- !u!114 &5972341583347549186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5145964402553444112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cc0b8ce78a16ed46983a52384d8b4b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponImage: {fileID: 2420339631577643701}
-  weaponTags_TMP: {fileID: 8953756679253379682}
-  weaponName_TMP: {fileID: 2920904557405187796}
-  weaponDamage_TMP: {fileID: 8222490980404133037}
-  weaponRange_TMP: {fileID: 13628408581826493}
-  weaponCrit_TMP: {fileID: 6403670297509120002}
-  weaponSwitcher: {fileID: 2273258156929544787}
-  mutationContainer: {fileID: 2635552439221023796}
-  mutationVisualPrefab: {fileID: 6679132367569494820, guid: 8868c8452b050a442a8b1b9fa2187e67, type: 3}
 --- !u!114 &9092811798243915072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1237,8 +1216,27 @@ MonoBehaviour:
   cascadeAfter: {fileID: 0}
   activePosition: {x: 0, y: 0}
   inactivePosition: {x: 0, y: 0}
-  destination: {x: 0, y: 0}
-  active: 0
+--- !u!114 &8579121456124096088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5145964402553444112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 785932d19df8de94e97dcd9af9e7c206, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponImage: {fileID: 2420339631577643701}
+  weaponTags_TMP: {fileID: 8953756679253379682}
+  weaponName_TMP: {fileID: 2920904557405187796}
+  weaponDamage_TMP: {fileID: 8222490980404133037}
+  weaponRange_TMP: {fileID: 13628408581826493}
+  weaponCrit_TMP: {fileID: 6403670297509120002}
+  weaponSwitcher: {fileID: 2273258156929544787}
+  mutationContainer: {fileID: 2635552439221023796}
+  mutationVisualPrefab: {fileID: 6679132367569494820, guid: 8868c8452b050a442a8b1b9fa2187e67, type: 3}
 --- !u!1 &5403817693082093509
 GameObject:
   m_ObjectHideFlags: 0

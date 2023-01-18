@@ -12,7 +12,6 @@ public sealed class UIManager : MonoBehaviour
 
 	[SerializeField] private TerrainEffectPanel terrainEffectPanel;
 	[SerializeField] private UnitCommandPanel unitCommandPanel;
-	[SerializeField] private UnitInspector[] unitInspectors;
 
 	[SerializeField] private EndgameStatsPanel victoryPanel;
 	[SerializeField] private EndgameStatsPanel defeatPanel;
@@ -29,10 +28,6 @@ public sealed class UIManager : MonoBehaviour
 		}
 
 		startBattleButtonContainer.SetActive(true);
-
-		foreach (UnitInspector unitInspector in unitInspectors) {
-			unitInspector?.gameObject.SetActive(false);
-		}
     }
 
 	public void UpdateTerrainEffectPanel(GridPosition _, TerrainTile terrainAt) {
@@ -42,23 +37,6 @@ public sealed class UIManager : MonoBehaviour
 			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: {terrainAt.terrainEffect.mutatorDisplayData.name}");
 		} else {
 			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: --");	
-		}
-	}
-
-	public void EnableUnitDetail(Unit unit) {
-		// menuButtons.SetActive(false);
-		//
-		foreach (UnitInspector unitInspector in unitInspectors) {
-			unitInspector?.gameObject.SetActive(true);
-			unitInspector?.SetUnitInfo(unit);
-		}
-	}
-
-	public void DisableUnitDetail() {
-		// menuButtons.SetActive(true);
-		//
-		foreach (UnitInspector unitInspector in unitInspectors) {
-			unitInspector?.gameObject.SetActive(false);
 		}
 	}
 

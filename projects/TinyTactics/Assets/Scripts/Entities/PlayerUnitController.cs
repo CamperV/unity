@@ -55,12 +55,6 @@ public class PlayerUnitController : MonoBehaviour, IUnitPhaseController
         }
     }
 
-    void Update() {
-        // if (currentSelection != null && currentSelection.turnActive == false) {
-        //     ClearSelection();
-        // }   
-    }
-
     public void Lock() => selectionLocked = true;
     public void Unlock() => selectionLocked = false;
 

@@ -20,7 +20,7 @@ public class EngagementPreviewSystem : MonoBehaviour
     // to have children register themselves to various flags
     // this allows for nice, separable components
     public static EngagementPreviewSystem inst = null; // enforces singleton behavior
-    public Engagement currentEngagement;
+    [HideInInspector] public Engagement currentEngagement;
 	
     void Awake() {
  		if (inst == null) {

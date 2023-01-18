@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UnitInspector_Portrait : UnitInspector
+public class UnitInspector_Portrait : MonoBehaviour, IUnitInspector
 {
 	[SerializeField] private TextMeshProUGUI name_TMP;
 	[SerializeField] private Image portrait;
@@ -17,8 +17,7 @@ public class UnitInspector_Portrait : UnitInspector
 	[SerializeField] private PoiseBar_UI poiseBar;
 	[SerializeField] private StatusBarUI statusBar;
 
-
-	public override void SetUnitInfo(Unit unit) {
+	public void InspectUnit(Unit unit) {
 		name_TMP.SetText(unit.displayName);
 		portrait.sprite = unit.portraitSprite;
 		tags_TMP.SetText( string.Join(", ", unit.tags) );

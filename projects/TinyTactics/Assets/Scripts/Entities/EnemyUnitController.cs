@@ -69,7 +69,7 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
         selection.DisplayThreatRange();
         selection.personalAudioFX.PlayWakeUpFX();
         //
-        UIManager.inst.EnableUnitDetail(selection);
+        UnitInspectorSystem.inst.InspectUnit(selection);
 
         NewEnemyUnitControllerSelection?.Invoke(selection);
     }
@@ -78,7 +78,7 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
         battleMap.ResetHighlightTiles();
         battleMap.ResetHighlight();
         //
-        UIManager.inst.DisableUnitDetail();
+        UnitInspectorSystem.inst.InspectUnit(null);
     }
 
 	private IEnumerator TakeActionAll() {

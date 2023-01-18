@@ -39,8 +39,6 @@ public class MoveUC : UnitCommand
         thisUnit.battleMap.ResetHighlight();
         thisUnit.battleMap.ClearDisplayPath();
         //
-        // UIManager.inst.DisableUnitDetail();
-
         _waypoints = null;
         _activeMoveRange = null;
         _pathSegments = null;

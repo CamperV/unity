@@ -87,6 +87,9 @@ public sealed class EventManager : MonoBehaviour
         turnManager.NewPhaseEvent += _ => playerUnitController.RefreshUnits();
         turnManager.NewPhaseEvent += _ => enemyUnitController.RefreshUnits();
 
+        turnManager.playerPhase.StartEvent += () => UnitInspectorSystem.inst.gameObject.SetActive(true);
+        turnManager.playerPhase.EndEvent += () => UnitInspectorSystem.inst.gameObject.SetActive(false);
+
         // board state events
         unitMap.NewBoardStateEvent += () => playerUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
         unitMap.NewBoardStateEvent += () => enemyUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());

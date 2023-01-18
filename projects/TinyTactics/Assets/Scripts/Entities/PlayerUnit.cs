@@ -33,12 +33,12 @@ public sealed class PlayerUnit : Unit
     }
 
     public void OnInteract(GridPosition gp, bool auxiliaryInteract) {
-        UIManager.inst.EnableUnitDetail(this);
+        UnitInspectorSystem.inst.InspectUnit(this);
         if (turnActive) unitCommandSystem.Interact(gp, auxiliaryInteract);
     }
 
     public void OnClearInteract() {
-        UIManager.inst.DisableUnitDetail();
+        UnitInspectorSystem.inst.InspectUnit(null);
     }
 
     // this essentially is an "undo" for us

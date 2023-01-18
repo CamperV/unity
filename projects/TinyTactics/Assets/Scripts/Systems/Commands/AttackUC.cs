@@ -29,7 +29,6 @@ public class AttackUC : TargetableUC
         thisUnit.battleMap.ResetHighlightTiles();
         thisUnit.battleMap.ResetHighlight();
         //
-        // UIManager.inst.DisableUnitDetail();
         EngagementPreviewSystem.inst.DisablePreview(null);
     }
 

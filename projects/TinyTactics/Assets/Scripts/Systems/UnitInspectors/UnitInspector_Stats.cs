@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Linq;
 
-public class UnitInspector_Stats : UnitInspector
+public class UnitInspector_Stats : MonoBehaviour, IUnitInspector
 {
 	[SerializeField] private Image weaponImage;	
 	[SerializeField] private TextMeshProUGUI weaponTags_TMP;
@@ -19,7 +19,7 @@ public class UnitInspector_Stats : UnitInspector
 	[SerializeField] private GameObject mutationContainer;
 	[SerializeField] private MutationVisual mutationVisualPrefab;
 
-	public override void SetUnitInfo(Unit unit) {
+	public void InspectUnit(Unit unit) {
 		RefreshUnitInfo(unit);
 		weaponSwitcher.AttachTo(unit);
 	}
