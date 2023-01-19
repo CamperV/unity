@@ -54,14 +54,14 @@ public sealed class EventManager : MonoBehaviour
         inputController.MainInteractButtonEvent += playerUnitController.ForceEndPlayerPhase;
         inputController.SelectNextUnitEvent += unitSelectionSystem.SelectNextUnit;
         inputController.DirectionalInputEvent += cameraManager.UpdateMovementVector;
-        inputController.MouseScrollEvent += cameraManager.UpdateZoomLevel;
+        // inputController.MouseScrollEvent += cameraManager.UpdateZoomLevel;
+        // inputController.MouseScrollEvent += cameraManager.UpdateZoomLevel;
 
         // top!battle events
         topBattleRef.BattleStartEvent += turnManager.Enable;
 
         // battlemap events
         battleMap.InteractEvent += unitSelectionSystem.SelectAt;
-
         // battleMap.AuxiliaryInteractEvent_0 += // hold down
         // battleMap.AuxiliaryInteractEvent_1 += // release
         battleMap.AuxiliaryInteractEvent_2 += unitSelectionSystem.SelectAt_Aux;  // middle-click (special interact)

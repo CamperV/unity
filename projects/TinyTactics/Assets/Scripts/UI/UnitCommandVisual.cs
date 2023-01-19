@@ -24,10 +24,8 @@ public class UnitCommandVisual : MonoBehaviour
 	private Action LimitTypeUpdater;
 
 	// can assign in inspector, for things like AttackUC's WeaponSwitcher
-	[Serializable] public class UCVEvent : UnityEvent<PlayerUnit, UnitCommand>{}
-	//
-	public UCVEvent PropagateActivation;
-	public UCVEvent PropagateDeactivation;
+	public UnityEvent<PlayerUnit, UnitCommand> PropagateActivation;
+	public UnityEvent<PlayerUnit, UnitCommand> PropagateDeactivation;
 	//
 
 	public void OnActivate(PlayerUnit thisUnit, UnitCommand thisCommand) {

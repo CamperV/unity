@@ -17,6 +17,10 @@ public class CameraManager : MonoBehaviour
 	public Vector2 cameraSpeed;
 	private Vector3 movementVector = Vector3.zero;
 
+	// radius to give fudge factor to traack Lerping
+	public float trackingTolerance;	
+	public float lerpSpeed;
+
 	private new Camera camera;
 	private float zoomLevel;
 	public float zoomSpeed;
@@ -27,7 +31,7 @@ public class CameraManager : MonoBehaviour
 	// ZOOM WHEEL HARDWARE SPECIFIC
 	private readonly float scrollTick = 120f;
 
-	private EventManager _cachedEventManager;
+	[SerializeField] private EventManager eventManager;
 
 	void Awake() {
 		camera = GetComponent<Camera>();
@@ -42,9 +46,6 @@ public class CameraManager : MonoBehaviour
 
 		// init for scrolling
 		zoomLevel = camera.orthographicSize;
-
-		// cache the event manager so that we don't look it up every frame
-		_cachedEventManager = GameObject.Find("Battle").GetComponent<EventManager>();
 	}
 
 	public static void FocusActiveCameraOn(Vector3 focalPoint) {
@@ -59,7 +60,7 @@ public class CameraManager : MonoBehaviour
 	public void CalculateZoomUpdate() {
 		// MOUSEINPUT FOR SCROLLING SEEMS TO BE BROKEN IN UNITY
 		// use this in the meantime:
-		if (_cachedEventManager.inputController.gameObject.activeInHierarchy) {
+		if (eventManager.inputController.gameObject.activeInHierarchy) {
 			Vector2 zoomVec = Mouse.current.scroll.ReadValue();
 			if (zoomVec.y != 0) UpdateZoomLevel(zoomVec);
 		}
@@ -106,8 +107,7 @@ public class CameraManager : MonoBehaviour
 			transform.position.z
 		);
 
-		//
-		transform.position = Vector3.Lerp(transform.position, trackingPosition, Time.deltaTime*7f);
+		transform.position = Vector3.Lerp(transform.position, trackingPosition, Time.deltaTime*lerpSpeed);
 	}
 
 	public void AcquireTrackingTarget(Transform selection) {
@@ -124,7 +124,9 @@ public class CameraManager : MonoBehaviour
 		}
 	}
 
-	public void FocusTarget(Transform? selection) {
+
+	public void FocusUnit(Unit unit) => FocusTarget(unit?.transform ?? null);
+	public void FocusTarget(Transform selection) {
 		if (selection == null) return;
 		
 		// dont' actually track this target - move the camera if necessary, but then let it be free

@@ -18,7 +18,7 @@ MonoBehaviour:
   commandCategory: 2
   panelCategory: 0
   panelSlot: -1
-  unitCommandVisualPrefab: {fileID: 0}
+  unitCommandVisualPrefab: {fileID: 636158604022634651, guid: c8f99b51a853ddd4bb78a5dcbc7dc19e, type: 3}
   requiresConfirm: 0
   revertable: 0
   limitType: 0
