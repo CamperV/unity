@@ -273,7 +273,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     private IEnumerator PoiseBreak() {
         personalAudioFX.PlayBreakFX();
-        messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"BREAK");
+        messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"POISE BREAK");
 
         StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.threatColorIndigo) );
         StartCoroutine( spriteAnimator.SmoothCosX(32f, 0.015f, 0f, 1.0f) );

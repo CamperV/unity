@@ -17,7 +17,7 @@ public class UnitSelectionSystem : MonoBehaviour
     [SerializeField] private EnemyUnitController enemyUnitController;
 
     private Unit currentSelection;
-    private Unit mostRecentlySelectedUnit;
+    private PlayerUnit mostRecentlySelectedPlayerUnit;
 
     // this is done by certain unit actions, so that you don't switch units when trying to heal them
     private bool selectionLocked;
@@ -25,18 +25,7 @@ public class UnitSelectionSystem : MonoBehaviour
     public void Unlock() => selectionLocked = false;
 
     private List<Unit> _units;
-    public List<Unit> ActiveUnits {
-        get => _units.Where(en => en.gameObject.activeInHierarchy)
-                     .OrderBy(u => u.gridPosition.y)
-                     .ThenBy(u => u.gridPosition.x)
-                     .ToList();
-    }
-    public List<Unit> InactiveUnits {
-        get => _units.Where(en => !en.gameObject.activeInHierarchy)
-                     .OrderBy(u => u.gridPosition.y)
-                     .ThenBy(u => u.gridPosition.x)
-                     .ToList();
-    }
+    public List<PlayerUnit> ActivePlayerUnits => playerUnitController.activeUnits.Where(u => u.turnActive).ToList();   
 
     // this class exists to be an active GameObject in the scene,
     // to have children register themselves to various flags
@@ -54,37 +43,37 @@ public class UnitSelectionSystem : MonoBehaviour
     }
 
     void Start() {
-        foreach (PlayerUnit playerUnit in GetComponentsInChildren<PlayerUnit>()) {
+        foreach (PlayerUnit playerUnit in playerUnitController.activeUnits) {
             _units.Add((playerUnit as Unit));
         }
-        foreach (EnemyUnit enemyUnit in GetComponentsInChildren<EnemyUnit>()) {
+        foreach (EnemyUnit enemyUnit in enemyUnitController.activeUnits) {
             _units.Add((enemyUnit as Unit));
         }
     }
 
-    void OnEnable() {
-        ClearSelection();
-    }
+    void OnEnable() => ClearSelection();
+    void OnDisable() => ClearSelection();
 
-    void OnDisable() {
-        ClearSelection();
-    }
+    public void SelectNextPlayerUnit() {        
+        // we keep a rotating list of ActivePlayerUnits in an Enumerator
+        // we also can index into this to "start" at a certain unit
+        // we do this here with "currentSelection.
+        // however, if the currentSelection is the "last" unit in this rotating Enumerator,
+        // it will fail. We fix this by keeping a "fallback" unit, which is the "first" unit
+        // "first" -> min(gridPosition.y, gridPosition.x)
+        PlayerUnit _fallbackUnit = ActivePlayerUnits.OrderBy(u => -u.gridPosition.y).ThenBy(u => u.gridPosition.x).ToList()[0];
+        PlayerUnit nextUnit = GetNextPlayerUnit((currentSelection as PlayerUnit)) ?? _fallbackUnit;
 
-    IEnumerator<Unit> CachedUnitEnumerator;
-    private IEnumerator<Unit> GenerateCachedUnitEnumerator(Unit startingUnit) {
-        bool seenStartingUnit = startingUnit == null;
-
-        foreach (Unit unit in ActiveUnits) {
-            // trigger once only
-            if (seenStartingUnit == false) {
-                seenStartingUnit = unit == startingUnit;
-            } else {
-                yield return unit;
-            }
+        // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
+        // then REACQUIRE a currentSelection immediately afterwards
+        if (nextUnit != currentSelection) {
+            ClearSelection();
+            SetCurrentSelection(nextUnit);
         }
+        currentSelection?.OnInteract(nextUnit.gridPosition, false);
     }
 
-    public Unit GetNextUnit(Unit currentUnit) {
+    private PlayerUnit GetNextPlayerUnit(PlayerUnit currentUnit) {
         // overwrite previous enumerators
         if (CachedUnitEnumerator == null) CachedUnitEnumerator = GenerateCachedUnitEnumerator(currentUnit);
 
@@ -98,26 +87,19 @@ public class UnitSelectionSystem : MonoBehaviour
         return CachedUnitEnumerator.Current;
     }
 
-    public void SelectNextUnit() {
-        // don't let us interrupt
-        // enemyUnitController.ClearPreview();
-        
-        // // we keep a rotating list of PlayerUnits in an Enumerator
-        // // we also can index into this to "start" at a certain unit
-        // // we do this here with "currentSelection.
-        // // however, if the currentSelection is the "last" unit in this rotating Enumerator,
-        // // it will fail. We fix this by keeping a "fallback" unit, which is the "first" unit
-        // // "first" -> min(gridPosition.y, gridPosition.x)
-        // PlayerUnit _fallbackUnit = activeUnits.OrderBy(u => u.gridPosition.y).ThenBy(u => u.gridPosition.x).ToList()[0];
-        // PlayerUnit nextUnit = GetNextUnit(currentSelection) ?? _fallbackUnit;
+    IEnumerator<PlayerUnit> CachedUnitEnumerator;
+    private IEnumerator<PlayerUnit> GenerateCachedUnitEnumerator(PlayerUnit startingUnit) {
+        bool seenStartingUnit = startingUnit == null;
 
-        // // swap to the new unit. This will rapidly drop currentSelection (via Cancel/ChangeState(Idle))
-        // // then REACQUIRE a currentSelection immediately afterwards
-        // if (nextUnit != currentSelection) {
-        //     ClearSelection();
-        //     SetCurrentSelection(nextUnit);
-        // }
-        // currentSelection?.OnInteract(nextUnit.gridPosition, false);
+        foreach (PlayerUnit unit in ActivePlayerUnits.OrderBy(u => -u.gridPosition.y)
+                                                     .ThenBy(u => u.gridPosition.x)) {
+            // trigger once only
+            if (seenStartingUnit == false) {
+                seenStartingUnit = unit == startingUnit;
+            } else {
+                yield return unit;
+            }
+        }
     }
 
     public void ClearSelection() {
@@ -131,7 +113,8 @@ public class UnitSelectionSystem : MonoBehaviour
 
     private void SetCurrentSelection(Unit selection) {
         currentSelection = selection;
-        CachedUnitEnumerator = GenerateCachedUnitEnumerator(mostRecentlySelectedUnit);
+        if (currentSelection is PlayerUnit)
+            CachedUnitEnumerator = GenerateCachedUnitEnumerator((currentSelection as PlayerUnit));
         NewUnitSelection?.Invoke(selection);
     }
 

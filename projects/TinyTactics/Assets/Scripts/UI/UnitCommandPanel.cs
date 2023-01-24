@@ -107,6 +107,12 @@ public class UnitCommandPanel : MonoBehaviour, IUnitInspector
 		boundUnit.unitCommandSystem.DeactivateUC += DeactivateTrigger;
 		boundUnit.unitCommandSystem.FinishUC += FinishTrigger;
 		boundUnit.unitCommandSystem.RevertUC += RevertTrigger;
+
+		// finally:
+		// deal with Unity wonkiness
+		foreach (ContentSizeFitter csf in GetComponentsInChildren<ContentSizeFitter>()) {
+			LayoutRebuilder.ForceRebuildLayoutImmediate(csf.GetComponent<RectTransform>());
+		}
 	}
 
 	private void ClearUCs() {

@@ -52,7 +52,7 @@ public sealed class EventManager : MonoBehaviour
         inputController.LeftMouseHoldEndEvent += battleMap.CheckLeftMouseHoldEnd;
 
         inputController.MainInteractButtonEvent += playerUnitController.ForceEndPlayerPhase;
-        inputController.SelectNextUnitEvent += unitSelectionSystem.SelectNextUnit;
+        inputController.SelectNextUnitEvent += unitSelectionSystem.SelectNextPlayerUnit;
         inputController.DirectionalInputEvent += cameraManager.UpdateMovementVector;
         // inputController.MouseScrollEvent += cameraManager.UpdateZoomLevel;
         // inputController.MouseScrollEvent += cameraManager.UpdateZoomLevel;
