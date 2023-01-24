@@ -466,7 +466,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7754110684890950106, guid: cc1d5d1c0bfe8f540bc0094e402d1d02, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.72499996
       objectReference: {fileID: 0}
     - target: {fileID: 7754110684890950106, guid: cc1d5d1c0bfe8f540bc0094e402d1d02, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2122,6 +2122,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a927d62ac29b7854f9678b92279dac5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EnterTileEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1636068312}
+        m_TargetAssemblyTypeName: TerrainSystem, Assembly-CSharp
+        m_MethodName: ApplyTerrainEffect_Enter
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  ExitTileEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1636068312}
+        m_TargetAssemblyTypeName: TerrainSystem, Assembly-CSharp
+        m_MethodName: ApplyTerrainEffect_Exit
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &881456445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2142,6 +2172,7 @@ MonoBehaviour:
   turnManager: {fileID: 881456442}
   unitMap: {fileID: 881456444}
   battleMap: {fileID: 1636068311}
+  terrainSystem: {fileID: 1636068312}
   unitSelectionSystem: {fileID: 169435677}
   playerUnitController: {fileID: 1470600146}
   enemyUnitController: {fileID: 1111963512}
@@ -5624,7 +5655,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5910868071268390516, guid: 98478d08c8aca5046a8dc5f037863f1e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.72499996
       objectReference: {fileID: 0}
     - target: {fileID: 5910868071268390516, guid: 98478d08c8aca5046a8dc5f037863f1e, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -7499,6 +7530,7 @@ GameObject:
   - component: {fileID: 1636068309}
   - component: {fileID: 1636068310}
   - component: {fileID: 1636068311}
+  - component: {fileID: 1636068312}
   m_Layer: 0
   m_Name: BattleMap
   m_TagString: Untagged
@@ -7551,6 +7583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8031aab95733bd64391f0840cf73bdb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrainSystem: {fileID: 1636068312}
   mouseOverOverlayTile: {fileID: 11400000, guid: e915bf0989517c745ab3537431347a5c, type: 2}
   pathTileSet: {fileID: 11400000, guid: ac1545425d88e1741add40e56540c08c, type: 2}
   overlayTilemap: {fileID: 112305079}
@@ -7559,6 +7592,37 @@ MonoBehaviour:
   baseTilemap: {fileID: 894047360}
   visualTilemap: {fileID: 1538233456}
   baseHighlightTile: {fileID: 11400000, guid: 21da110aa35179b4193400a7ecaa5745, type: 2}
+--- !u!114 &1636068312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636068308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f68fc9a48ca7cd4a831d781cbc7d0ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TerrainMouseOverEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2078308293}
+        m_TargetAssemblyTypeName: TerrainEffectPanel, Assembly-CSharp
+        m_MethodName: UpdatePanel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  TerrainChangeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  terrainTilemap: {fileID: 894047360}
 --- !u!1001 &1681647606
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11236,7 +11300,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.72499996
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -14796,7 +14860,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.72499996
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -24630,7 +24694,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startBattleButtonContainer: {fileID: 3975291741128158259}
-  terrainEffectPanel: {fileID: 2078308293}
   unitCommandPanel: {fileID: 106256008}
   victoryPanel: {fileID: 243780945}
   defeatPanel: {fileID: 162642471}

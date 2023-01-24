@@ -9,8 +9,6 @@ public sealed class UIManager : MonoBehaviour
 	public static UIManager inst = null; // enforces singleton behavior
 
 	[SerializeField] private GameObject startBattleButtonContainer;
-
-	[SerializeField] private TerrainEffectPanel terrainEffectPanel;
 	[SerializeField] private UnitCommandPanel unitCommandPanel;
 
 	[SerializeField] private EndgameStatsPanel victoryPanel;
@@ -29,16 +27,6 @@ public sealed class UIManager : MonoBehaviour
 
 		startBattleButtonContainer.SetActive(true);
     }
-
-	public void UpdateTerrainEffectPanel(GridPosition _, TerrainTile terrainAt) {
-		terrainEffectPanel.tileValue.sprite = terrainAt.sprite;
-
-		if (terrainAt.HasTerrainEffect) {
-			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: {terrainAt.terrainEffect.mutatorDisplayData.name}");
-		} else {
-			terrainEffectPanel.effectValue.SetText($"{terrainAt.displayName}: --");	
-		}
-	}
 
 	public void CreateVictoryPanel(int enemiesDefeated, int survivingUnits, int turnsElapsed) {
 		victoryPanel.gameObject.SetActive(true);

@@ -17,6 +17,7 @@ public sealed class EventManager : MonoBehaviour
     public TurnManager turnManager;
     public UnitMap unitMap;
     public BattleMap battleMap;
+    public TerrainSystem terrainSystem;
     public UnitSelectionSystem unitSelectionSystem;
     public PlayerUnitController playerUnitController;
     public EnemyUnitController enemyUnitController;
@@ -65,9 +66,7 @@ public sealed class EventManager : MonoBehaviour
         // battleMap.AuxiliaryInteractEvent_0 += // hold down
         // battleMap.AuxiliaryInteractEvent_1 += // release
         battleMap.AuxiliaryInteractEvent_2 += unitSelectionSystem.SelectAt_Aux;  // middle-click (special interact)
-
-        battleMap.TerrainMouseOverEvent += uiManager.UpdateTerrainEffectPanel;
-        battleMap.TerrainChangeEvent += unitMap.ApplyTerrainEffects;
+        battleMap.GridMouseOverEvent += terrainSystem.CheckTerrainMouseOver;
 
         // turn management events
         turnManager.playerPhase.StartEvent += playerUnitController.TriggerPhase;

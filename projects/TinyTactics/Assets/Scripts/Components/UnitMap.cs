@@ -4,6 +4,8 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using Extensions;
 
 public class UnitMap : MonoBehaviour
@@ -11,7 +13,8 @@ public class UnitMap : MonoBehaviour
     //publicly available events
     public delegate void BoardState();
     public event BoardState NewBoardStateEvent;
-    //
+    public UnityEvent<Unit, GridPosition> EnterTileEvent;
+    public UnityEvent<Unit, GridPosition> ExitTileEvent;
 
     private BattleMap battleMap;
 
@@ -88,10 +91,8 @@ public class UnitMap : MonoBehaviour
             if (newBoardEvent) NewBoardStateEvent.Invoke();
 
             // trigger relevant Tile Events/TerrainEffects
-            TerrainTile exitingTile = battleMap.TerrainAt(prevGridPosition);
-            TerrainTile enteringTile = battleMap.TerrainAt(unit.gridPosition);
-            if (exitingTile?.HasTerrainEffect ?? false) exitingTile.terrainEffect.OnExitTerrain(unit);
-            if (enteringTile?.HasTerrainEffect ?? false) enteringTile.terrainEffect.OnEnterTerrain(unit);
+            ExitTileEvent?.Invoke(unit, prevGridPosition);
+            EnterTileEvent?.Invoke(unit, unit.gridPosition);
 
         } else {
             if (map[gp] == unit || reservations[gp] == unit) AlignUnit(unit, gp);
@@ -123,12 +124,13 @@ public class UnitMap : MonoBehaviour
         unit.transform.position = battleMap.GridToWorld(gp);
     }
 
-    public void ApplyTerrainEffects(GridPosition gridPosition, TerrainTile previousTerrain, TerrainTile terrain) {
+    public void ApplyTerrainEffects(GridPosition gridPosition) {
         Unit unit = UnitAt(gridPosition);
 
+        // trigger relevant Tile Events/TerrainEffects
         if (unit != null) {
-            if (previousTerrain?.HasTerrainEffect ?? false) previousTerrain.terrainEffect.OnExitTerrain(unit);
-            if (terrain?.HasTerrainEffect ?? false) terrain.terrainEffect.OnEnterTerrain(unit);
+            ExitTileEvent?.Invoke(unit, unit.gridPosition);
+            EnterTileEvent?.Invoke(unit, unit.gridPosition);
         }
     }
 }

@@ -17,12 +17,8 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
     public event GridInteraction AuxiliaryInteractEvent_2;
     public event GridInteraction GridMouseOverEvent;
 
-    public delegate void TerrainInteraction(GridPosition gridPosition, TerrainTile tt);
-    public event TerrainInteraction TerrainMouseOverEvent;
-
-    public delegate void TerrainChange(GridPosition gridPosition, TerrainTile from, TerrainTile to);
-    public event TerrainChange TerrainChangeEvent;
-    //
+    // for pathing purposing
+    [SerializeField] private TerrainSystem terrainSystem;
 
     [SerializeField] private VisualTile mouseOverOverlayTile;
     [SerializeField] private PathTileSet pathTileSet;
@@ -137,7 +133,6 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
                 
                 //
                 GridMouseOverEvent?.Invoke(gridPosition);
-                TerrainMouseOverEvent?.Invoke(gridPosition, TerrainAt(gridPosition));
             }
             recentMouseOver = gridPosition;
         }
@@ -187,35 +182,10 @@ public class BattleMap : MonoBehaviour, IPathable<GridPosition>, IGrid<GridPosit
         if (IsInBounds(left))  yield return left;
     }
 
+    // IPathable definitions
 	public int BaseCost(GridPosition gp) {
-        return (baseTilemap.GetTile(gp) as TerrainTile).cost;
+        return terrainSystem.TerrainAt(gp).cost;
 	}
-
-    public TerrainTile TerrainAt(GridPosition gp) {
-        return (baseTilemap.GetTile(gp) as TerrainTile);
-    }
-
-    // what happens when you apply a terrain effect
-    // basically, take the old terrain, push it to the VisualTilemap
-    // then add the new terrain on top
-    public void CreateTerrainAt(GridPosition gp, TerrainTile terrain) {
-        TerrainTile oldTerrain = (baseTilemap.GetTile(gp) as TerrainTile);
-        visualTilemap.SetTile(gp, oldTerrain);
-        baseTilemap.SetTile(gp, terrain);
-
-        TerrainChangeEvent?.Invoke(gp, oldTerrain, terrain);
-    }
-
-    public void DestroyTerrainAt(GridPosition gp) {
-        TerrainTile oldTerrain = (visualTilemap.GetTile(gp) as TerrainTile);
-
-        if (oldTerrain != null) {
-            baseTilemap.SetTile(gp, oldTerrain);
-            visualTilemap.SetTile(gp, null);
-
-            TerrainChangeEvent?.Invoke(gp, null, oldTerrain);
-        }
-    }
 
 	public void Highlight(GridPosition gp, Color color) {
 		if (highlightTilemap.HasTile((Vector3Int)gp)) {

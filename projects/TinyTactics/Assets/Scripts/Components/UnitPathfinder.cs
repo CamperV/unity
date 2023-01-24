@@ -8,6 +8,7 @@ public class UnitPathfinder : MonoBehaviour
 {
 	private UnitMap unitMap;
 	private BattleMap battleMap;
+	private TerrainSystem terrainSystem;
 
     public TerrainTile[] terrainTiles;
     public int[] _terrainCostOverrides;
@@ -23,6 +24,7 @@ public class UnitPathfinder : MonoBehaviour
 		Battle _topBattleRef = GetComponentInParent<Battle>();
 		unitMap   = _topBattleRef.GetComponentInChildren<UnitMap>();
 		battleMap = _topBattleRef.GetComponentInChildren<BattleMap>();
+		terrainSystem = _topBattleRef.GetComponentInChildren<TerrainSystem>();
 
 	    Debug.Assert(terrainTiles.Length == _terrainCostOverrides.Length);
         terrainCostOverrides = new Dictionary<TerrainTile, int>();
@@ -56,7 +58,7 @@ public class UnitPathfinder : MonoBehaviour
 				if (moveThroughTerrainOverride) {
 					costAt = 1;
 				} else {
-					TerrainTile terrainAt = battleMap.TerrainAt(adjacent);
+					TerrainTile terrainAt = terrainSystem.TerrainAt(adjacent);
 					costAt = (terrainCostOverrides.ContainsKey(terrainAt)) ? terrainCostOverrides[terrainAt] : terrainAt.cost;
 
 					if (costAt > 1 && loweredTerrainCostOverride) costAt = 1;
@@ -128,7 +130,7 @@ public class UnitPathfinder : MonoBehaviour
 				////////////////////////////////////////////////////////////
 				// Terrain movement constraints (variable/override costs) //
 				////////////////////////////////////////////////////////////
-				TerrainTile terrainAt = battleMap.TerrainAt(adjacent);
+				TerrainTile terrainAt = terrainSystem.TerrainAt(adjacent);
 				int costAt = (terrainCostOverrides.ContainsKey(terrainAt)) ? terrainCostOverrides[terrainAt] : terrainAt.cost;
 				if (costAt == -1) // -1 indicates this area is impassable
 					continue;

@@ -216,13 +216,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         }
     }
 
-    public IEnumerable<TerrainTile> TerrainWithinRange(int range) {
-        foreach (GridPosition gp in gridPosition.Radiate(range)) {
-            if (gp == gridPosition || !battleMap.IsInBounds(gp)) continue;
-            yield return battleMap.TerrainAt(gp);
-        }
-    }
-
     public IEnumerable<Attack> GenerateAttacks(Unit target, Attack.AttackType aType, Attack.AttackDirection aDirection) {
         for (int s = 0; s < (statSystem.MULTISTRIKE+1); s++) {
             yield return Attack.GenerateAttack(this, target, aType, aDirection);

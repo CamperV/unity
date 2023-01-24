@@ -20,16 +20,16 @@ public class GunkEnthusiastMut : Mutation
     }
 
     private void SpreadGunk(Unit thisUnit) {
-        if (thisUnit.battleMap.TerrainAt(thisUnit.gridPosition) != gunkTerrain) {
-            thisUnit.battleMap.CreateTerrainAt(thisUnit.gridPosition, gunkTerrain);
+        if (TerrainSystem.inst.TerrainAt(thisUnit.gridPosition) != gunkTerrain) {
+            TerrainSystem.inst.CreateTerrainAt(thisUnit.gridPosition, gunkTerrain);
         }
 
         foreach (GridPosition gp in thisUnit.gridPosition.Radiate(1)) {
             if (gp == thisUnit.gridPosition || !thisUnit.battleMap.IsInBounds(gp)) continue;
 
-            TerrainTile terrain = thisUnit.battleMap.TerrainAt(gp);
+            TerrainTile terrain = TerrainSystem.inst.TerrainAt(gp);
             if (terrain != gunkTerrain && terrain.cost != -1) {
-                thisUnit.battleMap.CreateTerrainAt(gp, gunkTerrain);
+                TerrainSystem.inst.CreateTerrainAt(gp, gunkTerrain);
             }
         }
     }
