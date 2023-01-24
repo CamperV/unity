@@ -25,6 +25,7 @@ public sealed class PlayerUnit : Unit
     protected override void Start() {
         base.Start();
         experienceSystem.Initialize();
+        unitCommandSystem.Initialize();
     }
 
     public void ImportData(CampaignUnitGenerator.CampaignUnitData unitData) {

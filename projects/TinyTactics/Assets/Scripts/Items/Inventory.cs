@@ -8,17 +8,17 @@ using Extensions;
 
 public class Inventory : MonoBehaviour
 {
-	// public delegate InventoryEvent(Unit thisUnit);
-	// public event InventoryEvent InventoryChanged;
+	public delegate void InventoryEvent(Unit thisUnit);
+	public event InventoryEvent InventoryChanged;
 
 	private Unit boundUnit;
 	
 	// set in inspector
 	[SerializeField] private List<Weapon> weapons;
+	
 	public Weapon FirstWeapon => weapons[0];
 	public IEnumerable<Weapon> Weapons => weapons.AsEnumerable();
-
-	public int numWeapons => weapons.Count;
+	public int NumWeapons => weapons.Count;
 
 	void Awake() {
 		boundUnit = GetComponent<Unit>();
@@ -34,6 +34,8 @@ public class Inventory : MonoBehaviour
 
 		FirstWeapon.Equip(boundUnit);
         boundUnit.personalAudioFX.PlayWeaponEquipFX();
+
+		InventoryChanged?.Invoke(boundUnit);
 	}
 
 	public void PrevWeapon() {
@@ -42,6 +44,8 @@ public class Inventory : MonoBehaviour
 
 		FirstWeapon.Equip(boundUnit);
 		boundUnit.personalAudioFX.PlayWeaponEquipFX();
+
+		InventoryChanged?.Invoke(boundUnit);
 	}
 }
 

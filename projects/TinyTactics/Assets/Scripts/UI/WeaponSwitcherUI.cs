@@ -9,6 +9,7 @@ using Extensions;
 
 public class WeaponSwitcherUI : MonoBehaviour
 {
+	// public 
 	[SerializeField] private PlayerInputController playerInputController;
 	[SerializeField] private UnitInspector_Stats unitInspector;
 
@@ -17,47 +18,30 @@ public class WeaponSwitcherUI : MonoBehaviour
 
 	private Unit boundUnit;
 
+	void OnDisable() => Detach();
+
 	public void AttachTo(Unit thisUnit) {
 		boundUnit = thisUnit;
-		UpdateVisual(boundUnit);
 
 		// bindings for keyboard
-		if (thisUnit.inventory.numWeapons > 1) {
+		if (thisUnit.inventory.NumWeapons > 1) {
 			playerInputController.NextWeaponEvent += NextWeapon;
 			playerInputController.PrevWeaponEvent += PrevWeapon;
 		}
 
 		// if there are multiple weapons to be switched to, activate the indicator for visualization
-		switchRight.SetActive(thisUnit.inventory.numWeapons > 1);
-		switchLeft.SetActive(thisUnit.inventory.numWeapons > 1);
+		switchRight.SetActive(thisUnit.inventory.NumWeapons > 1);
+		switchLeft.SetActive(thisUnit.inventory.NumWeapons > 1);
 	}
 
 	public void Detach() {
-		if (boundUnit.inventory.numWeapons > 1) {
+		if (boundUnit.inventory.NumWeapons > 1) {
 			playerInputController.NextWeaponEvent -= NextWeapon;
 			playerInputController.PrevWeaponEvent -= PrevWeapon;
 		}
 		boundUnit = null;
 	}
 
-	public void NextWeapon() {
-		boundUnit.inventory.NextWeapon();
-		UpdateVisual(boundUnit);
-		//
-		// boundCommand.Deactivate(boundUnit);
-		// boundCommand.Activate(boundUnit);
-		Debug.Log($"{boundUnit}'s new equip {boundUnit.EquippedWeapon}");
-	}
-
-	public void PrevWeapon() {
-		boundUnit.inventory.PrevWeapon();
-		UpdateVisual(boundUnit);		
-		//
-		// boundCommand.Deactivate(boundUnit);
-		// boundCommand.Activate(boundUnit);
-	}
-
-	private void UpdateVisual(Unit boundUnit) {
-		unitInspector.RefreshUnitInfo(boundUnit);
-	}
+	public void NextWeapon() => boundUnit.inventory.NextWeapon();
+	public void PrevWeapon() => boundUnit.inventory.PrevWeapon();
 }

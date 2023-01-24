@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using UnityEngine.Events;
 
 public class UnitInspector_Stats : MonoBehaviour, IUnitInspector
 {
@@ -14,35 +15,26 @@ public class UnitInspector_Stats : MonoBehaviour, IUnitInspector
 	[SerializeField] private TextMeshProUGUI weaponRange_TMP;
 	[SerializeField] private TextMeshProUGUI weaponCrit_TMP;
 
-	[SerializeField] private WeaponSwitcherUI weaponSwitcher;
+	// flow down to WeaponSwitcherUI, etc
+	public UnityEvent<Unit> PropagateInspectUnit;
 
 	[SerializeField] private GameObject mutationContainer;
 	[SerializeField] private MutationVisual mutationVisualPrefab;
 
-	public void InspectUnit(Unit unit) {
-		RefreshUnitInfo(unit);
-		weaponSwitcher.AttachTo(unit);
+	// this is so you can detach yourself from the unit's events
+	private Unit AttachedUnit => GetComponentInParent<UnitInspectorSystem>().currentUnit;
+	void OnDisable() => AttachedUnit.inventory.InventoryChanged -= RefreshWeaponInfo;
+
+	void OnEnable() {
+		foreach (ContentSizeFitter csf in GetComponentsInChildren<ContentSizeFitter>()) {
+			LayoutRebuilder.ForceRebuildLayoutImmediate(csf.GetComponent<RectTransform>());
+		}
 	}
 
-	// separated because WeaponSwitcher will call this
-	public void RefreshUnitInfo(Unit unit) {
-		weaponImage.sprite = unit.EquippedWeapon.sprite;
-		weaponName_TMP.SetText(unit.EquippedWeapon.name);
-
-		// "tags" actually Mutations
-		List<string> tags = unit.EquippedWeapon.attachedMutations.Select(mut => mut.name).ToList();
-		weaponTags_TMP.SetText(string.Join(", ", tags));
-
-		// stats
-		weaponDamage_TMP.SetText(unit.EquippedWeapon.DisplayDamageRange());
-		
-		Pair<int, int> range = new Pair<int, int>(unit.EquippedWeapon.MIN_RANGE, unit.EquippedWeapon.MAX_RANGE);
-		string rangeExt = (range.First == range.Second) ? "" : $" - {range.Second}";
-		string rng = $"{range.First}{rangeExt}";
-		weaponRange_TMP.SetText(rng);
-
-		weaponCrit_TMP.SetText($"{unit.EquippedWeapon.CRIT}");
-
+	public void InspectUnit(Unit unit) {
+		RefreshWeaponInfo(unit);
+		unit.inventory.InventoryChanged += RefreshWeaponInfo;
+	
 		// finally, mutation container
 		// quick clear, then:
 		foreach (Transform t in mutationContainer.transform) {
@@ -52,5 +44,23 @@ public class UnitInspector_Stats : MonoBehaviour, IUnitInspector
 			MutationVisual mutationVisual = Instantiate(mutationVisualPrefab, mutationContainer.transform);
 			mutationVisual.SetInfo(mut);
 		}
+
+		PropagateInspectUnit?.Invoke(unit);
 	}
+
+	// separated because WeaponSwitcher will call this
+	private void RefreshWeaponInfo(Unit unit) {
+		weaponImage.sprite = unit.EquippedWeapon.sprite;
+		weaponName_TMP.SetText(unit.EquippedWeapon.name);
+
+		// "tags" actually Mutations
+		List<string> tags = unit.EquippedWeapon.attachedMutations.Select(mut => mut.name).ToList();
+		weaponTags_TMP.SetText(string.Join(", ", tags));
+
+		// stats
+		weaponDamage_TMP.SetText(unit.EquippedWeapon.DisplayDamageRange());
+		weaponRange_TMP.SetText(unit.EquippedWeapon.DisplayRange());
+		weaponCrit_TMP.SetText($"{unit.EquippedWeapon.CRIT}");
+	}
+
 }

@@ -55,4 +55,12 @@ public class Weapon : Item, IEquipable
             return $"{MIN_ATK} - {MAX_ATK}";
         }
     }
+
+    public string DisplayRange() {
+        if (MIN_RANGE == MAX_RANGE) {
+            return $"{MIN_RANGE}";
+        } else {
+            return $"{MIN_RANGE} - {MAX_RANGE}";
+        }
+    }
 }

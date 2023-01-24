@@ -10,8 +10,10 @@ using Extensions;
 public class MutationVisual : MonoBehaviour
 {
 	[SerializeField] private Image mainImage;
+	[SerializeField] private TextMeshProUGUI text;
 
 	public void SetInfo(Mutation mut) {
 		mainImage.sprite = mut.sprite;
+		text.SetText(mut.name);
 	}
 }

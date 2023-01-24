@@ -17,6 +17,12 @@ public class UnitInspector_Portrait : MonoBehaviour, IUnitInspector
 	[SerializeField] private PoiseBar_UI poiseBar;
 	[SerializeField] private StatusBarUI statusBar;
 
+	void OnEnable() {
+		foreach (ContentSizeFitter csf in GetComponentsInChildren<ContentSizeFitter>()) {
+			LayoutRebuilder.ForceRebuildLayoutImmediate(csf.GetComponent<RectTransform>());
+		}
+	}
+
 	public void InspectUnit(Unit unit) {
 		name_TMP.SetText(unit.displayName);
 		portrait.sprite = unit.portraitSprite;

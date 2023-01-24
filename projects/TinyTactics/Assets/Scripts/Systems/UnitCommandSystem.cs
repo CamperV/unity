@@ -125,6 +125,11 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         }
     }
 
+    public void Initialize() {
+        if (boundUnit.inventory != null)
+            boundUnit.inventory.InventoryChanged += _ => RefreshActiveCommand();
+    }
+
     // IStateMachine<>
     public void ChangeState(State newState) {
         if (newState == state) return;
@@ -255,6 +260,12 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     public void CancelActiveCommand() {
         ChangeState(State.Idle);    // this puts activeCommand to null
+    }
+
+    public void RefreshActiveCommand() {
+        UnitCommand uc = activeCommand;
+        ChangeState(State.Idle);
+        TryIssueCommand(uc);
     }
 
     public void RevertExecutedCommands() {
