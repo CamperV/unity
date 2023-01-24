@@ -20,7 +20,7 @@ public class Weapon : Item, IEquipable
 
     public static int _MAX_DAMAGE_VALUE = 99;
 
-    // use this to differentiate some weapons. For example, a "heavy" weapon might reduce REFLEX
+    // use this to differentiate some weapons
     public List<Mutation> attachedMutations;
     public List<so_Status> attachedStatuses;
 

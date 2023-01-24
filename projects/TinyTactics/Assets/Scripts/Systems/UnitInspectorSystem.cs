@@ -48,6 +48,6 @@ public class UnitInspectorSystem : MonoBehaviour
     private void Disable(Unit finishedUnit) {
         if (finishedUnit != null)
             finishedUnit.OnFinishTurn -= AutoDisable;
-        DisableInspectionEvent?.Invoke(null);
+        DisableInspectionEvent?.Invoke(finishedUnit);
     }
 }

@@ -14,6 +14,6 @@ public class MutationVisual : MonoBehaviour
 
 	public void SetInfo(Mutation mut) {
 		mainImage.sprite = mut.sprite;
-		text.SetText(mut.name);
+		text.SetText(mut.mutatorDisplayData.name);
 	}
 }

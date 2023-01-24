@@ -21,31 +21,22 @@ public class UnitInspector_Stats : MonoBehaviour, IUnitInspector
 	[SerializeField] private GameObject mutationContainer;
 	[SerializeField] private MutationVisual mutationVisualPrefab;
 
-	// this is so you can detach yourself from the unit's events
-	private Unit AttachedUnit => GetComponentInParent<UnitInspectorSystem>().currentUnit;
-	void OnDisable() => AttachedUnit.inventory.InventoryChanged -= RefreshWeaponInfo;
-
-	void OnEnable() {
-		foreach (ContentSizeFitter csf in GetComponentsInChildren<ContentSizeFitter>()) {
-			LayoutRebuilder.ForceRebuildLayoutImmediate(csf.GetComponent<RectTransform>());
-		}
-	}
-
 	public void InspectUnit(Unit unit) {
 		RefreshWeaponInfo(unit);
-		unit.inventory.InventoryChanged += RefreshWeaponInfo;
-	
-		// finally, mutation container
-		// quick clear, then:
-		foreach (Transform t in mutationContainer.transform) {
-			Destroy(t.gameObject);
-		}
-		foreach (Mutation mut in unit.mutationSystem.mutations) {
-			MutationVisual mutationVisual = Instantiate(mutationVisualPrefab, mutationContainer.transform);
-			mutationVisual.SetInfo(mut);
-		}
+		RebuildMutations(unit);
 
+		// register these because mutations can change based on weapon
+		unit.inventory.InventoryChanged += RefreshWeaponInfo;
+		unit.inventory.InventoryChanged += RebuildMutations;
+	
 		PropagateInspectUnit?.Invoke(unit);
+	}
+
+	public void DetachListeners(Unit droppedUnit) {
+		if (droppedUnit != null) {
+			droppedUnit.inventory.InventoryChanged -= RefreshWeaponInfo;
+			droppedUnit.inventory.InventoryChanged -= RebuildMutations;
+		}
 	}
 
 	// separated because WeaponSwitcher will call this
@@ -54,7 +45,8 @@ public class UnitInspector_Stats : MonoBehaviour, IUnitInspector
 		weaponName_TMP.SetText(unit.EquippedWeapon.name);
 
 		// "tags" actually Mutations
-		List<string> tags = unit.EquippedWeapon.attachedMutations.Select(mut => mut.name).ToList();
+		List<string> tags = unit.EquippedWeapon.attachedMutations.Select(mut => mut.mutatorDisplayData.name).ToList();
+		tags = tags.Concat(unit.EquippedWeapon.attachedStatuses.Select(st => st.mutatorDisplayData.name)).ToList();
 		weaponTags_TMP.SetText(string.Join(", ", tags));
 
 		// stats
@@ -63,4 +55,20 @@ public class UnitInspector_Stats : MonoBehaviour, IUnitInspector
 		weaponCrit_TMP.SetText($"{unit.EquippedWeapon.CRIT}");
 	}
 
+	private void RebuildMutations(Unit unit) {
+		foreach (Transform t in mutationContainer.transform) {
+			Destroy(t.gameObject);
+		}
+		foreach (Mutation mut in unit.mutationSystem.mutations) {
+			if (mut.hidden) continue;
+
+			MutationVisual mutationVisual = Instantiate(mutationVisualPrefab, mutationContainer.transform);
+			mutationVisual.SetInfo(mut);
+		}
+
+		// and rebuild layout
+		foreach (ContentSizeFitter csf in GetComponentsInChildren<ContentSizeFitter>()) {
+			LayoutRebuilder.ForceRebuildLayoutImmediate(csf.GetComponent<RectTransform>());
+		}
+	}
 }

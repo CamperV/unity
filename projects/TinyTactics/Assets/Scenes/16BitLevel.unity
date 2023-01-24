@@ -1789,6 +1789,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1439047563}
+        m_TargetAssemblyTypeName: UnitInspector_Stats, Assembly-CSharp
+        m_MethodName: DetachListeners
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!224 &483611891 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5145964402553444113, guid: d7a22bfa83f709348a1215d33ea7887f, type: 3}

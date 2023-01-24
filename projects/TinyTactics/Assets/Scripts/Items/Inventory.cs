@@ -15,7 +15,7 @@ public class Inventory : MonoBehaviour
 	
 	// set in inspector
 	[SerializeField] private List<Weapon> weapons;
-	
+
 	public Weapon FirstWeapon => weapons[0];
 	public IEnumerable<Weapon> Weapons => weapons.AsEnumerable();
 	public int NumWeapons => weapons.Count;
@@ -29,6 +29,8 @@ public class Inventory : MonoBehaviour
 	}
 
 	public void NextWeapon() {
+		if (NumWeapons == 1) return;
+
 		FirstWeapon.Unequip(boundUnit);
 		weapons = weapons.Roll(1);
 
@@ -39,6 +41,8 @@ public class Inventory : MonoBehaviour
 	}
 
 	public void PrevWeapon() {
+		if (NumWeapons == 1) return;
+
 		FirstWeapon.Unequip(boundUnit);
 		weapons = weapons.Roll(-1);
 

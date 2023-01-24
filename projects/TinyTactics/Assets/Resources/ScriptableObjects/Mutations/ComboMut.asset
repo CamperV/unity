@@ -17,3 +17,4 @@ MonoBehaviour:
     description: 
   sprite: {fileID: 21300000, guid: e1d684567ea152349a9d485796901559, type: 3}
   archetype: {fileID: 11400000, guid: ad0256de67a9b3148b20e7056e6f4d3d, type: 2}
+  hidden: 1
