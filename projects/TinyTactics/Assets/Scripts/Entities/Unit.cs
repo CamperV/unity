@@ -61,6 +61,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     [HideInInspector] public StatusSystem statusSystem;
     [HideInInspector] public SpriteOutline spriteOutline;
     [HideInInspector] public Inventory inventory;
+    [HideInInspector] public UnitBroadcastEventSystem unitBroadcastEventSystem;
     
     // I don't love this, but it makes things much cleaner.
     [HideInInspector] public PlayerUnitController playerUnitController;
@@ -107,6 +108,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
         statusSystem = GetComponent<StatusSystem>();
         spriteOutline = GetComponent<SpriteOutline>();
         inventory = GetComponent<Inventory>();
+        unitBroadcastEventSystem = GetComponent<UnitBroadcastEventSystem>();
 
         mainSprite = GetComponentInChildren<SpriteRenderer>().sprite;
         if (portraitSprite == null) {
@@ -243,6 +245,8 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     // IUnitPhaseInfo
     public virtual void FinishTurn() {
+        if (turnActive == false) return;
+        
         turnActive = false;
         moveAvailable = false;
         spriteAnimator.SetColor(SpriteAnimator.InactiveColor);
@@ -421,7 +425,10 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public void FireOnMoveEvent(Path<GridPosition> pathTaken) => OnMove?.Invoke(this, pathTaken);
 
     public void FireOnStartTurnEvent() => OnStartTurn?.Invoke(this);
-    public void FireOnFinishTurnEvent() => OnFinishTurn?.Invoke(this);
+    public void FireOnFinishTurnEvent() {
+        OnFinishTurn?.Invoke(this);
+        unitBroadcastEventSystem.OnFinishTurn.BroadcastEvent?.Invoke(this);
+    }
 
     public void FireOnDeathEvent() => OnDeath?.Invoke(this);
 }

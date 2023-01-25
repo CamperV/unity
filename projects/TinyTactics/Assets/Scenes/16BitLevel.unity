@@ -466,7 +466,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7754110684890950106, guid: cc1d5d1c0bfe8f540bc0094e402d1d02, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.72499996
       objectReference: {fileID: 0}
     - target: {fileID: 7754110684890950106, guid: cc1d5d1c0bfe8f540bc0094e402d1d02, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1866,6 +1866,7 @@ GameObject:
   m_Component:
   - component: {fileID: 712079375}
   - component: {fileID: 712079376}
+  - component: {fileID: 712079377}
   m_Layer: 0
   m_Name: ItemMap
   m_TagString: Untagged
@@ -1901,6 +1902,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleMap: {fileID: 1636068311}
+--- !u!114 &712079377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712079374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a4299c47ee70c24b8aa50f9ed8f2c59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitBroadcastEvent: {fileID: 11400000, guid: 159b92e6015b0fc49ac3c8a5c74332c3, type: 2}
+  OnEventRaised:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 712079376}
+        m_TargetAssemblyTypeName: ItemMap, Assembly-CSharp
+        m_MethodName: CheckForMapItem
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &729729325 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6406893129366943449, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
@@ -2173,19 +2202,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1636068312}
         m_TargetAssemblyTypeName: TerrainSystem, Assembly-CSharp
-        m_MethodName: ApplyTerrainEffect_Enter
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 712079376}
-        m_TargetAssemblyTypeName: ItemMap, Assembly-CSharp
-        m_MethodName: CheckForMapItem
+        m_MethodName: ApplyEnterTerrainEffect
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2200,7 +2217,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1636068312}
         m_TargetAssemblyTypeName: TerrainSystem, Assembly-CSharp
-        m_MethodName: ApplyTerrainEffect_Exit
+        m_MethodName: ApplyExitTerrainEffect
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5504,11 +5521,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1995979340148011590, guid: 448393e05f297674eb8561398a97c2bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.25
+      value: 5.47
       objectReference: {fileID: 0}
     - target: {fileID: 1995979340148011590, guid: 448393e05f297674eb8561398a97c2bc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.29
+      value: 8.38
       objectReference: {fileID: 0}
     - target: {fileID: 1995979340148011590, guid: 448393e05f297674eb8561398a97c2bc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5775,7 +5792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5910868071268390516, guid: 98478d08c8aca5046a8dc5f037863f1e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.72499996
       objectReference: {fileID: 0}
     - target: {fileID: 5910868071268390516, guid: 98478d08c8aca5046a8dc5f037863f1e, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -11420,7 +11437,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.72499996
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -14980,7 +14997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.72499996
       objectReference: {fileID: 0}
     - target: {fileID: 6237258428586356240, guid: 9b3cdfb4347dea140bd4fc5c491cd20b, type: 3}
       propertyPath: m_AnchoredPosition.y

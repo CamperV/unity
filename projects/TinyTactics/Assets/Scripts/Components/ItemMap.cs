@@ -35,8 +35,8 @@ public class ItemMap : MonoBehaviour
         return map[gp];
     }
 
-    public void CheckForMapItem(Unit unit, GridPosition gridPosition) {
-        MapItemAt(gridPosition)?.OnUnitEnter(unit);
+    public void CheckForMapItem(Unit unit) {
+        MapItemAt(unit.gridPosition)?.OnUnitEnter(unit);
     }
 
     // accessible area
