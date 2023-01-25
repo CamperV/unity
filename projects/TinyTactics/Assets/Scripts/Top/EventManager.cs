@@ -66,6 +66,7 @@ public sealed class EventManager : MonoBehaviour
         // battleMap.AuxiliaryInteractEvent_0 += // hold down
         // battleMap.AuxiliaryInteractEvent_1 += // release
         battleMap.AuxiliaryInteractEvent_2 += unitSelectionSystem.SelectAt_Aux;  // middle-click (special interact)
+
         battleMap.GridMouseOverEvent += terrainSystem.CheckTerrainMouseOver;
 
         // turn management events
@@ -84,7 +85,6 @@ public sealed class EventManager : MonoBehaviour
         unitMap.NewBoardStateEvent += () => playerUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
         unitMap.NewBoardStateEvent += () => enemyUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
         unitMap.NewBoardStateEvent += () => enemyUnitController.activeUnits.ForEach(en => en.RefreshTargets());
-        // unitMap.NewBoardStateEvent += battleMap.ResetHighlight;
 
         // all board state update events should make TopBattle check if it should end now
         unitMap.NewBoardStateEvent += topBattleRef.CheckVictoryConditions;

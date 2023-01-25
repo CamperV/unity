@@ -37,12 +37,12 @@ public class TerrainSystem : MonoBehaviour
         if (terrain != null) TerrainMouseOverEvent?.Invoke(terrain);
     }
 
-    public void ApplyTerrainEffect_Exit(Unit unit, GridPosition gridPosition) {
+    public void ApplyExitTerrainEffect(Unit unit, GridPosition gridPosition) {
         TerrainTile exitingTile = TerrainAt(gridPosition);
         if (exitingTile?.HasTerrainEffect ?? false) exitingTile.terrainEffect.OnExitTerrain(unit);
     }
 
-    public void ApplyTerrainEffect_Enter(Unit unit, GridPosition gridPosition) {
+    public void ApplyEnterTerrainEffect(Unit unit, GridPosition gridPosition) {
         TerrainTile enteringTile = TerrainAt(gridPosition);
         if (enteringTile?.HasTerrainEffect ?? false) enteringTile.terrainEffect.OnEnterTerrain(unit);
     }
