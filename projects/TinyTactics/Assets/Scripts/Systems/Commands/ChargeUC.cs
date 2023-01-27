@@ -9,14 +9,8 @@ public class ChargeUC : MoveUC
 {
     public ImmediateEngagementStatus chargeBuff;
 
-    protected override void ExecuteAdditionalOnMove(PlayerUnit thisUnit, Path<GridPosition> pathTaken) {
+    protected override void OnMoveEffects(Unit thisUnit, Path<GridPosition> pathTaken) {
         ImmediateEngagementStatus clonedChargeBuff = ImmediateEngagementStatus.CloneWithValue(chargeBuff, chargeBuff.value * (pathTaken.Count-1));
         thisUnit.statusSystem.AddStatus(clonedChargeBuff, so_Status.CreateStatusProviderID(thisUnit, clonedChargeBuff));
-    }
-
-    // this ignores auxiliaryInteract, so you can't accidentally immediately Wait
-    public override ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract) {
-        thisUnit.ClaimReservation();
-        return ExitSignal.ContinueTurn;
     }
 }

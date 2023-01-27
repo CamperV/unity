@@ -23,7 +23,7 @@ public class ScurryUC : MoveUC
         thisUnit.unitPathfinder.loweredTerrainCostOverride = false;
     }
 
-    protected override void ExecuteAdditionalOnMove(PlayerUnit thisUnit, Path<GridPosition> pathTaken) {
+    protected override void OnMoveEffects(Unit thisUnit, Path<GridPosition> pathTaken) {
         int passedEnemies = 0;
         foreach (GridPosition gp in pathTaken.Unwind()) {
             if (EnemyAt(thisUnit, gp)) passedEnemies++;
@@ -33,12 +33,6 @@ public class ScurryUC : MoveUC
             ImmediateValueStatus clonedScurryBuff = ImmediateValueStatus.CloneWithValue(scurryBuff, passedEnemies);
             thisUnit.statusSystem.AddStatus(clonedScurryBuff, so_Status.CreateStatusProviderID(thisUnit, clonedScurryBuff));
         }
-    }
-
-    // this ignores auxiliaryInteract, so you can't accidentally immediately Wait
-    public override ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract) {
-        thisUnit.ClaimReservation();
-        return ExitSignal.ContinueTurn;
     }
 
     //

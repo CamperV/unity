@@ -21,6 +21,22 @@ public class Path<T> where T : struct, IEquatable<T>
 	public void AddLast(T v) => path.AddLast(v);
 	public void Clear() => path.Clear();
 
+	public static Path<T> Copy(Path<T> copyFrom) {
+		Path<T> newPath = new Path<T>();
+		foreach(T t in copyFrom.Unwind()) {
+			newPath.AddLast(t);
+		}
+		return newPath;
+	}
+
+	public static void Print(Path<T> path) {
+		int position = 0;
+		foreach(T t in path.Unwind()) {
+			Debug.Log($"{position}: {t}");
+			position++;
+		}
+	}
+
 	public T GetNext(T position) {
 		return path.Find(position).Next.Value;
 	}

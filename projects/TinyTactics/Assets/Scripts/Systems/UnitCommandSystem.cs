@@ -203,6 +203,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
         unitCommands.Insert(at, command);
 
         InitCommandUsageData(command);
+        command.OnAdd(boundUnit);
 
         // finally, check if you're replacing something
         if (command.replaceDefault != UnitCommand.CommandCategory.None) {
@@ -212,6 +213,7 @@ public class UnitCommandSystem : MonoBehaviour, IStateMachine<UnitCommandSystem.
 
     public void RemoveCommand(UnitCommand command) {
         unitCommands.Remove(command);
+        command.OnRemove(boundUnit);
         //
         commandAvailable.Remove(command.name);
         //

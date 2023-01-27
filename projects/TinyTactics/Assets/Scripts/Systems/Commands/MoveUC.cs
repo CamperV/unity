@@ -17,6 +17,7 @@ public class MoveUC : UnitCommand
     // maybe I should encapsulate it, and then write the behavior elsewhere
     // but first... write it!
     public static Path<GridPosition> _mouseOverPath;
+    public static Path<GridPosition> _selectedPath;
     public static MoveRange _activeMoveRange;
     public static List<GridPosition> _waypoints;
     public static List<Path<GridPosition>> _pathSegments;
@@ -30,6 +31,7 @@ public class MoveUC : UnitCommand
         // re-calc move range, and display it
         Utils.DelegateLateFrameTo(thisUnit, () => DisplayMoveRange(thisUnit, thisUnit.moveRange));
 
+        _selectedPath = null;
         _waypoints = new List<GridPosition>{thisUnit.gridPosition};
         _pathSegments = new List<Path<GridPosition>>();
     }
@@ -42,6 +44,14 @@ public class MoveUC : UnitCommand
         _waypoints = null;
         _activeMoveRange = null;
         _pathSegments = null;
+    }
+
+    public override void OnAdd(Unit thisUnit) {
+        thisUnit.OnMove += OnMoveEffects;
+    }
+
+    public override void OnRemove(Unit thisUnit) {
+        thisUnit.OnMove -= OnMoveEffects;
     }
 
     public override ExitSignal ActiveInteractAt(PlayerUnit thisUnit, GridPosition interactAt, bool auxiliaryInteract) {
@@ -64,10 +74,9 @@ public class MoveUC : UnitCommand
                 thisUnit.spriteAnimator.SmoothMovementPath<GridPosition>(_mouseOverPath, thisUnit.battleMap)
             );
             thisUnit.ReservePosition(interactAt);
-            thisUnit.FireOnMoveEvent(_mouseOverPath);
 
-            // for other inheriting MoveUCs, like Charge or Scurry
-            ExecuteAdditionalOnMove(thisUnit, _mouseOverPath);
+            // to use later for invoking movement event
+            _selectedPath = Path<GridPosition>.Copy(_mouseOverPath);
 
             // Complete -> "Change to InProgress state after returning"
             return ExitSignal.NextState;
@@ -124,7 +133,7 @@ public class MoveUC : UnitCommand
     // if Auxiliary Interact was used, force a FinishTurn after moving (auto wait)
     public override ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract) {
         thisUnit.ClaimReservation();
-        // return (auxiliaryInteract) ? ExitSignal.ForceFinishTurn : ExitSignal.ContinueTurn;
+        thisUnit.FireOnMoveEvent(_selectedPath);
         return ExitSignal.ContinueTurn;
     }
 
@@ -146,7 +155,9 @@ public class MoveUC : UnitCommand
     }
 
     // just an additional hook to extend child classes, like ChargeUC
-    protected virtual void ExecuteAdditionalOnMove(PlayerUnit thisUnit, Path<GridPosition> pathTaken) {}
+    protected virtual void OnMoveEffects(Unit unit, Path<GridPosition> pathTaken) {
+        Debug.Log($"fired generic");
+    }
 
     protected virtual void DisplayMoveRange(PlayerUnit thisUnit, MoveRange moveRange) {   
         moveRange.Display(thisUnit.battleMap, tileVisuals.color, tileVisuals.tile);
