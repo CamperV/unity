@@ -104,7 +104,7 @@ public class AttackUC : TargetableUC
         bool validTargetForAnyWeapon = false;
         foreach (Weapon w in thisUnit.inventory.Weapons) {
             TargetRange standing = TargetRange.Standing(fromPosition, w.MIN_RANGE, w.MAX_RANGE);
-            validTargetForAnyWeapon |= enemyUC.activeUnits.Where(enemy => standing.ValidTarget(enemy.gridPosition)).Any();
+            validTargetForAnyWeapon |= enemyUC.GetActiveUnits().Where(enemy => standing.ValidTarget(enemy.gridPosition)).Any();
         }
         return validTargetForAnyWeapon;
     }

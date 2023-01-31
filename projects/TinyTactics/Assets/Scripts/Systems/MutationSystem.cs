@@ -32,6 +32,8 @@ public class MutationSystem : MonoBehaviour
     }
 
     public void RemoveMutation(Mutation mutation) {
+        if (!mutations.Contains(mutation)) return;
+        
         mutations.Remove(mutation);
         mutation.OnRemove(boundUnit);
     }

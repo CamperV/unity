@@ -5,18 +5,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
+public class EnemyUnitController : UnitController, IPhaseController
 {
-    public delegate void RegistrationState(Unit unit);
-    public event RegistrationState RegisteredUnit;
-
     public static float timeBetweenUnitActions = 0.75f; // seconds
-
-    [SerializeField] private List<EnemyUnit> _activeUnits;
-    public List<EnemyUnit> activeUnits {
-        get => _activeUnits.Where(en => en.gameObject.activeInHierarchy).ToList();
-    }
-    public List<EnemyUnit> disabledUnits => _activeUnits.Where(en => !en.gameObject.activeInHierarchy).ToList();
 
     private PlayerUnitController playerUnitController;
     private BattleMap battleMap;
@@ -32,13 +23,13 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
     void Start() {
         // this accounts for all in-scene activeUnits, not instatiated prefabs
         foreach (EnemyUnit en in GetComponentsInChildren<EnemyUnit>()) {
-            _activeUnits.Add(en);
-            RegisteredUnit?.Invoke( (en as Unit) );
+            RegisterUnit((en as Unit));
         }
     }
 
-    public void TriggerPhase() {
-        foreach (EnemyUnit unit in activeUnits) {
+    // IPhaseController
+    public override void TriggerPhase() {
+        foreach (EnemyUnit unit in GetActiveUnits<EnemyUnit>()) {
             unit.RefreshTargets();
             unit.StartTurn();
         }
@@ -52,13 +43,6 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
 
         StartCoroutine( TakeActionAll() );
     }
-
-    // we refresh at the end of the phase,
-    // because we want color when it isn't your turn,
-    // and because it's possible the other team could add statuses that 
-    public void EndPhase() {}
-
-    public void RefreshUnits() => activeUnits.ForEach(it => it.RefreshInfo());
 
 	private IEnumerator TakeActionAll() {
         // first, try for any available Pods
@@ -75,7 +59,7 @@ public class EnemyUnitController : MonoBehaviour, IUnitPhaseController
         }
 
         // then, if the pods have gone, collect the stragglers (if their turn is still active)
-        foreach (EnemyUnit unit in activeUnits.Where(it => it.turnActive).OrderBy(unit => unit.Initiative)) {
+        foreach (EnemyUnit unit in GetActiveUnits<EnemyUnit>().Where(it => it.turnActive).OrderBy(unit => unit.Initiative)) {
             // if you've been cancelled, say by the Battle ending/turnManager suspending
             if (cancelSignal) yield break;
 

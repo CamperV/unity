@@ -25,7 +25,7 @@ public class UnitSelectionSystem : MonoBehaviour
     public void Unlock() => selectionLocked = false;
 
     private List<Unit> _units;
-    public List<PlayerUnit> ActivePlayerUnits => playerUnitController.activeUnits.Where(u => u.turnActive).ToList();   
+    public List<PlayerUnit> ActivePlayerUnits => playerUnitController.GetActiveUnits<PlayerUnit>().Where(u => u.turnActive).ToList();   
 
     // this class exists to be an active GameObject in the scene,
     // to have children register themselves to various flags
@@ -43,11 +43,11 @@ public class UnitSelectionSystem : MonoBehaviour
     }
 
     void Start() {
-        foreach (PlayerUnit playerUnit in playerUnitController.activeUnits) {
-            _units.Add((playerUnit as Unit));
+        foreach (PlayerUnit playerUnit in playerUnitController.GetActiveUnits()) {
+            _units.Add(playerUnit);
         }
-        foreach (EnemyUnit enemyUnit in enemyUnitController.activeUnits) {
-            _units.Add((enemyUnit as Unit));
+        foreach (EnemyUnit enemyUnit in enemyUnitController.GetActiveUnits()) {
+            _units.Add(enemyUnit);
         }
     }
 

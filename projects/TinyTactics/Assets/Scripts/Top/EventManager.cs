@@ -21,6 +21,8 @@ public sealed class EventManager : MonoBehaviour
     public UnitSelectionSystem unitSelectionSystem;
     public PlayerUnitController playerUnitController;
     public EnemyUnitController enemyUnitController;
+
+    public GlobalMutationSystem playerGlobalMutationSystem;
 	
     void Awake() {
         // only allow one EventManager to exist at any time
@@ -60,6 +62,7 @@ public sealed class EventManager : MonoBehaviour
 
         // top!battle events
         topBattleRef.BattleStartEvent += turnManager.Enable;
+        topBattleRef.BattleStartEvent += playerGlobalMutationSystem.Initialize;
 
         // battlemap events
         battleMap.InteractEvent += unitSelectionSystem.SelectAt;
@@ -82,9 +85,9 @@ public sealed class EventManager : MonoBehaviour
         turnManager.playerPhase.EndEvent += () => unitSelectionSystem.gameObject.SetActive(false);
 
         // board state events
-        unitMap.NewBoardStateEvent += () => playerUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
-        unitMap.NewBoardStateEvent += () => enemyUnitController.activeUnits.ForEach(en => en.UpdateThreatRange());
-        unitMap.NewBoardStateEvent += () => enemyUnitController.activeUnits.ForEach(en => en.RefreshTargets());
+        unitMap.NewBoardStateEvent += () => playerUnitController.GetActiveUnits().ForEach(en => en.UpdateThreatRange());
+        unitMap.NewBoardStateEvent += () => enemyUnitController.GetActiveUnits().ForEach(en => en.UpdateThreatRange());
+        unitMap.NewBoardStateEvent += () => enemyUnitController.GetActiveUnits<EnemyUnit>().ForEach(en => en.RefreshTargets());
 
         // all board state update events should make TopBattle check if it should end now
         unitMap.NewBoardStateEvent += topBattleRef.CheckVictoryConditions;

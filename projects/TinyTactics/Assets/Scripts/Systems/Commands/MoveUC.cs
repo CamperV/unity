@@ -186,7 +186,7 @@ public class MoveUC : UnitCommand
     private IEnumerable<GridPosition> ThreatenedRange(PlayerUnit thisUnit) {
 		HashSet<GridPosition> threatened = new HashSet<GridPosition>();
 
-		foreach (EnemyUnit enemy in thisUnit.enemyUnitController.activeUnits) {
+		foreach (Unit enemy in thisUnit.enemyUnitController.GetActiveUnits()) {
             if (enemy.attackRange == null) enemy.UpdateThreatRange();
 			threatened.UnionWith(enemy.attackRange.field.Keys);
 		}

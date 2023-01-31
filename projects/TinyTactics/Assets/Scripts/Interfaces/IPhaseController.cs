@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IUnitPhaseController
+public interface IPhaseController
 {
     void TriggerPhase();
     void EndPhase();

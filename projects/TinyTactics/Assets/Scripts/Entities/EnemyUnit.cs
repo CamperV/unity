@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 using Extensions;
@@ -114,7 +115,7 @@ public sealed class EnemyUnit : Unit, IStateMachine<EnemyUnit.EnemyUnitFSM>
         }
     }
 
-    public void RefreshTargets() => brain.RefreshTargets(playerUnitController.activeUnits);
+    public void RefreshTargets() => brain.RefreshTargets(playerUnitController.GetActiveUnits().Select(u => u as PlayerUnit).ToList());
 
     public void SelectDamagePackage(out EnemyBrain.DamagePackage? selectedDmgPkg, out Path<GridPosition> pathTo) {
         selectedDmgPkg = null;

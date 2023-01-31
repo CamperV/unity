@@ -48,16 +48,15 @@ public class Battle : MonoBehaviour
         // just in case...
         BroadcastMessage("StopAllCoroutines");
 
-        int enemiesDefeated = enemyUnitController.disabledUnits.Count;
-        int survivingUnits = playerUnitController.activeUnits.Count;
+        int survivingUnits = playerUnitController.GetActiveUnits().Count;
         int turnsElapsed = turnManager.turnCount;
 
         if (playerVictorious) {
             jukeBox.SwitchToVictoryTrack(0.25f);
-            UIManager.inst.CreateVictoryPanel(enemiesDefeated, survivingUnits, turnsElapsed);
+            UIManager.inst.CreateVictoryPanel(-1, survivingUnits, turnsElapsed);
         } else {
             jukeBox.SwitchToDefeatTrack(0.25f);
-            UIManager.inst.CreateDefeatPanel(enemiesDefeated, survivingUnits, turnsElapsed);
+            UIManager.inst.CreateDefeatPanel(-1, survivingUnits, turnsElapsed);
         }
 
         //
@@ -66,7 +65,7 @@ public class Battle : MonoBehaviour
 
     public void CheckVictoryConditions() {
         // the main victory conditions is defeating all enemy units
-        bool enemyUnitsAlive = enemyUnitController.activeUnits.Any();
+        bool enemyUnitsAlive = enemyUnitController.GetActiveUnits().Any();
 
         if (!enemyUnitsAlive) {
             EndBattle(true);
@@ -75,7 +74,7 @@ public class Battle : MonoBehaviour
 
     public void CheckDefeatConditions() {
         // the main defeat condition is losing all of your units
-        bool playerUnitsAlive = playerUnitController.activeUnits.Any();
+        bool playerUnitsAlive = playerUnitController.GetActiveUnits().Any();
 
         if (!playerUnitsAlive) {
             EndBattle(false);

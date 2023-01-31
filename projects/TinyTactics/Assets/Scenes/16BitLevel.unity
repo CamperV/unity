@@ -2251,6 +2251,7 @@ MonoBehaviour:
   unitSelectionSystem: {fileID: 169435677}
   playerUnitController: {fileID: 1470600146}
   enemyUnitController: {fileID: 1111963512}
+  playerGlobalMutationSystem: {fileID: 1470600147}
 --- !u!1 &894047357
 GameObject:
   m_ObjectHideFlags: 0
@@ -5954,6 +5955,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1111963513}
   - component: {fileID: 1111963512}
+  - component: {fileID: 1111963514}
   m_Layer: 0
   m_Name: EnemyUnitController
   m_TagString: Untagged
@@ -5973,7 +5975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d5977354bd051c45b60a48690ba72bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeUnits: []
+  _units: []
   cancelSignal: 0
 --- !u!4 &1111963513
 Transform:
@@ -5990,6 +5992,20 @@ Transform:
   m_Father: {fileID: 881456441}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1111963514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111963511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33ab3428b731a034394cd8edaf401942, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitController: {fileID: 1111963512}
+  globalMutations: []
 --- !u!1001 &1157319514
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7277,6 +7293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1470600145}
   - component: {fileID: 1470600146}
+  - component: {fileID: 1470600147}
   m_Layer: 0
   m_Name: PlayerUnitController
   m_TagString: Untagged
@@ -7313,7 +7330,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b3f354c2cc692945be2811f21826518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeUnits: []
+  _units: []
+--- !u!114 &1470600147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470600144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33ab3428b731a034394cd8edaf401942, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitController: {fileID: 1470600146}
+  globalMutations:
+  - {fileID: 11400000, guid: e46a7d8c030ed0e458a213b7a56287ec, type: 2}
 --- !u!1 &1481859006
 GameObject:
   m_ObjectHideFlags: 0
