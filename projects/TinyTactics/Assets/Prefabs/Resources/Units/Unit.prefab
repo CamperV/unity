@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: -2537640162373992601}
   - component: {fileID: 5683046262374125964}
   - component: {fileID: 682463709180308802}
+  - component: {fileID: 3610894812246290604}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -310,6 +311,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OnFinishTurn: {fileID: 11400000, guid: 159b92e6015b0fc49ac3c8a5c74332c3, type: 2}
+--- !u!114 &3610894812246290604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6096969835717758623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e2edb4a7b45ba41a3dc8d92e8341fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  genericBuffFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
+  genericDebuffFXBundle: {fileID: 11400000, guid: 156b54777abab874a9704c6b814b11ff, type: 2}
 --- !u!1 &6807299549594369295
 GameObject:
   m_ObjectHideFlags: 0

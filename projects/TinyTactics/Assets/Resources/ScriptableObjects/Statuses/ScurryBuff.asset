@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusCode: 0
   stackable: 1
+  hidden: 0
   <mutatorDisplayData>k__BackingField:
     name: Scurry
     description: Pass through enemies, and gain multistrike for each enemy passed
       through.
   sprite: {fileID: 21300000, guid: 28833eb632d77bd4c949d16fb767a02d, type: 3}
+  emitMessage: +MULTISTRIKE
   targetStat: 6
   <value>k__BackingField: 1
   <revertWithMovement>k__BackingField: 1

@@ -27,3 +27,4 @@ MonoBehaviour:
   replaceDefault: 3
   audioFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
   withdrawBuff: {fileID: 11400000, guid: ca07cfc7fa870f549aad13feca7fc7eb, type: 2}
+  withdrawDebuff: {fileID: 11400000, guid: 5e2e4d87bcffdb545a41abdfb1fe3b38, type: 2}

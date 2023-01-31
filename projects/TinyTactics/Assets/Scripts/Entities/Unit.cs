@@ -246,7 +246,7 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     // IUnitPhaseInfo
     public virtual void FinishTurn() {
         if (turnActive == false) return;
-        
+
         turnActive = false;
         moveAvailable = false;
         spriteAnimator.SetColor(SpriteAnimator.InactiveColor);
@@ -380,30 +380,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
 
     public void TriggerHealAnimation() {
 		StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.healColorGreen) );
-    }
-
-    public void TriggerDebuffAnimation(AudioClip playClip, params string[] affectedStats) {
-        personalAudioFX.PlayFX(playClip);
-
-        foreach (string affectedStat in affectedStats) {
-            if (affectedStat != "") {
-                messageEmitter.Emit(MessageEmitter.MessageType.Debuff, $"-{affectedStat}");
-            }
-        }
-
-        StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.threatColorIndigo) );
-        StartCoroutine( spriteAnimator.SmoothCosX(18f, 0.03f, 0f, 1.0f) );
-    }
-
-    public void TriggerBuffAnimation(AudioClip playClip, params string[] affectedStats) {
-        personalAudioFX.PlayFX(playClip);
-
-        foreach (string affectedStat in affectedStats) {
-            messageEmitter.Emit(MessageEmitter.MessageType.Buff, $"+{affectedStat}");
-        }
-
-        StartCoroutine( spriteAnimator.FlashColorThenRevert(Palette.threatColorYellow) );
-        StartCoroutine( spriteAnimator.SmoothCosX(32f, 0.015f, 0f, 1.0f) );
     }
 
     public void FireOnAttackGenerationEvent(ref MutableAttack mutAtt, Unit other) => OnAttackGeneration?.Invoke(this, ref mutAtt, other);

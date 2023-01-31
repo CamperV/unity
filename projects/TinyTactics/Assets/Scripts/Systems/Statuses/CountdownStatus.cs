@@ -7,6 +7,13 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Statuses/CountdownStatus")]
 public class CountdownStatus : so_Status, IValueStatus, IExpireStatus
 {
+	public static CountdownStatus CloneWithValue(CountdownStatus fromStatus, int newValue) {
+		CountdownStatus cs = Instantiate(fromStatus);
+        //
+		cs.value = newValue;
+		return cs;
+	}
+
     // IValueStatus
 	[field: SerializeField] public int value { get; set; }
 

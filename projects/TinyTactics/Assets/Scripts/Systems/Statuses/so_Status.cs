@@ -27,6 +27,7 @@ public abstract class so_Status : ScriptableObject, IMutatorComponent
 	
     // assign this in the inspector
 	public Sprite sprite;
+	public string emitMessage = "";
 
     public virtual void OnAcquire(Unit thisUnit) {
 		thisUnit.OnAttackGeneration += DisplayOnAttack;

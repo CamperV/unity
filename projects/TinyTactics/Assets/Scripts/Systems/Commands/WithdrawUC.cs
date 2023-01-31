@@ -9,6 +9,7 @@ public class WithdrawUC : UnitCommand
 {
     public AudioFXBundle audioFXBundle;
     public CountdownStatus withdrawBuff;
+    public CountdownStatus withdrawDebuff;
 
     public override void Activate(PlayerUnit thisUnit){}
     public override void Deactivate(PlayerUnit thisUnit){}
@@ -17,12 +18,11 @@ public class WithdrawUC : UnitCommand
     public override ExitSignal InProgressUpdate(PlayerUnit thisUnit) => ExitSignal.ForceFinishTurn;
 
     public override ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract) {
-        // queue the sound and animation for after it is done animating the Hurt animation
-        thisUnit.spriteAnimator.QueueAction(
-            () => thisUnit.TriggerBuffAnimation(audioFXBundle.RandomClip(), "DEF")
-        );
         thisUnit.statusSystem.AddStatus(withdrawBuff, so_Status.CreateStatusProviderID(thisUnit, withdrawBuff));
-        thisUnit.statSystem.UpdatePoise(0);
+
+        // also debuff POISE
+        CountdownStatus clonedWithdrawDebuff = CountdownStatus.CloneWithValue(withdrawDebuff, -thisUnit.statSystem.CURRENT_POISE);
+        thisUnit.statusSystem.AddStatus(clonedWithdrawDebuff, so_Status.CreateStatusProviderID(thisUnit, clonedWithdrawDebuff));
 
         return ExitSignal.ForceFinishTurn;
     }

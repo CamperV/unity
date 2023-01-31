@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusCode: 0
   stackable: 0
+  hidden: 0
   <mutatorDisplayData>k__BackingField:
     name: Withdraw
     description: (Not Implemented Yet) Spend all of this unit's Poise to gain an
       equal amount of Defense.
   sprite: {fileID: 21300000, guid: 617a66654b4047445828865e1b2b1a59, type: 3}
-  <value>k__BackingField: 3
+  emitMessage: +DEFENSE
+  <value>k__BackingField: 2
   <expireTimer>k__BackingField: 1
   targetStat: 4
