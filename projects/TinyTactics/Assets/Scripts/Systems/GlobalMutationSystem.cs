@@ -12,10 +12,6 @@ public class GlobalMutationSystem : MonoBehaviour
     [SerializeField] private UnitController unitController;
     [SerializeReference] public List<Mutation> globalMutations;
 
-    public void Initialize() {
-        CheckConditions();
-    }
-
     public void AddGlobalMutation(Mutation globalMut) {
         globalMutations.Add(globalMut);
     }
@@ -24,12 +20,19 @@ public class GlobalMutationSystem : MonoBehaviour
         globalMutations.Remove(globalMut);
     }
 
-    private void CheckConditions() {
+    // this does a full clear: revokes then re-distributes if applicable
+    public void RedistributeGlobalMutations() {
         foreach (Mutation mutation in globalMutations) {
-            if (true/*mutation.ConditionMet(unitController.GetActiveUnits())*/) {
+            Revoke(mutation);
+
+            // if you're conditional, check it. Otherwise, just add it
+            if (mutation is IConditionalMutation) {
+                if ((mutation as IConditionalMutation).ConditionMet(unitController.GetActiveUnits()))
+                    Distribute(mutation);
+            
+            // if you're unconditional
+            } else {
                 Distribute(mutation);
-            } else { 
-                Revoke(mutation);
             }
         }
     }

@@ -40,7 +40,7 @@ public sealed class EventManager : MonoBehaviour
     public void EnableMenuInput() => menuInputController.gameObject.SetActive(true);
     public void DisableMenuInput() => menuInputController.gameObject.SetActive(false);
 
-    public void RegisterEvents() {
+    void Start() {
         // input events
         inputController.MousePositionEvent += battleMap.CheckMouseOver;
         
@@ -59,10 +59,6 @@ public sealed class EventManager : MonoBehaviour
         inputController.DirectionalInputEvent += cameraManager.UpdateMovementVector;
         // inputController.MouseScrollEvent += cameraManager.UpdateZoomLevel;
         // inputController.MouseScrollEvent += cameraManager.UpdateZoomLevel;
-
-        // top!battle events
-        topBattleRef.BattleStartEvent += turnManager.Enable;
-        topBattleRef.BattleStartEvent += playerGlobalMutationSystem.Initialize;
 
         // battlemap events
         battleMap.InteractEvent += unitSelectionSystem.SelectAt;

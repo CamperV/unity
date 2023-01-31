@@ -2184,6 +2184,88 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4379c26a88ae984391763d3555064d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnBattleStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1470600147}
+        m_TargetAssemblyTypeName: GlobalMutationSystem, Assembly-CSharp
+        m_MethodName: RedistributeGlobalMutations
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1111963514}
+        m_TargetAssemblyTypeName: GlobalMutationSystem, Assembly-CSharp
+        m_MethodName: RedistributeGlobalMutations
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 881456442}
+        m_TargetAssemblyTypeName: TurnManager, Assembly-CSharp
+        m_MethodName: Enable
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 881456445}
+        m_TargetAssemblyTypeName: EventManager, Assembly-CSharp
+        m_MethodName: EnablePlayerInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnBattleEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 881456445}
+        m_TargetAssemblyTypeName: EventManager, Assembly-CSharp
+        m_MethodName: DisablePlayerInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 881456442}
+        m_TargetAssemblyTypeName: TurnManager, Assembly-CSharp
+        m_MethodName: Disable
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  unitMap: {fileID: 881456444}
+  turnManager: {fileID: 881456442}
+  playerUnitController: {fileID: 1470600146}
+  enemyUnitController: {fileID: 1111963512}
   jukeBox: {fileID: 1889308657}
 --- !u!114 &881456444
 MonoBehaviour:
@@ -7346,6 +7428,7 @@ MonoBehaviour:
   unitController: {fileID: 1470600146}
   globalMutations:
   - {fileID: 11400000, guid: e46a7d8c030ed0e458a213b7a56287ec, type: 2}
+  - {fileID: 11400000, guid: cc8af19b7e6be814a8b17c05281fe469, type: 2}
 --- !u!1 &1481859006
 GameObject:
   m_ObjectHideFlags: 0

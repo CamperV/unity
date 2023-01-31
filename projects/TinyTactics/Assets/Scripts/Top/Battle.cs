@@ -4,46 +4,27 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(UnitMap), typeof(TurnManager))]
 public class Battle : MonoBehaviour
 {
-    public delegate void BattleEvent();
-    public event BattleEvent BattleStartEvent;
-    
-    public delegate void BattleEndEvent(bool playerVictorious);
-    public event BattleEndEvent ConditionalBattleEndEvent;
+    public UnityEvent OnBattleStart;
+    public UnityEvent OnBattleEnd;
 
-    private EventManager eventManager;
-    private UnitMap unitMap;
-    private TurnManager turnManager;
-    
-    private PlayerUnitController playerUnitController;
-    private EnemyUnitController enemyUnitController;
-
+    [SerializeField] private UnitMap unitMap;
+    [SerializeField] private TurnManager turnManager;
+    [SerializeField] private PlayerUnitController playerUnitController;
+    [SerializeField] private EnemyUnitController enemyUnitController;
     [SerializeField] private BattleJukeBox jukeBox;
 
-    void Awake() {
-        eventManager = GetComponent<EventManager>();
-        unitMap = GetComponent<UnitMap>();
-        turnManager = GetComponent<TurnManager>();
-
-        playerUnitController = GetComponentInChildren<PlayerUnitController>();
-        enemyUnitController = GetComponentInChildren<EnemyUnitController>();
-    }
-
     public void StartBattle() {
-        eventManager.EnablePlayerInput();
-        eventManager.RegisterEvents();
-        //
-        BattleStartEvent?.Invoke();
+        OnBattleStart?.Invoke();
     }
 
-    public void EndBattle(bool playerVictorious) {
-        eventManager.DisablePlayerInput();
-        
+    public void EndBattle(bool playerVictorious) {        
         turnManager.currentPhase.TriggerEnd();
-        turnManager.Disable();
 
         // just in case...
         BroadcastMessage("StopAllCoroutines");
@@ -60,7 +41,7 @@ public class Battle : MonoBehaviour
         }
 
         //
-        ConditionalBattleEndEvent?.Invoke(playerVictorious);
+        OnBattleEnd?.Invoke();
     }
 
     public void CheckVictoryConditions() {
