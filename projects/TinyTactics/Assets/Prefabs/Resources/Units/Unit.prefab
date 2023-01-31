@@ -325,6 +325,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   genericBuffFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
   genericDebuffFXBundle: {fileID: 11400000, guid: 156b54777abab874a9704c6b814b11ff, type: 2}
+  buffColor: {r: 0.11764706, g: 0.7019608, b: 0.4392157, a: 1}
+  debuffColor: {r: 0.654902, g: 0.19215687, b: 0.4117647, a: 1}
 --- !u!1 &6807299549594369295
 GameObject:
   m_ObjectHideFlags: 0

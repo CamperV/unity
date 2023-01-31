@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: BuffAudioFXBundle
   m_EditorClassIdentifier: 
   clipPool:
-  - {fileID: 8300000, guid: 484169af40c1d794db29621ff3e3c915, type: 3}
-  - {fileID: 8300000, guid: 052b1baba2db89f49bb3420150c848b0, type: 3}
+  - {fileID: 8300000, guid: a5d4d03a8cc859942933f090222cac0d, type: 3}
