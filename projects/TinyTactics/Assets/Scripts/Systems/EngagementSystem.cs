@@ -27,7 +27,8 @@ public class EngagementSystem : MonoBehaviour
 
     [SerializeField] private float delayBetweenAttacks = 0.5f;
     [SerializeField] private float delayBeforeCounter = 1f;
-    private bool resolvedFlag = false;
+    private bool resolvedFlag = true;
+    public bool IsResolved => resolvedFlag;
 
     public static Engagement CreateEngagement(Unit a, Unit b) {
         Engagement e = new Engagement(a, b);
