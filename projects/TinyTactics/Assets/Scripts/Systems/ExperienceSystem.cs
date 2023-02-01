@@ -7,17 +7,19 @@ using UnityEngine.UI;
 using TMPro;
 using Extensions;
 
+[RequireComponent(typeof(UnitBroadcastEventSystem))]
 public class ExperienceSystem : MonoBehaviour
 {
     private Unit boundUnit;
+    private UnitBroadcastEventSystem unitBroadcastEventSystem;
 
     // for binding UI, etc
     public delegate void ExperienceEvent(Unit thisUnit, int newValue);
-    public event ExperienceEvent UpdateLevelEvent;
     public event ExperienceEvent UpdateExperienceEvent;
     
     void Awake() {
         boundUnit = GetComponent<Unit>();
+        unitBroadcastEventSystem = GetComponent<UnitBroadcastEventSystem>();
     }
 
     public void Initialize() {
@@ -44,13 +46,15 @@ public class ExperienceSystem : MonoBehaviour
         for (int lvl = LEVEL; lvl < level; lvl++) {
             Debug.Log($"{lvl} is providing {levelProgression.levelUpProgression[lvl]}");
             levelProgression.levelUpProgression[lvl].Apply(boundUnit);
-            UpdateLevelEvent?.Invoke(boundUnit, lvl);
+            
+            // broadcast the level
+            unitBroadcastEventSystem.OnLevelUp.BroadcastEvent?.Invoke(boundUnit);
         }
 
         LEVEL = level;
     }
 
     private void DefaultExperienceGain(Unit thisUnit, Unit targetUnit) {
-        // GainExperience( (targetUnit as EnemyUnit).experienceReward );
+        GainExperience( (targetUnit as EnemyUnit).experienceReward );
     }
 }

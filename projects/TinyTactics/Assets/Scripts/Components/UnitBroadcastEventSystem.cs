@@ -9,4 +9,5 @@ using UnityEngine.Events;
 public class UnitBroadcastEventSystem : MonoBehaviour
 {
     public UnitBroadcastEvent OnFinishTurn;
+    public UnitBroadcastEvent OnLevelUp;
 }

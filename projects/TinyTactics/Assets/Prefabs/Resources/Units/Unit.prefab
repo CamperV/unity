@@ -311,6 +311,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OnFinishTurn: {fileID: 11400000, guid: 159b92e6015b0fc49ac3c8a5c74332c3, type: 2}
+  OnLevelUp: {fileID: 11400000, guid: 8a8d899e2aae24143805163480c62f11, type: 2}
 --- !u!114 &3610894812246290604
 MonoBehaviour:
   m_ObjectHideFlags: 0
