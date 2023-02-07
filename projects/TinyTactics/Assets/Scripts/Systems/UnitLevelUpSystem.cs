@@ -15,11 +15,12 @@ public class UnitLevelUpSystem : MonoBehaviour
     [SerializeField] private EngagementSystem engagementSystem;
 
     [SerializeField] private GameObject levelUpPanel;
+    [SerializeField] private GameObject selectionPanel;
     [SerializeField] private MutationPanel mutationPanelPrefab;
 
     public void CatchLevelUp(Unit unit) {
-        Debug.Log($"Saw {unit} level up");
-        StartCoroutine( InteractiveMutationOffer() );
+        // need some blocking code here to receive mulitple serial level ups
+        StartCoroutine( InteractiveMutationOffer(unit) );
     }
 
     private void EnablePanel() {
@@ -34,54 +35,53 @@ public class UnitLevelUpSystem : MonoBehaviour
         levelUpPanel.SetActive(false);       
     }
 
-    private IEnumerator InteractiveMutationOffer() {
+    private void ClearPanel() {
+        foreach (Transform child in selectionPanel.transform) {
+            Destroy(child.gameObject);
+        }
+    }
+
+    private IEnumerator InteractiveMutationOffer(Unit unit) {
         yield return new WaitUntil(() => engagementSystem.IsResolved == true);
+
         EnablePanel();
-        yield return new WaitForSeconds(5.0f);
+        ClearPanel();
+        List<Mutation> offering = GetOffering(unit, 3);
+
+        // offer up all mutations and wait until one is pressed
+        bool buttonClickedFlag = false;
+
+        // instantiate all possible panels for this draft
+        foreach (Mutation draftableMutation in offering) {
+            MutationPanel mutationPanel = Instantiate(mutationPanelPrefab, selectionPanel.transform);
+            mutationPanel.SetInfo(draftableMutation);
+            // perkPanel.SetPerkInfo(draftablePerk);
+
+            // don't care about anon listeners because this will be destroyed
+            mutationPanel.selectionButton.onClick.AddListener(() => DraftMutation(unit, draftableMutation) );
+            mutationPanel.selectionButton.onClick.AddListener(() => buttonClickedFlag = true);
+        }
+
+        // now wait until a mutation is actually selected
+        yield return new WaitUntil(() => buttonClickedFlag == true);       
         DisablePanel();
     }
 
-    // private IEnumerator InteractivePerkDraft(CampaignUnitGenerator.CampaignUnitData unitData, UnitLevelUpPanel linkedPanel) {
-    //     if (!unitPerkOfferings.ContainsKey(unitData.ID)) {
-    //         List<PerkData> potentialPerkPool = new List<PerkData>();
+    private List<Mutation> GetOffering(Unit unit, int numOnOffer) {
+        List<Mutation> offerings = new List<Mutation>();
 
-    //         foreach (ArchetypeData ad in unitData.archetypes) {
-    //             foreach (PerkData draftablePerk in ad.GetPerkPool()) {
-    //                 potentialPerkPool.Add(draftablePerk);
-    //             }
-    //         }
-    //         //
-    //         unitPerkOfferings[unitData.ID] = potentialPerkPool.RandomSelectionsUpTo<PerkData>(perksOnOffer).ToList();
-    //     }
-    //     List<PerkData> perkPool = unitPerkOfferings[unitData.ID];
+        foreach (MutationArchetype mutArch in unit.mutArchetypes) {
+            foreach (Mutation mut in mutArch.GetPool()) {
+                offerings.Add(mut);
+            }
+        }
 
-    //     // offer up all perks and wait until one is pressed
-    //     bool buttonClickedFlag = false;
+        // prune em down
+        offerings.RandomSelectionsUpTo<Mutation>(numOnOffer);
+        return offerings;
+    }
 
-    //     // instantiate all possible panels for this draft
-    //     // show all panels
-    //     foreach (PerkData draftablePerk in perkPool) {
-    //         DraftPerkPanel perkPanel = Instantiate(draftPerkPanelPrefab, linkedPanel.perkDraftTable.transform);
-    //         perkPanel.SetPerkInfo(draftablePerk);
-
-    //         perkPanel.draftButton.onClick.AddListener(() => {
-    //             AddPerkToUnit(unitData, draftablePerk);
-    //             //
-    //             unitTabs.Remove(currentSelectedTab);
-    //             Destroy(currentSelectedTab.gameObject);
-    //             //
-    //             buttonClickedFlag = true;
-
-    //             if (unitTabs.Count > 0) {
-    //                 SelectTab(unitTabs[0]);
-    //             } else {
-    //                 Destroy(gameObject);
-    //             }
-    //         });
-    //     }
-
-    //     // now wait until a unit is actually selected
-    //     yield return new WaitUntil(() => buttonClickedFlag == true);
-    // }
-
+    private void DraftMutation(Unit unit, Mutation mutation) {
+        unit.mutationSystem.AddMutation(mutation);
+    }
 }

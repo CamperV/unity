@@ -14,6 +14,7 @@ public class MutationPanel : MonoBehaviour
 
     public Image matteImage;
     public Image backgroundImage;
+
     public Button selectionButton;
     
     // update UI stuff
@@ -22,7 +23,7 @@ public class MutationPanel : MonoBehaviour
         mutationImage.sprite = mutation.sprite;
         descriptionValue.SetText(mutation.mutatorDisplayData.description);
         //
-        matteImage.color = mutation.archetype.color;
-        mutationImageMatte.color = (1f*mutation.archetype.color).WithAlpha(1f);
+        // matteImage.color = mutation.archetype.color;
+        // mutationImageMatte.color = (1f*mutation.archetype.color).WithAlpha(1f);
     }
 }
