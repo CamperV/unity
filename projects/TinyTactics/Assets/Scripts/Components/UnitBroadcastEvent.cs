@@ -9,5 +9,17 @@ using UnityEngine.Events;
 [CreateAssetMenu (menuName = "Events/UnitBroadcastEvent")]
 public class UnitBroadcastEvent : ScriptableObject
 {
-    public UnityEvent<Unit> BroadcastEvent;
+    private UnityEvent<Unit> @event;
+
+    public void AddListener(UnityAction<Unit> listener) {
+        @event.AddListener(listener);
+    }
+
+    public void RemoveListener(UnityAction<Unit> listener) {
+        @event.RemoveListener(listener);
+    }
+
+    public void Invoke(Unit unit) {
+        @event?.Invoke(unit);
+    }
 }

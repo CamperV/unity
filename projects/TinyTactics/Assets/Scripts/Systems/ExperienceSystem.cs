@@ -34,7 +34,6 @@ public class ExperienceSystem : MonoBehaviour
 
     // use SO for these so that its consistent but I can debug different scaling
     public LevelingScale levelingScale;
-    public LevelProgression levelProgression;
 
     public void GainExperience(int experience) {
         EXPERIENCE += experience;
@@ -42,13 +41,10 @@ public class ExperienceSystem : MonoBehaviour
 
         // check level thresholds for experience
         int level = levelingScale.Match(EXPERIENCE);
-        
-        for (int lvl = LEVEL; lvl < level; lvl++) {
-            Debug.Log($"{lvl} is providing {levelProgression.levelUpProgression[lvl]}");
-            levelProgression.levelUpProgression[lvl].Apply(boundUnit);
-            
-            // broadcast the level
-            unitBroadcastEventSystem.OnLevelUp.BroadcastEvent?.Invoke(boundUnit);
+          
+        // broadcast the level
+        for (int lvl = LEVEL; lvl < level; lvl++) {         
+            unitBroadcastEventSystem.OnLevelUp?.Invoke(boundUnit);
         }
 
         LEVEL = level;
