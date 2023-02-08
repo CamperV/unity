@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4712999265567647394}
   - component: {fileID: 6679132367569494820}
+  - component: {fileID: 8492952267862253317}
   m_Layer: 0
   m_Name: MutationVisualUI
   m_TagString: Untagged
@@ -51,6 +52,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainImage: {fileID: 5873311117259388031}
+  text: {fileID: 0}
+--- !u!114 &8492952267862253317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6081825541267089510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 511e65eb6080dac4facc61218e7f3b24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useOverride: 0
+  tooltipOverride: DEFAULT
 --- !u!1 &6908878429323478116
 GameObject:
   m_ObjectHideFlags: 0

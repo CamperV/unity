@@ -7,10 +7,9 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class HealTerrainEffect : TerrainEffect, IToolTip
+public class HealTerrainEffect : TerrainEffect, ITooltip
 {
-    public string tooltipName { get; set; } = "Healing Terrain";
-    public string tooltip { get; set; } = "On start of turn, heal 25% of Max HP.";
+    public string GetTooltip() => "On start of turn, heal 25% of Max HP.";
 
 #if UNITY_EDITOR
     [MenuItem("Assets/Create/CustomAssets/HealTerrainEffect", false, 1)]

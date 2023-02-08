@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e927ac0ac6442f34b9c47a20dee2df22, type: 3}
   m_Name: MoveRange
   m_EditorClassIdentifier: 
-  color: {r: 0, g: 0.3, b: 0.75, a: 0.7490196}
+  color: {r: 0, g: 0.3179842, b: 0.7490196, a: 0.7490196}
   altColor: {r: 0.29803923, g: 0.3, b: 0.75, a: 0.7490196}
   tile: {fileID: 11400000, guid: 282d2986733540b45af28eaf1fbdb67e, type: 2}

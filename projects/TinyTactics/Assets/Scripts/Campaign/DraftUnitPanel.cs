@@ -65,7 +65,7 @@ public class DraftUnitPanel : MonoBehaviour
 
         // SET SIGNATURE PERK DESCRIPTION
         // Debug.Log($"Searching for component {unitPackage.unitData.signaturePerkTypeName}");
-        IToolTip describablePerk = unitPackage.unitPrefab.GetComponent(unitPackage.unitData.signaturePerkTypeName) as IToolTip;
-        signaturePerkDescription.SetText($"<b><color=#FFDD70>{describablePerk.tooltipName}</color></b>: {describablePerk.tooltip}");
+        ITooltip describablePerk = unitPackage.unitPrefab.GetComponent(unitPackage.unitData.signaturePerkTypeName) as ITooltip;
+        signaturePerkDescription.SetText($"<b><color=#FFDD70>n/a</color></b>: {describablePerk.GetTooltip()}");
     }
 }

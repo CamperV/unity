@@ -14,13 +14,13 @@ public class GlossaryPanel : MonoBehaviour
 	}
 
 	private void UpdateActiveGlossaryText() {
-		// for all IToolTip MBs
-		List<IToolTip> toolTippers = FindObjectsOfType<MonoBehaviour>().OfType<IToolTip>().ToList();
+		// for all ITooltip MBs
+		List<ITooltip> toolTippers = FindObjectsOfType<MonoBehaviour>().OfType<ITooltip>().ToList();
 		
 		List<string> textLines = new List<string>();
 
-		foreach (IToolTip tt in toolTippers) {
-			textLines.Add($"<color=#FFDD70><b>{tt.tooltipName}</b></color>: {tt.tooltip}");
+		foreach (ITooltip tt in toolTippers) {
+			textLines.Add($"<color=#FFDD70><b>n/a</b></color>: {tt.GetTooltip()}");
 		}
 
 		glossaryText.SetText( string.Join("\n\n", textLines.Distinct().OrderBy(it => it)) );

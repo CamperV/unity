@@ -15,12 +15,10 @@ public class UnitBroadcastEventListener : MonoBehaviour
     public UnityEvent<Unit> OnEventRaised;
 
     void OnEnable() {
-        // unitBroadcastEvent.BroadcastEvent.AddListener(EventRepeater);
         unitBroadcastEvent.AddListener(EventRepeater);
     }
 
     void OnDisable() {
-        // unitBroadcastEvent.BroadcastEvent.RemoveListener(EventRepeater);
         unitBroadcastEvent.RemoveListener(EventRepeater);
     }
 

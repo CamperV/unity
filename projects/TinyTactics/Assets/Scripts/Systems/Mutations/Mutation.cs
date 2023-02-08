@@ -6,6 +6,8 @@ using UnityEngine;
 public abstract class Mutation : ScriptableObject, IMutatorComponent
 {
     // IMutatorComponent
+    // .name
+    // .description
     [field: SerializeField] public MutatorDisplayData mutatorDisplayData { get; set; }
 	public Sprite sprite;
 	

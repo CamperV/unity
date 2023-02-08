@@ -7,13 +7,21 @@ using UnityEngine.Events;
 using TMPro;
 using Extensions;
 
-public class MutationVisual : MonoBehaviour
+public class MutationVisual : MonoBehaviour, ITooltip
 {
 	[SerializeField] private Image mainImage;
 	[SerializeField] private TextMeshProUGUI text;
 
-	public void SetInfo(Mutation mut) {
-		mainImage.sprite = mut.sprite;
-		text.SetText(mut.mutatorDisplayData.name);
+	private string tooltip;
+
+	public void SetInfo(Mutation mutation) {
+		mainImage.sprite = mutation.sprite;
+		text.SetText(mutation.mutatorDisplayData.name);
+
+		tooltip = mutation.mutatorDisplayData.description;
+		Debug.Log($"Set tooltip to {tooltip}");
 	}
+
+    // ITooltip
+    public string GetTooltip() => tooltip;
 }
