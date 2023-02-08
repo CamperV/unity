@@ -18,6 +18,7 @@ public class WithdrawUC : UnitCommand
     public override ExitSignal InProgressUpdate(PlayerUnit thisUnit) => ExitSignal.ForceFinishTurn;
 
     public override ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract) {
+        ProcFor(thisUnit);
         thisUnit.statusSystem.AddStatus(withdrawBuff, so_Status.CreateStatusProviderID(thisUnit, withdrawBuff));
 
         // also debuff POISE

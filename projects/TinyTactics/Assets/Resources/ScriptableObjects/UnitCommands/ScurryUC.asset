@@ -25,5 +25,6 @@ MonoBehaviour:
   cooldown: 0
   remainingUses: 0
   replaceDefault: 1
+  providedBy: {fileID: 11400000, guid: 9ffd81fa3b9141c42a8cd86c92bfa5db, type: 2}
   tileVisuals: {fileID: 11400000, guid: 4d26a24a1ee38aa48944412b6ee8a70c, type: 2}
   scurryBuff: {fileID: 11400000, guid: a6c55d74829a1dc46bbc8df692242205, type: 2}

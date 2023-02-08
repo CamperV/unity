@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 5683046262374125964}
   - component: {fileID: 682463709180308802}
   - component: {fileID: 3610894812246290604}
+  - component: {fileID: 8239160340880072926}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -328,6 +329,20 @@ MonoBehaviour:
   genericDebuffFXBundle: {fileID: 11400000, guid: 156b54777abab874a9704c6b814b11ff, type: 2}
   buffColor: {r: 0.11764706, g: 0.7019608, b: 0.4392157, a: 1}
   debuffColor: {r: 0.654902, g: 0.19215687, b: 0.4117647, a: 1}
+--- !u!114 &8239160340880072926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6096969835717758623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5a14308b1297f64a99115efcdc4f7bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerFXBundle: {fileID: 11400000, guid: 279a899f4dc85274e9bc6d4a90cabf77, type: 2}
+  triggerColor: {r: 1, g: 0.7607843, b: 0.47843137, a: 1}
 --- !u!1 &6807299549594369295
 GameObject:
   m_ObjectHideFlags: 0

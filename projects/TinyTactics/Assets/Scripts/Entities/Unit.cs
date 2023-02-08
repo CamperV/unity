@@ -403,7 +403,6 @@ public abstract class Unit : MonoBehaviour, IGridPosition, IUnitPhaseInfo, ITagg
     public void FireOnStartTurnEvent() => OnStartTurn?.Invoke(this);
     public void FireOnFinishTurnEvent() {
         OnFinishTurn?.Invoke(this);
-        // unitBroadcastEventSystem.OnFinishTurn.BroadcastEvent?.Invoke(this);
         unitBroadcastEventSystem.OnFinishTurn?.Invoke(this);
     }
 

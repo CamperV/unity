@@ -11,6 +11,12 @@ public class MutationSystem : MonoBehaviour
 {
     private Unit boundUnit;
 
+    // for binding UI, etc
+    public delegate void MutationEvent(Mutation mutation);
+    public event MutationEvent AddMutationEvent;
+    public event MutationEvent RemoveMutationEvent;
+    public event MutationEvent MutationTriggeredEvent;
+
     // assingable in Inspector for prefabs, but can be modified
     public List<Mutation> mutations;    
     
@@ -29,6 +35,8 @@ public class MutationSystem : MonoBehaviour
     public void AddMutation(Mutation mutation) {
         mutations.Add(mutation);
         mutation.OnAcquire(boundUnit);
+
+        AddMutationEvent?.Invoke(mutation);
     }
 
     public void RemoveMutation(Mutation mutation) {
@@ -36,5 +44,11 @@ public class MutationSystem : MonoBehaviour
         
         mutations.Remove(mutation);
         mutation.OnRemove(boundUnit);
+
+        RemoveMutationEvent?.Invoke(mutation);
+    }
+
+    public void MutationTriggered(Mutation mutation) {
+        MutationTriggeredEvent?.Invoke(mutation);
     }
 }

@@ -25,5 +25,6 @@ MonoBehaviour:
   cooldown: 0
   remainingUses: 0
   replaceDefault: 1
+  providedBy: {fileID: 11400000, guid: c90beef71a381a84bb8d0660c197f418, type: 2}
   tileVisuals: {fileID: 11400000, guid: 5da2c718e955057428b4579ec4c47404, type: 2}
   chargeBuff: {fileID: 11400000, guid: b38dc0bd9709d0449a12b61e8fed9830, type: 2}

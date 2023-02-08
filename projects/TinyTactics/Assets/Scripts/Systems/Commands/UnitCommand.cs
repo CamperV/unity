@@ -81,4 +81,11 @@ public abstract class UnitCommand : ScriptableObject
 
     public virtual void OnAdd(Unit thisUnit){}
     public virtual void OnRemove(Unit thisUnit){}
+
+    // valid, trigger the animation
+    // could do this better, with more events
+    // like, UnitCommandTriggered -> MutationTrigger?
+    // no, we need to keep it confied to "thisUnit"
+    public Mutation providedBy;
+    public void ProcFor(Unit thisUnit) => thisUnit.mutationSystem.MutationTriggered(providedBy);
 }

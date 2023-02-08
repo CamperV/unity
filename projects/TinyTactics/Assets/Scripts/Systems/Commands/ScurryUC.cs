@@ -30,6 +30,8 @@ public class ScurryUC : MoveUC
         }
     
         if (passedEnemies > 0) {
+            ProcFor(thisUnit);  // let the world know you've proc'd
+
             ImmediateValueStatus clonedScurryBuff = ImmediateValueStatus.CloneWithValue(scurryBuff, passedEnemies);
             thisUnit.statusSystem.AddStatus(clonedScurryBuff, so_Status.CreateStatusProviderID(thisUnit, clonedScurryBuff));
         }
