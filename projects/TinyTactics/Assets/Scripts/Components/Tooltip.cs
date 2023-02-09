@@ -29,5 +29,5 @@ public class Tooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData) => TooltipSystem.inst.DisplayTooltip(GetTooltip());
     public void OnPointerExit(PointerEventData eventData) => TooltipSystem.inst.HideTooltip();
-    void OnDisable() => TooltipSystem.inst.HideTooltip();
+    void OnDisable() => TooltipSystem.inst.TryHideTooltip();
 }

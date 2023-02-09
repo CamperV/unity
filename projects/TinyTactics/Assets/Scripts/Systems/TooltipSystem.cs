@@ -14,7 +14,8 @@ public class TooltipSystem : MonoBehaviour
     // this allows for nice, separable components
     public static TooltipSystem inst = null; // enforces singleton behavior
 
-    [SerializeField] private GameObject infoPanel;
+    [SerializeField] private TooltipWindow infoPanel;
+    private UIAnimator windowAnimator;
 	
     void Awake() {
  		if (inst == null) {
@@ -22,14 +23,25 @@ public class TooltipSystem : MonoBehaviour
 		} else if (inst != this) {
 			Destroy(gameObject);
 		}
+
+		windowAnimator = infoPanel.GetComponent<UIAnimator>();
     }
 
     public void DisplayTooltip(string toolTip) {
-        infoPanel.SetActive(true);
-        infoPanel.GetComponentInChildren<TextMeshProUGUI>().SetText(toolTip);
+        infoPanel.gameObject.SetActive(true);
+        infoPanel.SetInfo(toolTip);
+
+		// cancel any fade downs, start fade up
+		windowAnimator.TriggerFadeUp(0.1f);
     }
 
     public void HideTooltip() {
-        infoPanel.SetActive(false);
+        // cancel any fade ups, start fade down
+		// after fade down, set active false
+		windowAnimator.TriggerFadeDownDisable(0.1f);
+    }
+
+    public void TryHideTooltip() {
+		if (infoPanel.gameObject.activeInHierarchy) HideTooltip();
     }
 }

@@ -15,7 +15,7 @@ public class MutationSystem : MonoBehaviour
     public delegate void MutationEvent(Mutation mutation);
     public event MutationEvent AddMutationEvent;
     public event MutationEvent RemoveMutationEvent;
-    public event MutationEvent MutationTriggeredEvent;
+    public event MutationEvent MutationProcEvent;
 
     // assingable in Inspector for prefabs, but can be modified
     public List<Mutation> mutations;    
@@ -48,7 +48,7 @@ public class MutationSystem : MonoBehaviour
         RemoveMutationEvent?.Invoke(mutation);
     }
 
-    public void MutationTriggered(Mutation mutation) {
-        MutationTriggeredEvent?.Invoke(mutation);
+    public void FireOnMutationProc(Mutation mutation) {
+        MutationProcEvent?.Invoke(mutation);
     }
 }

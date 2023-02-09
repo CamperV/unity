@@ -29,7 +29,7 @@ public class MutationTriggerAnimator : MonoBehaviour
     }
 
     void Start() {
-        mutationSystem.MutationTriggeredEvent += AnimateTrigger;
+        mutationSystem.MutationProcEvent += AnimateTrigger;
     }
 
     private void AnimateTrigger(Mutation triggeredMutation) {

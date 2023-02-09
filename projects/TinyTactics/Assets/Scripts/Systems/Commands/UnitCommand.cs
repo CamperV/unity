@@ -87,5 +87,5 @@ public abstract class UnitCommand : ScriptableObject
     // like, UnitCommandTriggered -> MutationTrigger?
     // no, we need to keep it confied to "thisUnit"
     public Mutation providedBy;
-    public void ProcFor(Unit thisUnit) => thisUnit.mutationSystem.MutationTriggered(providedBy);
+    public void ProcFor(Unit thisUnit) => thisUnit.mutationSystem.FireOnMutationProc(providedBy);
 }
