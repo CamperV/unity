@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5044338230564521834}
   - component: {fileID: 2072564142630337053}
   - component: {fileID: 3264997224558775936}
+  - component: {fileID: 1268075042568566173}
   m_Layer: 0
   m_Name: StatusVisual
   m_TagString: Untagged
@@ -88,4 +89,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb474f3d77b3e90489ee0ef12a99dd60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buffSprite: {fileID: 5394638881828160046, guid: 03ae028ad7fe99e4c9acffa741a1ea38, type: 3}
+  debuffSprite: {fileID: -3918669726602016230, guid: d72f555ed8d8b1b44ad47908a1db9daa, type: 3}
+  defaultSprite: {fileID: -6152753904189618169, guid: 80572438c09c5e843bf02500acfaedd5, type: 3}
   mainImage: {fileID: 2072564142630337053}
+--- !u!114 &1268075042568566173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3341450011665540363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 511e65eb6080dac4facc61218e7f3b24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useOverride: 0
+  tooltipOverride: n/a

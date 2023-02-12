@@ -18,8 +18,9 @@ public class MutationVisual : MonoBehaviour, ITooltip
 		mainImage.sprite = mutation.sprite;
 		text.SetText(mutation.mutatorDisplayData.name);
 
-		tooltip = mutation.mutatorDisplayData.description;
-		Debug.Log($"Set tooltip to {tooltip}");
+		tooltip = $"{mutation.mutatorDisplayData.name}".RichTextTags_TMP(bold: true);
+		tooltip += "\n";
+		tooltip += $"{mutation.mutatorDisplayData.description}".RichTextTags_TMP(italics: true);
 	}
 
     // ITooltip

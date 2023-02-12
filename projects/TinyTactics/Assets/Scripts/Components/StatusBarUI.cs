@@ -12,10 +12,6 @@ public class StatusBarUI : MonoBehaviour
     [SerializeField] private GameObject panelContainer;
     [SerializeField] private StatusVisual statusVisualPrefab;
 
-    [SerializeField] private Sprite buffSprite;
-    [SerializeField] private Sprite debuffSprite;
-    [SerializeField] private Sprite defaultSprite;
-
     [SerializeField] private bool reverseChildrenOrder;
 
     // don't love this, but the best way to clear for right now
@@ -55,20 +51,9 @@ public class StatusBarUI : MonoBehaviour
             if (status.hidden) continue;
             
             StatusVisual sv = Instantiate(statusVisualPrefab, panelContainer.transform);
-            sv.SetImage( (status.statusCode == so_Status.StatusCode.Buff) ? buffSprite : debuffSprite );
+            sv.SetInfo(status);
         }
 
         CheckHide();
-    }
-
-    private Sprite _GetSprite(so_Status.StatusCode statusCode) {
-        switch (statusCode) {
-            case so_Status.StatusCode.Buff:
-                return buffSprite;
-            case so_Status.StatusCode.Debuff:
-                return debuffSprite;
-            default:
-                return defaultSprite;
-        }
     }
 }
