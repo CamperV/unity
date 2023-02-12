@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Extensions;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class TurnManager : MonoBehaviour
 {
@@ -20,6 +22,11 @@ public class TurnManager : MonoBehaviour
     public delegate void NewPhase(Phase newPhase);
     public event NewTurn NewTurnEvent;
     public event NewPhase NewPhaseEvent;
+
+    public UnityEvent PlayerPhaseStartEvent;
+    public UnityEvent PlayerPhaseEndEvent;
+    public UnityEvent EnemyPhaseStartEvent;
+    public UnityEvent EnemyPhaseEndEvent;
 
     public PhaseAnnouncement phaseAnnouncementPanel;
 
@@ -60,6 +67,12 @@ public class TurnManager : MonoBehaviour
             currentPhase = phase;
             NewPhaseEvent?.Invoke(currentPhase);
 
+            // and more public events
+            if (currentPhase.name == "Player")
+                PlayerPhaseStartEvent?.Invoke();
+            else
+                EnemyPhaseStartEvent?.Invoke();
+
             // allow the PhaseAnnouncement banner tot block here,
             yield return AnnounceNewPhase(currentPhase);
 
@@ -68,7 +81,13 @@ public class TurnManager : MonoBehaviour
             // check for enable here, as you can be disabled when the battle ends
             yield return new WaitUntil(() => phase.state == Phase.PhaseState.Complete || enable == false);
 
+            // phase has ended
             if (enable) {
+                if (currentPhase.name == "Player")
+                    PlayerPhaseEndEvent?.Invoke();
+                else
+                    EnemyPhaseEndEvent?.Invoke();
+
                 // post-phase delay
                 yield return new WaitForSeconds(endPhaseDelay);
             }

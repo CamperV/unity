@@ -19,9 +19,12 @@ public class WithdrawUC : UnitCommand
 
     public override ExitSignal FinishCommand(PlayerUnit thisUnit, bool auxiliaryInteract) {
         ProcFor(thisUnit);
-        thisUnit.statusSystem.AddStatus(withdrawBuff, so_Status.CreateStatusProviderID(thisUnit, withdrawBuff));
 
-        // also debuff POISE
+        // buff defense by Poise,
+        CountdownStatus clonedWithdrawBuff = CountdownStatus.CloneWithValue(withdrawBuff, thisUnit.statSystem.CURRENT_POISE);
+        thisUnit.statusSystem.AddStatus(clonedWithdrawBuff, so_Status.CreateStatusProviderID(thisUnit, clonedWithdrawBuff));
+
+        // but then reduce Poise via debuff
         CountdownStatus clonedWithdrawDebuff = CountdownStatus.CloneWithValue(withdrawDebuff, -thisUnit.statSystem.CURRENT_POISE);
         thisUnit.statusSystem.AddStatus(clonedWithdrawDebuff, so_Status.CreateStatusProviderID(thisUnit, clonedWithdrawDebuff));
 
