@@ -29,6 +29,7 @@ MonoBehaviour:
   statusSystem: {fileID: 0}
   spriteOutline: {fileID: 0}
   inventory: {fileID: 0}
+  unitBroadcastEventSystem: {fileID: 0}
   playerUnitController: {fileID: 0}
   enemyUnitController: {fileID: 0}
   <tags>k__BackingField:
@@ -74,7 +75,6 @@ MonoBehaviour:
   EXPERIENCE: 0
   LEVEL: 0
   levelingScale: {fileID: 11400000, guid: bd0d76a78e6ebd44c87dc4cd6d73cb1a, type: 2}
-  levelProgression: {fileID: 11400000, guid: fcbdb695c3ce2ce45aabb4f07f1e6511, type: 2}
 --- !u!114 &8623469792262427207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,7 +351,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5683046262374125964, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: baseStats.MAX_POISE
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5726798676220975912, guid: 75b03dd7a68f9ec48b9aa6c20acb1341, type: 3}
       propertyPath: m_AnchorMax.y

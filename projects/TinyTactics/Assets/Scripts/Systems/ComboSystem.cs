@@ -30,6 +30,10 @@ public class ComboSystem : MonoBehaviour
     }
     
     public void AddComboAttacks(Unit aggressor, Unit defender, ref List<Attack> attackList) {
+        Attack triggeringAttack = attackList[attackList.Count-1];
+        if (triggeringAttack.attackDirection != Attack.AttackDirection.Normal)
+            return;
+
         foreach (Unit unit in comboUnits) {
             if (unit != aggressor && ValidComboTarget(unit, defender)) {
                 foreach (Attack comboAttack in unit.GenerateAttacks(defender, Attack.AttackType.Combo, Attack.AttackDirection.Normal)) {
